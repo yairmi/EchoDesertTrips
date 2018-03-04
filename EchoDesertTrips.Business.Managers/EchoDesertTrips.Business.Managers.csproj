@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1DE742E3-CDD4-4ABF-BD33-AC439EBAAC32}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EchoDesertTrips.Business.Managers</RootNamespace>
+    <AssemblyName>EchoDesertTrips.Business.Managers</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Managers\BroadcastorManager.cs" />
+    <Compile Include="ManagerBase.cs" />
+    <Compile Include="Managers\CustomerManager.cs" />
+    <Compile Include="Managers\InventoryManager.cs" />
+    <Compile Include="Managers\OperationManager.cs" />
+    <Compile Include="Managers\OperatorManager.cs" />
+    <Compile Include="Managers\ReservationManager.cs" />
+    <Compile Include="Managers\TourManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{B279BD06-45E6-4785-B4D9-EEF8A392CF32}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common.ServiceModel\Core.Common.ServiceModel.csproj">
+      <Project>{308F1C49-7CA1-4D8E-860F-D6A8309D99DF}</Project>
+      <Name>Core.Common.ServiceModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.csproj">
+      <Project>{C4635DF6-CC42-434F-ABF9-A23DCBBC9DEB}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Business.Common\EchoDesertTrips.Business.Common.csproj">
+      <Project>{7A8A79DA-AE67-47A9-86BF-586D86EA7093}</Project>
+      <Name>EchoDesertTrips.Business.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Business.Contracts\EchoDesertTrips.Business.Contracts.csproj">
+      <Project>{918C91CF-4713-4620-B9C0-8EEC95E5A9B6}</Project>
+      <Name>EchoDesertTrips.Business.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Business.Entities\EchoDesertTrips.Business.Entities.csproj">
+      <Project>{5a7fb8ae-c1d7-412a-8882-e9e952a9256f}</Project>
+      <Name>EchoDesertTrips.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Client.Contracts\EchoDesertTrips.Client.Contracts.csproj">
+      <Project>{BE74B75E-50B4-4B67-AEAF-CE184A2088EA}</Project>
+      <Name>EchoDesertTrips.Client.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Common\EchoDesertTrips.Common.csproj">
+      <Project>{B47536EF-06E1-4AF2-8253-938AE63D8DDF}</Project>
+      <Name>EchoDesertTrips.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Data.Contracts\EchoDesertTrips.Data.Contracts.csproj">
+      <Project>{9E8D4873-A6AB-46A1-BEF9-2E21DE8E45F3}</Project>
+      <Name>EchoDesertTrips.Data.Contracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

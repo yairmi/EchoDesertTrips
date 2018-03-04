@@ -1,0 +1,102 @@
+﻿<core:UserControlViewBase x:Class="EchoDesertTrips.Desktop.Views.CustomersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
+             xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
+             xmlns:conv="clr-namespace:EchoDesertTrips.Desktop.Support"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="700">
+    <UserControl.Resources>
+        <conv:ViewModelNullToVisibilityConverter x:Key="viewModelNullToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Button Content="Add New" Command="{Binding AddCustomerCommand}" />
+            </StackPanel>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" SharedSizeGroup="links"/>
+                    <ColumnDefinition Width="160" SharedSizeGroup="LastName"/>
+                    <ColumnDefinition Width="160" SharedSizeGroup="FirstName"/>
+                    <ColumnDefinition Width="120" SharedSizeGroup="DateOfBirdth"/>
+                    <ColumnDefinition Width="120" SharedSizeGroup="PasportNumber"/>
+                    <ColumnDefinition Width="120" SharedSizeGroup="IssueDate"/>
+                    <ColumnDefinition Width="120" SharedSizeGroup="ExpiryDate"/>
+                    <ColumnDefinition Width="80" SharedSizeGroup="Nationality"/>
+                    <ColumnDefinition Width="80" SharedSizeGroup="HasVisa"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1" Text="Last Name" Style="{StaticResource MetroTextHeader}" />
+                <TextBlock Grid.Column="2" Text="First Name" Style="{StaticResource MetroTextHeader}" />
+                <TextBlock Grid.Column="3" Text="Birdth Date" Style="{StaticResource MetroTextHeader}" />
+                <TextBlock Grid.Column="4" Text="Passport #" Style="{StaticResource MetroTextHeader}" />
+                <TextBlock Grid.Column="5" Text="Issue Date" Style="{StaticResource MetroTextHeader}" />
+                <TextBlock Grid.Column="6" Text="Expiry Date" Style="{StaticResource MetroTextHeader}" />
+                <TextBlock Grid.Column="7" Text="Nationality" Style="{StaticResource MetroTextHeader}" />
+                <TextBlock Grid.Column="8" Text="Has Visa" Style="{StaticResource MetroTextHeader}" />
+            </Grid>
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Customers}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" SharedSizeGroup="links"/>
+                                <ColumnDefinition Width="160" SharedSizeGroup="LastName"/>
+                                <ColumnDefinition Width="160" SharedSizeGroup="FirstName"/>
+                                <ColumnDefinition Width="120" SharedSizeGroup="DateOfBirdth"/>
+                                <ColumnDefinition Width="120" SharedSizeGroup="PasportNumber"/>
+                                <ColumnDefinition Width="120" SharedSizeGroup="IssueDate"/>
+                                <ColumnDefinition Width="120" SharedSizeGroup="ExpiryDate"/>
+                                <ColumnDefinition Width="80" SharedSizeGroup="Nationality"/>
+                                <ColumnDefinition Width="80" SharedSizeGroup="HasVisa"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <!-- Here we are not in the context of the actual viewmodel in its root form, we are in the context of indevidual trip.
+								Once we entered this ItemControl, the ItemSource became the Trips collection, Which means each item that's rendered
+								by the ItemSource control constitutes a single trip. So right here the binding would correspond to a trip entity. But
+								the trip entity does not contain a command called DeleteTripCommand so we had to go up one to the parent. we do that by
+								using "RelativeSource". so i'm telling it go up until it finds an ancestor of type "UserControlViewBase" and take it's DataContext
+								and that DataContext of the view is going to be TripViewModel where the "DeleteTripCommand" resides.
+								CommandParameter="{Binding} - ? This send as a parameter of "DeleteTripCommand" the current trip. It is called the "CommandParameter"-->
+                                <TextBlock>
+                                    <Hyperlink Command="{Binding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding}">
+                                        <TextBlock Text="edit" Style="{StaticResource MetroLink}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                                <TextBlock Text=" " />
+                                <TextBlock>
+                                    <Hyperlink Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding}">
+                                        <TextBlock Text="delete" Style="{StaticResource MetroLink}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                            <TextBlock Grid.Column="1" Text="{Binding LastName}" Style="{StaticResource MetroText}" />
+                            <TextBlock Grid.Column="2" Text="{Binding FirstName}" Style="{StaticResource MetroText}" />
+                            <TextBlock Grid.Column="3" Text="{Binding Path = DateOfBirdth, StringFormat=dd-MM-yyyy}" Style="{StaticResource MetroText}" />
+                            <TextBlock Grid.Column="4" Text="{Binding PassportNumber}" Style="{StaticResource MetroText}" />
+                            <TextBlock Grid.Column="5" Text="{Binding Path = IssueData, StringFormat=dd-MM-yyyy }" Style="{StaticResource MetroText}" />
+                            <TextBlock Grid.Column="6" Text="{Binding Path = ExpireyDate, StringFormat=dd-MM-yyyy}" Style="{StaticResource MetroText}" />
+                            <TextBlock Grid.Column="7" Text="{Binding Nationality.NationalityName}" Style="{StaticResource MetroText}" />
+                            <TextBlock Grid.Column="8" Text="{Binding HasVisa}" Style="{StaticResource MetroText}" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+        <Border Grid.Column="1" CornerRadius="4" Margin="5" BorderBrush="SteelBlue" BorderThickness="1" Background="BlanchedAlmond"
+                Visibility="{Binding CustomersViewModel, Converter={StaticResource viewModelNullToVisibilityConverter}}">
+            <ContentControl Content="{Binding CurrentCustomerViewModel}" />
+        </Border>
+    </Grid>
+</core:UserControlViewBase>

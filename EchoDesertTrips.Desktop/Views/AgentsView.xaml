@@ -1,0 +1,176 @@
+﻿<core:UserControlViewBase
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
+             x:Class="EchoDesertTrips.Desktop.Views.AgentsView"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"   
+             xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded">
+    <!--<core:UserControlViewBase.Resources>
+        <Style x:Key="DataGridBorder" TargetType="{x:Type DataGridCell}">
+            <Setter Property="BorderBrush" Value="LightGray"/>
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+        </Style>
+    </core:UserControlViewBase.Resources>-->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddAgencyCommand}" />
+        <DataGrid x:Name="agencyDataGrid"
+                  Grid.Row="1"
+                  Margin="0" 
+                  ItemsSource="{Binding Agencies}" 
+                  EnableRowVirtualization="True"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  CellStyle="{StaticResource DataGridBorder}"
+                  HorizontalAlignment="Left"
+                  Width="700">
+            <!--<DataGrid.Resources>
+                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                    <Setter Property="Padding" Value="-2"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self},
+                            Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>-->
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="RowEditEnding">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingAgencyCommand, 
+                                           RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                           CommandParameter="{Binding Path=SelectedItem, 
+                                           RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <DataGrid.Columns>
+                <!--<DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding Path=DataContext.SaveAgencyCommand, 
+                                    RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}"
+                                    CommandParameter="{Binding}"
+                                    Content="Save"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="10,0,10,0">
+                                <Hyperlink Command="{Binding DataContext.EditAgencyCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                           CommandParameter="{Binding}">
+                                    <TextBlock Text="Edit" FontSize="14" FontWeight="Bold"/>
+                                </Hyperlink>
+                            </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>                
+                <DataGridTextColumn x:Name="agencyNameColumn" Width="200" Header="Agency Name" Binding="{Binding AgencyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="agencyAddressColumn" Width="200" Header="Agency Address" Binding="{Binding AgencyAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="phone1Column" Width="100" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="phone2Column" Width="100" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </DataGrid.Columns>
+            <!--<DataGrid.RowValidationRules>
+                <viewModels:AgencyValidationRule ValidationStep="UpdatedValue"/>
+            </DataGrid.RowValidationRules>
+            <DataGrid.RowValidationErrorTemplate>
+                <ControlTemplate>
+                    <Grid Margin="0,-2,10,-2" 
+                    ToolTip="{Binding RelativeSource={RelativeSource
+                    FindAncestor, AncestorType={x:Type DataGridRow}},
+                    Path=(Validation.Errors)[0].ErrorContent}">
+                        <Ellipse StrokeThickness="0" Fill="Red" 
+                        Width="22" 
+                        Height="22"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="!" FontSize="22" 
+                        FontWeight="Bold" Foreground="White" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </DataGrid.RowValidationErrorTemplate>-->
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Margin" Value="0,0,0,5"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Grid>
+                                            <ItemsPresenter/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <!--<Expander IsExpanded="False" Background="#FF112255" BorderBrush="#FF002255" Foreground="#FFEEEEEE" BorderThickness="1,1,1,5">-->
+                    <Expander IsExpanded="False" Background="#FF0080C0" BorderBrush="#FF0080C0" Foreground="#FFEEEEEE" BorderThickness="1,1,1,5">
+                        <Expander.Header>
+                            <DockPanel>
+                                <TextBlock FontWeight="Bold" Text="Agents" HorizontalAlignment="Left"/>
+                            </DockPanel>
+                        </Expander.Header>
+                        <Expander.Content>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <DataGrid x:Name="dataGridAgents" 
+                                      ItemsSource="{Binding Path=Agents}"
+                                      RowDetailsVisibilityMode="Visible"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      IsReadOnly="True"
+                                      CellStyle="{StaticResource DataGridBorder}">
+                                    <!--<i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="RowEditEnding">
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingAgentCommand, 
+                                                RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                                CommandParameter="{Binding ElementName=dataGridAgents, Path=DataContext}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>-->
+                                    <DataGrid.Columns>
+                                        <!--<DataGridTemplateColumn>
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Command="{Binding Path=DataContext.DeleteAgentCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                                Content="Delete"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>-->
+                                        <DataGridTextColumn x:Name="agentFirstNameColumn" Width="Auto" Header="Agent First Name" Binding="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DataGridTextColumn x:Name="agentLastNameColumn" Width="Auto" Header="Agent Last Name" Binding="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <DataGridTextColumn x:Name="agentPhone1Column" Width="Auto" Header="Phone" Binding="{Binding Phone1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Expander.Content>
+                    </Expander>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+        </DataGrid>
+        </Grid>
+        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentAgentsViewModel}" />
+    </Grid>
+</core:UserControlViewBase>

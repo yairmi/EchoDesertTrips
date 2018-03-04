@@ -1,0 +1,163 @@
+﻿<core:UserControlViewBase x:Class="EchoDesertTrips.Desktop.Views.EditTourTypeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
+             xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
+             xmlns:control="clr-namespace:Core.Common.UI.Controls;assembly=Core.Common.UI"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="ErrorTemplate">
+            <DockPanel LastChildFill="True">
+                <Border BorderBrush="Red" BorderThickness="1">
+                    <AdornedElementPlaceholder/>
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+        <!--To display tooltip with the error-->
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                        Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Border  Grid.Row="0" 
+             Grid.Column="1" 
+             HorizontalAlignment="Stretch" 
+             CornerRadius="4" 
+             Margin="0,0,200,0" 
+             BorderBrush="SteelBlue" 
+             BorderThickness="3" 
+             Background="BlanchedAlmond">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <!--<RowDefinition Height="Auto" />-->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="200" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Tour Type Name:"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Private:"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Visibility:"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="Incrament Jordan ID:"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Days:"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Width="200" Margin="3" Text="{Binding TourType.TourTypeName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left"/>
+                <CheckBox Grid.Row="1" Grid.Column="1" Width="160" Margin="3" IsChecked="{Binding TourType.Private, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
+                <CheckBox Grid.Row="2" Grid.Column="1" Width="160" Margin="3" IsChecked="{Binding TourType.Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
+                <CheckBox Grid.Row="3" Grid.Column="1" Width="160" Margin="3" IsChecked="{Binding TourType.IncramentExternalId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
+                <TextBox  Grid.Row="4" Grid.Column="1" Width="40" Text="{Binding Days, UpdateSourceTrigger=LostFocus, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left"/>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="2" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>                        
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
+                        <TextBlock Margin="3" Text="Descriptions:"/>
+                        <DataGrid Margin="3" x:Name="dgTourDescriptions"
+                          ItemsSource="{Binding TourType.TourTypeDescriptions, Mode=TwoWay}" 
+                          AutoGenerateColumns="False"
+                          HorizontalAlignment="Left"
+                          CanUserAddRows="False"
+                          RowHeight="60"
+                          Height="180"
+                          CellStyle="{StaticResource DataGridBorder}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="DayNumberColumn" Width="60" Binding="{Binding DayNumber}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Tour Descriptions" Binding="{Binding Path=Description}" Width="300">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextWrapping" Value="Wrap" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                    <DataGridTextColumn.EditingElementStyle>
+                                        <Style TargetType="TextBox">
+                                            <Setter Property="TextWrapping" Value="Wrap" />
+                                            <Setter Property="AcceptsReturn" Value="true" />
+                                        </Style>
+                                    </DataGridTextColumn.EditingElementStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
+                        <TextBlock Margin="3" Text="Destinations:"/>
+                        <DataGrid  Width="160" Margin="3" x:Name="dgDestinations" 
+                                    ItemsSource="{Binding Destinations, Mode=TwoWay}"
+                                    RowDetailsVisibilityMode="Visible"
+                                    AutoGenerateColumns="False"
+                                    HorizontalAlignment="Left"
+                                    Height="180"
+                                    CellStyle="{StaticResource DataGridBorder}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="DestinationName" Header="Destination Name" Binding="{Binding DestinationName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical">
+                        <TextBlock Grid.Column="4" Margin="3" Text="Adult Prices:"/>
+                        <DataGrid  Width="Auto" Margin="3" x:Name="dgAdultPrices" 
+                                    ItemsSource="{Binding AdultPrices, Mode=TwoWay}"
+                                    RowDetailsVisibilityMode="Visible"
+                                    AutoGenerateColumns="False"
+                                    HorizontalAlignment="Left"
+                                    Height="180"
+                                    CellStyle="{StaticResource DataGridBorder}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="AdultssCol" Width="Auto" Header="Adults #" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn x:Name="AdultPriceCol" Width="Auto" Header="Price" Binding="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="3">
+                        <TextBlock Margin="3" Text="Child Prices:"/>
+                        <DataGrid  Width="Auto" Margin="3" x:Name="dgChildPrices" 
+                                        ItemsSource="{Binding ChildPrices, Mode=TwoWay}"
+                                        RowDetailsVisibilityMode="Visible"
+                                        AutoGenerateColumns="False"
+                                        HorizontalAlignment="Left"
+                                        Height="180"
+                                        CellStyle="{StaticResource DataGridBorder}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="ChildsCol" Width="Auto" Header="Childs #" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn x:Name="ChildPriceCol" Width="Auto" Header="Price" Binding="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
+                <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" />
+                <Button Content="Cancel" Margin="5" Command="{Binding CancelCommand}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</core:UserControlViewBase>

@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FB97FABA-1CB0-4A26-969F-3CA9EB63EC25}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EchoDesertTrips.Data</RootNamespace>
+    <AssemblyName>EchoDesertTrips.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Prism.Interactivity, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Interactivity.5.0.0\lib\NET45\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Composition.AttributedModel, Version=1.0.31.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.AttributedModel.1.0.31\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.Convention, Version=1.0.31.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Convention.1.0.31\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.Hosting, Version=1.0.31.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Hosting.1.0.31\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.Runtime, Version=1.0.31.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.Runtime.1.0.31\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts, Version=1.0.31.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Composition.TypedParts.1.0.31\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data Repositories\AgencyRepository.cs" />
+    <Compile Include="Data Repositories\AgentRepository.cs" />
+    <Compile Include="Data Repositories\CustomerRepository.cs" />
+    <Compile Include="Data Repositories\HotelRepository.cs" />
+    <Compile Include="Data Repositories\HotelRoomTypeRepository.cs" />
+    <Compile Include="Data Repositories\OperatorRepository.cs" />
+    <Compile Include="Data Repositories\OptionalRepository.cs" />
+    <Compile Include="Data Repositories\ReservationRepository.cs" />
+    <Compile Include="Data Repositories\RoomTypeRepository.cs" />
+    <Compile Include="Data Repositories\TourOptionalRepository.cs" />
+    <Compile Include="Data Repositories\TourRepository.cs" />
+    <Compile Include="Data Repositories\TourTypeRepository.cs" />
+    <Compile Include="DataRepositoryBase.cs" />
+    <Compile Include="DataRepositoryFactory.cs" />
+    <Compile Include="EchoDesertTripsContext.cs" />
+    <Compile Include="Migrations\201801311019591_init.cs" />
+    <Compile Include="Migrations\201801311019591_init.Designer.cs">
+      <DependentUpon>201801311019591_init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801311025359_init1.cs" />
+    <Compile Include="Migrations\201801311025359_init1.Designer.cs">
+      <DependentUpon>201801311025359_init1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801311355269_stringdestinarions.cs" />
+    <Compile Include="Migrations\201801311355269_stringdestinarions.Designer.cs">
+      <DependentUpon>201801311355269_stringdestinarions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802010545037_subtour.cs" />
+    <Compile Include="Migrations\201802010545037_subtour.Designer.cs">
+      <DependentUpon>201802010545037_subtour.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802021333166_init2.cs" />
+    <Compile Include="Migrations\201802021333166_init2.Designer.cs">
+      <DependentUpon>201802021333166_init2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802091733018_hashcode.cs" />
+    <Compile Include="Migrations\201802091733018_hashcode.Designer.cs">
+      <DependentUpon>201802091733018_hashcode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802131030117_groups.cs" />
+    <Compile Include="Migrations\201802131030117_groups.Designer.cs">
+      <DependentUpon>201802131030117_groups.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802161640138_GroupAdded.cs" />
+    <Compile Include="Migrations\201802161640138_GroupAdded.Designer.cs">
+      <DependentUpon>201802161640138_GroupAdded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802201424138_removePrivateFromSubtour.cs" />
+    <Compile Include="Migrations\201802201424138_removePrivateFromSubtour.Designer.cs">
+      <DependentUpon>201802201424138_removePrivateFromSubtour.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802220858497_addTourTypeIncramentGroup.cs" />
+    <Compile Include="Migrations\201802220858497_addTourTypeIncramentGroup.Designer.cs">
+      <DependentUpon>201802220858497_addTourTypeIncramentGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802231051006_tourHotels.cs" />
+    <Compile Include="Migrations\201802231051006_tourHotels.Designer.cs">
+      <DependentUpon>201802231051006_tourHotels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802231452155_idfortourhotel.cs" />
+    <Compile Include="Migrations\201802231452155_idfortourhotel.Designer.cs">
+      <DependentUpon>201802231452155_idfortourhotel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802231538118_tourhotelroomtypeid.cs" />
+    <Compile Include="Migrations\201802231538118_tourhotelroomtypeid.Designer.cs">
+      <DependentUpon>201802231538118_tourhotelroomtypeid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{b279bd06-45e6-4785-b4d9-eef8a392cf32}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.csproj">
+      <Project>{c4635df6-cc42-434f-abf9-a23dcbbc9deb}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Business.Contracts\EchoDesertTrips.Business.Contracts.csproj">
+      <Project>{918C91CF-4713-4620-B9C0-8EEC95E5A9B6}</Project>
+      <Name>EchoDesertTrips.Business.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Business.DbEntities\EchoDesertTrips.Business.DbEntities.csproj">
+      <Project>{d0f2b33a-2d31-4fa5-b10b-77342317adc0}</Project>
+      <Name>EchoDesertTrips.Business.DbEntities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Business.Entities\EchoDesertTrips.Business.Entities.csproj">
+      <Project>{5a7fb8ae-c1d7-412a-8882-e9e952a9256f}</Project>
+      <Name>EchoDesertTrips.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Data.Contracts\EchoDesertTrips.Data.Contracts.csproj">
+      <Project>{9e8d4873-a6ab-46a1-bef9-2e21de8e45f3}</Project>
+      <Name>EchoDesertTrips.Data.Contracts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201801311019591_init.resx">
+      <DependentUpon>201801311019591_init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801311025359_init1.resx">
+      <DependentUpon>201801311025359_init1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801311355269_stringdestinarions.resx">
+      <DependentUpon>201801311355269_stringdestinarions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802010545037_subtour.resx">
+      <DependentUpon>201802010545037_subtour.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802021333166_init2.resx">
+      <DependentUpon>201802021333166_init2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802091733018_hashcode.resx">
+      <DependentUpon>201802091733018_hashcode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802131030117_groups.resx">
+      <DependentUpon>201802131030117_groups.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802161640138_GroupAdded.resx">
+      <DependentUpon>201802161640138_GroupAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802201424138_removePrivateFromSubtour.resx">
+      <DependentUpon>201802201424138_removePrivateFromSubtour.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802220858497_addTourTypeIncramentGroup.resx">
+      <DependentUpon>201802220858497_addTourTypeIncramentGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802231051006_tourHotels.resx">
+      <DependentUpon>201802231051006_tourHotels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802231452155_idfortourhotel.resx">
+      <DependentUpon>201802231452155_idfortourhotel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802231538118_tourhotelroomtypeid.resx">
+      <DependentUpon>201802231538118_tourhotelroomtypeid.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

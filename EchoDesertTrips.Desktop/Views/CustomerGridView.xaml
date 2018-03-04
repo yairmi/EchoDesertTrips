@@ -1,0 +1,145 @@
+﻿<core:UserControlViewBase x:Class="EchoDesertTrips.Desktop.Views.CustomerGridView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
+             xmlns:local="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <core:UserControlViewBase.Resources>
+        <ControlTemplate x:Key="ErrorTemplate">
+            <DockPanel>
+                <Border BorderBrush="Red" BorderThickness="5">
+                    <AdornedElementPlaceholder/>
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+        <Style x:Key="DataGridBorder" TargetType="DataGridCell">
+            <Setter Property="BorderBrush" Value="LightGray"/>
+            <Setter Property="BorderThickness" Value="1,1,1,1"></Setter>
+        </Style>
+    </core:UserControlViewBase.Resources>    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" />        
+            <DataGrid x:Name="dgCustomerWrapper" 
+                  Grid.Row="1"
+                  RowDetailsVisibilityMode="VisibleWhenSelected" 
+                  Margin="0,0,0,10" 
+                  ItemsSource="{Binding Customers, Mode=TwoWay}" 
+                  EnableRowVirtualization="True" 
+                  AutoGenerateColumns="False"
+                  CellStyle="{StaticResource DataGridBorder}"
+                  CanUserAddRows="False"
+                  Height="320">
+            <!--<DataGrid.Resources>
+                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                    <Setter Property="Padding" Value="-2"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self},
+                            Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>-->
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="RowEditEnding">
+                    <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->            
+            <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0,0,10,0">
+                                    <Hyperlink Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                            CommandParameter="{Binding}">
+                                    <TextBlock Text="Delete" FontSize="14" FontWeight="Bold"/>
+                                    </Hyperlink>
+                                </TextBlock>
+                                    <TextBlock Margin="0">
+                                    <Hyperlink Command="{Binding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                           CommandParameter="{Binding}">
+                                    <TextBlock Text="Edit" FontSize="14" FontWeight="Bold"/>
+                                </Hyperlink>
+                                </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn x:Name="firstNameColumn" Width="Auto" IsReadOnly="True" Header="First Name" Binding="{Binding FirstName, Mode=TwoWay}"/>
+                    <DataGridTextColumn x:Name="lastNameColumn" Width="Auto" IsReadOnly="True" Header="Last Name" Binding="{Binding LastName, Mode=TwoWay}"/>
+                    <DataGridTextColumn x:Name="dateOfBirdthColumn" IsReadOnly="True" Width="*" Header="Date Of Birdth" Binding="{Binding DateOfBirdth, StringFormat=d}"/>
+                <!--<DataGridTemplateColumn x:Name="dateOfBirdthColumn" Width="Auto" Header="Date Of Birdth">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding DateOfBirdth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+                    <DataGridTextColumn x:Name="passportNumberColumn" IsReadOnly="True" Width="Auto" Header="Passport Number" Binding="{Binding PassportNumber, Mode=TwoWay}"/>
+                    <DataGridTextColumn x:Name="issueDataColumn" IsReadOnly="True" Width="*" Header="Issue Date" Binding="{Binding IssueData, StringFormat=d}"/>
+                    <DataGridTextColumn x:Name="expireyDateColumn" IsReadOnly="True" Width="*" Header="Expiry Date" Binding="{Binding ExpireyDate, StringFormat=d}"/>
+                <!--<DataGridTemplateColumn x:Name="issueDataColumn" Width="Auto" Header="Issue Data">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding IssueData, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>                
+                <DataGridTemplateColumn x:Name="expireyDateColumn" Width="Auto" Header="Expirey Date">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding ExpireyDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+                    <DataGridCheckBoxColumn x:Name="hasVisaColumn" Width="Auto" IsReadOnly="True" Header="Has Visa" Binding="{Binding HasVisa}"/>
+                    <DataGridTextColumn x:Name="nationalityColumn" Width="Auto" IsReadOnly="True" Header="Nationality" Binding="{Binding Nationality, Mode=TwoWay}"/>
+                    <DataGridTextColumn x:Name="phone1Column" Width="Auto" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
+                    <DataGridTextColumn x:Name="phone2Column" Width="Auto" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+            <!--<DataGrid.RowValidationRules>
+                <local:CustomerValidationRule ValidationStep="UpdatedValue"/>
+            </DataGrid.RowValidationRules>
+            <DataGrid.RowValidationErrorTemplate>
+                <ControlTemplate>
+                    <Grid Margin="0,-2,10,-2" 
+                    ToolTip="{Binding RelativeSource={RelativeSource
+                    FindAncestor, AncestorType={x:Type DataGridRow}},
+                    Path=(Validation.Errors)[0].ErrorContent}">
+                        <Ellipse StrokeThickness="0" Fill="Red" 
+                        Width="22" 
+                        Height="22"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="!" FontSize="22" 
+                        FontWeight="Bold" Foreground="White" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </DataGrid.RowValidationErrorTemplate>-->
+        </DataGrid>
+    </Grid>
+        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentCustomerViewModel}" />
+    </Grid>        
+</core:UserControlViewBase>
+

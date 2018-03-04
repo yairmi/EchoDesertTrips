@@ -1,0 +1,227 @@
+﻿<core:UserControlViewBase x:Class="EchoDesertTrips.Desktop.Views.EditTourGridView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
+             xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
+             xmlns:control="clr-namespace:Core.Common.UI.Controls;assembly=Core.Common.UI"
+             xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="900">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="ErrorTemplate">
+            <DockPanel LastChildFill="True">
+                <Border BorderBrush="Red" BorderThickness="1">
+                    <AdornedElementPlaceholder/>
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+        <!--To display tooltip with the error-->
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                        Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <support:BoolToOppositeConverter x:Key="boolToOppositeConverter" />
+    </UserControl.Resources>
+    <Border  Grid.Row="0" 
+             Grid.Column="1" 
+             HorizontalAlignment="Stretch" 
+             CornerRadius="4" 
+             Margin="0,0,10,0" 
+             BorderBrush="SteelBlue" 
+             BorderThickness="3" 
+             Background="BlanchedAlmond">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <!--<RowDefinition Height="140" />-->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Tour Type:" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Pickup Address:" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Start Date:" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="End Date:" />
+                <!--<TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Tours:" />-->
+                <ComboBox x:Name="cbTourType" Grid.Row="0" Grid.Column="1" 
+                                            SelectedItem="{Binding DataContext.Tour.TourType,  
+                                            RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}},
+                                            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            SelectedValue="{Binding Tour.TourTypeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                            ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                                            SelectedValuePath="TourTypeId"
+                                            DisplayMemberPath="TourTypeName"
+                                            Margin="3"
+                                            Width="150"
+                                            HorizontalAlignment="Left"
+                                            ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.TourTypes}">
+                </ComboBox>
+                <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="150" Text="{Binding Tour.PickupAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
+                <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpStartDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                <DatePicker Grid.Row="3" Grid.Column="1" x:Name="dpEndDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}" />
+                <!--<DataGrid Grid.Row="4" Grid.Column="1" x:Name="dgSubTours" FontSize="12"
+                          ItemsSource="{Binding Tour.SubTours}"
+                          AutoGenerateColumns="False"
+                          HorizontalAlignment="Left"
+                          CellStyle="{StaticResource DataGridBorder}"
+                          Margin="0"
+                          Height="140"
+                          Width="Auto">                
+                    <DataGrid.Columns>
+                        <DataGridTextColumn x:Name="DestinationNameColumn" Width="Auto" IsReadOnly="True" Header="Destination Name" Binding="{Binding DestinationName}"/>
+                        --><!--DataGridCheckBoxColumn x:Name="PrivateColumn" Width="Auto" Header="Private" Binding="{Binding Private}"/--><!--
+                    </DataGrid.Columns>
+                </DataGrid>-->
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="10,0,5,0" Text="Optionals:" />
+                <DataGrid Grid.Row="0" x:Name="dgOptionals" Grid.Column="1" 
+                                               FontSize="12"
+                                               ItemsSource="{Binding Tour.TourOptionals, Mode=TwoWay}"
+                                               AutoGenerateColumns="False" 
+                                               HorizontalAlignment="Left"
+                                               CellStyle="{StaticResource DataGridBorder}"
+                                               Margin="0"
+                                               Height="280"
+                                               Width="Auto">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Viewbox Height="14">
+                                        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn x:Name="optionalDescription" Width="Auto" IsReadOnly="True" Header="Optional" Binding="{Binding Optional.OptionalDescription}"/>
+                        <!--<DataGridTextColumn x:Name="optionalPricePerPerson" Width="Auto" IsReadOnly="True" Header="Price P.P." Binding="{Binding Optional.PricePerPerson}"/>
+                        <DataGridTextColumn x:Name="optionalPriceInclusive" Width="Auto" IsReadOnly="True" Header="Price Inclusive" Binding="{Binding Optional.PriceInclusive}"/>-->
+                        <DataGridTemplateColumn Header="Price P.P.">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Viewbox Height="14">
+                                        <StackPanel Orientation="Horizontal">
+                                            <RadioButton GroupName="{Binding Optional.OptionalId}" IsChecked="{Binding PriceInclusive, Converter={StaticResource boolToOppositeConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <TextBlock Text="{Binding Optional.PricePerPerson}" Width="40"/>
+                                        </StackPanel>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Price Inclusive">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Viewbox Height="14">
+                                        <StackPanel Orientation="Horizontal">
+                                            <RadioButton GroupName="{Binding Optional.OptionalId}" IsChecked="{Binding PriceInclusive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <TextBlock Text="{Binding Optional.PriceInclusive}" Width="40"/>
+                                        </StackPanel>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="10,0,5,10" Text="Hotels:" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="10,0,4,0" Text="Rooms:" />
+                <ComboBox Grid.Row="0" Grid.Column="1" x:Name="cbHotels"
+                                      SelectedItem="{Binding DataContext.SelectedHotel, 
+                                      RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
+                                      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValue="{Binding HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
+                                      ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                                      SelectedValuePath="HotelId"
+                                      DisplayMemberPath="HotelName"
+                                      IsReadOnly="True"
+                                      ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                      AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Hotels}"
+                                      HorizontalAlignment="Left"
+                                      Width="140"
+                                      Margin="0,0,0,10"/>
+                <!--<ComboBox Grid.Row="1" Grid.Column="1" x:Name="cbTourHotels" 
+                                              SelectedItem="{Binding Path=DataContext.SelectedTourHotel, 
+                                              RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
+                                              Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              SelectedValue="{Binding Hotel.HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
+                                              ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                                              SelectedValuePath="Hotel.HotelId"
+                                              DisplayMemberPath="Hotel.HotelName"
+                                              IsReadOnly="True"
+                                              ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                              AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Tour.TourHotels}"
+                                              HorizontalAlignment="Left"
+                                              Width="140"
+                                              Margin="0,0,0,10"/>-->
+                <DataGrid Grid.Row="1" Grid.Column="1" x:Name="dgRoomTypes"
+                                              FontSize="12"
+                                              ItemsSource="{Binding TourHotelRoomTypes, Mode=TwoWay}"
+                                              AutoGenerateColumns="False"
+                                              HorizontalAlignment="Left"
+                                              CellStyle="{StaticResource DataGridBorder}"
+                                              Margin="0,0,10,0"
+                                              Height="245"
+                                              Width="Auto">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="CellEditEnding">
+                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CellEditEndingRoomTypeCommand, 
+                                           RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                           CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="Auto" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
+                        <DataGridTextColumn Width="Auto" Header="Price P.P." Binding="{Binding HotelRoomType.PricePerPerson}" IsReadOnly="True"/>
+                        <DataGridTextColumn Width="Auto" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="Auto" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DataGrid.Columns>
+                </DataGrid>                
+            </Grid>
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
+                <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" />
+                <Button Content="Exit Without Saving" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</core:UserControlViewBase>

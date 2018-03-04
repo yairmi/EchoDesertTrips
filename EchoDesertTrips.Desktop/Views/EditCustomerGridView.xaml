@@ -1,0 +1,100 @@
+﻿<core:UserControlViewBase x:Class="EchoDesertTrips.Desktop.Views.EditCustomerGridView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
+             xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
+             xmlns:control="clr-namespace:Core.Common.UI.Controls;assembly=Core.Common.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="ErrorTemplate">
+            <DockPanel LastChildFill="True">
+                <Border BorderBrush="Red" BorderThickness="1">
+                    <AdornedElementPlaceholder/>
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+        <!--To display tooltip with the error-->
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                        Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Border  Grid.Row="0" 
+             Grid.Column="1" 
+             HorizontalAlignment="Stretch" 
+             CornerRadius="4" 
+             Margin="0,0,10,0" 
+             BorderBrush="SteelBlue" 
+             BorderThickness="3" 
+             Background="BlanchedAlmond">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="First Name:" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Last Name:" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Day Of Birdth:" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="Passport Number:" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Issue Date:" />
+                <TextBlock Grid.Row="5" Grid.Column="0" Margin="3" Text="Expiry Date:" />
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
+                <DatePicker Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="160" SelectedDate="{Binding Customer.DateOfBirdth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.PassportNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
+                <DatePicker Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="160" SelectedDate="{Binding Customer.IssueData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                <DatePicker Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="160" SelectedDate="{Binding Customer.ExpireyDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+             </Grid>
+             <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Nationality:" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Has Visa:" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Phone 1:" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="Phone 2:" />
+                <TextBox   Grid.Row="0" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.Nationality, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
+                <CheckBox Grid.Row="1" Grid.Column="1" Margin="3" Width="20" IsChecked="{Binding Customer.HasVisa, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" />
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.Phone1, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.Phone2, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
+            </Grid>
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
+                <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" />
+                <Button Content="Exit Without Saving" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
+            </StackPanel>
+        </Grid>
+    </Border>        
+</core:UserControlViewBase>

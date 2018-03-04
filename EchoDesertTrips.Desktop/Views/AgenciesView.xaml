@@ -1,0 +1,32 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views" xmlns:Entities="clr-namespace:EchoDesertTrips.Client.Entities;assembly=EchoDesertTrips.Client.Entities" x:Class="EchoDesertTrips.Desktop.Views.AgenciesView"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="agencyWrapperViewSource" d:DesignSource="{d:DesignInstance {x:Type Entities:AgencyWrapper}, CreateList=True}"/>
+        <CollectionViewSource x:Key="agencyWrapperAgentsViewSource" Source="{Binding Agents, Source={StaticResource agencyWrapperViewSource}}"/>
+    </UserControl.Resources>
+    <Grid>
+        <DataGrid x:Name="agencyWrapperDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding}" Margin="0,10,0,177" RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="agencyAddressColumn" Binding="{Binding AgencyAddress}" Header="Agency Address" Width="SizeToHeader"/>
+                <DataGridTextColumn x:Name="agencyNameColumn" Binding="{Binding AgencyName}" Header="Agency Name" Width="SizeToHeader"/>
+                <DataGridTextColumn x:Name="phone1Column" Binding="{Binding Phone1}" Header="Phone 1" Width="SizeToHeader"/>
+                <DataGridTextColumn x:Name="phone2Column" Binding="{Binding Phone2}" Header="Phone 2" Width="SizeToHeader"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid x:Name="agentsDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding Source={StaticResource agencyWrapperAgentsViewSource}}" Margin="0,138,0,19" RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="firstNameColumn" Binding="{Binding FirstName}" Header="First Name" Width="SizeToHeader"/>
+                <DataGridTextColumn x:Name="lastNameColumn" Binding="{Binding LastName}" Header="Last Name" Width="SizeToHeader"/>
+                <DataGridTextColumn x:Name="phone1Column1" Binding="{Binding Phone1}" Header="Phone 1" Width="SizeToHeader"/>
+                <DataGridTextColumn x:Name="phone2Column1" Binding="{Binding Phone2}" Header="Phone 2" Width="SizeToHeader"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</UserControl>
