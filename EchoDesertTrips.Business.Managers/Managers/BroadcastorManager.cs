@@ -59,8 +59,8 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 var inactiveClients = new List<string>();
                 foreach (var client in clients)
                 {
-                    //if (client.Key != eventData.ClientName)
-                    //{
+                    if (client.Key != eventData.ClientName)
+                    {
                         try
                         {
                             client.Value.BroadcastToClient(eventData);
@@ -69,7 +69,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
                         {
                             inactiveClients.Add(client.Key);
                         }
-                    //}
+                    }
                 }
 
                 if (inactiveClients.Count > 0)

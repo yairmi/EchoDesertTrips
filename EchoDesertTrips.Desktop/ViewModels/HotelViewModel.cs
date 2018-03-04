@@ -75,11 +75,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                 {
-                    Hotels.Clear();
+                    //Hotels.Clear();
                     RoomTypes.Clear();
                     InventoryData inventoryData = inventoryClient.GetHotelsData();
-                    foreach (var hotel in inventoryData.Hotels)
-                        Hotels.Add(hotel);
+                    //foreach (var hotel in inventoryData.Hotels)
+                    //    Hotels.Add(hotel);
                     foreach (var roomType in inventoryData.RoomTypes)
                         RoomTypes.Add(roomType);
                 });
@@ -110,20 +110,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
 
             NotifyServer("CurrentHotelViewModel_HotelUpdated", 2);
-
-            //ReservationsView.Refresh();
-            //try
-            //{
-            //    _client.NotifyServer(new EventDataType()
-            //    {
-            //        ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-            //        EventMessage = "Stam"
-            //    });
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.Error("CurrentReservationViewModel_ReservationUpdated: Failed to notify server");
-            //}
             CurrentHotelViewModel = null;
         }
 

@@ -23,7 +23,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _serviceFactory = serviceFactory;
             LoginControlViewModel = new LoginControlViewModel(serviceFactory);
             LogOutCommand = new DelegateCommand<object>(OnLogOutCommand);
-            //CloseWindowCommand = new DelegateCommand<object>(OnCloseWindowCommand);
             LoginControlViewModel.Authenticated += LoginControlViewModel_Authenticated;
             log4net.Config.XmlConfigurator.Configure();
             LoginVisible = true;
@@ -222,6 +221,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 ReservationsViewModel.Hotels = Hotels;
                                 ReservationsViewModel.Optionals = Optionals;
                                 ReservationsViewModel.Agencies = Agencies;
+
+                                AdminViewModel.TourTypes = TourTypes;
+                                AdminViewModel.Hotels = Hotels;
+                                AdminViewModel.Optionals = Optionals;
+                                AdminViewModel.Agencies = Agencies;
+
                             }, null);
                         }
                     }

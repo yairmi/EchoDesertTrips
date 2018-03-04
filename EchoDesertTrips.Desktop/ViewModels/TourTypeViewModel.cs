@@ -26,7 +26,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _messageDialogService = messageDialogService;
             EditTourTypeCommand = new DelegateCommand<TourTypeWrapper>(OnEditTourTypeCommand);
             AddTourTypeCommand = new DelegateCommand<object>(OnAddTourTypeCommand);
-            //TourTypesW = new ObservableCollection<TourTypeWrapper>();
         }
 
         private void OnAddTourTypeCommand(object obj)
@@ -58,123 +57,25 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-        //public DelegateCommand<TourType> DeleteTourTypeCommand { get; set; }
-
-        //private void OnDeleteTourTypeCommand(TourType obj)
-        //{
-        //    WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-        //    {
-        //        inventoryClient.DeleteTourType(obj);
-        //        TourTypes.Remove(obj);
-        //    });
-        //}
-
-        //public DelegateCommand<TourType> SaveTripTypeCommand { get; set; }
-
-        //private TourType LastUpdatedTourType;
-
-        //private void OnSaveCommand(TourType tourType)
-        //{
-        //    LastUpdatedTourType = tourType;
-        //    ValidateModel();
-        //    if (tourType.IsValid)
-        //    {
-        //        WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-        //        {
-        //            bool bIsNew = tourType.TourTypeId == 0;
-        //            var savedTourType = inventoryClient.UpdateTourType(tourType);
-        //            if (bIsNew)
-        //                TourTypes[TourTypes.Count - 1].TourTypeId = savedTourType.TourTypeId;
-        //        });
-        //    }
-        //}
-
-        //protected override void AddModels(List<ObjectBase> models)
-        //{
-        //    models.Add(LastUpdatedTourType);
-        //}
-
-        //public DelegateCommand<TourType> RowEditEndingCommand { get; set; }
-
-        //private void OnRowEditEndingCommand(TourType tourType)
-        //{
-        //    if (tourType.IsDirty)
-        //        OnSaveCommand(tourType);
-        //}
 
         public override string ViewTitle => "Tour-Types";
 
-        //private ObservableCollection<TourTypeWrapper> _tourTypesW;
-
-        //public ObservableCollection<TourTypeWrapper> TourTypesW
+        //protected override void OnViewLoaded()
         //{
-        //    get
+        //    try
         //    {
-        //        return _tourTypesW;
-        //    }
-
-        //    set
-        //    {
-        //        _tourTypesW = value;
-        //        OnPropertyChanged(() => TourTypesW, false);
-        //    }
-        //}
-
-        //private ObservableCollection<TourDestination> _tourDestinations;
-
-        //public ObservableCollection<TourDestination> TourDestinations
-        //{
-        //    get
-        //    {
-        //        return _tourDestinations;
-        //    }
-
-        //    set
-        //    {
-        //        _tourDestinations = value;
-        //        OnPropertyChanged(() => TourDestinations, false);
-        //    }
-        //}
-
-        protected override void OnViewLoaded()
-        {
-            try
-            {
-                WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-                {
-                    TourTypes.Clear();
-                    InventoryData inventoryData = inventoryClient.GetInventoryData();
-                    foreach (var tourType in inventoryData.TourTypes)
-                        TourTypes.Add(AutoMapperUtil.Map<TourType, TourTypeWrapper>(tourType));
-                });
-            }
-            catch (Exception ex)
-            {
-                log.Error("Exception load TourTypes/TourDestinations: " + ex.Message);
-            }
-        }
-
-        //private void CurrentTourTypeViewModel_TourTypeUpdated(object sender, TourTypeEventArgs e)
-        //{
-        //    var mappedTourType = AutoMapperUtil.Map<TourTypeWrapper, TourTypeWrapper>(e.TourType);
-        //    if (!e.IsNew)
-        //    {
-        //        //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
-        //        //Is a temporary object and it is not part of the Grid collection trips.
-        //        var tourType = TourTypesW.FirstOrDefault(item => item.TourTypeId == e.TourType.TourTypeId);
-        //        if (tourType != null)
+        //        WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
         //        {
-        //            var index = TourTypesW.IndexOf(tourType);
-        //            TourTypesW[index] = mappedTourType;
-        //        }
+        //            TourTypes.Clear();
+        //            InventoryData inventoryData = inventoryClient.GetInventoryData();
+        //            foreach (var tourType in inventoryData.TourTypes)
+        //                TourTypes.Add(AutoMapperUtil.Map<TourType, TourTypeWrapper>(tourType));
+        //        });
         //    }
-        //    else
+        //    catch (Exception ex)
         //    {
-        //        TourTypesW.Add(e.TourType);
+        //        log.Error("Exception load TourTypes/TourDestinations: " + ex.Message);
         //    }
-
-        //    NotifyServer("CurrentTourTypeViewModel_TourTypeUpdated");
-        //    CurrentTourTypeViewModel = null;
         //}
 
         private void CurrentTourTypeViewModel_TourTypeUpdated(object sender, TourTypeEventArgs e)
@@ -213,28 +114,4 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTourTypeViewModel.TourTypeCancelled += CurrentTourTypeViewModel_TourTypeCancelled;
         }
     }
-
-/*    public class TourTypeValidationRule : ValidationRule
-    {
-        public override ValidationResult Validate(object value,
-            System.Globalization.CultureInfo cultureInfo)
-        {
-            TourType tourType = (value as BindingGroup).Items[0] as TourType;
-            if (tourType.TourTypeName == string.Empty)
-            {
-                return new ValidationResult(false,
-                    "Tour Type name should not be empty");
-            }
-            else if (tourType.TourDestination.TourDestinationId == 0)
-            {
-                return new ValidationResult(false,
-                    "Tour Destination should not be empty");
-            }
-            else
-            {
-                var validationResult = ValidationResult.ValidResult;
-                return validationResult;
-            }
-        }
-    }*/
 }

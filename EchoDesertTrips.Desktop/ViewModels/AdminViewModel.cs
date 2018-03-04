@@ -55,6 +55,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             OptionalsViewModel.Operator = Operator;
             AgentsViewModel.Operator = Operator;
 
+            TourTypeViewModel.TourTypes = TourTypes;
+            HotelViewModel.Hotels = Hotels;
+            OptionalsViewModel.Agencies = Agencies;
+            AgentsViewModel.Optionals = Optionals;
+
         }
     }
 }

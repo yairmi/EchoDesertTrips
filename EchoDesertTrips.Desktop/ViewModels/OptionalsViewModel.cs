@@ -75,24 +75,23 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public override string ViewTitle => "Optionals";
 
-        protected override void OnViewLoaded()
-        {
-            try
-            {
-                WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-                {
-                    Optionals.Clear();
-                    Optional[] optionals = inventoryClient.GetAllOptionals();
-                    foreach (var optional in optionals)
-                        Optionals.Add(optional);
-                    //Optionals = new ObservableCollection<Optional>(optionals);
-                });
-            }
-            catch (Exception ex)
-            {
-                log.Error("Exception load optionals: " + ex.Message);
-            }
-        }
+        //protected override void OnViewLoaded()
+        //{
+        //    try
+        //    {
+        //        WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+        //        {
+        //            Optionals.Clear();
+        //            Optional[] optionals = inventoryClient.GetAllOptionals();
+        //            foreach (var optional in optionals)
+        //                Optionals.Add(optional);
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        log.Error("Exception load optionals: " + ex.Message);
+        //    }
+        //}
     }
 
     public class OptionalValidationRule : ValidationRule

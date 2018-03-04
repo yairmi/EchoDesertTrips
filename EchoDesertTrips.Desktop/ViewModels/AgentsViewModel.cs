@@ -72,76 +72,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnExpandedCommand(object value)
         {
-            //if (!(value is ReadOnlyObservableCollection<Object>)) return;
-            //var items = (ReadOnlyObservableCollection<Object>)value;
-            //Agents.Clear();
-            //foreach (Agency agency in items)
-            //{
-            //    foreach (var agent in agency.Agents)
-            //    {
-            //        Agents.Add(agent);
-            //    }
-            //}
         }
-
-        //public DelegateCommand<Agency> RowEditEndingAgencyCommand { get; set; }
-       // public DelegateCommand<Agency> RowEditEndingAgentCommand { get; set; }
-
-        //private void OnRowEditEndingCommand(Agency agency)
-        //{
-        //    if (agency.IsDirty)
-        //        OnSaveCommand(agency);
-        //}
-
-        //private void OnSaveCommand(Agency agency)
-        //{
-        //    WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-        //    {
-        //        if (agency.AgencyId == 0)
-        //        {
-        //            agency = inventoryClient.UpdateAgency(agency);
-        //        }
-        //        else
-        //        {
-        //            var savedAgency = inventoryClient.UpdateAgency(agency);
-        //        }
-        //    });
-        //}
-
-        //public ICollectionView ItemsView { get; set; }
 
         public override string ViewTitle => "Agencies & Agents";
 
-        //private ObservableCollection<Agency> _agencies;
-
-        //public ObservableCollection<Agency> Agencies
+        //protected override void OnViewLoaded()
         //{
-        //    get
+        //    WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
         //    {
-        //        return _agencies;
-        //    }
-
-        //    set
-        //    {
-        //        _agencies = value;
-        //        OnPropertyChanged(() => Agencies, false);
-        //    }
+        //        Agencies.Clear();
+        //        var agencies = inventoryClient.GetAllAgencies();
+        //        foreach (var agency in agencies)
+        //            Agencies.Add(agency);
+        //    });
         //}
-
-        protected override void OnViewLoaded()
-        {
-            WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-            {
-                Agencies.Clear();
-                var agencies = inventoryClient.GetAllAgencies();
-                foreach (var agency in agencies)
-                    Agencies.Add(agency);
-                //Agencies = new ObservableCollection<Agency>(agencies);
-            });
-
-            //ItemsView = CollectionViewSource.GetDefaultView(Agencies);
-            //ItemsView.GroupDescriptions.Add(new PropertyGroupDescription("AgencyName"));
-        }
 
         private void CurrentAgentsViewModel_AgencyUpdated(object sender, AgencyEventArgs e)
         {
@@ -163,20 +107,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
 
             NotifyServer("CurrentAgentsViewModel_AgencyUpdated", 2);
-
-            //ReservationsView.Refresh();
-            //try
-            //{
-            //    _client.NotifyServer(new EventDataType()
-            //    {
-            //        ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-            //        EventMessage = "Stam"
-            //    });
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.Error("CurrentReservationViewModel_ReservationUpdated: Failed to notify server");
-            //}
             CurrentAgentsViewModel = null;
         }
 
@@ -208,23 +138,4 @@ namespace EchoDesertTrips.Desktop.ViewModels
             throw new NotImplementedException();
         }
     }
-
-    /*public class AgencyValidationRule : ValidationRule
-    {
-        public override ValidationResult Validate(object value,
-            System.Globalization.CultureInfo cultureInfo)
-        {
-            Agency agency = (value as BindingGroup).Items[0] as Agency;
-            if (agency.AgencyName == string.Empty)
-            {
-                return new ValidationResult(false,
-                    "Agency name should not be empty");
-            }
-            else
-            {
-                var validationResult = ValidationResult.ValidResult;
-                return validationResult;
-            }
-        }
-    }*/
 }
