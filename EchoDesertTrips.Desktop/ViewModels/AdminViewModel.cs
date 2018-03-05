@@ -57,8 +57,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             TourTypeViewModel.TourTypes = TourTypes;
             HotelViewModel.Hotels = Hotels;
-            OptionalsViewModel.Agencies = Agencies;
-            AgentsViewModel.Optionals = Optionals;
+            OptionalsViewModel.Optionals = Optionals;
+            AgentsViewModel.Agencies = Agencies;
 
         }
     }
