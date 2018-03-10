@@ -106,6 +106,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     "Optional Description should not be empty");
             }
             else
+                if (optional.PricePerPerson < 0)
+            {
+                return new ValidationResult(false,
+                    "Price Per Person must be equal or greater then 0");
+            }
+            else
+                if (optional.PriceInclusive < 0)
+            {
+                return new ValidationResult(false,
+                    "Price Inclusive must be equal or greater then 0");
+            }
+            else
             {
                 var validationResult = ValidationResult.ValidResult;
                 return validationResult;

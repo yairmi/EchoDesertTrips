@@ -17,6 +17,7 @@ namespace EchoDesertTrips.Data.Contracts.Repository_Interfaces
         void RemoveReservation(int reservationId);
         ReservationData UpdateReservation(Reservation reservation);
         Reservation AddReservation(Reservation reservation);
+        IEnumerable<Reservation> GetReservationsByGroupId(int GroupId);
         //Reservation EditReservation(int ReservationId);
     }
 }

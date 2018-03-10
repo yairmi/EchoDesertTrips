@@ -261,6 +261,27 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
+        public Reservation[] GetReservationsByGroupId(int GroupId)
+        {
+            return ExecuteFaultHandledOperation(() =>
+            {
+                IReservationRepository reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
+
+                var reservations = reservationRepository.GetReservationsByGroupId(GroupId);
+
+                if (reservations == null)
+                {
+                    log.Error("No reservation found for GroupId: " + GroupId);
+                    NotFoundException ex = new NotFoundException(string.Format("No reservation found for GroupId '{0}'", GroupId));
+
+                    throw new FaultException<NotFoundException>(ex, ex.Message);
+                }
+
+                return (reservations.ToArray());
+            });
+        }
+
+
         //public ReservationData EditReservation(int ReservationId)
         //{
         //    return ExecuteFaultHandledOperation(() =>

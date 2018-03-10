@@ -72,6 +72,29 @@ namespace EchoDesertTrips.Data.Data_Repositories
             return reservation;
         }
 
+        public IEnumerable<Reservation> GetReservationsByGroupId(int GroupId)
+        {
+            using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
+            {
+                var reservations = (from e in entityContext.ReservationSet where e.GroupID == GroupId select e)
+                .Include(a => a.Agency.Agents)
+                .Include(a => a.Agent)
+                .Include(o => o.Customers)
+                .Include(o => o.Operator)
+                .Include(o => o.Group)
+                .Include(o => o.Tours.Select(t => t.TourType.TourTypeDescriptions))
+                .Include(o => o.Tours.Select(t => t.SubTours))
+                .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
+                .Include(o => o.Tours.Select(th => th.TourHotels
+                .Select(throomTypes => throomTypes.TourHotelRoomTypes
+                .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
+                var hotels = (from e in entityContext.HotelSet select e).ToList();
+                foreach (var reservation in reservations)
+                    updateHotel(entityContext, reservation, hotels);
+                return reservations.ToList().ToArray();
+            }
+        }
+
         public IEnumerable<Reservation> GetReservationHistoryByCustomer(int CustomerId)
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())

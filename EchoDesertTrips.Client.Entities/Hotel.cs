@@ -28,7 +28,20 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public string HotelAddress { get; set; }
+        private string _hotelAddress;
+
+        public string HotelAddress
+        {
+            get
+            {
+                return _hotelAddress;
+            }
+            set
+            {
+                _hotelAddress = value;
+                OnPropertyChanged(() => HotelAddress);
+            }
+        }
 
         private List<HotelRoomType> _hotelRoomTypes;
 

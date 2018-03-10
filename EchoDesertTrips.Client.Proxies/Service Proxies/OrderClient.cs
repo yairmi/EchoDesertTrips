@@ -67,5 +67,10 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
         {
             return Channel.GetReservationsForDayRangeAsynchronous(DayFrom, DayTo);
         }
+
+        public Reservation[] GetReservationsByGroupId(int GroupId)
+        {
+            return Channel.GetReservationsByGroupId(GroupId);
+        }
     }
 }

@@ -8,6 +8,7 @@
              xmlns:control="clr-namespace:Core.Common.UI.Controls;assembly=Core.Common.UI"
              xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="900">
     <UserControl.Resources>
@@ -82,19 +83,6 @@
                 <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="150" Text="{Binding Tour.PickupAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
                 <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpStartDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
                 <DatePicker Grid.Row="3" Grid.Column="1" x:Name="dpEndDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}" />
-                <!--<DataGrid Grid.Row="4" Grid.Column="1" x:Name="dgSubTours" FontSize="12"
-                          ItemsSource="{Binding Tour.SubTours}"
-                          AutoGenerateColumns="False"
-                          HorizontalAlignment="Left"
-                          CellStyle="{StaticResource DataGridBorder}"
-                          Margin="0"
-                          Height="140"
-                          Width="Auto">                
-                    <DataGrid.Columns>
-                        <DataGridTextColumn x:Name="DestinationNameColumn" Width="Auto" IsReadOnly="True" Header="Destination Name" Binding="{Binding DestinationName}"/>
-                        --><!--DataGridCheckBoxColumn x:Name="PrivateColumn" Width="Auto" Header="Private" Binding="{Binding Private}"/--><!--
-                    </DataGrid.Columns>
-                </DataGrid>-->
             </Grid>
             <Grid Grid.Row="1" Grid.Column="1">
                 <Grid.RowDefinitions>
@@ -195,6 +183,8 @@
                                               Width="140"
                                               Margin="0,0,0,10"/>-->
                 <DataGrid Grid.Row="1" Grid.Column="1" x:Name="dgRoomTypes"
+                                              HeadersVisibility="All"
+                                              RowHeaderWidth="40"
                                               FontSize="12"
                                               ItemsSource="{Binding TourHotelRoomTypes, Mode=TwoWay}"
                                               AutoGenerateColumns="False"
@@ -203,6 +193,18 @@
                                               Margin="0,0,10,0"
                                               Height="245"
                                               Width="Auto">
+                    <DataGrid.Resources>
+                        <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                            <Setter Property="Padding" Value="-2"/>
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="True">
+                                    <Setter Property="Background" Value="Red"/>
+                                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self},
+                                     Path=(Validation.Errors)[0].ErrorContent}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Resources>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="CellEditEnding">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.CellEditEndingRoomTypeCommand, 
@@ -216,6 +218,25 @@
                         <DataGridTextColumn Width="Auto" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <DataGridTextColumn Width="Auto" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </DataGrid.Columns>
+                    <DataGrid.RowValidationRules>
+                        <viewModels:TourHotelRoomsValidationRule ValidationStep="UpdatedValue"/>
+                    </DataGrid.RowValidationRules>
+                    <DataGrid.RowValidationErrorTemplate>
+                        <ControlTemplate>
+                            <Grid Margin="0,-2,10,-2" 
+                            ToolTip="{Binding RelativeSource={RelativeSource
+                            FindAncestor, AncestorType={x:Type DataGridRow}},
+                            Path=(Validation.Errors)[0].ErrorContent}">
+                                <Ellipse StrokeThickness="0" Fill="Red" 
+                                Width="22" 
+                                Height="22"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="!" FontSize="22" 
+                                FontWeight="Bold" Foreground="White" 
+                                HorizontalAlignment="Center" VerticalAlignment="Center"/>   
+                            </Grid>
+                        </ControlTemplate>
+                    </DataGrid.RowValidationErrorTemplate>
                 </DataGrid>                
             </Grid>
             <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">

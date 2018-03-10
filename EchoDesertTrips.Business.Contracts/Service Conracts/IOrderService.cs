@@ -57,5 +57,9 @@ namespace EchoDesertTrips.Business.Contracts
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo);
+
+        [OperationContract]
+        [FaultContract(typeof(NotFoundException))]
+        Reservation[] GetReservationsByGroupId(int GroupId);
     }
 }

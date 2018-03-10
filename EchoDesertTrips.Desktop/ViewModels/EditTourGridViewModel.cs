@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -177,7 +179,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //    }
         //}
 
-        //For GUI - After selecting Hotel from Drop Down
+        //For GUI (RoomTypes DataGrid DataSource) - After selecting Hotel from Drop Down
         private void UpdateTourHotelRoomTypes(Hotel hotel)
         {
             _tourHotelRoomTypes.Clear();
@@ -308,5 +310,38 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public event EventHandler<TourEventArgs> TourUpdated;
         public event EventHandler<TourEventArgs> TourCancelled;
+    }
+
+    public class TourHotelRoomsValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value,
+            System.Globalization.CultureInfo cultureInfo)
+        {
+            TourHotelRoomType tourHotelRoomType = (value as BindingGroup).Items[0] as TourHotelRoomType;
+            if (tourHotelRoomType.Capacity < 0)
+            {
+                return new ValidationResult(false,
+                    "Room capacity must be greater then 0");
+            }
+            else
+                if (tourHotelRoomType.Persons < 0)
+            {
+                return new ValidationResult(false,
+                    "Number of pax must be greater then 0");
+            }
+            var validationResult = ValidationResult.ValidResult;
+            return validationResult;
+            //RoomType roomType = (value as BindingGroup).Items[0] as RoomType;
+            //if (roomType.RoomTypeName == string.Empty)
+            //{
+            //    return new ValidationResult(false,
+            //        "Room Type name should not be empty");
+            //}
+            //else
+            //{
+            //    var validationResult = ValidationResult.ValidResult;
+            //    return validationResult;
+            //}
+        }
     }
 }

@@ -143,25 +143,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        //private Hotel _selectedHotel;
-
-        //public Hotel SelectedHotel
-        //{
-        //    get
-        //    {
-        //        return _selectedHotel;
-        //    }
-        //    set
-        //    {
-        //        if (value != _selectedHotel)
-        //        {
-        //            _selectedHotel = value;
-        //            UpdateTourHotelRoomTypes();
-        //            OnPropertyChanged(() => SelectedHotel);
-        //        }
-        //    }
-        //}
-
         private TourHotel _selectedTourHotel;
 
         public TourHotel SelectedTourHotel
@@ -180,21 +161,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-
-        //private ObservableCollection<Hotel> _currentTourHotels;
-
-        //public ObservableCollection<Hotel> CurrentTourHotels
-        //{
-        //    get
-        //    {
-        //        return _currentTourHotels;
-        //    }
-        //    set
-        //    {
-        //        _currentTourHotels = value;
-        //        OnPropertyChanged(() => CurrentTourHotels);
-        //    }
-        //}
 
         private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
 
@@ -261,20 +227,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Tours.Add(tourWrapper);
             }
-            Tours = new ObservableCollection<TourWrapper>(Tours.OrderBy(tour => tour.StartDate));
-            //ReservationsView.Refresh();
-            //try
-            //{
-            //    _client.NotifyServer(new EventDataType()
-            //    {
-            //        ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-            //        EventMessage = "Stam"
-            //    });
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.Error("CurrentReservationViewModel_ReservationUpdated: Failed to notify server");
-            //}
+            Tours.OrderBy(tour => tour.StartDate);
             CurrentTourViewModel = null;
         }
 
