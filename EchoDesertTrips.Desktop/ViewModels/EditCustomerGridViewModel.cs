@@ -17,10 +17,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
+        private readonly ReservationWrapper _currentReservation;
 
         public EditCustomerGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService,
-            CustomerWrapper customer)
+            CustomerWrapper customer,
+            ReservationWrapper currentReservation)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
@@ -39,46 +41,82 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             CleanAll();
 
-            SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
+            _currentReservation = currentReservation;
+            TotalCustomers = 0;
+            CustomersLeft = TotalCustomers - _currentReservation.Customers.Count();
+
+            SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
+            ClearCommand = new DelegateCommand<object>(OnClearCommand, OnCommandCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
         }
 
         public DelegateCommand<object> SaveCommand { get; private set; }
+        public DelegateCommand<object> ClearCommand { get; private set; }
         public DelegateCommand<object> ExitWithoutSavingCommand { get; private set; }
 
-        //After pressing the 'Save' button
-        private bool OnSaveCommandCanExecute(object obj)
+        private bool OnCommandCanExecute(object obj)
         {
-            return IsHotelDirty();
+            return IsCustomerDirty();
         }
 
+        //After pressing the 'Save' button
         private void OnSaveCommand(object obj)
         {
-            if (IsHotelDirty())
+            if (IsCustomerDirty())
             {
                 ValidateModel();
             }
             if (Customer.IsValid)
             {
-                //WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-                //{
-                //    bool bIsNew = Hotel.HotelId == 0;
-                //    Hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
-                //    {
-                //        hotelRoomType.HotelId = Hotel.HotelId;
-                //    });
-                //    var savedHotel = inventoryClient.UpdateHotel(Hotel);
-                //    HotelUpdated?.Invoke(this, new HotelEventArgs(savedHotel, bIsNew));
-                //});
                 bool bIsNew = Customer.CustomerId == 0;
+                TotalCustomers = 0;
                 CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, bIsNew));
+                CustomersLeft = _totalCustomers - _currentReservation.Customers.Count();
+                Customer = null;
+                Customer = new CustomerWrapper();
+                CleanAll();
             }
         }
 
+        private int _totalCustomers;
+
+        public int TotalCustomers
+        {
+            get
+            {
+                return _totalCustomers;
+            }
+            private set
+            {
+                _totalCustomers = value;
+                _currentReservation.Tours.ToList().ForEach((tour) =>
+                {
+                    tour.TourHotels.ToList().ForEach((tourHotel) =>
+                    {
+                        tourHotel.TourHotelRoomTypes.ToList().ForEach((hotelRoomType) =>
+                        {
+                            _totalCustomers += (hotelRoomType.Persons);
+                        });
+                    });
+                });
+            }
+        }
+
+        private void OnClearCommand(object obj)
+        {
+            if (IsCustomerDirty())
+            {
+                var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
+                if (Result == MessageDialogResult.CANCEL)
+                    return;
+            }
+            Customer = null;
+            Customer = new CustomerWrapper();
+        }
 
         private void OnExitWithoutSavingCommand(object obj)
         {
-            if (IsHotelDirty())
+            if (IsCustomerDirty())
             {
                 var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
                 if (Result == MessageDialogResult.CANCEL)
@@ -87,7 +125,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CustomerCancelled?.Invoke(this, new CustomerEventArgs(null, true));
         }
 
-        private bool IsHotelDirty()
+        private bool IsCustomerDirty()
         {
             return Customer.IsAnythingDirty();
         }
@@ -109,6 +147,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 _customer = value;
                 OnPropertyChanged(() => Customer, true);
+            }
+        }
+
+        private int _customersLeft;
+
+        public int CustomersLeft
+        {
+            get
+            {
+                return _customersLeft;
+            }
+            set
+            {
+                _customersLeft = value;
+                OnPropertyChanged(() => CustomersLeft);
             }
         }
 

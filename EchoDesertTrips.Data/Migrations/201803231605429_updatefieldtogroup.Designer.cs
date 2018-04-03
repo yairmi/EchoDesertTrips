@@ -7,13 +7,13 @@ namespace EchoDesertTrips.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class init2 : IMigrationMetadata
+    public sealed partial class updatefieldtogroup : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(init2));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(updatefieldtogroup));
         
         string IMigrationMetadata.Id
         {
-            get { return "201802021333166_init2"; }
+            get { return "201803231605429_updatefieldtogroup"; }
         }
         
         string IMigrationMetadata.Source

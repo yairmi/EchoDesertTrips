@@ -57,6 +57,15 @@ namespace EchoDesertTrips.Data.Migrations
                 .Index(t => t.Reservation_ReservationId);
             
             CreateTable(
+                "dbo.Group",
+                c => new
+                    {
+                        GroupId = c.Int(nullable: false, identity: true),
+                        ExternalId = c.String(),
+                    })
+                .PrimaryKey(t => t.GroupId);
+            
+            CreateTable(
                 "dbo.HotelRoomType",
                 c => new
                     {
@@ -128,6 +137,7 @@ namespace EchoDesertTrips.Data.Migrations
                         PickUpTime = c.DateTime(nullable: false),
                         Comments = c.String(),
                         Messages = c.String(),
+                        GroupID = c.Int(nullable: false),
                         CreationTime = c.DateTime(nullable: false),
                         UpdateTime = c.DateTime(nullable: false),
                         RowVersion = c.Binary(nullable: false, fixedLength: true, timestamp: true, storeType: "rowversion"),
@@ -135,10 +145,12 @@ namespace EchoDesertTrips.Data.Migrations
                 .PrimaryKey(t => t.ReservationId)
                 .ForeignKey("dbo.Agency", t => t.AgencyId)
                 .ForeignKey("dbo.Agent", t => t.AgentId)
+                .ForeignKey("dbo.Group", t => t.GroupID, cascadeDelete: true)
                 .ForeignKey("dbo.Operator", t => t.OperatorId)
                 .Index(t => t.OperatorId)
                 .Index(t => t.AgencyId)
-                .Index(t => t.AgentId);
+                .Index(t => t.AgentId)
+                .Index(t => t.GroupID);
             
             CreateTable(
                 "dbo.Tour",
@@ -158,19 +170,46 @@ namespace EchoDesertTrips.Data.Migrations
                 .Index(t => t.Reservation_ReservationId);
             
             CreateTable(
+                "dbo.SubTour",
+                c => new
+                    {
+                        SubTourId = c.Int(nullable: false, identity: true),
+                        DestinationName = c.String(),
+                        Tour_TourId = c.Int(),
+                    })
+                .PrimaryKey(t => t.SubTourId)
+                .ForeignKey("dbo.Tour", t => t.Tour_TourId)
+                .Index(t => t.Tour_TourId);
+            
+            CreateTable(
+                "dbo.TourHotel",
+                c => new
+                    {
+                        TourHotelId = c.Int(nullable: false, identity: true),
+                        HotelId = c.Int(),
+                        Tour_TourId = c.Int(),
+                    })
+                .PrimaryKey(t => t.TourHotelId)
+                .ForeignKey("dbo.Hotel", t => t.HotelId)
+                .ForeignKey("dbo.Tour", t => t.Tour_TourId)
+                .Index(t => t.HotelId)
+                .Index(t => t.Tour_TourId);
+            
+            CreateTable(
                 "dbo.TourHotelRoomType",
                 c => new
                     {
+                        TourHotelRoomTypeId = c.Int(nullable: false, identity: true),
                         HotelRoomTypeId = c.Int(nullable: false),
-                        TourId = c.Int(nullable: false),
                         Capacity = c.Int(nullable: false),
                         Persons = c.Int(nullable: false),
+                        TourHotel_TourHotelId = c.Int(),
                     })
-                .PrimaryKey(t => new { t.HotelRoomTypeId, t.TourId })
+                .PrimaryKey(t => t.TourHotelRoomTypeId)
                 .ForeignKey("dbo.HotelRoomType", t => t.HotelRoomTypeId, cascadeDelete: true)
-                .ForeignKey("dbo.Tour", t => t.TourId, cascadeDelete: true)
+                .ForeignKey("dbo.TourHotel", t => t.TourHotel_TourHotelId)
                 .Index(t => t.HotelRoomTypeId)
-                .Index(t => t.TourId);
+                .Index(t => t.TourHotel_TourHotelId);
             
             CreateTable(
                 "dbo.TourOptional",
@@ -192,38 +231,27 @@ namespace EchoDesertTrips.Data.Migrations
                     {
                         TourTypeId = c.Int(nullable: false, identity: true),
                         TourTypeName = c.String(),
-                        PricePerChild = c.Single(nullable: false),
-                        PricePerAdult = c.Single(nullable: false),
+                        AdultPrices = c.String(),
+                        ChildPrices = c.String(),
+                        Destinations = c.String(),
                         Private = c.Boolean(nullable: false),
-                        TourDescription = c.String(),
                         Days = c.Byte(nullable: false),
+                        IncramentExternalId = c.Boolean(nullable: false),
                         Visible = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.TourTypeId);
             
             CreateTable(
-                "dbo.TourTypeDestination",
+                "dbo.TourTypeDescription",
                 c => new
                     {
-                        TourTypeId = c.Int(nullable: false),
-                        TourDestinationId = c.Int(nullable: false),
-                        TourTypeDestinationId = c.Int(nullable: false),
+                        TourTypeDescriptionId = c.Int(nullable: false, identity: true),
+                        Description = c.String(),
+                        TourType_TourTypeId = c.Int(),
                     })
-                .PrimaryKey(t => new { t.TourTypeId, t.TourDestinationId })
-                .ForeignKey("dbo.TourDestination", t => t.TourDestinationId, cascadeDelete: true)
-                .ForeignKey("dbo.TourType", t => t.TourTypeId, cascadeDelete: true)
-                .Index(t => t.TourTypeId)
-                .Index(t => t.TourDestinationId);
-            
-            CreateTable(
-                "dbo.TourDestination",
-                c => new
-                    {
-                        TourDestinationId = c.Int(nullable: false, identity: true),
-                        TourDestinationName = c.String(),
-                        Visible = c.Boolean(nullable: false),
-                    })
-                .PrimaryKey(t => t.TourDestinationId);
+                .PrimaryKey(t => t.TourTypeDescriptionId)
+                .ForeignKey("dbo.TourType", t => t.TourType_TourTypeId)
+                .Index(t => t.TourType_TourTypeId);
             
         }
         
@@ -231,27 +259,33 @@ namespace EchoDesertTrips.Data.Migrations
         {
             DropForeignKey("dbo.Tour", "Reservation_ReservationId", "dbo.Reservation");
             DropForeignKey("dbo.Tour", "TourTypeId", "dbo.TourType");
-            DropForeignKey("dbo.TourTypeDestination", "TourTypeId", "dbo.TourType");
-            DropForeignKey("dbo.TourTypeDestination", "TourDestinationId", "dbo.TourDestination");
+            DropForeignKey("dbo.TourTypeDescription", "TourType_TourTypeId", "dbo.TourType");
             DropForeignKey("dbo.TourOptional", "TourId", "dbo.Tour");
             DropForeignKey("dbo.TourOptional", "OptionalId", "dbo.Optional");
-            DropForeignKey("dbo.TourHotelRoomType", "TourId", "dbo.Tour");
+            DropForeignKey("dbo.TourHotel", "Tour_TourId", "dbo.Tour");
+            DropForeignKey("dbo.TourHotelRoomType", "TourHotel_TourHotelId", "dbo.TourHotel");
             DropForeignKey("dbo.TourHotelRoomType", "HotelRoomTypeId", "dbo.HotelRoomType");
+            DropForeignKey("dbo.TourHotel", "HotelId", "dbo.Hotel");
+            DropForeignKey("dbo.SubTour", "Tour_TourId", "dbo.Tour");
             DropForeignKey("dbo.Reservation", "OperatorId", "dbo.Operator");
+            DropForeignKey("dbo.Reservation", "GroupID", "dbo.Group");
             DropForeignKey("dbo.Customer", "Reservation_ReservationId", "dbo.Reservation");
             DropForeignKey("dbo.Reservation", "AgentId", "dbo.Agent");
             DropForeignKey("dbo.Reservation", "AgencyId", "dbo.Agency");
             DropForeignKey("dbo.HotelRoomType", "HotelId", "dbo.Hotel");
             DropForeignKey("dbo.HotelRoomType", "RoomTypeId", "dbo.RoomType");
             DropForeignKey("dbo.Agent", "Agency_AgencyId", "dbo.Agency");
-            DropIndex("dbo.TourTypeDestination", new[] { "TourDestinationId" });
-            DropIndex("dbo.TourTypeDestination", new[] { "TourTypeId" });
+            DropIndex("dbo.TourTypeDescription", new[] { "TourType_TourTypeId" });
             DropIndex("dbo.TourOptional", new[] { "OptionalId" });
             DropIndex("dbo.TourOptional", new[] { "TourId" });
-            DropIndex("dbo.TourHotelRoomType", new[] { "TourId" });
+            DropIndex("dbo.TourHotelRoomType", new[] { "TourHotel_TourHotelId" });
             DropIndex("dbo.TourHotelRoomType", new[] { "HotelRoomTypeId" });
+            DropIndex("dbo.TourHotel", new[] { "Tour_TourId" });
+            DropIndex("dbo.TourHotel", new[] { "HotelId" });
+            DropIndex("dbo.SubTour", new[] { "Tour_TourId" });
             DropIndex("dbo.Tour", new[] { "Reservation_ReservationId" });
             DropIndex("dbo.Tour", new[] { "TourTypeId" });
+            DropIndex("dbo.Reservation", new[] { "GroupID" });
             DropIndex("dbo.Reservation", new[] { "AgentId" });
             DropIndex("dbo.Reservation", new[] { "AgencyId" });
             DropIndex("dbo.Reservation", new[] { "OperatorId" });
@@ -259,11 +293,12 @@ namespace EchoDesertTrips.Data.Migrations
             DropIndex("dbo.HotelRoomType", new[] { "HotelId" });
             DropIndex("dbo.Customer", new[] { "Reservation_ReservationId" });
             DropIndex("dbo.Agent", new[] { "Agency_AgencyId" });
-            DropTable("dbo.TourDestination");
-            DropTable("dbo.TourTypeDestination");
+            DropTable("dbo.TourTypeDescription");
             DropTable("dbo.TourType");
             DropTable("dbo.TourOptional");
             DropTable("dbo.TourHotelRoomType");
+            DropTable("dbo.TourHotel");
+            DropTable("dbo.SubTour");
             DropTable("dbo.Tour");
             DropTable("dbo.Reservation");
             DropTable("dbo.Optional");
@@ -271,6 +306,7 @@ namespace EchoDesertTrips.Data.Migrations
             DropTable("dbo.Hotel");
             DropTable("dbo.RoomType");
             DropTable("dbo.HotelRoomType");
+            DropTable("dbo.Group");
             DropTable("dbo.Customer");
             DropTable("dbo.Agent");
             DropTable("dbo.Agency");

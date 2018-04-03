@@ -99,57 +99,13 @@
     <Compile Include="DataRepositoryBase.cs" />
     <Compile Include="DataRepositoryFactory.cs" />
     <Compile Include="EchoDesertTripsContext.cs" />
-    <Compile Include="Migrations\201801311019591_init.cs" />
-    <Compile Include="Migrations\201801311019591_init.Designer.cs">
-      <DependentUpon>201801311019591_init.cs</DependentUpon>
+    <Compile Include="Migrations\201803101926074_init.cs" />
+    <Compile Include="Migrations\201803101926074_init.Designer.cs">
+      <DependentUpon>201803101926074_init.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801311025359_init1.cs" />
-    <Compile Include="Migrations\201801311025359_init1.Designer.cs">
-      <DependentUpon>201801311025359_init1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201801311355269_stringdestinarions.cs" />
-    <Compile Include="Migrations\201801311355269_stringdestinarions.Designer.cs">
-      <DependentUpon>201801311355269_stringdestinarions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802010545037_subtour.cs" />
-    <Compile Include="Migrations\201802010545037_subtour.Designer.cs">
-      <DependentUpon>201802010545037_subtour.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802021333166_init2.cs" />
-    <Compile Include="Migrations\201802021333166_init2.Designer.cs">
-      <DependentUpon>201802021333166_init2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802091733018_hashcode.cs" />
-    <Compile Include="Migrations\201802091733018_hashcode.Designer.cs">
-      <DependentUpon>201802091733018_hashcode.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802131030117_groups.cs" />
-    <Compile Include="Migrations\201802131030117_groups.Designer.cs">
-      <DependentUpon>201802131030117_groups.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802161640138_GroupAdded.cs" />
-    <Compile Include="Migrations\201802161640138_GroupAdded.Designer.cs">
-      <DependentUpon>201802161640138_GroupAdded.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802201424138_removePrivateFromSubtour.cs" />
-    <Compile Include="Migrations\201802201424138_removePrivateFromSubtour.Designer.cs">
-      <DependentUpon>201802201424138_removePrivateFromSubtour.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802220858497_addTourTypeIncramentGroup.cs" />
-    <Compile Include="Migrations\201802220858497_addTourTypeIncramentGroup.Designer.cs">
-      <DependentUpon>201802220858497_addTourTypeIncramentGroup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802231051006_tourHotels.cs" />
-    <Compile Include="Migrations\201802231051006_tourHotels.Designer.cs">
-      <DependentUpon>201802231051006_tourHotels.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802231452155_idfortourhotel.cs" />
-    <Compile Include="Migrations\201802231452155_idfortourhotel.Designer.cs">
-      <DependentUpon>201802231452155_idfortourhotel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802231538118_tourhotelroomtypeid.cs" />
-    <Compile Include="Migrations\201802231538118_tourhotelroomtypeid.Designer.cs">
-      <DependentUpon>201802231538118_tourhotelroomtypeid.cs</DependentUpon>
+    <Compile Include="Migrations\201803231605429_updatefieldtogroup.cs" />
+    <Compile Include="Migrations\201803231605429_updatefieldtogroup.Designer.cs">
+      <DependentUpon>201803231605429_updatefieldtogroup.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -187,44 +143,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201801311019591_init.resx">
-      <DependentUpon>201801311019591_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201803101926074_init.resx">
+      <DependentUpon>201803101926074_init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801311025359_init1.resx">
-      <DependentUpon>201801311025359_init1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801311355269_stringdestinarions.resx">
-      <DependentUpon>201801311355269_stringdestinarions.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802010545037_subtour.resx">
-      <DependentUpon>201802010545037_subtour.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802021333166_init2.resx">
-      <DependentUpon>201802021333166_init2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802091733018_hashcode.resx">
-      <DependentUpon>201802091733018_hashcode.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802131030117_groups.resx">
-      <DependentUpon>201802131030117_groups.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802161640138_GroupAdded.resx">
-      <DependentUpon>201802161640138_GroupAdded.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802201424138_removePrivateFromSubtour.resx">
-      <DependentUpon>201802201424138_removePrivateFromSubtour.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802220858497_addTourTypeIncramentGroup.resx">
-      <DependentUpon>201802220858497_addTourTypeIncramentGroup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802231051006_tourHotels.resx">
-      <DependentUpon>201802231051006_tourHotels.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802231452155_idfortourhotel.resx">
-      <DependentUpon>201802231452155_idfortourhotel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802231538118_tourhotelroomtypeid.resx">
-      <DependentUpon>201802231538118_tourhotelroomtypeid.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201803231605429_updatefieldtogroup.resx">
+      <DependentUpon>201803231605429_updatefieldtogroup.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

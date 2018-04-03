@@ -11,6 +11,8 @@ namespace EchoDesertTrips.Business.Entities
         public int GroupId { get; set; }
         [DataMember]
         public string ExternalId { get; set; }
+        [DataMember]
+        public bool Updated { get; set; }
         public int EntityId
         {
             get

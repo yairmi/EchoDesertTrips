@@ -31,7 +31,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" />        
+            <Button x:Name="btnAddNewCustomer" Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" IsEnabled="{Binding AddNewEnabled}" />        
             <DataGrid x:Name="dgCustomerWrapper" 
                   Grid.Row="1"
                   RowDetailsVisibilityMode="VisibleWhenSelected" 
@@ -66,13 +66,13 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Margin="0,0,10,0">
                                     <Hyperlink Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                            CommandParameter="{Binding}">
+                                            CommandParameter="{Binding}" IsEnabled="{Binding ElementName=btnAddNewCustomer, Path=IsEnabled}">
                                     <TextBlock Text="Delete" FontSize="14" FontWeight="Bold"/>
                                     </Hyperlink>
                                 </TextBlock>
                                     <TextBlock Margin="0">
                                     <Hyperlink Command="{Binding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                           CommandParameter="{Binding}">
+                                           CommandParameter="{Binding}" IsEnabled="{Binding ElementName=btnAddNewCustomer, Path=IsEnabled}">
                                     <TextBlock Text="Edit" FontSize="14" FontWeight="Bold"/>
                                 </Hyperlink>
                                 </TextBlock>

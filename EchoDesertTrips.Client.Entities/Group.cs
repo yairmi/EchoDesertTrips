@@ -34,6 +34,21 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
+        private bool _updated;
+
+        public bool Updated
+        {
+            get
+            {
+                return _updated;
+            }
+            set
+            {
+                _updated = value;
+                OnPropertyChanged(() => Updated);
+            }
+        }
+
 
     }
 }

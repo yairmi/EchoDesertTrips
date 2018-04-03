@@ -19,10 +19,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
+        private readonly ReservationWrapper _currentReservation;
+        private bool _editZeroCustomerId = false;
         //Remove CustomerWrapper
         public CustomerGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageBoxDialogService,
-            ObservableCollection<CustomerWrapper> customers)
+            ReservationWrapper currentReservation)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
@@ -32,13 +34,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
             EditCustomerCommand = new DelegateCommand<CustomerWrapper>(OnEditCustomerCommand);
             AddCustomerCommand = new DelegateCommand<object>(OnAddCustomerCommand);
             Customers = new ObservableCollection<CustomerWrapper>();
-            Customers = customers;
+            AddNewEnabled = true;
+            _currentReservation = currentReservation;
+            Customers = currentReservation.Customers;
+            _totalCustomers = 0;
         }
 
         public CustomerGridViewModel()
         {
             
         }
+
 
         public DelegateCommand<CustomerWrapper> DeleteCustomerCommand { get; set; }
 
@@ -66,13 +72,30 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnAddCustomerCommand(object obj)
         {
-            CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, null);
-            RegisterEvents();
+            TotalCustomers = 0;
+            if (_totalCustomers > _currentReservation.Customers.Count())
+            {
+                CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, null, _currentReservation);
+                AddNewEnabled = false;
+                RegisterEvents();
+            }
+            else
+            {
+                _messageDialogService.ShowInfoDialog((string)Application.Current.FindResource("YouMustAddCustomersToToursHotels"), "Question");
+            }
         }
 
         private void OnEditCustomerCommand(CustomerWrapper customer)
         {
-            CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, customer);
+            if (customer.CustomerId == 0)
+            {
+                customer.CustomerId = Customers.Max(x => x.CustomerId) + 1;
+                _editZeroCustomerId = true;
+            }
+            else
+                _editZeroCustomerId = false;
+            AddNewEnabled = false;
+            CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, customer, _currentReservation);
             RegisterEvents();
         }
 
@@ -153,7 +176,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             IMapper iMapper = config.CreateMapper();
             var customerWrapper = iMapper.Map<CustomerWrapper, CustomerWrapper>(e.Customer);
 
-            if (!e.IsNew)
+            if (!e.IsNew || _editZeroCustomerId == true)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
@@ -162,32 +185,61 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     var index = Customers.IndexOf(customer);
                     Customers[index] = customerWrapper;
+                    if (_editZeroCustomerId == true)
+                        customerWrapper.CustomerId = 0;
                 }
             }
             else
             {
                 Customers.Add(customerWrapper);
             }
+            if (Customers.Count() == TotalCustomers)
+                CurrentCustomerViewModel = null;
+        }
 
-            //ReservationsView.Refresh();
-            //try
-            //{
-            //    _client.NotifyServer(new EventDataType()
-            //    {
-            //        ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-            //        EventMessage = "Stam"
-            //    });
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.Error("CurrentReservationViewModel_ReservationUpdated: Failed to notify server");
-            //}
-            CurrentCustomerViewModel = null;
+        private int _totalCustomers;
+
+        public int TotalCustomers
+        {
+            get
+            {
+                return _totalCustomers;
+            }
+            private set
+            {
+                _totalCustomers = value;
+                _currentReservation.Tours.ToList().ForEach((tour) =>
+                {
+                    tour.TourHotels.ToList().ForEach((tourHotel) =>
+                    {
+                        tourHotel.TourHotelRoomTypes.ToList().ForEach((hotelRoomType) =>
+                        {
+                            _totalCustomers += (hotelRoomType.Persons);
+                        });
+                    });
+                });
+            }
+        }
+
+        private bool _addNewEnabled;
+
+        public bool AddNewEnabled
+        {
+            get
+            {
+                return _addNewEnabled;
+            }
+            set
+            {
+                _addNewEnabled = value;
+                OnPropertyChanged(() => AddNewEnabled);
+            }
         }
 
         private void CurrentCustomerViewModel_CustomerCancelled(object sender, CustomerEventArgs e)
         {
             CurrentCustomerViewModel = null;
+            AddNewEnabled = true;
         }
 
         private void RegisterEvents()

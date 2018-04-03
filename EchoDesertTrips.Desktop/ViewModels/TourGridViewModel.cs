@@ -20,6 +20,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
+        private bool _editZeroTourId = false;
 
         public TourGridViewModel(IServiceFactory serviceFactory, 
             IMessageDialogService messageBoxDialogService, 
@@ -32,6 +33,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             EditTourCommand = new DelegateCommand<TourWrapper>(OnEditTourCommand);
             AddTourCommand = new DelegateCommand<object>(OnAddTourCommand);
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
+            AddNewEnabled = true;
             Tours = new ObservableCollection<TourWrapper>();
             Tours = tours;
         }
@@ -72,11 +74,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTourViewModel.TourTypes = TourTypes;
             CurrentTourViewModel.Hotels = Hotels;
             CurrentTourViewModel.Optionals = Optionals;
+            AddNewEnabled = false;
             RegisterEvents();
         }
 
         private void OnEditTourCommand(TourWrapper tour)
         {
+            if (tour.TourId == 0)
+            {
+                tour.TourId = Tours.Max(x => x.TourId) + 1;
+                _editZeroTourId = true;
+            }
+            else
+                _editZeroTourId = false;
+
             CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, tour);
             CurrentTourViewModel.TourTypes = TourTypes;
             CurrentTourViewModel.Hotels = Hotels;
@@ -105,11 +116,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnRowExpanded(TourWrapper tour)
         {
             CurrentTour = tour;
-            Hotel hotel = null;
             if (_currentTour.TourHotels != null && _currentTour.TourHotels.Count > 0)
             {
-                hotel = Hotels.FirstOrDefault(h => h.HotelId == _currentTour.TourHotels[0].Hotel.HotelId);
-                SelectedTourHotel = new TourHotel() { Hotel = hotel };
+                 SelectedTourHotel = _currentTour.TourHotels[0];
             }
 
         }
@@ -153,12 +162,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             set
             {
-                if (value != _selectedTourHotel)
+                if (value != _selectedTourHotel && value != null)
                 {
                     _selectedTourHotel = value;
                     UpdateTourHotelRoomTypes();
                     OnPropertyChanged(() => SelectedTourHotel);
                 }
+            }
+        }
+
+        private bool _addNewEnabled;
+
+        public bool AddNewEnabled
+        {
+            get
+            {
+                return _addNewEnabled;
+            }
+            set
+            {
+                _addNewEnabled = value;
+                OnPropertyChanged(() => AddNewEnabled);
             }
         }
 
@@ -212,7 +236,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             IMapper iMapper = config.CreateMapper();
             var tourWrapper = iMapper.Map<TourWrapper, TourWrapper>(e.Tour);
 
-            if (!e.IsNew)
+            if (!e.IsNew || _editZeroTourId == true)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
@@ -221,6 +245,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     var index = Tours.IndexOf(tour);
                     Tours[index] = tourWrapper;
+                    if (_editZeroTourId == true)
+                        tourWrapper.TourId = 0;
                 }
             }
             else
@@ -228,12 +254,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Tours.Add(tourWrapper);
             }
             Tours.OrderBy(tour => tour.StartDate);
+            AddNewEnabled = true;
             CurrentTourViewModel = null;
         }
 
         private void CurrentTourViewModel_TourCancelled(object sender, TourEventArgs e)
         {
             CurrentTourViewModel = null;
+            AddNewEnabled = true;
         }
 
         private void RegisterEvents()

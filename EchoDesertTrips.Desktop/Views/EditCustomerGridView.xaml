@@ -38,6 +38,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -45,8 +46,17 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
-            <Grid Grid.Row="1" Grid.Column="0">
+            <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Customers to add:" FontSize="14" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Margin="3" Text="{Binding CustomersLeft}" HorizontalAlignment="Left" FontSize="14" />
+            </Grid>
+            <Grid Grid.Row="2" Grid.Column="0">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -71,7 +81,7 @@
                 <DatePicker Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="160" SelectedDate="{Binding Customer.IssueData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
                 <DatePicker Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="160" SelectedDate="{Binding Customer.ExpireyDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
              </Grid>
-             <Grid Grid.Row="1" Grid.Column="1">
+             <Grid Grid.Row="2" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -91,9 +101,10 @@
                 <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.Phone1, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
                 <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.Phone2, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
             </Grid>
-            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
                 <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" />
-                <Button Content="Exit Without Saving" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
+                <Button Content="Clear" Margin="5" Command="{Binding ClearCommand}" />
+                <Button Content="Exit" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
             </StackPanel>
         </Grid>
     </Border>        

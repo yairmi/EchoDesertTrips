@@ -82,7 +82,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 renderer.RenderDocument();
 
                 string filename = "Reservation.pdf";
-                renderer.PdfDocument.Save(filename);
+                try
+                {
+                    renderer.PdfDocument.Save(filename);
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Failed to save " + filename + ". Exception: " + ex.Message);
+                }
 
                 Process.Start(filename);
 
@@ -123,11 +130,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Section section = document.AddSection();
 
             // Create footer
-            Paragraph paragraph = section.Footers.Primary.AddParagraph();
-            paragraph.AddText("Eco Desert Tours");
-            paragraph.Format.Font.Size = 9;
-            paragraph.Format.Alignment = ParagraphAlignment.Center;
+            Paragraph paragraphFooter = section.Footers.Primary.AddParagraph();
+            Font fontFooter = new Font("Arial", 8);
+            fontFooter.Bold = true;
+            paragraphFooter.AddFormattedText("Eco Desert Tours");
+            paragraphFooter.Format.Alignment = ParagraphAlignment.Center;
 
+
+            Paragraph paragraphHeader = section.Headers.Primary.AddParagraph();
+            paragraphHeader.AddFormattedText("Jordan ID: " + reservations[0].GroupID);
             // Create the text frame for the address
             //addressFrame = section.AddTextFrame();
             //addressFrame.Height = "3.0cm";
@@ -162,33 +173,47 @@ namespace EchoDesertTrips.Desktop.ViewModels
             //table.Rows.LeftIndent = 0;
 
             // Before you can add a row, you must define the columns
+            Font fontBigTitle = new Font("Arial", 10);
+            fontBigTitle.Bold = true;
+            Font fontTitle = new Font("Arial", 8);
+            fontTitle.Bold = true;
+            Font fontDescription = new Font("Arial", 7);
+
             reservations.ToList().ForEach((reservation) =>
             {
-                var reservationSection = document.AddSection();
+                //var reservationSection = document.AddSection();
 
                 // Add the print date field
-                paragraph = reservationSection.AddParagraph();
+                var paragraph = section.AddParagraph();
                 paragraph.Format.SpaceBefore = "2cm";
-                paragraph.Style = "Reference";
-                paragraph.AddFormattedText("Tours", TextFormat.Bold);
+                //paragraph.Style = "Reference";
+                paragraph.AddFormattedText("Tours", fontBigTitle);
+                paragraph.AddLineBreak();
                 paragraph.AddLineBreak();
                 reservation.Tours.ForEach((tour) =>
                 {
-                    paragraph.AddText(tour.TourType.TourTypeName);
+                    paragraph.AddFormattedText(tour.TourType.TourTypeName, fontTitle);
                     paragraph.AddLineBreak();
                     paragraph.AddLineBreak();
                     int dayIndex = 1;
                     tour.TourType.TourTypeDescriptions.ForEach((description) =>
                     {
                         var tourDescription = string.Format("Day {0}: {1}", dayIndex++, description.Description);
-                        paragraph.AddText(tourDescription);
+                        paragraph.AddFormattedText(tourDescription, fontDescription);
+                        paragraph.AddLineBreak();
                         paragraph.AddLineBreak();
                     });
+                    paragraph.AddLineBreak();
+                    paragraph.AddLineBreak();
                 });
-
-                Table customersTable = reservationSection.AddTable();
+                //var paragraphCustomers = reservationSection.AddParagraph();
+                paragraph.AddFormattedText("Reservation Customers", fontBigTitle);
+                paragraph.AddLineBreak();
+                paragraph.AddLineBreak();
+                Table customersTable = section.AddTable();
                 DefineTable(customersTable);
                 FillContent(customersTable, reservation);
+                section = document.AddSection();
             });
 
             //row = table.AddRow();
@@ -205,7 +230,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             //row.Cells[4].AddParagraph("Taxable");
             //row.Cells[4].Format.Alignment = ParagraphAlignment.Left;
 
-            
+
         }
 
         private void FillContent(Table table, Reservation reservation)

@@ -7,13 +7,13 @@ namespace EchoDesertTrips.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class hashcode : IMigrationMetadata
+    public sealed partial class init : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(hashcode));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(init));
         
         string IMigrationMetadata.Id
         {
-            get { return "201802091733018_hashcode"; }
+            get { return "201803101926074_init"; }
         }
         
         string IMigrationMetadata.Source

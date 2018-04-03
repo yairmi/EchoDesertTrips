@@ -207,6 +207,10 @@ namespace EchoDesertTrips.Data.Data_Repositories
                         exsitingReservation.Group = null;
                         exsitingReservation.GroupID = reservation.GroupID;
                     }
+                    else
+                    {
+                        existingGroup.Updated = true;
+                    }
                 }
                 //Handle Tours
                 foreach (var tour in reservation.Tours)

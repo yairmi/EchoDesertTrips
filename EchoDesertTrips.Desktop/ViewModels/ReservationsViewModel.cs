@@ -34,6 +34,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             AddReservationCommand = new DelegateCommand<object>(OnAddCommand);
             SelectedDateChangedCommand = new DelegateCommand<object>(OnSelectedDateChangedCommand);
             DeleteReservationCommand = new DelegateCommand<ReservationWrapper>(OnDeleteReservationCommand);
+            GenerateReportCommand = new DelegateCommand<Group>(OnGenerateReportCommand);
+
             Reservations = new ObservableCollection<ReservationWrapper>();
             ContinualReservations = new ObservableCollection<ReservationWrapper>();
             SelectedDate = LastSelectedDate = DateTime.Now;
@@ -50,6 +52,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<ReservationWrapper> EditReservationCommand { get; private set; }
         public DelegateCommand<object> AddReservationCommand { get; private set; }
         public DelegateCommand<object> SelectedDateChangedCommand { get; private set; }
+        public DelegateCommand<Group> GenerateReportCommand { get; private set; }
 
         private void OnDeleteReservationCommand(ReservationWrapper obj)
         {
@@ -74,6 +77,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 log.Error("OnDeleteReservationCommand Failed: " + ex.Message);
             }
+        }
+
+        private void OnGenerateReportCommand(Group group)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnAddCommand(object arg)

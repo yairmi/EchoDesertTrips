@@ -31,7 +31,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
             CheckBoxAgreeChecked = new DelegateCommand<bool>(OnCheckBoxAgreeChecked);
-            CustomerGridViewModel = new CustomerGridViewModel(_serviceFactory, _messageDialogService, Reservation.Customers);
+            CustomerGridViewModel = new CustomerGridViewModel(_serviceFactory, _messageDialogService, Reservation);
             TourGridViewModel = new TourGridViewModel(_serviceFactory, _messageDialogService, Reservation.Tours);
             AgencyViewModel = new AgencyViewModel(_serviceFactory, Reservation);
         }
@@ -50,13 +50,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool OnAddTripCommadCanExecute(object obj)
         {
-            //return TourViewModel.Trip.IsDirty;
             return true;
         }
 
         private bool OnAddCustomerCommadCanExecute(object obj)
         {
-            //return CustomerViewModel.Customer.IsDirty;
             return true;
         }
         //After pressing the 'Save' button

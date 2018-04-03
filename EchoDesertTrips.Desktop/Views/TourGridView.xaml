@@ -25,7 +25,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}" />
+            <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}" IsEnabled="{Binding AddNewEnabled}" />
             <DataGrid Grid.Row="1"
                   x:Name="dgTourWrapper"
                   Margin="0,0,0,10" 
@@ -203,7 +203,7 @@
                                             <ComboBox x:Name="cbTourHotels" Grid.Row="0" 
                                               SelectedItem="{Binding Path=DataContext.SelectedTourHotel, 
                                               RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
-                                              Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              UpdateSourceTrigger=PropertyChanged}"
                                               SelectedValue="{Binding Hotel.HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
                                               ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
                                               SelectedValuePath="Hotel.HotelId"

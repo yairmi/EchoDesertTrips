@@ -167,5 +167,6 @@
         <sys:String x:Key="ReservationDeletedMessage" xml:space="preserve">The Reservation has been deleted by another user.</sys:String>
         <sys:String x:Key="AreYouSureMessage" xml:space="preserve">Are you sure ?&#13;Any Changes made will be lost.</sys:String>
         <sys:String x:Key="ShortAreYouSureMessage">Are you sure ?</sys:String>
+        <sys:String x:Key="YouMustAddCustomersToToursHotels">You cannot add customers.&#13;Add customers to tours hotels first.</sys:String>
    </Application.Resources>
 </Application>
