@@ -21,9 +21,6 @@
         <viewModels:BalanceConverter x:Key="balanceConverter"/>
         <viewModels:GroupReservationsConverter x:Key="groupConverter"/>
         <CollectionViewSource x:Key="CvsReservations" x:Name="ReservationsView">
-            <!--<CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="Trip.TripType.TripTypeName"/>
-            </CollectionViewSource.SortDescriptions>-->
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="." Converter="{StaticResource groupConverter}" />
             </CollectionViewSource.GroupDescriptions>
@@ -62,9 +59,9 @@
                     <Expander.Header>
                         <TextBlock Text="Reservations"/>
                     </Expander.Header>                        
-                    <StackPanel Orientation="Vertical">
-                        <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddReservationCommand}" />
-                        <DataGrid x:Name="dgReservations" Grid.Row="0" Grid.Column="0"
+                    <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
+                        <Button HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddReservationCommand}" />
+                        <DataGrid x:Name="dgReservations"
                         ItemsSource="{Binding ReservationsView}"
                         CanUserAddRows="False"
                         AutoGenerateColumns="False"

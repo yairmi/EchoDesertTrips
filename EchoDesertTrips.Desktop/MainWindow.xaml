@@ -9,12 +9,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"                   
         mc:Ignorable="d"
         WindowState="Maximized"
-        Title="Desert Eco Tours" Height="648" Width="1024">
-    <!--<i:Interaction.Triggers>
-        <i:EventTrigger EventName="Closing">
-            <i:InvokeCommandAction Command="{Binding CloseWindowCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>-->    
+        Title="Desert Eco Tours">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
