@@ -97,6 +97,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             AddNewEnabled = false;
             CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, customer, _currentReservation);
             RegisterEvents();
+            //var win = new Window();
+            //win.Content = CurrentCustomerViewModel;
+            //win.Show();
         }
 
         public DelegateCommand<CustomerWrapper> EditCustomerCommand { get; private set; }
@@ -194,7 +197,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Customers.Add(customerWrapper);
             }
             if (Customers.Count() == TotalCustomers)
+            {
                 CurrentCustomerViewModel = null;
+                AddNewEnabled = true;
+            }
         }
 
         private int _totalCustomers;
