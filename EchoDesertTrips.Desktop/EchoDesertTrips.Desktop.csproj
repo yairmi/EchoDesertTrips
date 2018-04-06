@@ -183,6 +183,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Reports\ReportGenerator.cs" />
     <Compile Include="Support\AgencyEventArgs.cs" />
     <Compile Include="Support\AuthenticationEventArgs.cs" />
     <Compile Include="Support\BoolToOppositeConverter.cs" />
@@ -191,6 +192,7 @@
     <Compile Include="Support\CustomerOrderEventArgs.cs" />
     <Compile Include="Support\Destination.cs" />
     <Compile Include="Support\EnterKeyTraversal.cs" />
+    <Compile Include="Support\ExpanderToBooleanConverter.cs" />
     <Compile Include="Support\GroupWidthCoverter.cs" />
     <Compile Include="Support\HotelEventArgs.cs" />
     <Compile Include="Support\ListWrapper.cs" />
@@ -484,9 +486,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reports\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

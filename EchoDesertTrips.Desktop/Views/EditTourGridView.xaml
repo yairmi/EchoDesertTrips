@@ -241,7 +241,8 @@
             </Grid>
             <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
                 <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" />
-                <Button Content="Exit Without Saving" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
+                <Button Content="Clear" Margin="5" Command="{Binding ClearCommand}" />
+                <Button Content="Exit" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
             </StackPanel>
         </Grid>
     </Border>

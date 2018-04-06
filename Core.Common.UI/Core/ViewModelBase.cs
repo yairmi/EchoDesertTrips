@@ -53,8 +53,13 @@ namespace Core.Common.UI.Core
 
         protected virtual void AddModels(List<ObjectBase> models) { }
 
-        protected void ValidateModel()
+        protected void ValidateModel(bool bClear = false)
         {
+            if (bClear == true && _Models != null)
+            {
+                _Models.Clear();
+                _Models = null;
+            }
             if (_Models == null)
             {
                 _Models = new List<ObjectBase>();

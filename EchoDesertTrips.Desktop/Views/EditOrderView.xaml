@@ -7,10 +7,11 @@
              xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
              xmlns:control="clr-namespace:Core.Common.UI.Controls;assembly=Core.Common.UI"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="400">
         <core:UserControlViewBase.Resources>
-            <viewModels:ExpanderToBooleanConverter x:Key="expanderToBooleanConverter" />
+            <support:ExpanderToBooleanConverter x:Key="expanderToBooleanConverter" />
         </core:UserControlViewBase.Resources>
     <Border  Grid.Row="0" 
              Grid.Column="1" 
@@ -79,7 +80,7 @@
                             <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Deposit:" />
                             <TextBox Grid.Row="0" Grid.Column="1" Margin="3" Width="220" Text="{Binding Reservation.AdvancePayment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Pickup Time:"/>
-                            <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="220" Value="{Binding Reservation.PickUpTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <xctk:DateTimePicker Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="220" Value="{Binding Reservation.PickUpTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Format="Custom" FormatString="dd/MM/yyyy HH:mm tt" TimeFormat="Custom" TimeFormatString="HH:mm"/>
                             <TextBlock Text="Comment:" Grid.Row="2" Grid.Column="0" Margin="3,0,0,0"/>
                             <TextBlock Text="Message:" Grid.Row="2" Grid.Column="1" Margin="3,0,0,0"/>
                             <TextBox x:Name="tbComment" MaxLength="140" Grid.Row="3" Grid.Column="0" Margin="3" Height="100" Text="{Binding Reservation.Comments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" Style="{StaticResource MultiLineTextBox}"/>

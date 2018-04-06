@@ -64,7 +64,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (IsCustomerDirty())
             {
-                ValidateModel();
+                ValidateModel(true);
             }
             if (Customer.IsValid)
             {

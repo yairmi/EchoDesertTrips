@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Threading;
+using EchoDesertTrips.Desktop.Reports;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -81,7 +82,19 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnGenerateReportCommand(Group group)
         {
-            throw new NotImplementedException();
+            var reportGen = new ReportGenerator();
+            try
+            {
+                WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
+                {
+                    var reservations = orderClient.GetReservationsByGroupId(group.GroupId);
+                    reportGen.GenerateReport(reservations, group.GroupId);
+                });
+            }
+            catch(Exception ex)
+            {
+                log.Error("OnGenerateReportCommand Failed: " + ex.Message);
+            }
         }
 
         private void OnAddCommand(object arg)
@@ -422,6 +435,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnSelectedDateChangedCommand(object obj)
         {
             throw new NotImplementedException();
+        }
+
+        private Object _selectedeExpander;
+
+        public Object SelectedExpander
+        {
+            get
+            {
+                return _selectedeExpander;
+            }
+            set
+            {
+                _selectedeExpander = value;
+                OnPropertyChanged(() => SelectedExpander, false);
+            }
         }
     }
 

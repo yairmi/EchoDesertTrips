@@ -254,8 +254,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Tours.Add(tourWrapper);
             }
             Tours.OrderBy(tour => tour.StartDate);
-            AddNewEnabled = true;
-            CurrentTourViewModel = null;
+            //AddNewEnabled = true;
+            //CurrentTourViewModel = null;
         }
 
         private void CurrentTourViewModel_TourCancelled(object sender, TourEventArgs e)

@@ -81,7 +81,10 @@ namespace EchoDesertTrips.Desktop.Support
                 //}
                 tour.TourHotels.ToList().ForEach((tourHotel) =>
                 {
-
+                    tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
+                    {
+                        totalPrice += tourHotelRoomType.Persons * tourHotelRoomType.HotelRoomType.PricePerPerson;
+                    });
                 });
             }
             return totalPrice;

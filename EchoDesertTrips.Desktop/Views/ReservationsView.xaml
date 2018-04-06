@@ -14,6 +14,7 @@
         <support:ViewModelNullToVisibilityConverter x:Key="viewModelNullToVisibilityConverter" />
         <support:BoolToYesNoConverter x:Key="boolToYesNoConverter"/>
         <support:GroupWidthCoverter x:Key="groupWidthConverter" />
+        <support:ExpanderToBooleanConverter x:Key="expanderToBooleanConverter" />
         <viewModels:GroupsToTotalConverter x:Key="groupsConverter" />
         <viewModels:TotalPriceConverter x:Key="totalPriceConverter"/>
         <viewModels:CustomersGroupConverter x:Key="customersGroupConverter"/>
@@ -56,7 +57,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                <Expander Grid.Row="0">
+                    <Expander Grid.Row="0" IsExpanded="{Binding SelectedExpander, Mode=TwoWay, 
+                        Converter={StaticResource expanderToBooleanConverter}, ConverterParameter=1}">
                     <Expander.Header>
                         <TextBlock Text="Reservations"/>
                     </Expander.Header>                        
@@ -124,7 +126,7 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Pickup Time" Binding="{Binding PickUpTime}" Width="100"/>
+                                    <DataGridTextColumn Header="Pickup Time" Binding="{Binding PickUpTime, StringFormat='dd/MM/yyyy HH:mm'}" Width="100"/>
                             <DataGridTextColumn Header="Pickup Address" Binding="{Binding Tours[0].PickupAddress}" Width="100"/>
                             <DataGridTextColumn Header="Phone" Binding="{Binding Customers[0].Phone1}" Width="100"/>
                             <DataGridTextColumn Header="Hotel" Binding="{Binding Tours[0].TourHotels[0].Hotel.HotelName}" Width="120"/>
@@ -174,8 +176,8 @@
                                                         <Expander.Header>
                                                             <DockPanel>
                                                                 <TextBlock FontWeight="Bold" Text="{Binding Path=Name}" HorizontalAlignment="Left" Margin="5,0,0,0" Width="Auto"/>
-                                                                <!--Button x:Name="ReportBtn" HorizontalAlignment="Right" Content="Report" Margin="0,0,10,0" Command="{Binding DataContext.GenerateReportCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=Items[0].Group}"/-->
-                                                            </DockPanel>
+                                                                        <Button x:Name="ReportBtn" HorizontalAlignment="Right" Content="Report" Margin="0,0,10,0" Command="{Binding DataContext.GenerateReportCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=Items[0].Group}"/>
+                                                                    </DockPanel>
                                                         </Expander.Header>
                                                         <Expander.Content>
                                                             <Grid x:Name="GroupGrid">
@@ -235,7 +237,8 @@
                     </DataGrid>
                     </StackPanel>
                 </Expander>
-                    <Expander Grid.Row="1">
+                    <Expander Grid.Row="1" IsExpanded="{Binding SelectedExpander, Mode=TwoWay, 
+                        Converter={StaticResource expanderToBooleanConverter}, ConverterParameter=2}">
                         <Expander.Header>
                             <TextBlock Text="Continual Reservations"/>
                         </Expander.Header>

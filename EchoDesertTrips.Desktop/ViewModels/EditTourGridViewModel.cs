@@ -35,13 +35,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Tour = new TourWrapper();
             }
 
-            SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
+            SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
+            ClearCommand = new DelegateCommand<object>(OnClearCommand, OnCommandCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
             CellEditEndingRoomTypeCommand = new DelegateCommand<TourHotelRoomType>(OnCellEditEndingRoomTypeCommand);
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
         }
 
         public DelegateCommand<object> SaveCommand { get; private set; }
+        public DelegateCommand<object> ClearCommand { get; private set; }
         public DelegateCommand<object> ExitWithoutSavingCommand { get; private set; }
         public DelegateCommand<TourHotelRoomType> CellEditEndingRoomTypeCommand { get; set; }
 
@@ -52,7 +54,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         //After pressing the 'Save' button
-        private bool OnSaveCommandCanExecute(object obj)
+        private bool OnCommandCanExecute(object obj)
         {
             return IsTourDirty();
         }
@@ -61,7 +63,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (IsTourDirty())
             {
-                ValidateModel();
+                ValidateModel(true);
             }
             if (Tour.IsValid)
             {
@@ -69,7 +71,23 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 removeUnNessecaryTourHotel();
                 bool bIsNew = Tour.TourId == 0;
                 TourUpdated?.Invoke(this, new TourEventArgs(Tour, bIsNew));
+                Tour = null;
+                Tour = new TourWrapper();
+                InitTour();
             }
+        }
+
+        private void OnClearCommand(object obj)
+        {
+            if (IsTourDirty())
+            {
+                var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
+                if (Result == MessageDialogResult.CANCEL)
+                    return;
+            }
+            Tour = null;
+            Tour = new TourWrapper();
+            InitTour();
         }
 
         private void OnExitWithoutSavingCommand(object obj)
@@ -110,13 +128,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+            InitTour();
+        }
+
+        private void InitTour()
+        {
             Hotel hotel = null;
             if (Tour.TourHotels.Count > 0)
             {
                 hotel = Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId);
-                SelectedHotel = hotel;
-                //SelectedTourHotel = new TourHotel() { Hotel = hotel };
             }
+            SelectedHotel = hotel;
             UpdateOptionalsInTour();
             CleanAll();
         }
@@ -155,34 +177,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        //private TourHotel _selectedTourHotel;
-
-        //public TourHotel SelectedTourHotel
-        //{
-        //    get
-        //    {
-        //        return _selectedTourHotel;
-        //    }
-        //    set
-        //    {
-        //        if (value != _selectedTourHotel)
-        //        {
-        //            _selectedTourHotel = value;
-        //            SelectedHotel = null;
-        //            if (_selectedTourHotel != null)
-        //            {
-        //                var hotel = Hotels.FirstOrDefault(h => h.HotelId == _selectedTourHotel.Hotel.HotelId);
-        //                UpdateTourHotelRoomTypes(hotel);
-        //            }
-        //            OnPropertyChanged(() => SelectedTourHotel);
-        //        }
-        //    }
-        //}
-
         //For GUI (RoomTypes DataGrid DataSource) - After selecting Hotel from Drop Down
         private void UpdateTourHotelRoomTypes(Hotel hotel)
         {
-            _tourHotelRoomTypes.Clear();
+            TourHotelRoomTypes.Clear();
+            if (hotel == null)
+                return;
             hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
             {
                 var tourHotelRoomType = new TourHotelRoomType()
@@ -234,37 +234,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-
-        ////For GUI
-        //private void UpdateTourOptionals()
-        //{
-        //    var tourOptionals = new ObservableCollection<TourOptionalWrapper>();
-        //    tourOptionals.Clear();
-        //    Optionals.ToList().ForEach((optional) =>
-        //    {
-        //        var tourOptional = new TourOptionalWrapper()
-        //        {
-        //            Optional = optional,
-        //            OptionalId = optional.OptionalId,
-        //            TourId = Tour.TourId,
-        //            PriceInclusive = false,
-        //            Selected = false
-        //        };
-        //        tourOptionals.Add(tourOptional);
-        //    });
-        //    //Update TourOptionals with the correct values from Tour DB
-        //    tourOptionals.ToList().ForEach((tourOptional) =>
-        //    {
-        //        var existingTourOptional = Tour.TourOptionals.FirstOrDefault(t => t.OptionalId == tourOptional.OptionalId);
-        //        if (existingTourOptional != null)
-        //        {
-        //            tourOptional.Selected = true;
-        //            tourOptional.PriceInclusive = existingTourOptional.PriceInclusive;
-        //        }
-        //    });
-
-        //    Tour.TourOptionals = tourOptionals;
-        //}
 
         private void removeUnNessecaryTourHotel()
         {
