@@ -9,6 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+        <ResourceDictionary>
         <ControlTemplate x:Key="ErrorTemplate">
             <DockPanel LastChildFill="True">
                 <Border BorderBrush="Red" BorderThickness="1">
@@ -25,15 +26,17 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+        </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
-    <Border  Grid.Row="0" 
-             Grid.Column="1" 
-             HorizontalAlignment="Stretch" 
-             CornerRadius="4" 
-             Margin="0,0,10,0" 
-             BorderBrush="SteelBlue" 
-             BorderThickness="3" 
-             Background="BlanchedAlmond">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
@@ -51,8 +54,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Customers to add:" FontSize="14" />
-                <TextBlock Grid.Row="0" Grid.Column="1" Margin="3" Text="{Binding CustomersLeft}" HorizontalAlignment="Left" FontSize="14" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="PAX to add:" FontSize="14"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Margin="3" Text="{Binding CustomersLeft}" HorizontalAlignment="Left" FontSize="14"/>
             </Grid>
             <Grid Grid.Row="2" Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -107,5 +110,4 @@
                 <Button Content="Exit" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
             </StackPanel>
         </Grid>
-    </Border>        
 </core:UserControlViewBase>

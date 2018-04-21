@@ -9,9 +9,11 @@
              xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
+             xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="900">
     <UserControl.Resources>
+        <ResourceDictionary>
         <ControlTemplate x:Key="ErrorTemplate">
             <DockPanel LastChildFill="True">
                 <Border BorderBrush="Red" BorderThickness="1">
@@ -29,15 +31,18 @@
             </Style.Triggers>
         </Style>
         <support:BoolToOppositeConverter x:Key="boolToOppositeConverter" />
+        <!--<ResourceDictionary-->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
-    <Border  Grid.Row="0" 
-             Grid.Column="1" 
-             HorizontalAlignment="Stretch" 
-             CornerRadius="4" 
-             Margin="0,0,10,0" 
-             BorderBrush="SteelBlue" 
-             BorderThickness="3" 
-             Background="BlanchedAlmond">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
@@ -78,7 +83,8 @@
                                             Margin="3"
                                             Width="150"
                                             HorizontalAlignment="Left"
-                                            ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.TourTypes}">
+                                            ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.TourTypes}"
+                                            IsEnabled="{Binding EnableCBTourType}">
                 </ComboBox>
                 <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="150" Text="{Binding Tour.PickupAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
                 <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpStartDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
@@ -245,5 +251,4 @@
                 <Button Content="Exit" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
             </StackPanel>
         </Grid>
-    </Border>
 </core:UserControlViewBase>

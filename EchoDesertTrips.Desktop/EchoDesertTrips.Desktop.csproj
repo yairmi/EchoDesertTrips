@@ -197,7 +197,9 @@
     <Compile Include="Support\HotelEventArgs.cs" />
     <Compile Include="Support\ListWrapper.cs" />
     <Compile Include="Support\Mapper.cs" />
+    <Compile Include="Support\MaxHeightConverter.cs" />
     <Compile Include="Support\MessageDialogService.cs" />
+    <Compile Include="Support\PercentageConverter.cs" />
     <Compile Include="Support\PhoneNumberValidation.cs" />
     <Compile Include="Support\Prices.cs" />
     <Compile Include="Support\ReservationEventArgs.cs" />

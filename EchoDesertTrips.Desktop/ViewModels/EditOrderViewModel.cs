@@ -7,6 +7,7 @@ using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Data;
 
@@ -32,7 +33,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
             CheckBoxAgreeChecked = new DelegateCommand<bool>(OnCheckBoxAgreeChecked);
             CustomerGridViewModel = new CustomerGridViewModel(_serviceFactory, _messageDialogService, Reservation);
-            TourGridViewModel = new TourGridViewModel(_serviceFactory, _messageDialogService, Reservation.Tours);
+            TourGridViewModel = new TourGridViewModel(_serviceFactory, _messageDialogService, Reservation);
             AgencyViewModel = new AgencyViewModel(_serviceFactory, Reservation);
         }
 
@@ -78,13 +79,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.OperatorId = Operator.OperatorId;
                 if (Reservation.Tours[0].TourType.IncramentExternalId)
                 {
-                    var reservationForHashCode = String.Format("{0} {1} {2}",
-                        Reservation.Tours[0].StartDate.Date.ToString("d"),
-                        Reservation.Tours[0].TourType.TourTypeName,
-                        Reservation.Tours[0].TourType.Private);
+                    StringBuilder reservationForHashCode = new StringBuilder();
+                    reservationForHashCode.Append(Reservation.Tours[0].StartDate.Date.ToString("d"));
+                    Reservation.Tours.ToList().ForEach((tour) =>
+                    {
+                        reservationForHashCode.Append(tour.TourType.TourTypeName);
+                        reservationForHashCode.Append(tour.TourType.Private);
+                    });
                     if (Reservation.Group == null)
                         Reservation.Group = new Group();
-                    Reservation.Group.ExternalId = HashCodeUtil.GetHashCodeBernstein(reservationForHashCode);
+                    Reservation.Group.ExternalId = HashCodeUtil.GetHashCodeBernstein(reservationForHashCode.ToString());
                 }
 
                 if (Reservation.ReservationId == 0) //New Reservation

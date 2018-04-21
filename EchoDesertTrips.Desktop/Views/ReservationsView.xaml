@@ -12,7 +12,9 @@
     <!--d:DesignHeight="300" d:DesignWidth="300"-->
     <core:UserControlViewBase.Resources>
         <support:ViewModelNullToVisibilityConverter x:Key="viewModelNullToVisibilityConverter" />
+        <support:PercentageConverter x:Key="percentageConverter" />
         <support:BoolToYesNoConverter x:Key="boolToYesNoConverter"/>
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
         <support:GroupWidthCoverter x:Key="groupWidthConverter" />
         <support:ExpanderToBooleanConverter x:Key="expanderToBooleanConverter" />
         <viewModels:GroupsToTotalConverter x:Key="groupsConverter" />
@@ -20,16 +22,17 @@
         <viewModels:CustomersGroupConverter x:Key="customersGroupConverter"/>
         <viewModels:BalanceConverter x:Key="balanceConverter"/>
         <viewModels:GroupReservationsConverter x:Key="groupConverter"/>
+                
         <CollectionViewSource x:Key="CvsReservations" x:Name="ReservationsView">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="." Converter="{StaticResource groupConverter}" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </core:UserControlViewBase.Resources>
-    <Grid>
+    <Grid Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock Text="Reservations for day: " VerticalAlignment="Center" FontSize="14" />
@@ -39,7 +42,7 @@
                             SelectedDate="{Binding Path=SelectedDate, Mode=TwoWay}"    >
             </DatePicker>
         </StackPanel>
-        <Grid Grid.Row="1">
+        <Grid x:Name="childGrid" Grid.Row="1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -60,13 +63,13 @@
                         <TextBlock Text="Reservations"/>
                     </Expander.Header>                        
                     <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
-                        <Button HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddReservationCommand}" />
+                        <Button x:Name="btnAddNew" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddReservationCommand}" />
                         <DataGrid x:Name="dgReservations"
                         ItemsSource="{Binding ReservationsView}"
                         CanUserAddRows="False"
                         AutoGenerateColumns="False"
                         RowHeight="16"
-                        Height="460"
+                        Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}"
                         CellStyle="{StaticResource DataGridBorder}">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
@@ -244,7 +247,7 @@
                             ItemsSource="{Binding ContinualReservationsView, Mode=TwoWay}"
                             CanUserAddRows="False"
                             AutoGenerateColumns="False" 
-                            Height="460"
+                            Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}"
                             CellStyle="{StaticResource DataGridBorder}">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
@@ -329,7 +332,18 @@
                     </Expander>
                 </Grid>
             </Grid>
-            <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentReservationViewModel}" />
-         </Grid>
+            <Border  Grid.Row="1" 
+             Grid.Column="1" 
+             HorizontalAlignment="Stretch" 
+             CornerRadius="4" 
+             Margin="10" 
+             BorderBrush="SteelBlue" 
+             BorderThickness="3" 
+             Background="BlanchedAlmond"
+             Width="{Binding Path=ActualWidth, ElementName=mainGrid, Converter={StaticResource percentageConverter}, ConverterParameter='0.8'}"
+             Visibility="{Binding CurrentReservationViewModel, Converter={StaticResource viewModelNullToVisibilityConverter}}">
+                <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentReservationViewModel}" />
+            </Border>
+        </Grid>
     </Grid>
 </core:UserControlViewBase>

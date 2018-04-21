@@ -22,7 +22,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public EditTourGridViewModel(IServiceFactory serviceFactory,
                 IMessageDialogService messageBoxDialogService,
-                TourWrapper tour)
+                TourWrapper tour,
+                bool IsNewReservation)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
@@ -34,6 +35,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Tour = new TourWrapper();
             }
+
+            EnableCBTourType = IsNewReservation;
 
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, OnCommandCanExecute);
@@ -174,6 +177,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     UpdateTourHotelRoomTypes(_selectedHotel);
                     OnPropertyChanged(() => SelectedHotel);
                 }
+            }
+        }
+
+        private bool _enableCBTourType;
+
+        public bool EnableCBTourType
+        {
+            get
+            {
+                return _enableCBTourType;
+            }
+            set
+            {
+                _enableCBTourType = value;
+                OnPropertyChanged(() => EnableCBTourType);
             }
         }
 

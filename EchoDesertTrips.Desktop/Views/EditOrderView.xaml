@@ -12,16 +12,11 @@
              d:DesignHeight="400" d:DesignWidth="400">
         <core:UserControlViewBase.Resources>
             <support:ExpanderToBooleanConverter x:Key="expanderToBooleanConverter" />
-        </core:UserControlViewBase.Resources>
-    <Border  Grid.Row="0" 
-             Grid.Column="1" 
-             HorizontalAlignment="Stretch" 
-             CornerRadius="4" 
-             Margin="0" 
-             BorderBrush="SteelBlue" 
-             BorderThickness="3" 
-             Background="BlanchedAlmond">
+    </core:UserControlViewBase.Resources>
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -32,8 +27,8 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Expander Width="1124" IsExpanded="{Binding SelectedExpander, Mode=TwoWay, 
-                        Converter={StaticResource expanderToBooleanConverter}, ConverterParameter=2}">
+                <Expander IsExpanded="{Binding SelectedExpander, Mode=TwoWay, 
+                        Converter={StaticResource expanderToBooleanConverter}, ConverterParameter=2}" HorizontalAlignment="Stretch">
                     <Expander.Header>
                         <TextBlock Text="Tours"/>
                     </Expander.Header>
@@ -45,10 +40,10 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Expander Width="1124" IsExpanded="{Binding SelectedExpander, Mode=TwoWay, 
-                        Converter={StaticResource expanderToBooleanConverter}, ConverterParameter=1}">
+                <Expander IsExpanded="{Binding SelectedExpander, Mode=TwoWay, 
+                        Converter={StaticResource expanderToBooleanConverter}, ConverterParameter=1}" HorizontalAlignment="Stretch">
                     <Expander.Header>
-                        <TextBlock Text="Customers"/>
+                        <TextBlock Text="PAX"/>
                     </Expander.Header>
                     <ContentControl Grid.Row="0" Content="{Binding CustomerGridViewModel}" />
                     <!--<control:CustomerGridView Grid.Row="0" DataContext="{Binding}" />-->
@@ -94,5 +89,4 @@
                 <Button Content="Exit Without Saving" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
             </StackPanel>
         </Grid>
-    </Border>
 </core:UserControlViewBase>

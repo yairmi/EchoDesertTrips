@@ -6,9 +6,11 @@
              xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
              xmlns:local="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <core:UserControlViewBase.Resources>
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
         <ControlTemplate x:Key="ErrorTemplate">
             <DockPanel>
                 <Border BorderBrush="Red" BorderThickness="5">
@@ -24,14 +26,13 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button x:Name="btnAddNewCustomer" Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" IsEnabled="{Binding AddNewEnabled}" />        
+            <Button x:Name="btnAddNewCustomer" Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" />        
             <DataGrid x:Name="dgCustomerWrapper" 
                   Grid.Row="1"
                   RowDetailsVisibilityMode="VisibleWhenSelected" 
@@ -41,7 +42,7 @@
                   AutoGenerateColumns="False"
                   CellStyle="{StaticResource DataGridBorder}"
                   CanUserAddRows="False"
-                  Height="320">
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='448'}">
             <!--<DataGrid.Resources>
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                     <Setter Property="Padding" Value="-2"/>
@@ -139,7 +140,6 @@
             </DataGrid.RowValidationErrorTemplate>-->
         </DataGrid>
     </Grid>
-        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentCustomerViewModel}" />
     </Grid>        
 </core:UserControlViewBase>
 

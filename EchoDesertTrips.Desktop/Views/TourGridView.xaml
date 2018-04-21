@@ -14,18 +14,19 @@
             <Setter Property="support:EnterKeyTraversal.IsEnabled" Value="True"/>
         </Style>
         <support:BoolToOppositeConverter x:Key="boolToOppositeConverter" />
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
     </core:UserControlViewBase.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}" IsEnabled="{Binding AddNewEnabled}" />
+            <!--<Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}" IsEnabled="{Binding AddNewEnabled}" />-->
+            <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}"/>
             <DataGrid Grid.Row="1"
                   x:Name="dgTourWrapper"
                   Margin="0,0,0,10" 
@@ -34,7 +35,7 @@
                   CellStyle="{StaticResource DataGridBorder}"
                   HorizontalAlignment="Left"
                   CanUserAddRows="False"
-                  Height="320">
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='448'}">
                 <!--<DataGrid.Resources>
                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                         <Setter Property="Padding" Value="-2"/>
@@ -250,7 +251,7 @@
                 </DataGrid.RowDetailsTemplate>
             </DataGrid>
         </Grid>
-        <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentTourViewModel}" />
+        <!--<ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentTourViewModel}" />-->
     </Grid>
 </core:UserControlViewBase>
 

@@ -34,7 +34,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             EditCustomerCommand = new DelegateCommand<CustomerWrapper>(OnEditCustomerCommand);
             AddCustomerCommand = new DelegateCommand<object>(OnAddCustomerCommand);
             Customers = new ObservableCollection<CustomerWrapper>();
-            AddNewEnabled = true;
             _currentReservation = currentReservation;
             Customers = currentReservation.Customers;
             _totalCustomers = 0;
@@ -76,12 +75,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (_totalCustomers > _currentReservation.Customers.Count())
             {
                 CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, null, _currentReservation);
-                AddNewEnabled = false;
                 RegisterEvents();
+                ShowPopupWindow("Add PAX");
             }
             else
             {
-                _messageDialogService.ShowInfoDialog((string)Application.Current.FindResource("YouMustAddCustomersToToursHotels"), "Question");
+                _messageDialogService.ShowInfoDialog((string)Application.Current.FindResource("YouMustAddCustomersToToursHotels"), "Information");
             }
         }
 
@@ -94,12 +93,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             else
                 _editZeroCustomerId = false;
-            AddNewEnabled = false;
             CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, customer, _currentReservation);
             RegisterEvents();
-            //var win = new Window();
-            //win.Content = CurrentCustomerViewModel;
-            //win.Show();
+            ShowPopupWindow("Edit PAX");
         }
 
         public DelegateCommand<CustomerWrapper> EditCustomerCommand { get; private set; }
@@ -198,8 +194,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (Customers.Count() == TotalCustomers)
             {
+                _childWindow.Close();
                 CurrentCustomerViewModel = null;
-                AddNewEnabled = true;
             }
         }
 
@@ -227,25 +223,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private bool _addNewEnabled;
-
-        public bool AddNewEnabled
-        {
-            get
-            {
-                return _addNewEnabled;
-            }
-            set
-            {
-                _addNewEnabled = value;
-                OnPropertyChanged(() => AddNewEnabled);
-            }
-        }
-
         private void CurrentCustomerViewModel_CustomerCancelled(object sender, CustomerEventArgs e)
         {
             CurrentCustomerViewModel = null;
-            AddNewEnabled = true;
+            _childWindow.Close();
+        }
+
+        private PopupWindow _childWindow;
+
+        protected void ShowPopupWindow(string title)
+        {
+            _childWindow = new PopupWindow();
+            _childWindow.Title = title;
+            _childWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            _childWindow.Content = CurrentCustomerViewModel;
+            _childWindow.ShowDialog();
         }
 
         private void RegisterEvents()
