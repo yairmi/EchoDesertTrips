@@ -10,16 +10,16 @@ using EchoDesertTrips.Client.Contracts;
 
 namespace Core.Common.UI.Core
 {
-    public class ViewModelBase : ObjectBase
+    public class ViewModelBase : ObjectBase, IDisposable
     {
         public ViewModelBase()
         {
             ToggleErrorsCommand = new DelegateCommand<object>(OnToggleErrorsCommandExecute, OnToggleErrorsCommandCanExecute);
-            Optionals = new ObservableCollection<Optional>();
-            TourTypes = new ObservableCollection<TourTypeWrapper>();
-            Hotels = new ObservableCollection<Hotel>();
-            Agencies = new ObservableCollection<Agency>();
-            RoomTypes = new ObservableCollection<RoomType>();
+            _optionals = new ObservableCollection<Optional>();
+            _tourTypes = new ObservableCollection<TourTypeWrapper>();
+            _hotels = new ObservableCollection<Hotel>();
+            _agencies = new ObservableCollection<Agency>();
+            _roomTypes = new ObservableCollection<RoomType>();
         }
 
         bool _ErrorsVisible = false;
@@ -231,10 +231,10 @@ namespace Core.Common.UI.Core
 
         public void UnRegisterClient()
         {
-            System.ServiceModel.InstanceContext context =
-                new System.ServiceModel.InstanceContext(new BroadcastorCallback());
-            this.Client =
-                new BroadcastorServiceClient(context);
+            //System.ServiceModel.InstanceContext context =
+            //    new System.ServiceModel.InstanceContext(new BroadcastorCallback());
+            //this.Client =
+            //    new BroadcastorServiceClient(context);
 
             string operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
 
@@ -256,6 +256,23 @@ namespace Core.Common.UI.Core
                 log.Error(CalledFrom + ": Failed to notify server");
             }
 
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose managed resources
+                UnRegisterClient();
+                this.Client.Close();
+            }
+            // free native resources
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

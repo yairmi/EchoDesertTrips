@@ -18,28 +18,33 @@ namespace EchoDesertTrips.ServiceHost.WindowsService
         /// </summary>  
         static void Main(string[] args)
         {
-            log4net.Config.XmlConfigurator.Configure();
-            ObjectBase.Container = MEFLoader.Init();
-            //if (Environment.UserInteractive)
-            //{
-            //    string parameter = string.Concat(args);
-            //    switch (parameter)
-            //    {
-            //        case "--install":
-            //            ManagedInstallerClass.InstallHelper(new[] { Assembly.GetExecutingAssembly().Location });
-            //            break;
-            //        case "--uninstall":
-            //            ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
-            //            break;
-            //    }
-            //}
-            //else
-            //{
-            ServiceBase[] ServicesToRun = new ServiceBase[] { new DesertEcoTours(args) };
+            if (System.Environment.UserInteractive)
+            {
+
+                if (args.Length > 0)
+                {
+                    switch (args[0])
+                    {
+                        case "-install":
+                            {
+                                ManagedInstallerClass.InstallHelper(new string[] { Assembly.GetExecutingAssembly().Location });
+                                break;
+                            }
+                        case "-uninstall":
+                            {
+                                ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location });
+                                break;
+                            }
+                    }
+                }
+            }
+            else
+            {
+                log4net.Config.XmlConfigurator.Configure();
+                ObjectBase.Container = MEFLoader.Init();
+                ServiceBase[] ServicesToRun = new ServiceBase[] { new DesertEcoTours(args) };
                 ServiceBase.Run(ServicesToRun);
-            //}
-
-
+            }
         }
     }
 }

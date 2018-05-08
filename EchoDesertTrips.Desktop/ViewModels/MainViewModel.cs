@@ -21,11 +21,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public MainViewModel(IServiceFactory serviceFactory)
         {
             _serviceFactory = serviceFactory;
-            LoginControlViewModel = new LoginControlViewModel(serviceFactory);
+            //LoginControlViewModel = new LoginControlViewModel(serviceFactory);
             LogOutCommand = new DelegateCommand<object>(OnLogOutCommand);
-            LoginControlViewModel.Authenticated += LoginControlViewModel_Authenticated;
+            //LoginControlViewModel.Authenticated += LoginControlViewModel_Authenticated;
             log4net.Config.XmlConfigurator.Configure();
-            LoginVisible = true;
+            //LoginVisible = true;
         }
 
         [Import]
@@ -57,7 +57,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnLogOutCommand(object obj)
         {
             UnRegisterClient();
+            Operator = null;
             MainWindowVisible = false;
+            LoginVisible = true;
+        }
+
+        protected override void OnViewLoaded()
+        {
+            LoginControlViewModel = new LoginControlViewModel(_serviceFactory);
+            LoginControlViewModel.Authenticated += LoginControlViewModel_Authenticated;
             LoginVisible = true;
         }
 

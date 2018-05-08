@@ -19,10 +19,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _serviceFactory = serviceFactory;
             LoginCommand = new DelegateCommand<Operator>(OnLoginCommand);
             PasswordChangedCommand = new DelegateCommand<PasswordBox>(OnPasswordChangedCommand);
-            CurrentOperator = new Operator();
             ResetCommand = new DelegateCommand<object>(OnResetCommand);
-            AuthenticationFailed = false;
-            CommunicationFailed = false;
         }
 
         public event EventHandler<AuthenticationEventArgs> Authenticated;
@@ -62,9 +59,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+            CurrentOperator = new Operator();
+            AuthenticationFailed = false;
+            CommunicationFailed = false;
         }
-
-
 
         private bool _authenticationFailed;
         public bool AuthenticationFailed

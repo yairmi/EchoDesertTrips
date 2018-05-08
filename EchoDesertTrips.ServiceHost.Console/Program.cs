@@ -63,7 +63,7 @@ namespace EchoDesertTrips.ServiceHost
 
             ReservationManager orderManager = new ReservationManager();
 
-            Reservation[] reservations = orderManager.GetDeadReservations();
+            /*Reservation[] reservations = orderManager.GetDeadReservations();
             if (reservations != null)
             {
                 foreach (var reservation in reservations)
@@ -84,7 +84,7 @@ namespace EchoDesertTrips.ServiceHost
 
                     }
                 }
-            }
+            }*/
 
             timer.Start();
         }

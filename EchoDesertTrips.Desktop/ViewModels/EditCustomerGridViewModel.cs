@@ -18,6 +18,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
         private readonly ReservationWrapper _currentReservation;
+        private CustomerWrapper _customerWrapper;
 
         public EditCustomerGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService,
@@ -26,25 +27,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
-            });
-
-            if (customer != null)
-            {
-
-                IMapper iMapper = config.CreateMapper();
-                Customer = iMapper.Map<CustomerWrapper, CustomerWrapper>(customer);
-            }
-            else
-                Customer = new CustomerWrapper();
-
-            CleanAll();
-
+            _customerWrapper = customer;
             _currentReservation = currentReservation;
-            TotalCustomers = 0;
-            CustomersLeft = TotalCustomers - _currentReservation.Customers.Count();
-
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, OnCommandCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
@@ -133,6 +117,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void AddModels(List<ObjectBase> models)
         {
             models.Add(Customer);
+        }
+
+        protected override void OnViewLoaded()
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
+            });
+
+            if (_customerWrapper != null)
+            {
+
+                IMapper iMapper = config.CreateMapper();
+                Customer = iMapper.Map<CustomerWrapper, CustomerWrapper>(_customerWrapper);
+            }
+            else
+                Customer = new CustomerWrapper();
+
+            TotalCustomers = 0;
+            CustomersLeft = TotalCustomers - _currentReservation.Customers.Count();
+
+            CleanAll();
         }
 
         private CustomerWrapper _customer;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Common.Exceptions
 {
+    [Serializable]
     public class NotFoundException : ApplicationException
     {
         public NotFoundException(string message)

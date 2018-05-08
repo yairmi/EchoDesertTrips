@@ -30,7 +30,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
-            Customers = new ObservableCollection<Customer>();
             EditReservationCommand = new DelegateCommand<ReservationWrapper>(OnEditReservationCommand);
             AddReservationCommand = new DelegateCommand<object>(OnAddCommand);
             SelectedDateChangedCommand = new DelegateCommand<object>(OnSelectedDateChangedCommand);
@@ -304,6 +303,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             log.Debug("OnViewLoaded: Calling LoadReservationsForDayRange");
+            Customers = new ObservableCollection<Customer>();
             LoadReservationsForDayRange(_selectedDate);
             //try
             //{

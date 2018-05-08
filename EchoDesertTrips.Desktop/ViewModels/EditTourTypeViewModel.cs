@@ -17,6 +17,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
+        private TourTypeWrapper _tourTypeWrapper;
 
         public EditTourTypeViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService,
@@ -24,47 +25,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            Destinations = new ObservableCollection<Destination>();
-            AdultPrices = new ObservableCollection<Prices>();
-            ChildPrices = new ObservableCollection<Prices>();
-
-            if (tourType != null)
-            {
-                TourType = TourTypeHelper.CreateTourTypeWrapper(tourType);
-                string[] words = SimpleSplitter.Split(TourType.Destinations);
-                foreach (var word in words)
-                {
-                    var destination = new Destination();
-                    destination.Deserialize(word);
-                    Destinations.Add(destination);
-                }
-
-                string[] separators = { ";" };
-                string[] pairs = SimpleSplitter.Split(TourType.AdultPrices, separators);
-                foreach(var pair in pairs)
-                {
-                    var prices = new Prices();
-                    prices.Deserialize(pair);
-                    AdultPrices.Add(prices);
-                }
-
-                pairs = SimpleSplitter.Split(TourType.ChildPrices, separators);
-                foreach (var pair in pairs)
-                {
-                    var prices = new Prices();
-                    prices.Deserialize(pair);
-                    ChildPrices.Add(prices);
-                }
-            }
-            else
-            {
-                TourType = new TourTypeWrapper();
-            }
-
-            Days = TourType.Days;
-
-            CleanAll();
-
+            _tourTypeWrapper = tourType;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             CancelCommand = new DelegateCommand<object>(OnCancelCommand);
         }
@@ -133,6 +94,50 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void AddModels(List<ObjectBase> models)
         {
             models.Add(TourType);
+        }
+
+        protected override void OnViewLoaded()
+        {
+            Destinations = new ObservableCollection<Destination>();
+            AdultPrices = new ObservableCollection<Prices>();
+            ChildPrices = new ObservableCollection<Prices>();
+
+            if (_tourTypeWrapper != null)
+            {
+                TourType = TourTypeHelper.CreateTourTypeWrapper(_tourTypeWrapper);
+                string[] words = SimpleSplitter.Split(TourType.Destinations);
+                foreach (var word in words)
+                {
+                    var destination = new Destination();
+                    destination.Deserialize(word);
+                    Destinations.Add(destination);
+                }
+
+                string[] separators = { ";" };
+                string[] pairs = SimpleSplitter.Split(TourType.AdultPrices, separators);
+                foreach (var pair in pairs)
+                {
+                    var prices = new Prices();
+                    prices.Deserialize(pair);
+                    AdultPrices.Add(prices);
+                }
+
+                pairs = SimpleSplitter.Split(TourType.ChildPrices, separators);
+                foreach (var pair in pairs)
+                {
+                    var prices = new Prices();
+                    prices.Deserialize(pair);
+                    ChildPrices.Add(prices);
+                }
+            }
+            else
+            {
+                TourType = new TourTypeWrapper();
+            }
+
+            Days = TourType.Days;
+
+            CleanAll();
         }
 
         private TourTypeWrapper _tourType;

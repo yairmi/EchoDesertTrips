@@ -1,8 +1,9 @@
 ﻿using EchoDesertTrips.Client.Entities;
+using System;
 
 namespace EchoDesertTrips.Desktop.Support
 {
-    public class HotelEventArgs
+    public class HotelEventArgs : EventArgs
     {
         public HotelEventArgs(Hotel hotel, bool isNew)
         {

@@ -10,23 +10,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="900">
     <Grid>
-        <Grid.RowDefinitions>
+        <!--<Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>-->
         <Label Grid.Row="0" Content="This is DashboardView"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBlock Text="Jordan ID"/>
             <TextBox x:Name="tbJordanId" Width="60" Text="{Binding GroupId, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Content="Show" Margin="10,0,0,0" Command="{Binding PrintCommand}" />
-        </StackPanel>
-        <!--<WindowsFormsHost HorizontalAlignment="Left" Height="219" Margin="101,151,0,-365" Grid.Row="2" VerticalAlignment="Top" Width="523">
-            <rv:ReportViewer x:Name="_reportViewer"/>
-        </WindowsFormsHost>-->
+        </StackPanel>-->
     </Grid>
 </core:UserControlViewBase>

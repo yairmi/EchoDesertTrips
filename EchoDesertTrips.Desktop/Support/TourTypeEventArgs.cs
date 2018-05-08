@@ -1,8 +1,9 @@
 ﻿using EchoDesertTrips.Client.Entities;
+using System;
 
 namespace EchoDesertTrips.Desktop.Support
 {
-    public class TourTypeEventArgs
+    public class TourTypeEventArgs : EventArgs
     {
         public TourTypeEventArgs(TourTypeWrapper tourType, bool isNew)
         {

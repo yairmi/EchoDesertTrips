@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core.Common.Exceptions
 {
+    [Serializable]
     public class UpdateConcurrencyException : ApplicationException
     {
         public UpdateConcurrencyException(string message)

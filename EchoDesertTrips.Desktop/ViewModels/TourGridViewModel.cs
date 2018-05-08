@@ -23,7 +23,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private readonly ReservationWrapper _currentReservation;
         private bool _editZeroTourId = false;
 
-        public TourGridViewModel(IServiceFactory serviceFactory, 
+        public TourGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageBoxDialogService,
             ReservationWrapper currentReservation)
         {
@@ -33,11 +33,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             DeleteTourCommand = new DelegateCommand<TourWrapper>(OnDeleteTourCommand);
             EditTourCommand = new DelegateCommand<TourWrapper>(OnEditTourCommand);
             AddTourCommand = new DelegateCommand<object>(OnAddTourCommand, CanAddTourCommand);
-            TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
             _addNewEnabled = true;
             _currentReservation = currentReservation;
-            Tours = new ObservableCollection<TourWrapper>();
-            Tours = _currentReservation.Tours;
         }
 
         public TourGridViewModel()
@@ -72,7 +69,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             return _currentReservation.ReservationId == 0 && _addNewEnabled == true;
         }
 
-        
+
 
         private void OnAddTourCommand(object obj)
         {
@@ -126,7 +123,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTour = tour;
             if (_currentTour.TourHotels != null && _currentTour.TourHotels.Count > 0)
             {
-                 SelectedTourHotel = _currentTour.TourHotels[0];
+                SelectedTourHotel = _currentTour.TourHotels[0];
             }
 
         }
@@ -204,6 +201,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+            TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
+            //Tours = new ObservableCollection<TourWrapper>();
+            Tours = _currentReservation.Tours;
+
             ItemsView = CollectionViewSource.GetDefaultView(Tours);
             ItemsView.GroupDescriptions.Add(new PropertyGroupDescription("TourId"));
         }

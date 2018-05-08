@@ -19,6 +19,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
+        private TourWrapper _tourWrapper;
+        private bool _isNewReservation;
 
         public EditTourGridViewModel(IServiceFactory serviceFactory,
                 IMessageDialogService messageBoxDialogService,
@@ -27,16 +29,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
-            if (tour != null)
-            {
-                Tour = TourHelper.CloneTourWrapper(tour);
-            }
-            else
-            {
-                Tour = new TourWrapper();
-            }
+            _tourWrapper = tour;
+            _isNewReservation = IsNewReservation;
 
-            EnableCBTourType = IsNewReservation;
 
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, OnCommandCanExecute);
@@ -131,6 +126,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+            if (_tourWrapper != null)
+            {
+                Tour = TourHelper.CloneTourWrapper(_tourWrapper);
+            }
+            else
+            {
+                Tour = new TourWrapper();
+            }
+
+            EnableCBTourType = _isNewReservation;
             InitTour();
         }
 
