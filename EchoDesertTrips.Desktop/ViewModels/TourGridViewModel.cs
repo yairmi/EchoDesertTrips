@@ -13,6 +13,7 @@ using System.Windows;
 using EchoDesertTrips.Desktop.Support;
 using AutoMapper;
 using Core.Common.Utils;
+using Core.Common.Extensions;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -128,7 +129,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         }
 
-        public ObservableCollection<TourWrapper> GetTours() { return Tours; }
+        //public ObservableCollection<TourWrapper> GetTours() { return Tours; }
 
         private ObservableCollection<TourWrapper> _tours;
 
@@ -230,8 +231,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             });
 
             IMapper iMapper = config.CreateMapper();
-            var tourWrapper = iMapper.Map<TourWrapper, TourWrapper>(e.Tour);
-
+            var tourWrapper = TourHelper.CloneTourWrapper(e.Tour);
+            removeUnNessecaryTourHotel(tourWrapper);
+            removeUnNessecaryTourHotelOptionals(tourWrapper);
             if (!e.IsNew || _editZeroTourId == true)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
@@ -278,6 +280,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTourViewModel.TourUpdated += CurrentTourViewModel_TourUpdated;
             CurrentTourViewModel.TourCancelled -= CurrentTourViewModel_TourCancelled;
             CurrentTourViewModel.TourCancelled += CurrentTourViewModel_TourCancelled;
+        }
+
+        private void removeUnNessecaryTourHotel(TourWrapper tourWrapper)
+        {
+            tourWrapper.TourHotels.ToList().ForEach((tourHotel) =>
+            {
+                tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
+            });
+
+            tourWrapper.TourHotels.RemoveItems(t => t.TourHotelRoomTypes.Count() == 0);
+        }
+
+        private void removeUnNessecaryTourHotelOptionals(TourWrapper tourWrapper)
+        {
+            tourWrapper.TourOptionals.RemoveItems(t => t.Selected == false);
         }
     }
     /*public class TourValidationRule : ValidationRule

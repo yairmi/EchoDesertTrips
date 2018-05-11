@@ -30,7 +30,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _customerWrapper = customer;
             _currentReservation = currentReservation;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
-            ClearCommand = new DelegateCommand<object>(OnClearCommand, OnCommandCanExecute);
+            ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
         }
 
@@ -41,6 +41,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private bool OnCommandCanExecute(object obj)
         {
             return IsCustomerDirty();
+        }
+
+        private bool OnClearCanExecute(object obj)
+        {
+            return (IsCustomerDirty() && Customer.CustomerId == 0);
         }
 
         //After pressing the 'Save' button
@@ -56,8 +61,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 TotalCustomers = 0;
                 CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, bIsNew));
                 CustomersLeft = _totalCustomers - _currentReservation.Customers.Count();
-                Customer = null;
-                Customer = new CustomerWrapper();
+                if (bIsNew == true)
+                {
+                    Customer = null;
+                    Customer = new CustomerWrapper();
+                }
                 CleanAll();
             }
         }
