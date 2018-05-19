@@ -19,8 +19,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class HotelViewModel : ViewModelBase
     {
-        private IServiceFactory _serviceFactory;
-        private IMessageDialogService _messageDialogService;
+        private readonly IServiceFactory _serviceFactory;
+        private readonly IMessageDialogService _messageDialogService;
 
         [ImportingConstructor]
         public HotelViewModel(IServiceFactory serviceFactory,
@@ -34,15 +34,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnAddHotelCommand(object obj)
         {
-            CurrentHotelViewModel = new EditHotelViewModel(_serviceFactory, _messageDialogService, null);
-            CurrentHotelViewModel.RoomTypes = RoomTypes;
+            CurrentHotelViewModel =
+                new EditHotelViewModel(_serviceFactory, _messageDialogService, null) {RoomTypes = RoomTypes};
             RegisterEvents();
         }
 
         private void OnEditHotelCommand(Hotel obj)
         {
-            CurrentHotelViewModel = new EditHotelViewModel(_serviceFactory, _messageDialogService, obj);
-            CurrentHotelViewModel.RoomTypes = RoomTypes;
+            CurrentHotelViewModel =
+                new EditHotelViewModel(_serviceFactory, _messageDialogService, obj) {RoomTypes = RoomTypes};
             RegisterEvents();
         }
 

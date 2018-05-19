@@ -19,8 +19,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class AgentsViewModel : ViewModelBase
     {
-        private IServiceFactory _serviceFactory;
-        private IMessageDialogService _messageDialogService;
+        private readonly IServiceFactory _serviceFactory;
+        private readonly IMessageDialogService _messageDialogService;
 
         [ImportingConstructor]
         public AgentsViewModel(IServiceFactory serviceFactory,

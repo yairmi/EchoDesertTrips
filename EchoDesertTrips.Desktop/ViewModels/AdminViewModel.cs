@@ -21,10 +21,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
         }
-        public override string ViewTitle
-        {
-            get { return "Administrator"; }
-        }
+        public override string ViewTitle => "Administrator";
+
         //[Import]
         //public NationalityViewModel NationalityViewModel { get; private set; }
         [Import]

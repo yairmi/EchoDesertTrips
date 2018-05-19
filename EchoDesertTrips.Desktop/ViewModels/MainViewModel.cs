@@ -151,7 +151,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             //Reservations message
             if (strings[0] == "1")
             {
-                bool isDayInRange = ReservationsViewModel.IsDayInRange(Convert.ToDateTime(strings[1]));
+                var isDayInRange = ReservationsViewModel.IsDayInRange(Convert.ToDateTime(strings[1]));
                 if (isDayInRange == true)
                     ReservationsViewModel.LoadReservationsForDayRangeAsync(Convert.ToDateTime(strings[1]));
             }
@@ -241,9 +241,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 });
             }
 
-            IDisposable disposableClient = inventoryClient as IDisposable;
-            if (disposableClient != null)
-                disposableClient.Dispose();
+            var disposableClient = inventoryClient as IDisposable;
+            disposableClient?.Dispose();
         }
 
         //private void LoadInventory()

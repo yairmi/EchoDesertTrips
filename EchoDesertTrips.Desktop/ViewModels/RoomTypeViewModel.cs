@@ -16,7 +16,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class RoomTypeViewModel : ViewModelBase
     {
-        private IServiceFactory _serviceFactory;
+        private readonly IServiceFactory _serviceFactory;
 
         [ImportingConstructor]
         public RoomTypeViewModel(IServiceFactory serviceFactory)

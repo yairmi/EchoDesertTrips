@@ -1,14 +1,16 @@
-﻿using Core.Common.Utils;
+﻿using Core.Common.Extensions;
+using Core.Common.Utils;
 using EchoDesertTrips.Client.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EchoDesertTrips.Desktop.Support
 {
     public class ReservationUtils
     {
-        public static double calculateReservationTotalPrice(ReservationWrapper reservation)
+        public static double CalculateReservationTotalPrice(ReservationWrapper reservation)
         {
             var adultPersons = reservation.Customers.ToList()
                 .Where((customer) => reservation.CreationTime.Subtract(customer.DateOfBirdth).TotalDays > 4380);
@@ -88,6 +90,47 @@ namespace EchoDesertTrips.Desktop.Support
                 });
             }
             return totalPrice;
+        }
+
+        public static void CreateExternalId(ReservationWrapper reservation)
+        {
+            if (reservation.Tours[0].TourType.IncramentExternalId)
+            {
+                StringBuilder reservationForHashCode = new StringBuilder();
+                reservationForHashCode.Append(reservation.Tours[0].StartDate.Date.ToString("d"));
+                reservation.Tours.ToList().ForEach((tour) =>
+                {
+                    reservationForHashCode.Append(tour.TourType.TourTypeName);
+                    reservationForHashCode.Append(tour.TourType.Private);
+                });
+                if (reservation.Group == null)
+                    reservation.Group = new Group();
+                reservation.Group.ExternalId = HashCodeUtil.GetHashCodeBernstein(reservationForHashCode.ToString());
+            }
+
+        }
+
+        public static void RemoveUnselectedHotels(ReservationWrapper reservation)
+        {
+            reservation.Tours.ToList().ForEach((tour) =>
+            {
+                tour.TourHotels.ToList().ForEach((tourHotel) =>
+                {
+                    tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
+                });
+
+                tour.TourHotels.RemoveItems(t => !t.TourHotelRoomTypes.Any());
+            });
+
+            
+        }
+
+        public static void RemoveUnselectedOptionals(ReservationWrapper reservation)
+        {
+            reservation.Tours.ToList().ForEach((tour) =>
+            {
+                tour.TourOptionals.RemoveItems(t => t.Selected == false);
+            });
         }
 
         //int hf(string const& s) 

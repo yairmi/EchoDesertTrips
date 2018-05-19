@@ -16,7 +16,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class OptionalsViewModel : ViewModelBase
     {
-        private IServiceFactory _serviceFactory;
+        private readonly IServiceFactory _serviceFactory;
 
         [ImportingConstructor]
         public OptionalsViewModel(IServiceFactory serviceFactory)

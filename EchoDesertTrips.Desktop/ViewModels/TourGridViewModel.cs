@@ -47,8 +47,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnDeleteTourCommand(TourWrapper tour)
         {
-            var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
-            if (Result == MessageDialogResult.CANCEL)
+            var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
+            if (result == MessageDialogResult.CANCEL)
                 return;
             Tours.Remove(tour);
         }
@@ -74,10 +74,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnAddTourCommand(object obj)
         {
-            CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, null, _currentReservation.ReservationId == 0);
-            CurrentTourViewModel.TourTypes = TourTypes;
-            CurrentTourViewModel.Hotels = Hotels;
-            CurrentTourViewModel.Optionals = Optionals;
+            CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, null,
+                _currentReservation.ReservationId == 0)
+            {
+                TourTypes = TourTypes,
+                Hotels = Hotels,
+                Optionals = Optionals
+            };
             _addNewEnabled = false;
             RegisterEvents();
             ShowPopupWindow("Add Tour");
@@ -93,10 +96,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             else
                 _editZeroTourId = false;
 
-            CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, tour, _currentReservation.ReservationId == 0);
-            CurrentTourViewModel.TourTypes = TourTypes;
-            CurrentTourViewModel.Hotels = Hotels;
-            CurrentTourViewModel.Optionals = Optionals;
+            CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, tour,
+                _currentReservation.ReservationId == 0)
+            {
+                TourTypes = TourTypes,
+                Hotels = Hotels,
+                Optionals = Optionals
+            };
             RegisterEvents();
             ShowPopupWindow("Edit Tour");
         }
@@ -194,18 +200,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public Optional SelectedItem
-        {
-            get;
-            set;
-        }
+        //public Optional SelectedItem
+        //{
+        //    get;
+        //    set;
+        //}
 
         protected override void OnViewLoaded()
         {
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
-            //Tours = new ObservableCollection<TourWrapper>();
             Tours = _currentReservation.Tours;
-
+            Tours.ToList().ForEach(InitTourOptionals);
+            _currentReservation.CleanAll();
             ItemsView = CollectionViewSource.GetDefaultView(Tours);
             ItemsView.GroupDescriptions.Add(new PropertyGroupDescription("TourId"));
         }
@@ -232,8 +238,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             IMapper iMapper = config.CreateMapper();
             var tourWrapper = TourHelper.CloneTourWrapper(e.Tour);
-            removeUnNessecaryTourHotel(tourWrapper);
-            removeUnNessecaryTourHotelOptionals(tourWrapper);
             if (!e.IsNew || _editZeroTourId == true)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
@@ -267,10 +271,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected void ShowPopupWindow(string title)
         {
-            _childWindow = new PopupWindow();
-            _childWindow.Title = title;
-            _childWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            _childWindow.Content = CurrentTourViewModel;
+            _childWindow = new PopupWindow
+            {
+                Title = title,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Content = CurrentTourViewModel
+            };
             _childWindow.ShowDialog();
         }
 
@@ -280,21 +286,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTourViewModel.TourUpdated += CurrentTourViewModel_TourUpdated;
             CurrentTourViewModel.TourCancelled -= CurrentTourViewModel_TourCancelled;
             CurrentTourViewModel.TourCancelled += CurrentTourViewModel_TourCancelled;
-        }
-
-        private void removeUnNessecaryTourHotel(TourWrapper tourWrapper)
-        {
-            tourWrapper.TourHotels.ToList().ForEach((tourHotel) =>
-            {
-                tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
-            });
-
-            tourWrapper.TourHotels.RemoveItems(t => t.TourHotelRoomTypes.Count() == 0);
-        }
-
-        private void removeUnNessecaryTourHotelOptionals(TourWrapper tourWrapper)
-        {
-            tourWrapper.TourOptionals.RemoveItems(t => t.Selected == false);
         }
     }
     /*public class TourValidationRule : ValidationRule

@@ -19,18 +19,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        private TourWrapper _tourWrapper;
-        private bool _isNewReservation;
+        private readonly TourWrapper _tourWrapper;
+        private readonly bool _isNewReservation;
 
         public EditTourGridViewModel(IServiceFactory serviceFactory,
                 IMessageDialogService messageBoxDialogService,
                 TourWrapper tour,
-                bool IsNewReservation)
+                bool isNewReservation)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
             _tourWrapper = tour;
-            _isNewReservation = IsNewReservation;
+            _isNewReservation = isNewReservation;
 
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCanExecute);
@@ -46,7 +46,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnCellEditEndingRoomTypeCommand(TourHotelRoomType tourHotelRoomType)
         {
-            updateTourHotel(tourHotelRoomType);
+            UpdateTourHotel(tourHotelRoomType);
         }
 
         private bool OnCommandCanExecute(object obj)
@@ -67,20 +67,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (Tour.IsValid)
             {
-                bool bIsNew = Tour.TourId == 0;
-                if (bIsNew == true)
+                if (Tour.TourId == 0)
                 {
-                    //removeUnNessecaryTourHotelOptionals();
-                    //removeUnNessecaryTourHotel();
-                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, bIsNew));
-                    Tour = null;
-                    Tour = new TourWrapper();
-                    InitTour();
-                    CleanAll();
+                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, true));
+                    CreateNewTour();
                 }
                 else
                 {
-                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, bIsNew));
+                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, false));
                     CleanAll();
                 }
             }
@@ -90,22 +84,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (IsTourDirty())
             {
-                var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
-                if (Result == MessageDialogResult.CANCEL)
+                var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
+                if (result == MessageDialogResult.CANCEL)
                     return;
             }
-            Tour = null;
-            Tour = new TourWrapper();
-            InitTour();
-            CleanAll();
+
+            CreateNewTour();
         }
 
         private void OnExitCommand(object obj)
         {
             if (IsTourDirty())
             {
-                var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
-                if (Result == MessageDialogResult.CANCEL)
+                var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
+                if (result == MessageDialogResult.CANCEL)
                     return;
             }
             TourCancelled?.Invoke(this, new TourEventArgs(null, true));
@@ -141,23 +133,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (_tourWrapper != null)
             {
                 Tour = TourHelper.CloneTourWrapper(_tourWrapper);
+                SelectedHotel = Tour.TourHotels.Count > 0 ? Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId) :
+                    null;
+                CleanAll();
             }
             else
             {
-                Tour = new TourWrapper();
+                CreateNewTour();
             }
 
             EnableCBTourType = _isNewReservation;
-            InitTour();
-            CleanAll();
         }
 
-        private void InitTour()
+        private void CreateNewTour()
         {
+            Tour = null;
+            Tour = new TourWrapper();
+            InitTourOptionals(Tour);
             SelectedHotel = Tour.TourHotels.Count > 0 ? Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId) :
                 null;
-            UpdateOptionalsInTour();
-            
+            CleanAll();
         }
 
         private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
@@ -171,7 +166,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             set
             {
                 _tourHotelRoomTypes = value;
-                OnPropertyChanged(() => TourHotelRoomTypes, true);
+                OnPropertyChanged(() => TourHotelRoomTypes);
             }
         }
 
@@ -215,6 +210,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             TourHotelRoomTypes.Clear();
             if (hotel == null)
                 return;
+            //Init all rooms(tourhotelroomtype) for selected hotel
             hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
             {
                 var tourHotelRoomType = new TourHotelRoomType()
@@ -226,125 +222,40 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 };
                 TourHotelRoomTypes.Add(tourHotelRoomType);
             });
-
-            var temp_tourHotel = Tour.TourHotels.FirstOrDefault(t => t.Hotel.HotelId == hotel.HotelId);
-            if (temp_tourHotel != null)
+            //update with actual persons+capacity
+            var tempTourHotel = Tour.TourHotels.FirstOrDefault(t => t.Hotel.HotelId == hotel.HotelId);
+            tempTourHotel?.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
             {
-                temp_tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
-                {
-                    var temp_tourHotelRoomType = TourHotelRoomTypes.FirstOrDefault(t => t.HotelRoomType.RoomTypeId == tourHotelRoomType.HotelRoomType.RoomTypeId);
-                    var index = TourHotelRoomTypes.IndexOf(temp_tourHotelRoomType);
-                    TourHotelRoomTypes[index] = tourHotelRoomType;
-                });
-            }
+                var tempTourHotelRoomType = TourHotelRoomTypes.FirstOrDefault(t => t.HotelRoomType.RoomTypeId == tourHotelRoomType.HotelRoomType.RoomTypeId);
+                var index = TourHotelRoomTypes.IndexOf(tempTourHotelRoomType);
+                TourHotelRoomTypes[index] = tourHotelRoomType;
+            });
         }
         //Update Model
-        private void updateTourHotel(TourHotelRoomType tourHotelRoomType)
+        private void UpdateTourHotel(TourHotelRoomType tourHotelRoomType)
         {
             if (_selectedHotel == null)
                 return;
-            var temp_tourHotel = Tour.TourHotels.FirstOrDefault(t => t.Hotel.HotelId == _selectedHotel.HotelId);
-            if (temp_tourHotel == null)
+            var tempTourHotel = Tour.TourHotels.FirstOrDefault(t => t.Hotel.HotelId == _selectedHotel.HotelId);
+            if (tempTourHotel == null)
             {
-                var tourHotel = new TourHotel();
-                tourHotel.HotelId = _selectedHotel.HotelId;
-                tourHotel.Hotel = _selectedHotel;
+                var tourHotel = new TourHotel
+                {
+                    HotelId = _selectedHotel.HotelId,
+                    Hotel = _selectedHotel
+                };
                 tourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
                 Tour.TourHotels.Add(tourHotel);
             }
             else
             {
-                var existingtourHotelRoomType = temp_tourHotel.TourHotelRoomTypes.FirstOrDefault(t => t.HotelRoomTypeId == tourHotelRoomType.HotelRoomTypeId);
+                var existingtourHotelRoomType = tempTourHotel.TourHotelRoomTypes.FirstOrDefault(t => t.HotelRoomTypeId == tourHotelRoomType.HotelRoomTypeId);
                 if (existingtourHotelRoomType == null)
                 {
-                    temp_tourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
-                }
-                else
-                {
-                    var index = temp_tourHotel.TourHotelRoomTypes.IndexOf(existingtourHotelRoomType);
-                    temp_tourHotel.TourHotelRoomTypes[index] = tourHotelRoomType;
+                    tempTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
                 }
             }
         }
-
-        //private void removeUnNessecaryTourHotel()
-        //{
-        //    Tour.TourHotels.ToList().ForEach((tourHotel) =>
-        //    {
-        //        tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
-        //    });
-
-        //    Tour.TourHotels.RemoveItems(t => t.TourHotelRoomTypes.Count() == 0);
-        //}
-
-        //private void removeUnNessecaryTourHotelOptionals()
-        //{
-        //    Tour.TourOptionals.RemoveItems(t => t.Selected == false);
-        //}
-
-        private void UpdateOptionalsInTour()
-        {
-            foreach (var tourOptional in Tour.TourOptionals)
-            {
-                tourOptional.Selected = true;
-            }
-
-            if (Tour.TourOptionals.Count == Optionals.Count)
-                return;
-
-            foreach (var optional in Optionals)
-            {
-                if (!(Tour.TourOptionals.Any(o => o.OptionalId == optional.OptionalId)))
-                {
-                    TourOptionalWrapper newTourOptional = new TourOptionalWrapper()
-                    {
-                        Selected = false,
-                        Optional = optional,
-                        OptionalId = optional.OptionalId,
-                        TourId = Tour.TourId,
-                        PriceInclusive = false
-                    };
-                    Tour.TourOptionals.Add(newTourOptional);
-                }
-            }
-        }
-
-        /*private void UpdateOptionalsInTour()
-        {
-            foreach(var optional in Optionals)
-            {
-                var tourOptional = Tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
-                if (tourOptional == null)
-                {
-                    TourOptionalWrapper newTourOptional = new TourOptionalWrapper()
-                    {
-                        Selected = false,
-                        Optional = optional,
-                        OptionalId = optional.OptionalId,
-                        TourId = Tour.TourId,
-                        PriceInclusive = false
-                    };
-                    TourOptionals.Add(newTourOptional);
-                }
-                else
-                    TourOptionals.Add(tourOptional);
-            }
-        }
-
-        private ObservableCollection<TourOptionalWrapper> _tourOptionals;
-
-        public ObservableCollection<TourOptionalWrapper> TourOptionals
-        {
-            get
-            {
-                return _tourOptionals;
-            }
-            set
-            {
-                _tourOptionals = value;
-                OnPropertyChanged(() => TourOptionals, true);
-            }
-        }*/
 
         public event EventHandler<TourEventArgs> TourUpdated;
         public event EventHandler<TourEventArgs> TourCancelled;
@@ -355,7 +266,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public override ValidationResult Validate(object value,
             System.Globalization.CultureInfo cultureInfo)
         {
-            TourHotelRoomType tourHotelRoomType = (value as BindingGroup).Items[0] as TourHotelRoomType;
+            var tourHotelRoomType = (value as BindingGroup).Items[0] as TourHotelRoomType;
             if (tourHotelRoomType.Capacity < 0)
             {
                 return new ValidationResult(false,

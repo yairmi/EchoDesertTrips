@@ -14,7 +14,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class OperatorViewModel : ViewModelBase
     {
-        private IServiceFactory _serviceFactory;
+        private readonly IServiceFactory _serviceFactory;
 
         [ImportingConstructor]
         public OperatorViewModel(IServiceFactory serviceFactory)

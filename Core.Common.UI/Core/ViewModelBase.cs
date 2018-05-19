@@ -258,6 +258,57 @@ namespace Core.Common.UI.Core
 
         }
 
+        /*protected void InitTourOptionals(TourWrapper tour)
+        {
+            foreach (var optional in Optionals)
+            {
+                var tourOptional = tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
+                if (tourOptional == null)
+                {
+                    TourOptionalWrapper newTourOptional = new TourOptionalWrapper()
+                    {
+                        Selected = false,
+                        Optional = optional,
+                        OptionalId = optional.OptionalId,
+                        TourId = tour.TourId,
+                        PriceInclusive = false
+                    };
+                    tour.TourOptionals.Add(newTourOptional);
+                }
+                else
+                {
+                    tourOptional.Selected = true;
+                }
+            }
+        }*/
+        protected void InitTourOptionals(TourWrapper tour)
+        {
+            var tourOptionals = new ObservableCollection<TourOptionalWrapper>();
+            foreach (var optional in Optionals)
+            {
+                var tourOptional = tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
+                if (tourOptional == null)
+                {
+                    var newTourOptional = new TourOptionalWrapper()
+                    {
+                        Selected = false,
+                        Optional = optional,
+                        OptionalId = optional.OptionalId,
+                        TourId = tour.TourId,
+                        PriceInclusive = false
+                    };
+                    tourOptionals.Add(newTourOptional);
+                }
+                else
+                {
+                    tourOptional.Selected = true;
+                    tourOptionals.Add(tourOptional);
+                }
+            }
+            tour.TourOptionals.Clear();
+            tour.TourOptionals = tourOptionals;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

@@ -16,7 +16,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
         public void RegisterClient(string clientName)
         {
-            if (clientName != null && clientName != "")
+            if (!string.IsNullOrEmpty(clientName))
             {
                 try
                 {

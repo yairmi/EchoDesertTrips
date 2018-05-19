@@ -72,7 +72,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnAddCustomerCommand(object obj)
         {
             TotalCustomers = 0;
-            if (_totalCustomers > _currentReservation.Customers.Count())
+            if (_totalCustomers > _currentReservation.Customers.Count)
             {
                 CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, null, _currentReservation);
                 RegisterEvents();
@@ -233,10 +233,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected void ShowPopupWindow(string title)
         {
-            _childWindow = new PopupWindow();
-            _childWindow.Title = title;
-            _childWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            _childWindow.Content = CurrentCustomerViewModel;
+            _childWindow = new PopupWindow
+            {
+                Title = title,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Content = CurrentCustomerViewModel
+            };
             _childWindow.ShowDialog();
         }
 

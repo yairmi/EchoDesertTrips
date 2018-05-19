@@ -1,21 +1,18 @@
-﻿using EchoDesertTrips.Client.Contracts;
-using EchoDesertTrips.Client.Entities;
+﻿using EchoDesertTrips.Client.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Desktop.Support
 {
     public class ReservationEventArgs : EventArgs
     {
-        public ReservationEventArgs(ReservationWrapper reservation, bool isNew)
+        public ReservationEventArgs(ReservationWrapper reservation, bool isNew, bool isDbWon)
         {
             Reservation = reservation;
             IsNew = isNew;
+            IsDbWon = isDbWon;
         }
         public ReservationWrapper Reservation { get; set; }
         public bool IsNew { get; set; }
+        public bool IsDbWon { get; set; }
     }
 }

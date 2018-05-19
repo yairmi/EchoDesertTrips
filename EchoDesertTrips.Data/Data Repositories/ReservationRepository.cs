@@ -41,7 +41,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
             var hotels = (from e in entityContext.HotelSet select e).ToList();
             foreach (var reservation in reservations)
-                updateHotel(entityContext, reservation, hotels);
+                UpdateHotel(entityContext, reservation, hotels);
 
             return reservations;
         }
@@ -68,15 +68,17 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))))
                 .FirstOrDefault();
             var hotels = (from e in entityContext.HotelSet select e).ToList();
-            updateHotel(entityContext, reservation, hotels);
+            if (reservation == null) return null;
+            UpdateHotel(entityContext, reservation, hotels);
             return reservation;
+
         }
 
-        public IEnumerable<Reservation> GetReservationsByGroupId(int GroupId)
+        public IEnumerable<Reservation> GetReservationsByGroupId(int groupId)
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
-                var reservations = (from e in entityContext.ReservationSet where e.GroupID == GroupId select e)
+                var reservations = (from e in entityContext.ReservationSet where e.GroupID == groupId select e)
                 .Include(a => a.Agency.Agents)
                 .Include(a => a.Agent)
                 .Include(o => o.Customers)
@@ -90,20 +92,20 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
                 var hotels = (from e in entityContext.HotelSet select e).ToList();
                 foreach (var reservation in reservations)
-                    updateHotel(entityContext, reservation, hotels);
-                return reservations.ToList().ToArray();
+                    UpdateHotel(entityContext, reservation, hotels);
+                return reservations.ToArray();
             }
         }
 
-        public IEnumerable<Reservation> GetReservationHistoryByCustomer(int CustomerId)
+        public IEnumerable<Reservation> GetReservationHistoryByCustomer(int customerId)
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
                 var query = from e in entityContext.ReservationSet
-                            where e.Customers.Any(c => c.CustomerId == CustomerId)
+                            where e.Customers.Any(c => c.CustomerId == customerId)
                             select e;
 
-                return query.ToList().ToArray();
+                return query.ToArray();
             }
         }
 
@@ -114,20 +116,20 @@ namespace EchoDesertTrips.Data.Data_Repositories
 
         public IEnumerable<CustomerOrderInfo> GetCustomerOrderInfo()
         {
-            using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
+            using (var entityContext = new EchoDesertTripsContext())
             {
                 return null;
             }
         }
 
-        public IEnumerable<Reservation> GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo)
+        public IEnumerable<Reservation> GetReservationsForDayRange(DateTime dayFrom, DateTime dayTo)
         {
-            using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
+            using (var entityContext = new EchoDesertTripsContext())
             {
                 var reservations = (from e in entityContext.ReservationSet
                                     where e.Tours.Any(
-                                       t => t.StartDate >= DayFrom
-                                       && t.StartDate <= DayTo)
+                                       t => t.StartDate >= dayFrom
+                                       && t.StartDate <= dayTo)
                                     select e)
                             .Include(a => a.Agency.Agents)
                             .Include(a => a.Agent)
@@ -142,14 +144,14 @@ namespace EchoDesertTrips.Data.Data_Repositories
                             .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
                 var hotels = (from e in entityContext.HotelSet select e).ToList();
                 foreach (var reservation in reservations)
-                    updateHotel(entityContext, reservation, hotels);
-                return reservations.ToList().ToArray();
+                    UpdateHotel(entityContext, reservation, hotels);
+                return reservations.ToArray();
             }
         }
 
         public void RemoveReservation(int reservationId)
         {
-            using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
+            using (var entityContext = new EchoDesertTripsContext())
             {
                 var existingReservation = (from r in entityContext.ReservationSet
                                    where r.ReservationId == reservationId
@@ -159,22 +161,25 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                    .Include(t => t.Tours.Select(s => s.SubTours))
                                    .Include(t => t.Tours.Select(o => o.TourHotels.Select(th => th.TourHotelRoomTypes)))
                                    .FirstOrDefault();
-                var customer = existingReservation.Customers.FirstOrDefault();
-                while (customer != null)
+                if (existingReservation != null)
                 {
-                    entityContext.CustomerSet.Remove(customer);
-                    customer = existingReservation.Customers.FirstOrDefault();
-                }
+                    var customer = existingReservation.Customers.FirstOrDefault();
+                    while (customer != null)
+                    {
+                        entityContext.CustomerSet.Remove(customer);
+                        customer = existingReservation.Customers.FirstOrDefault();
+                    }
 
-                var tour = existingReservation.Tours.FirstOrDefault();
-                while (tour != null)
-                {
-                    RemoveTour(entityContext, tour);
-                    tour = existingReservation.Tours.FirstOrDefault();
-                }
+                    var tour = existingReservation.Tours.FirstOrDefault();
+                    while (tour != null)
+                    {
+                        RemoveTour(entityContext, tour);
+                        tour = existingReservation.Tours.FirstOrDefault();
+                    }
 
-                entityContext.Entry(existingReservation).State = EntityState.Deleted;
-                entityContext.SaveChanges();
+                    entityContext.Entry(existingReservation).State = EntityState.Deleted;
+                    entityContext.SaveChanges();
+                }
             }
         }
 
@@ -186,198 +191,233 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 DbReservation = null,
                 InEdit = false
             };
-            using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
+            using (var entityContext = new EchoDesertTripsContext())
             {
-                ResetNavProperties(reservation);
-                var exsitingReservation = (from e in entityContext.ReservationSet where e.ReservationId == reservation.ReservationId select e)
-                            .Include(r => r.Customers)
-                            .Include(t => t.Tours.Select(h => h.TourHotels.Select(th => th.TourHotelRoomTypes)))
-                            .Include(t => t.Tours.Select(o => o.TourOptionals))
-                            .Include(t => t.Tours.Select(s => s.SubTours))
-                            .Include(o => o.Operator)
-                            .FirstOrDefault();
-                entityContext.ReservationSet.Attach(exsitingReservation);
-                entityContext.Entry(exsitingReservation).CurrentValues.SetValues(reservation);
-                //Handle Group
-                if (reservation.Group != null)
-                {
-                    var existingGroup = (from e in entityContext.GroupSet where e.ExternalId == reservation.Group.ExternalId select e).FirstOrDefault();
-                    if (existingGroup == null)
+                try
+                { 
+                    ResetNavProperties(reservation);
+                    var exsitingReservation = (from e in entityContext.ReservationSet where e.ReservationId == reservation.ReservationId select e)
+                                .Include(r => r.Customers)
+                                .Include(t => t.Tours.Select(h => h.TourHotels.Select(th => th.TourHotelRoomTypes)))
+                                .Include(t => t.Tours.Select(o => o.TourOptionals))
+                                .Include(t => t.Tours.Select(s => s.SubTours))
+                                .Include(o => o.Operator)
+                                .FirstOrDefault();
+                    if (exsitingReservation != null)
                     {
-                        exsitingReservation.Group = null;
-                        exsitingReservation.GroupID = reservation.GroupID;
-                    }
-                    else
-                    {
-                        existingGroup.Updated = true;
-                    }
-                }
-                //Handle Tours
-                foreach (var tour in reservation.Tours)
-                {
-                    var exsitingTour = (from e in entityContext.TourSet where e.TourId == tour.TourId select e)
-                        .Include(t => t.TourHotels.Select(h => h.TourHotelRoomTypes))
-                        .Include(t => t.TourOptionals)
-                        .Include(t => t.SubTours)
-                        .Include(t => t.TourHotels.Select(h => h.TourHotelRoomTypes))
-                        .FirstOrDefault();
-                    if (exsitingTour != null)
-                    {
-                        entityContext.Entry(exsitingTour).CurrentValues.SetValues(tour);
-                    }
-                    else //new Tour
-                    {
-                        exsitingReservation.Tours.Add(tour);
-                        continue;
-                    }
-                    //Sub Tours
-                    if (tour.SubTours != null)
-                    {
-                        foreach (var subTour in tour.SubTours)
+                        entityContext.ReservationSet.Attach(exsitingReservation);
+                        entityContext.Entry(exsitingReservation).CurrentValues.SetValues(reservation);
+                        //Handle Group
+                        if (reservation.Group != null)
                         {
-                            if (subTour.SubTourId != 0)
+                            var existingGroup =
+                                (from e in entityContext.GroupSet
+                                    where e.ExternalId == reservation.Group.ExternalId
+                                    select e).FirstOrDefault();
+                            if (existingGroup == null)
                             {
-                                var existingSubTour = (from e in entityContext.SubTourSet
-                                                       where e.SubTourId == subTour.SubTourId
-                                                       select e).FirstOrDefault();
-                                entityContext.Entry(existingSubTour).CurrentValues.SetValues(subTour);
-                            }
-                        }
-                    }
-                    //Tour Optionals
-                    //Add
-                    if (tour.TourOptionals != null)
-                    {
-                        foreach (var tourOptional in tour.TourOptionals)
-                        {
-                            var existingTourOptional = (from e in entityContext.TourOptionalSet
-                                                        where e.TourId == tourOptional.TourId
-                                                        && e.OptionalId == tourOptional.OptionalId
-                                                        select e).FirstOrDefault();
-                            if (existingTourOptional == null)  //new TourOptional
-                            {
-                                entityContext.TourOptionalSet.Add(tourOptional);
+                                exsitingReservation.Group = null;
+                                exsitingReservation.GroupID = reservation.GroupID;
                             }
                             else
-                                entityContext.Entry(existingTourOptional).CurrentValues.SetValues(tourOptional);
-                        }
-                    }
-                    //Delete
-                    if (exsitingTour != null && exsitingTour.TourOptionals != null)
-                    {
-                        for (var i = exsitingTour.TourOptionals.Count() - 1; i >= 0; i--)
-                        {
-                            var exist = tour.TourOptionals.Exists(t => t.TourId == exsitingTour.TourOptionals[i].TourId
-                                        && t.OptionalId == exsitingTour.TourOptionals[i].OptionalId);
-                            if (!exist)
                             {
-                                entityContext.Entry(exsitingTour.TourOptionals[i]).State = EntityState.Deleted;
+                                existingGroup.Updated = true;
                             }
                         }
-                    }
-                    //Tour Hotels
-                    if (tour.TourHotels != null)
-                    {
-                        tour.TourHotels.ForEach((tourHotel) =>
+
+                        //Handle Tours
+                        foreach (var tour in reservation.Tours)
                         {
-                            var existingTourHotel = (from e in entityContext.TourHotelSet
-                                                     where e.TourHotelId == tourHotel.TourHotelId
-                                                     select e).Include(t => t.TourHotelRoomTypes).FirstOrDefault();
-                            if (existingTourHotel == null)
+                            var exsitingTour = (from e in entityContext.TourSet where e.TourId == tour.TourId select e)
+                                .Include(t => t.TourHotels.Select(h => h.TourHotelRoomTypes))
+                                .Include(t => t.TourOptionals)
+                                .Include(t => t.SubTours)
+                                .Include(t => t.TourHotels.Select(h => h.TourHotelRoomTypes))
+                                .FirstOrDefault();
+                            if (exsitingTour != null)
                             {
-                                //TODO: check if tourhotelroomtypes are also added
-                                //entityContext.TourHotelSet.Add(tourHotel);
-                                exsitingTour.TourHotels.Add(tourHotel);
+                                entityContext.Entry(exsitingTour).CurrentValues.SetValues(tour);
                             }
-                            else
-                            //Tour Hotel Room Types
-                            if (tourHotel.TourHotelRoomTypes != null)
+                            else //new Tour
                             {
-                                tourHotel.TourHotelRoomTypes.ForEach((tourHotelRoomType) =>
+                                exsitingReservation.Tours.Add(tour);
+                                continue;
+                            }
+
+                            //Sub Tours
+                            if (tour.SubTours != null)
+                            {
+                                foreach (var subTour in tour.SubTours)
                                 {
-                                    var existingTourHotelRoomType = (from e in entityContext.TourHotelRoomTypesSet
-                                                                     where e.TourHotelRoomTypeId == tourHotelRoomType.TourHotelRoomTypeId
-                                                                     select e).FirstOrDefault();
-                                    if (existingTourHotelRoomType == null)  //new tourHotelRoomType
+                                    if (subTour.SubTourId != 0)
                                     {
-                                        existingTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
+                                        var existingSubTour = (from e in entityContext.SubTourSet
+                                            where e.SubTourId == subTour.SubTourId
+                                            select e).FirstOrDefault();
+                                        entityContext.Entry(existingSubTour).CurrentValues.SetValues(subTour);
+                                    }
+                                }
+                            }
+
+                            //Tour Optionals
+                            //Add
+                            if (tour.TourOptionals != null)
+                            {
+                                foreach (var tourOptional in tour.TourOptionals)
+                                {
+                                    var existingTourOptional = (from e in entityContext.TourOptionalSet
+                                        where e.TourId == tourOptional.TourId
+                                              && e.OptionalId == tourOptional.OptionalId
+                                        select e).FirstOrDefault();
+                                    if (existingTourOptional == null) //new TourOptional
+                                    {
+                                        entityContext.TourOptionalSet.Add(tourOptional);
                                     }
                                     else
+                                        entityContext.Entry(existingTourOptional).CurrentValues.SetValues(tourOptional);
+                                }
+                            }
+
+                            //Delete
+                            if (exsitingTour.TourOptionals != null)
+                            {
+                                for (var i = exsitingTour.TourOptionals.Count - 1; i >= 0; i--)
+                                {
+                                    var exist = tour.TourOptionals.Exists(t =>
+                                        t.TourId == exsitingTour.TourOptionals[i].TourId
+                                        && t.OptionalId == exsitingTour.TourOptionals[i].OptionalId);
+                                    if (!exist)
                                     {
-                                        entityContext.Entry(existingTourHotelRoomType).CurrentValues.SetValues(tourHotelRoomType);
+                                        entityContext.Entry(exsitingTour.TourOptionals[i]).State = EntityState.Deleted;
+                                    }
+                                }
+                            }
+
+                            //Tour Hotels
+                            if (tour.TourHotels != null)
+                            {
+                                tour.TourHotels.ForEach((tourHotel) =>
+                                {
+                                    var existingTourHotel = (from e in entityContext.TourHotelSet
+                                        where e.TourHotelId == tourHotel.TourHotelId
+                                        select e).Include(t => t.TourHotelRoomTypes).FirstOrDefault();
+                                    if (existingTourHotel == null)
+                                    {
+                                        exsitingTour.TourHotels.Add(tourHotel);
+                                    }
+                                    else
+                                        //Tour Hotel Room Types
+                                    if (tourHotel.TourHotelRoomTypes != null)
+                                    {
+                                        tourHotel.TourHotelRoomTypes.ForEach((tourHotelRoomType) =>
+                                        {
+                                            var existingTourHotelRoomType =
+                                                (from e in entityContext.TourHotelRoomTypesSet
+                                                    where e.TourHotelRoomTypeId == tourHotelRoomType.TourHotelRoomTypeId
+                                                    select e).FirstOrDefault();
+                                            if (existingTourHotelRoomType == null) //new tourHotelRoomType
+                                            {
+                                                existingTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
+                                            }
+                                            else
+                                            {
+                                                entityContext.Entry(existingTourHotelRoomType).CurrentValues
+                                                    .SetValues(tourHotelRoomType);
+                                            }
+                                        });
                                     }
                                 });
                             }
-                        });
-                    }
-                    if (exsitingTour != null)
-                    {
-                        for (var j = exsitingTour.TourHotels.Count() - 1; j >= 0; j--)
-                        {
-                            var tourHotel = tour.TourHotels.FirstOrDefault(t => t.TourHotelId == exsitingTour.TourHotels[j].TourHotelId);
-                            if (tourHotel != null)
-                            {
-                                for (var i = exsitingTour.TourHotels[j].TourHotelRoomTypes.Count() - 1; i >= 0; i--)
-                                {
-                                    var exist = tourHotel.TourHotelRoomTypes.FirstOrDefault(t => t.TourHotelRoomTypeId == exsitingTour.TourHotels[j].TourHotelRoomTypes[i].TourHotelRoomTypeId);
-                                    if (exist == null)
-                                    {
-                                        entityContext.Entry(exsitingTour.TourHotels[j].TourHotelRoomTypes[i]).State = EntityState.Deleted;
-                                    }
 
-                                }
-                                if (exsitingTour.TourHotels[j].TourHotelRoomTypes.Count() == 0)
-                                    entityContext.Entry(exsitingTour.TourHotels[j]).State = EntityState.Deleted;
-                            }
-                            else
+                            if (exsitingTour != null)
                             {
-                                for (var i = exsitingTour.TourHotels[j].TourHotelRoomTypes.Count() - 1; i >= 0;i-- )
+                                for (var j = exsitingTour.TourHotels.Count() - 1; j >= 0; j--)
                                 {
-                                    entityContext.Entry(exsitingTour.TourHotels[j].TourHotelRoomTypes[i]).State = EntityState.Deleted;
+                                    var tourHotel = tour.TourHotels.FirstOrDefault(t =>
+                                        t.TourHotelId == exsitingTour.TourHotels[j].TourHotelId);
+                                    if (tourHotel != null)
+                                    {
+                                        for (var i = exsitingTour.TourHotels[j].TourHotelRoomTypes.Count - 1;
+                                            i >= 0;
+                                            i--)
+                                        {
+                                            var exist = tourHotel.TourHotelRoomTypes.FirstOrDefault(t =>
+                                                t.TourHotelRoomTypeId == exsitingTour.TourHotels[j]
+                                                    .TourHotelRoomTypes[i]
+                                                    .TourHotelRoomTypeId);
+                                            if (exist == null)
+                                            {
+                                                entityContext.Entry(exsitingTour.TourHotels[j].TourHotelRoomTypes[i])
+                                                        .State
+                                                    = EntityState.Deleted;
+                                            }
+                                        }
+
+                                        if (!exsitingTour.TourHotels[j].TourHotelRoomTypes.Any())
+                                            entityContext.Entry(exsitingTour.TourHotels[j]).State = EntityState.Deleted;
+                                    }
+                                    else
+                                    {
+                                        for (var i = exsitingTour.TourHotels[j].TourHotelRoomTypes.Count - 1;
+                                            i >= 0;
+                                            i--)
+                                        {
+                                            entityContext.Entry(exsitingTour.TourHotels[j].TourHotelRoomTypes[i])
+                                                    .State =
+                                                EntityState.Deleted;
+                                        }
+
+                                        entityContext.Entry(exsitingTour.TourHotels[j]).State = EntityState.Deleted;
+                                    }
                                 }
-                                entityContext.Entry(exsitingTour.TourHotels[j]).State = EntityState.Deleted;
                             }
                         }
-                    }
-                }
-                //Delete Tours that are not exist in reservation (The most updated Reservation)
-                for (var i = exsitingReservation.Tours.Count() - 1; i >= 0; i--)
-                {
-                    var exist = reservation.Tours.Exists(n => n.TourId == exsitingReservation.Tours[i].TourId);
-                    if (!exist)
-                    {
-                        RemoveTour(entityContext, exsitingReservation.Tours[i]);
-                        //entityContext.Entry(exsitingReservation.Tours[i]).State = EntityState.Deleted;
-                    }
-                }
-                //Handle Customers
-                foreach (var customer in reservation.Customers)
-                {
-                    var exsitingCustomer = (from e in entityContext.CustomerSet where e.CustomerId == customer.CustomerId select e)
-                        .FirstOrDefault();
-                    if (exsitingCustomer != null)
-                    {
-                        entityContext.Entry(exsitingCustomer).CurrentValues.SetValues(customer);
-                    }
-                    else //new customer
-                    {
-                        exsitingReservation.Customers.Add(customer);
-                    }
-                }
-                //Delete Customers that are not exist in reservation (The most updated reservation)
-                for (var i = exsitingReservation.Customers.Count() - 1; i >= 0; i--)
-                {
-                    var exist = reservation.Customers.Exists(n => n.CustomerId == exsitingReservation.Customers[i].CustomerId);
-                    if (!exist)
-                    {
-                        entityContext.Entry(exsitingReservation.Customers[i]).State = EntityState.Deleted;
-                    }
-                }
-                entityContext.Entry(exsitingReservation).OriginalValues["RowVersion"] = reservation.RowVersion;
-                exsitingReservation.UpdateTime = DateTime.Now;
 
-                try
-                {
+                        //Delete Tours that are not exist in reservation (The most updated Reservation)
+                        for (var i = exsitingReservation.Tours.Count - 1; i >= 0; i--)
+                        {
+                            var exist = reservation.Tours.Exists(n => n.TourId == exsitingReservation.Tours[i].TourId);
+                            if (!exist)
+                            {
+                                RemoveTour(entityContext, exsitingReservation.Tours[i]);
+                                //entityContext.Entry(exsitingReservation.Tours[i]).State = EntityState.Deleted;
+                            }
+                        }
+
+                        //Handle Customers
+                        foreach (var customer in reservation.Customers)
+                        {
+                            var exsitingCustomer = (from e in entityContext.CustomerSet
+                                    where e.CustomerId == customer.CustomerId
+                                    select e)
+                                .FirstOrDefault();
+                            if (exsitingCustomer != null)
+                            {
+                                entityContext.Entry(exsitingCustomer).CurrentValues.SetValues(customer);
+                            }
+                            else //new customer
+                            {
+                                exsitingReservation.Customers.Add(customer);
+                            }
+                        }
+
+                        //Delete Customers that are not exist in reservation (The most updated reservation)
+                        for (var i = exsitingReservation.Customers.Count - 1; i >= 0; i--)
+                        {
+                            var exist = reservation.Customers.Exists(n =>
+                                n.CustomerId == exsitingReservation.Customers[i].CustomerId);
+                            if (!exist)
+                            {
+                                entityContext.Entry(exsitingReservation.Customers[i]).State = EntityState.Deleted;
+                            }
+                        }
+
+                        entityContext.Entry(exsitingReservation).OriginalValues["RowVersion"] = reservation.RowVersion;
+                        exsitingReservation.UpdateTime = DateTime.Now;
+                    }
+                    else
+                        throw new DbUpdateConcurrencyException();
+
                     entityContext.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException ex)
@@ -431,7 +471,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
             reservation.Agent = null;
         }
 
-        private void updateHotel(EchoDesertTripsContext entityContext, Reservation reservation, List<Hotel> hotels)
+        private void UpdateHotel(EchoDesertTripsContext entityContext, Reservation reservation, List<Hotel> hotels)
         {
             reservation.Tours.ForEach((tour) =>
             {
@@ -443,8 +483,8 @@ namespace EchoDesertTrips.Data.Data_Repositories
                             tourHotel.TourHotelRoomTypes.Capacity > 0)
                             tourHotel.TourHotelRoomTypes.ForEach((tourHotelRoomType) =>
                             {
-                                var hotel = hotels.Where(h => h.HotelId == tourHotelRoomType.HotelRoomType.HotelId)
-                                .FirstOrDefault();
+                                var hotel = hotels
+                                .FirstOrDefault(h => h.HotelId == tourHotelRoomType.HotelRoomType.HotelId);
                                 tourHotelRoomType.HotelRoomType.HotelName = (hotel == null) ? string.Empty : hotel.HotelName;
                             });
                     });

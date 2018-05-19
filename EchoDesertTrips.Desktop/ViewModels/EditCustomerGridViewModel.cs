@@ -143,7 +143,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Customer = new CustomerWrapper();
 
             TotalCustomers = 0;
-            CustomersLeft = TotalCustomers - _currentReservation.Customers.Count();
+            CustomersLeft = TotalCustomers - _currentReservation.Customers.Count;
 
             CleanAll();
         }

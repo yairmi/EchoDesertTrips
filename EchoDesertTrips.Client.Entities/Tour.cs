@@ -29,9 +29,6 @@ namespace EchoDesertTrips.Client.Entities
     {
         public TourWrapper()
         {
-            //TourOptionals = new ObservableCollection<TourOptionalWrapper>();
-            //TourHotels = new ObservableCollection<TourHotel>();
-            //SubTours = new ObservableCollection<SubTourWrapper>();
             _tourOptionals = new ObservableCollection<TourOptionalWrapper>();
             _tourHotels = new ObservableCollection<TourHotel>();
             _subTours = new ObservableCollection<SubTourWrapper>();

@@ -100,10 +100,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public DelegateCommand<object> PrintCommand { get; private set; }
 
-        public override string ViewTitle
-        {
-            get { return "Dashboard"; }
-        }
+        public override string ViewTitle => "Dashboard";
 
         protected override void OnViewLoaded()
         {
