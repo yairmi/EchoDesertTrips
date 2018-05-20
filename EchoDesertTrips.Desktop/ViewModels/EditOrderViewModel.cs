@@ -5,11 +5,13 @@ using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
+using Core.Common.Core;
 
 
 //Customer Grid
@@ -73,7 +75,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnSaveCommand(object obj)
         {
-            if (Reservation.Tours.Count > 0)
+            ValidateModel();
+            if (Reservation.IsValid)
+            //if (Reservation.Tours.Count > 0)
             {
                 Reservation.Operator = Operator;
                 Reservation.OperatorId = Operator.OperatorId;
@@ -196,11 +200,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     });
                 }
             }
-            else
-            {
-                var message = (string)Application.Current.FindResource("ZeroToursMessage");//"Could not save reservation. The reservation must contain\nat least one tour.";
-                _messageDialogService.ShowInfoDialog(message, "Info");
-            }
+            //else
+            //{
+            //    var message = (string)Application.Current.FindResource("ZeroToursMessage");//"Could not save reservation. The reservation must contain\nat least one tour.";
+            //    _messageDialogService.ShowInfoDialog(message, "Info");
+            //}
+        }
+
+        protected override void AddModels(List<ObjectBase> models)
+        {
+            models.Add(Reservation);
         }
 
         protected override void OnViewLoaded()

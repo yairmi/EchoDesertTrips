@@ -362,14 +362,15 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        class ReservationValidator : AbstractValidator<Reservation>
+        class ReservationValidator : AbstractValidator<ReservationWrapper>
         {
             public ReservationValidator()
             {
                 RuleFor(obj => obj.ReservationId > 0);
                 RuleFor(obj => obj.AdvancePayment >= 0);
-                RuleFor(obj => obj.Comments).MaximumLength(50);
-                RuleFor(obj => obj.Messages).MaximumLength(25);
+                RuleFor(obj => obj.Comments).MaximumLength(100);
+                RuleFor(obj => obj.Messages).MaximumLength(100);
+                RuleFor(obj => obj.Tours).NotEmpty();
             }
         }
 
