@@ -1,16 +1,11 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.UI.Core;
-using Core.Common.Utils;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Data;
 using Core.Common.Core;
 
 
@@ -39,27 +34,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
             AgencyViewModel = new AgencyViewModel(_serviceFactory, Reservation);
         }
 
-        public DelegateCommand<object> AddCustomerCommad { get; set; }
-        public DelegateCommand<object> AddTripCommand { get; set; }
-
-        public DelegateCommand<object> SaveCommand { get; private set; }
-        public DelegateCommand<object> ExitWithoutSavingCommand { get; private set; }
-        public DelegateCommand<bool> CheckBoxAgreeChecked { get; private set; }
+        public DelegateCommand<object> SaveCommand { get; }
+        public DelegateCommand<object> ExitWithoutSavingCommand { get; }
+        public DelegateCommand<bool> CheckBoxAgreeChecked { get; }
 
         private void OnCheckBoxAgreeChecked(bool checkBoxCheked)
         {
             AgencyViewModel.IsEnabled = checkBoxCheked;
         }
 
-        private bool OnAddTripCommadCanExecute(object obj)
-        {
-            return true;
-        }
-
-        private bool OnAddCustomerCommadCanExecute(object obj)
-        {
-            return true;
-        }
         //After pressing the 'Save' button
         private bool OnSaveCommandCanExecute(object obj)
         {

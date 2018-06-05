@@ -8,7 +8,7 @@ namespace EchoDesertTrips.Desktop.Support
     {
         public string Serialize()
         {
-            return String.Format("{0},{1};", Persons, Price);
+            return $"{Persons},{Price};";
         }
 
         public void Deserialize(string pair)

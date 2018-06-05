@@ -7,8 +7,6 @@ using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace EchoDesertTrips.Desktop.ViewModels
@@ -17,8 +15,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        private readonly ReservationWrapper _currentReservation;
         private CustomerWrapper _customerWrapper;
+        private ReservationWrapper _currentReservation;
 
         public EditCustomerGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService,
@@ -34,9 +32,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
         }
 
-        public DelegateCommand<object> SaveCommand { get; private set; }
-        public DelegateCommand<object> ClearCommand { get; private set; }
-        public DelegateCommand<object> ExitWithoutSavingCommand { get; private set; }
+        public DelegateCommand<object> SaveCommand { get; }
+        public DelegateCommand<object> ClearCommand { get; }
+        public DelegateCommand<object> ExitWithoutSavingCommand { get; }
 
         private bool OnCommandCanExecute(object obj)
         {
@@ -57,12 +55,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (Customer.IsValid)
             {
-                bool bIsNew = Customer.CustomerId == 0;
-                TotalCustomers = 0;
+                var bIsNew = Customer.CustomerId == 0;
                 CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, bIsNew));
-                CustomersLeft = _totalCustomers - _currentReservation.Customers.Count();
                 if (bIsNew == true)
                 {
+                    CustomersLeft = GetCustomerLeft(_currentReservation);
                     Customer = null;
                     Customer = new CustomerWrapper();
                 }
@@ -70,36 +67,36 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private int _totalCustomers;
+/*        private int _maxNumberOfCustomers;
 
-        public int TotalCustomers
+        public int MaxNumberOfCustomers
         {
             get
             {
-                return _totalCustomers;
+                return _maxNumberOfCustomers;
             }
             private set
             {
-                _totalCustomers = value;
                 _currentReservation.Tours.ToList().ForEach((tour) =>
                 {
                     tour.TourHotels.ToList().ForEach((tourHotel) =>
                     {
                         tourHotel.TourHotelRoomTypes.ToList().ForEach((hotelRoomType) =>
                         {
-                            _totalCustomers += (hotelRoomType.Persons);
+                            _maxNumberOfCustomers += (hotelRoomType.Persons);
                         });
                     });
                 });
+                _maxNumberOfCustomers = value > _maxNumberOfCustomers ? value : _maxNumberOfCustomers;
             }
-        }
+        }*/
 
         private void OnClearCommand(object obj)
         {
             if (IsCustomerDirty())
             {
-                var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
-                if (Result == MessageDialogResult.CANCEL)
+                var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
+                if (result == MessageDialogResult.CANCEL)
                     return;
             }
             Customer = null;
@@ -110,8 +107,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (IsCustomerDirty())
             {
-                var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
-                if (Result == MessageDialogResult.CANCEL)
+                var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
+                if (result == MessageDialogResult.CANCEL)
                     return;
             }
             CustomerCancelled?.Invoke(this, new CustomerEventArgs(null, true));
@@ -141,10 +138,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             else
                 Customer = new CustomerWrapper();
-
-            TotalCustomers = 0;
-            CustomersLeft = TotalCustomers - _currentReservation.Customers.Count;
-
+            CustomersLeft = GetCustomerLeft(_currentReservation);
             CleanAll();
         }
 
@@ -163,18 +157,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private int _customersLeft;
+        private int _customerLeft;
 
         public int CustomersLeft
         {
             get
             {
-                return _customersLeft;
+                return _customerLeft;
             }
             set
             {
-                _customersLeft = value;
-                OnPropertyChanged(() => CustomersLeft);
+                if (_customerLeft != value)
+                {
+                    _customerLeft = value;
+                    OnPropertyChanged(() => CustomersLeft);
+                }
             }
         }
 

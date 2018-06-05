@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 namespace EchoDesertTrips.Business.Entities
 {
     [DataContract(IsReference =true)]
-    public class Reservation : EntityBase, IIdentifiableEntity//, ICloneable
+    public class Reservation : EntityBase, IIdentifiableEntity
     {
         [DataMember]
         public int ReservationId { get; set; }
@@ -45,6 +45,8 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public DateTime UpdateTime { get; set; }
         [DataMember]
+        public int NumberOfCustomers { get; set; } 
+        [DataMember]
         [Timestamp]
         public byte[] RowVersion { get; set; }
         public int EntityId
@@ -59,10 +61,5 @@ namespace EchoDesertTrips.Business.Entities
                 ReservationId = value;
             }
         }
-
-        //public object Clone()
-        //{
-        //    return MemberwiseClone();
-        //}
     }
 }

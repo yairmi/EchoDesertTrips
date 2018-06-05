@@ -143,6 +143,10 @@
     <Compile Include="Migrations\201803231605429_updatefieldtogroup.Designer.cs">
       <DependentUpon>201803231605429_updatefieldtogroup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806011223046_add_numberofcustomers_to_reservation.cs" />
+    <Compile Include="Migrations\201806011223046_add_numberofcustomers_to_reservation.Designer.cs">
+      <DependentUpon>201806011223046_add_numberofcustomers_to_reservation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -184,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803231605429_updatefieldtogroup.resx">
       <DependentUpon>201803231605429_updatefieldtogroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806011223046_add_numberofcustomers_to_reservation.resx">
+      <DependentUpon>201806011223046_add_numberofcustomers_to_reservation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

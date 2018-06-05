@@ -123,10 +123,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                log.Error("GetReservation Failed: " + ex.Message);
                 _messageDialogService.ShowInfoDialog("Could not load reservation,\nmaybe it was deleted in the meantime by another user.", "Info");
                 return;
             }
-            var reservationWrapper = EchoDesertTrips.Client.Entities.ReservationHelper.CreateReservationWrapper(dbReservation);
+            var reservationWrapper = ReservationHelper.CreateReservationWrapper(dbReservation);
             CurrentReservationViewModel =
                 new EditOrderViewModel(_serviceFactory, _messageDialogService,
                     reservationWrapper)
@@ -247,38 +248,35 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     if (e.IsCompleted)
                     {
-                        if (reservations != null)
+                        uiContext.Send((x) =>
                         {
-                            uiContext.Send((x) =>
+                            log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Result.Length);
+                            Reservations.Clear();
+                            ContinualReservations.Clear();
+                            foreach (var reservation in reservations.Result)
                             {
-                                log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Result.Length);
-                                Reservations.Clear();
-                                ContinualReservations.Clear();
-                                foreach (var reservation in reservations.Result)
-                                {
-                                    Reservations.Add(EchoDesertTrips.Client.Entities.ReservationHelper.CreateReservationWrapper(reservation));
-                                }
-                                Reservations.ToList().ForEach((reservation) =>
-                                {
-                                    ContinualReservations.Add(EchoDesertTrips.Client.Entities.ReservationHelper.CloneReservationWrapper(reservation));
-                                });
-                            }, null);
-                        }
+                                Reservations.Add(ReservationHelper.CreateReservationWrapper(reservation));
+                            }
+                            Reservations.ToList().ForEach((reservation) =>
+                            {
+                                ContinualReservations.Add(ReservationHelper.CloneReservationWrapper(reservation));
+                            });
+                        }, null);
                     }
                 });
             }
 
-            IDisposable disposableClient = orderClient as IDisposable;
+            var disposableClient = orderClient as IDisposable;
             disposableClient?.Dispose();
         }
 
-        public void LoadReservationsForDayRange(DateTime Date)
+        public void LoadReservationsForDayRange(DateTime date)
         {
             try
             {
                 WithClient<IOrderService>(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
                 {
-                    var reservations = orderClient.GetReservationsForDayRange(Date.AddMonths(-1), Date.AddMonths(1));
+                    var reservations = orderClient.GetReservationsForDayRange(date.AddMonths(-1), date.AddMonths(1));
                     if (reservations != null)
                     {
                         log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Length);
@@ -286,11 +284,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         ContinualReservations.Clear();
                         foreach (var reservation in reservations)
                         {
-                            Reservations.Add(EchoDesertTrips.Client.Entities.ReservationHelper.CreateReservationWrapper(reservation));
+                            Reservations.Add(ReservationHelper.CreateReservationWrapper(reservation));
                         }
                         Reservations.ToList().ForEach((reservation) =>
                         {
-                            ContinualReservations.Add(EchoDesertTrips.Client.Entities.ReservationHelper.CloneReservationWrapper(reservation));
+                            ContinualReservations.Add(ReservationHelper.CloneReservationWrapper(reservation));
                         });
                     }
                 });
@@ -308,41 +306,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             log.Debug("OnViewLoaded: Calling LoadReservationsForDayRange");
             Customers = new ObservableCollection<Customer>();
             LoadReservationsForDayRange(_selectedDate);
-            //try
-            //{
-            //    WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-            //    {
-            //        var inventoryData = inventoryClient.GetInventoryData();
-            //        TourTypes.Clear();
-            //        Hotels.Clear();
-            //        Optionals.Clear();
-            //        Agencies.Clear();
-            //        foreach (var tourType in inventoryData.TourTypes)
-            //        {
-            //            if (tourType.Visible)
-            //                TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
-            //        }
-            //        foreach (var hotel in inventoryData.Hotels)
-            //        {
-            //            if (hotel.Visible)
-            //                Hotels.Add(hotel);
-            //        }
-            //        foreach (var optional in inventoryData.Optionals)
-            //        {
-            //            if (optional.Visible)
-            //                Optionals.Add(optional);
-            //        }
-
-            //        foreach(var agency in inventoryData.Agencies)
-            //        {
-            //            Agencies.Add(agency);
-            //        }
-            //    });
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.Error("Exception load inventory data: " + ex.Message);
-            //}
             SelectedDate = DateTime.Today;
             if (ReservationsView == null)
             {
@@ -370,16 +333,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ((ReservationWrapper)x).Tours.ToList().Exists(tour => filterDate > tour.StartDate &&
             filterDate <= tour.EndDate);
         }
-
-        //private void CurrentOrderViewModel_CustomerUpdated(object sender, ReservationEventArgs e)
-        //{
-        //    var reservation = Reservations.FirstOrDefault(item => item.ReservationId == e.Reservation.ReservationId);
-        //    if (reservation != null)
-        //    {
-        //        foreach (var customer in e.Reservation.Customers)
-        //            reservation.Customers.Add(customer);
-        //    }
-        //}
 
         private void CurrentReservationViewModel_ReservationUpdated(object sender, ReservationEventArgs e)
         {

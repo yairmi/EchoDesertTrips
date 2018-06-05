@@ -55,7 +55,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="PAX to add:" FontSize="14"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" Margin="3" Text="{Binding CustomersLeft}" HorizontalAlignment="Left" FontSize="14"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Margin="3" Text="{Binding CustomersLeft, Mode=TwoWay}" HorizontalAlignment="Left" FontSize="14"/>
             </Grid>
             <Grid Grid.Row="2" Grid.Column="0">
                 <Grid.RowDefinitions>

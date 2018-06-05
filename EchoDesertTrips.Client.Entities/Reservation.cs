@@ -3,6 +3,7 @@ using Core.Common.Core;
 using FluentValidation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Core.Common.Utils;
 using AutoMapper;
 
@@ -27,6 +28,7 @@ namespace EchoDesertTrips.Client.Entities
         public int GroupID { get; set; }
         public DateTime CreationTime { get; set; } //TODO : Consider DTO
         public DateTime UpdateTime { get; set; }
+        public int NumberOfCustomers { get; set; }
         public byte[] RowVersion { get; set; }
     }
 
@@ -235,7 +237,7 @@ namespace EchoDesertTrips.Client.Entities
 
             set
             {
-                if (_advancePayment != value)
+                if (Math.Abs(_advancePayment - value) > 0.0001)
                 {
                     _advancePayment = value;
                     OnPropertyChanged(() => AdvancePayment, true);
@@ -332,40 +334,27 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public DateTime UpdateTime { get; set; }
+        private int _numberOfCustomers;
 
-        private byte[] _rowVersion;
-
-        public byte[] RowVersion
+        public int NumberOfCustomers
         {
-            get
-            {
-                return _rowVersion;
-            }
+            get { return _numberOfCustomers; }
             set
             {
-                _rowVersion = value;
+                _numberOfCustomers = value;
+                OnPropertyChanged(() => NumberOfCustomers, true);
             }
         }
 
-        public int Days
-        {
-            get
-            {
-                if (Tours != null
-                    && Tours.Count > 0)
-                {
-                    return (int)Tours[0].StartDate.Subtract(Tours[0].EndDate).TotalDays;
-                }
-                else
-                    return 0;
-            }
-        }
+        public DateTime UpdateTime { get; set; }
+
+        public byte[] RowVersion { get; set; }
 
         class ReservationValidator : AbstractValidator<ReservationWrapper>
         {
             public ReservationValidator()
             {
+                RuleFor(obj => obj.NumberOfCustomers > 0);
                 RuleFor(obj => obj.ReservationId > 0);
                 RuleFor(obj => obj.AdvancePayment >= 0);
                 RuleFor(obj => obj.Comments).MaximumLength(100);
@@ -395,7 +384,7 @@ namespace EchoDesertTrips.Client.Entities
                 cfg.CreateMap<Customer, CustomerWrapper>();
             });
 
-            IMapper iMapper = config.CreateMapper();
+            var iMapper = config.CreateMapper();
             var reservationWrapper = iMapper.Map<Reservation, ReservationWrapper>(reservation);
             return reservationWrapper;
         }
@@ -429,9 +418,9 @@ namespace EchoDesertTrips.Client.Entities
                 cfg.CreateMap<Customer, CustomerWrapper>();
             });
 
-            IMapper iMapper = config.CreateMapper();
-            var _reservationWrapper = iMapper.Map<ReservationWrapper, ReservationWrapper>(reservationWrapper);
-            return _reservationWrapper;
+            var iMapper = config.CreateMapper();
+            var rw = iMapper.Map<ReservationWrapper, ReservationWrapper>(reservationWrapper);
+            return rw;
         }
     }
 }

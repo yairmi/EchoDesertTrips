@@ -132,15 +132,5 @@ namespace EchoDesertTrips.Desktop.Support
                 tour.TourOptionals.RemoveItems(t => t.Selected == false);
             });
         }
-
-        //int hf(string const& s) 
-        //{
-        //    ulong hash = 5381;
-        //    for (auto c : s) 
-        //    {
-        //        hash = (hash << 5) + hash + c; /* hash * 33 + c */
-        //    }
-        //    return hash;
-        //}
     }
 }

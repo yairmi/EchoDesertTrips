@@ -41,8 +41,14 @@
                     <Expander.Header>
                         <TextBlock Text="Tours"/>
                     </Expander.Header>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>Enter number of PAX:</TextBlock>
+                            <TextBox Width="30" Margin="10,0,0,0" Text="{Binding Reservation.NumberOfCustomers}"/>
+                        </StackPanel>
                     <ContentControl Grid.Row="0" Content="{Binding TourGridViewModel}" />
-                </Expander>
+                    </StackPanel>
+            </Expander>
             </Grid>
             <Grid Grid.Row="2" Grid.Column="0">
                 <Grid.RowDefinitions>

@@ -39,9 +39,8 @@ namespace Core.Common.UI.Core
         {
             codeToExecute.Invoke(proxy);
 
-            IDisposable disposableClient = proxy as IDisposable;
-            if (disposableClient != null)
-                disposableClient.Dispose();
+            var disposableClient = proxy as IDisposable;
+            disposableClient?.Dispose();
         }
 
         public virtual string ViewTitle
@@ -86,10 +85,7 @@ namespace Core.Common.UI.Core
 
         public DelegateCommand<object> ToggleErrorsCommand { get; protected set; }
 
-        public virtual bool ValidationHeaderVisible
-        {
-            get { return ValidationErrors != null && ValidationErrors.Count() > 0; }
-        }
+        public virtual bool ValidationHeaderVisible => ValidationErrors != null && ValidationErrors.Any();
 
         public virtual bool ErrorsVisible
         {
@@ -108,15 +104,15 @@ namespace Core.Common.UI.Core
         {
             get
             {
-                string ret = string.Empty;
+                var ret = string.Empty;
 
                 if (ValidationErrors != null)
                 {
-                    string verb = (ValidationErrors.Count() == 1 ? "is" : "are");
-                    string suffix = (ValidationErrors.Count() == 1 ? "" : "s");
+                    var verb = (ValidationErrors.Count() == 1 ? "is" : "are");
+                    var suffix = (ValidationErrors.Count() == 1 ? "" : "s");
 
                     if (!IsValid)
-                        ret = string.Format("There {0} {1} validation error{2}.", verb, ValidationErrors.Count(), suffix);
+                        ret = $"There {verb} {ValidationErrors.Count()} validation error{suffix}.";
                 }
 
                 return ret;
@@ -236,12 +232,12 @@ namespace Core.Common.UI.Core
             //this.Client =
             //    new BroadcastorServiceClient(context);
 
-            string operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
+            var operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
 
             this.Client.UnRegisterClient(operatorNameId);
         }
 
-        protected void NotifyServer(string CalledFrom, int messageId)
+        protected void NotifyServer(string calledFrom, int messageId)
         {
             try
             {
@@ -253,34 +249,11 @@ namespace Core.Common.UI.Core
             }
             catch (Exception ex)
             {
-                log.Error(CalledFrom + ": Failed to notify server");
+                log.Error(calledFrom + ": Failed to notify server");
             }
 
         }
 
-        /*protected void InitTourOptionals(TourWrapper tour)
-        {
-            foreach (var optional in Optionals)
-            {
-                var tourOptional = tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
-                if (tourOptional == null)
-                {
-                    TourOptionalWrapper newTourOptional = new TourOptionalWrapper()
-                    {
-                        Selected = false,
-                        Optional = optional,
-                        OptionalId = optional.OptionalId,
-                        TourId = tour.TourId,
-                        PriceInclusive = false
-                    };
-                    tour.TourOptionals.Add(newTourOptional);
-                }
-                else
-                {
-                    tourOptional.Selected = true;
-                }
-            }
-        }*/
         protected void InitTourOptionals(TourWrapper tour)
         {
             var tourOptionals = new ObservableCollection<TourOptionalWrapper>();
@@ -309,6 +282,23 @@ namespace Core.Common.UI.Core
             tour.TourOptionals = tourOptionals;
         }
 
+        protected int GetCustomerLeft(ReservationWrapper reservation)
+        {
+            var customersInHotels = 0;
+            reservation.Tours?.ToList().ForEach((tour) =>
+            {
+                tour.TourHotels?.ToList().ForEach((tourHotel) =>
+                {
+                    tourHotel.TourHotelRoomTypes?.ToList().ForEach((hotelRoomType) =>
+                    {
+                        customersInHotels += (hotelRoomType.Persons);
+                    });
+                });
+            });
+
+            return Math.Max(reservation.NumberOfCustomers, customersInHotels) - reservation.Customers.Count;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -327,5 +317,5 @@ namespace Core.Common.UI.Core
         }
 
         protected readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-   }
+    }
 }

@@ -36,7 +36,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Customers = new ObservableCollection<CustomerWrapper>();
             _currentReservation = currentReservation;
             Customers = currentReservation.Customers;
-            _totalCustomers = 0;
+            //_totalCustomers = 0;
         }
 
         public CustomerGridViewModel()
@@ -49,8 +49,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnDeleteCustomerCommand(CustomerWrapper customer)
         {
-            var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
-            if (Result == MessageDialogResult.CANCEL)
+            var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
+            if (result == MessageDialogResult.CANCEL)
                 return;
             Customers.Remove(customer);
         }
@@ -67,12 +67,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
         //Remove CustomerWrapper
-        private CustomerWrapper LastUpdatedCustomer;
+        private CustomerWrapper _lastUpdatedCustomer;
 
         private void OnAddCustomerCommand(object obj)
         {
-            TotalCustomers = 0;
-            if (_totalCustomers > _currentReservation.Customers.Count)
+            if (GetCustomerLeft(_currentReservation) > 0)
             {
                 CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, null, _currentReservation);
                 RegisterEvents();
@@ -98,8 +97,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ShowPopupWindow("Edit PAX");
         }
 
-        public DelegateCommand<CustomerWrapper> EditCustomerCommand { get; private set; }
-        public DelegateCommand<object> AddCustomerCommand { get; private set; }
+        public DelegateCommand<CustomerWrapper> EditCustomerCommand { get; }
+        public DelegateCommand<object> AddCustomerCommand { get; }
 
         private EditCustomerGridViewModel _editCustomerViewModel;
 
@@ -122,7 +121,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (customer.IsDirty)
             {
-                LastUpdatedCustomer = customer;
+                _lastUpdatedCustomer = customer;
                 ValidateModel();
                 if (customer.IsValid)
                 {
@@ -154,7 +153,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //The ViewModel. ValidateModel will preform a check on all registered models/properties
         protected override void AddModels(List<ObjectBase> models)
         {
-            models.Add(LastUpdatedCustomer);
+            models.Add(_lastUpdatedCustomer);
         }
 
         public void ValidateCurrentModel()
@@ -172,7 +171,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
             });
 
-            IMapper iMapper = config.CreateMapper();
+            var iMapper = config.CreateMapper();
             var customerWrapper = iMapper.Map<CustomerWrapper, CustomerWrapper>(e.Customer);
 
             if (!e.IsNew || _editZeroCustomerId == true)
@@ -192,34 +191,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Customers.Add(customerWrapper);
             }
-            if (Customers.Count() == TotalCustomers)
+            if (GetCustomerLeft(_currentReservation) <= 0)
             {
                 _childWindow.Close();
                 CurrentCustomerViewModel = null;
-            }
-        }
-
-        private int _totalCustomers;
-
-        public int TotalCustomers
-        {
-            get
-            {
-                return _totalCustomers;
-            }
-            private set
-            {
-                _totalCustomers = value;
-                _currentReservation.Tours.ToList().ForEach((tour) =>
-                {
-                    tour.TourHotels.ToList().ForEach((tourHotel) =>
-                    {
-                        tourHotel.TourHotelRoomTypes.ToList().ForEach((hotelRoomType) =>
-                        {
-                            _totalCustomers += (hotelRoomType.Persons);
-                        });
-                    });
-                });
             }
         }
 
