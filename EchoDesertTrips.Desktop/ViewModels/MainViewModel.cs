@@ -9,6 +9,7 @@ using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using System.Threading;
+using Microsoft.Practices.Prism.Commands;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -21,21 +22,19 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public MainViewModel(IServiceFactory serviceFactory)
         {
             _serviceFactory = serviceFactory;
-            //LoginControlViewModel = new LoginControlViewModel(serviceFactory);
-            LogOutCommand = new DelegateCommand<object>(OnLogOutCommand);
-            //LoginControlViewModel.Authenticated += LoginControlViewModel_Authenticated;
+            LogOutCommand = new Core.Common.UI.Core.DelegateCommand<object>(OnLogOutCommand);
             log4net.Config.XmlConfigurator.Configure();
-            //LoginVisible = true;
+        }
+
+        ~MainViewModel()
+        {
+            UnRegisterClient();
         }
 
         [Import]
         public DashboardViewModel DashboardViewModel { get; private set; }
         [Import]
         public ReservationsViewModel ReservationsViewModel { get; set; }
-        //[Import]
-        //public ToursViewModel ToursViewModel { get; set; }
-        //[Import]
-        //public CustomersViewModel CustomersViewModel { get; set; }
         [Import]
         public AdminViewModel AdminViewModel { get; set; }
         private LoginControlViewModel _loginControlViewModel;
@@ -52,7 +51,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public DelegateCommand<object> LogOutCommand { get; protected set; }    
+        public Core.Common.UI.Core.DelegateCommand<object> LogOutCommand { get; protected set; }    
 
         private void OnLogOutCommand(object obj)
         {
@@ -164,23 +163,61 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public void RegisterClient()
         {
-            if ((this.Client != null))
+            if (Client != null)
             {
-                this.Client.Abort();
-                this.Client = null;
+                Client.Abort();
+                Client = null;
             }
 
-            BroadcastorCallback cb = new BroadcastorCallback();
-            cb.SetHandler(this.HandleBroadcast);
+            var cb = new BroadcastorCallback();
+            cb.SetHandler(HandleBroadcast);
 
             System.ServiceModel.InstanceContext context =
                 new System.ServiceModel.InstanceContext(cb);
-            this.Client =
+            Client =
                 new BroadcastorServiceClient(context);
 
-            string operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
+            var operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
 
             this.Client.RegisterClient(operatorNameId);
+        }
+
+        public void UnRegisterClient()
+        {
+            log.Debug("UnRegisterClient Client Started: " + Operator.OperatorName);
+            if (Operator == null)
+                return;
+            var operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
+            try
+            {
+                if (Client == null)
+                {
+                    CreateClient();
+                }
+                else
+                if (Client != null && Client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
+                {
+                        Client.Abort();
+                        Client = null;
+                        CreateClient();
+                }
+                Client.UnRegisterClient(operatorNameId);
+            }
+            catch (Exception ex)
+            {
+                log.Error("UnRegisterClient Exception: " + ex.Message);
+            }
+        }
+
+        private void CreateClient()
+        {
+            var cb = new BroadcastorCallback();
+            cb.SetHandler(HandleBroadcast);
+
+            var context =
+                new System.ServiceModel.InstanceContext(new BroadcastorCallback());
+            Client =
+                new BroadcastorServiceClient(context);
         }
 
 
@@ -244,49 +281,5 @@ namespace EchoDesertTrips.Desktop.ViewModels
             var disposableClient = inventoryClient as IDisposable;
             disposableClient?.Dispose();
         }
-
-        //private void LoadInventory()
-        //{
-        //    try
-        //    {
-        //        WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-        //        {
-        //            var inventoryData = inventoryClient.GetInventoryDataAsynchronous();
-        //            TourTypes.Clear();
-        //            Hotels.Clear();
-        //            Optionals.Clear();
-        //            Agencies.Clear();
-        //            foreach (var tourType in inventoryData.Result.TourTypes)
-        //            {
-        //                if (tourType.Visible)
-        //                    TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
-        //            }
-        //            foreach (var hotel in inventoryData.Result.Hotels)
-        //            {
-        //                if (hotel.Visible)
-        //                    Hotels.Add(hotel);
-        //            }
-        //            foreach (var optional in inventoryData.Result.Optionals)
-        //            {
-        //                if (optional.Visible)
-        //                    Optionals.Add(optional);
-        //            }
-
-        //            foreach (var agency in inventoryData.Result.Agencies)
-        //            {
-        //                Agencies.Add(agency);
-        //            }
-
-        //            ReservationsViewModel.TourTypes = TourTypes;
-        //            ReservationsViewModel.Hotels = Hotels;
-        //            ReservationsViewModel.Optionals = Optionals;
-        //            ReservationsViewModel.Agencies = Agencies;
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.Error("Exception load inventory data: " + ex.Message);
-        //    }
-        //}
     }
 }

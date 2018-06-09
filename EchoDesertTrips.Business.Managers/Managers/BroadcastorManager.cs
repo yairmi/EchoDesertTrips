@@ -7,7 +7,7 @@ using System.ServiceModel;
 namespace EchoDesertTrips.Business.Managers.Managers
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
-    public class BroadcastorManager : IBroadcastorService
+    public class BroadcastorManager : ManagerBase, IBroadcastorService 
     {
         // list of all currently connected active clients
         private static Dictionary<string, IBroadcastorCallBack> clients = new Dictionary<string, IBroadcastorCallBack>();
@@ -16,11 +16,11 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
         public void RegisterClient(string clientName)
         {
-            if (!string.IsNullOrEmpty(clientName))
+            ExecuteFaultHandledOperation(() =>
             {
-                try
+                if (!string.IsNullOrEmpty(clientName))
                 {
-                    IBroadcastorCallBack callback =
+                    var callback =
                         OperationContext.Current.GetCallbackChannel<IBroadcastorCallBack>();
                     lock (locker)
                     {
@@ -30,56 +30,52 @@ namespace EchoDesertTrips.Business.Managers.Managers
                         clients.Add(clientName, callback);
                     }
                 }
-                catch (Exception ex)
-                {
-                }
-            }
+            });
         }
 
         public void UnRegisterClient(string clientName)
         {
-            try
+            ExecuteFaultHandledOperation(() =>
             {
                 lock (locker)
                 {
                     if (clients.Keys.Contains(clientName))
                         clients.Remove(clientName);
                 }
-            }
-            catch (Exception ex)
-            {
-
-            }
+            });
         }
 
         public void NotifyServer(EventDataType eventData)
         {
-            lock (locker)
+            ExecuteFaultHandledOperation(() =>
             {
-                var inactiveClients = new List<string>();
-                foreach (var client in clients)
+                lock (locker)
                 {
-                    if (client.Key != eventData.ClientName)
+                    var inactiveClients = new List<string>();
+                    foreach (var client in clients)
                     {
-                        try
+                        if (client.Key != eventData.ClientName)
                         {
-                            client.Value.BroadcastToClient(eventData);
-                        }
-                        catch (Exception ex)
-                        {
-                            inactiveClients.Add(client.Key);
+                            try
+                            {
+                                client.Value.BroadcastToClient(eventData);
+                            }
+                            catch (Exception ex)
+                            {
+                                inactiveClients.Add(client.Key);
+                            }
                         }
                     }
-                }
 
-                if (inactiveClients.Count > 0)
-                {
-                    foreach (var client in inactiveClients)
+                    if (inactiveClients.Count > 0)
                     {
-                        clients.Remove(client);
+                        foreach (var client in inactiveClients)
+                        {
+                            clients.Remove(client);
+                        }
                     }
                 }
-            }
+            });
         }
     }
 }

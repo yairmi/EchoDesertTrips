@@ -10,7 +10,7 @@ using EchoDesertTrips.Client.Contracts;
 
 namespace Core.Common.UI.Core
 {
-    public class ViewModelBase : ObjectBase, IDisposable
+    public class ViewModelBase : ObjectBase
     {
         public ViewModelBase()
         {
@@ -43,36 +43,32 @@ namespace Core.Common.UI.Core
             disposableClient?.Dispose();
         }
 
-        public virtual string ViewTitle
-        {
-            get { return String.Empty; }
-        }
+        public virtual string ViewTitle => string.Empty;
 
-        List<ObjectBase> _Models;
+        List<ObjectBase> _models;
 
         protected virtual void AddModels(List<ObjectBase> models) { }
 
         protected void ValidateModel(bool bClear = false)
         {
-            if (bClear == true && _Models != null)
+            if (bClear == true && _models != null)
             {
-                _Models.Clear();
-                _Models = null;
+                _models.Clear();
+                _models = null;
             }
-            if (_Models == null)
+            if (_models == null)
             {
-                _Models = new List<ObjectBase>();
-                AddModels(_Models);
+                _models = new List<ObjectBase>();
+                AddModels(_models);
             }
 
             _ValidationErrors = new List<ValidationFailure>();
 
-            if (_Models.Count > 0)
+            if (_models.Count > 0)
             {
-                foreach (ObjectBase modelObject in _Models)
+                foreach (ObjectBase modelObject in _models)
                 {
-                    if (modelObject != null)
-                        modelObject.Validate();
+                    modelObject?.Validate();
 
                     _ValidationErrors = _ValidationErrors.Union(modelObject.ValidationErrors).ToList();
                 }
@@ -225,18 +221,6 @@ namespace Core.Common.UI.Core
 
         public BroadcastorServiceClient Client;
 
-        public void UnRegisterClient()
-        {
-            //System.ServiceModel.InstanceContext context =
-            //    new System.ServiceModel.InstanceContext(new BroadcastorCallback());
-            //this.Client =
-            //    new BroadcastorServiceClient(context);
-
-            var operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
-
-            this.Client.UnRegisterClient(operatorNameId);
-        }
-
         protected void NotifyServer(string calledFrom, int messageId)
         {
             try
@@ -249,7 +233,7 @@ namespace Core.Common.UI.Core
             }
             catch (Exception ex)
             {
-                log.Error(calledFrom + ": Failed to notify server");
+                log.Error(calledFrom + ": Failed to notify server" + ex.Message);
             }
 
         }
@@ -297,23 +281,6 @@ namespace Core.Common.UI.Core
             });
 
             return Math.Max(reservation.NumberOfCustomers, customersInHotels) - reservation.Customers.Count;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // dispose managed resources
-                UnRegisterClient();
-                this.Client.Close();
-            }
-            // free native resources
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         protected readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

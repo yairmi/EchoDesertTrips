@@ -4,9 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:local="clr-namespace:EchoDesertTrips.Desktop"
         xmlns:views="clr-namespace:EchoDesertTrips.Desktop.Views" 
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"                   
         mc:Ignorable="d"
         WindowState="Maximized"
         Title="Desert Eco Tours">
