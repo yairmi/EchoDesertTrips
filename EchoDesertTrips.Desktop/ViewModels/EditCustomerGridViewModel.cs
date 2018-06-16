@@ -23,6 +23,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CustomerWrapper customer,
             ReservationWrapper currentReservation)
         {
+#if DEBUG
+            log.Debug("EditCustomerGridViewModel ctor start");
+#endif
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
             _customerWrapper = customer;
@@ -30,6 +33,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
+#if DEBUG
+            log.Debug("EditCustomerGridViewModel ctor end");
+#endif
         }
 
         public DelegateCommand<object> SaveCommand { get; }
@@ -113,10 +119,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             CustomerCancelled?.Invoke(this, new CustomerEventArgs(null, true));
         }
+#if DEBUG
+        private bool _lastDertinessValue = false;
+#endif
 
         private bool IsCustomerDirty()
         {
-            return Customer.IsAnythingDirty();
+            var bDirty = Customer.IsAnythingDirty();
+#if DEBUG
+            if (bDirty != _lastDertinessValue)
+            {
+
+                log.Debug("EditCustomerGridViewModel dirty = " + bDirty);
+                _lastDertinessValue = bDirty;
+            }
+#endif
+            return bDirty;
         }
 
         protected override void AddModels(List<ObjectBase> models)

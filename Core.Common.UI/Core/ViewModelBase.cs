@@ -35,12 +35,21 @@ namespace Core.Common.UI.Core
 
         protected virtual void OnViewLoaded() { }
 
-        protected void WithClient<T>(T proxy, Action<T> codeToExecute)
+        protected void WithClient<T>(T proxy, Action<T> codeToExecute, string methodName = "")
         {
-            codeToExecute.Invoke(proxy);
-
-            var disposableClient = proxy as IDisposable;
-            disposableClient?.Dispose();
+            try
+            {
+                codeToExecute.Invoke(proxy);
+            }
+            catch (Exception e)
+            {
+                log.Error(methodName + " failed: " + e.Message);
+            }
+            finally
+            {
+                var disposableClient = proxy as IDisposable;
+                disposableClient?.Dispose();
+            }
         }
 
         public virtual string ViewTitle => string.Empty;

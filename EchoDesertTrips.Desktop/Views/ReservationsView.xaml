@@ -15,7 +15,6 @@
         <support:PercentageConverter x:Key="percentageConverter" />
         <support:BoolToYesNoConverter x:Key="boolToYesNoConverter"/>
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
-        <support:GroupWidthCoverter x:Key="groupWidthConverter" />
         <support:ExpanderToBooleanConverter x:Key="expanderToBooleanConverter" />
         <viewModels:GroupsToTotalConverter x:Key="groupsConverter" />
         <viewModels:TotalPriceConverter x:Key="totalPriceConverter"/>

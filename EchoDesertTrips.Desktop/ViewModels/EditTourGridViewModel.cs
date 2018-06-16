@@ -1,8 +1,6 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
-using Core.Common.Extensions;
 using Core.Common.UI.Core;
-using Core.Common.Utils;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
 using System;
@@ -27,6 +25,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 TourWrapper tour,
                 bool isNewReservation)
         {
+#if DEBUG
+            log.Debug("EditTourGridViewModel ctor start");
+#endif
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
             _tourWrapper = tour;
@@ -37,6 +38,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitCommand);
             CellEditEndingRoomTypeCommand = new DelegateCommand<TourHotelRoomType>(OnCellEditEndingRoomTypeCommand);
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
+#if DEBUG
+            log.Debug("EditTourGridViewModel ctor end");
+#endif
         }
 
         public DelegateCommand<object> SaveCommand { get; private set; }
@@ -49,7 +53,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             UpdateTourHotel(tourHotelRoomType);
         }
 
-        private bool OnCommandCanExecute(object obj)
+       private bool OnCommandCanExecute(object obj)
         {
             return IsTourDirty();
         }
@@ -102,10 +106,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             TourCancelled?.Invoke(this, new TourEventArgs(null, true));
         }
+#if DEBUG
+        private bool _lastDertinessValue = false;
+#endif
 
         private bool IsTourDirty()
         {
-            return Tour.IsAnythingDirty();
+            var bDirty = Tour.IsAnythingDirty();
+#if DEBUG
+            if (bDirty != _lastDertinessValue)
+            {
+
+                log.Debug("EditTourGridViewModel dirty = " + bDirty);
+                _lastDertinessValue = bDirty;
+            }
+#endif
+            return bDirty;
         }
 
         protected override void AddModels(List<ObjectBase> models)
@@ -130,6 +146,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+#if DEBUG
+            log.Debug("EditTourGridViewModel OnViewLoaded start");
+#endif
             if (_tourWrapper != null)
             {
                 Tour = TourHelper.CloneTourWrapper(_tourWrapper);
@@ -143,6 +162,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
 
             EnableCBTourType = _isNewReservation;
+#if DEBUG
+            log.Debug("EditTourGridViewModel OnViewLoaded end");
+#endif
         }
 
         private void CreateNewTour()

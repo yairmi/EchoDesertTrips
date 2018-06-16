@@ -59,45 +59,35 @@ namespace EchoDesertTrips.Desktop.ViewModels
             var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
             if (result == MessageDialogResult.CANCEL)
                 return;
-            try
+ 
+            WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
-                WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
+                reservationClient.CancelReservation(obj.ReservationId);
+                Reservations.Remove(obj);
+                ContinualReservations.Remove(obj);
+                Client.NotifyServer(new EventDataType()
                 {
-                    reservationClient.CancelReservation(obj.ReservationId);
-                    Reservations.Remove(obj);
-                    ContinualReservations.Remove(obj);
-                    Client.NotifyServer(new EventDataType()
-                    {
-                        ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-                        EventMessage = "1;" + obj.Tours[0].StartDate.ToString()
-                    });
+                    ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
+                    EventMessage = "1;" + obj.Tours[0].StartDate.ToString()
                 });
-            }
-            catch(Exception ex)
-            {
-                log.Error("OnDeleteReservationCommand Failed: " + ex.Message);
-            }
+            }, "OnDeleteReservationCommand");
         }
 
         private void OnGenerateReportCommand(Group group)
         {
             var reportGen = new ReportGenerator();
-            try
+            WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
             {
-                WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
-                {
-                    var reservations = orderClient.GetReservationsByGroupId(group.GroupId);
-                    reportGen.GenerateReport(reservations, group.GroupId);
-                });
-            }
-            catch(Exception ex)
-            {
-                log.Error("OnGenerateReportCommand Failed: " + ex.Message);
-            }
+                var reservations = orderClient.GetReservationsByGroupId(group.GroupId);
+                reportGen.GenerateReport(reservations, group.GroupId);
+            },"OnGenerateReportCommand");
         }
 
         private void OnAddCommand(object arg)
         {
+#if DEBUG
+            log.Debug("ReservationViewModel:OnAddCommand start");
+#endif
             CurrentReservationViewModel =
                 new EditOrderViewModel(_serviceFactory, _messageDialogService, null)
                 {
@@ -108,22 +98,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     Agencies = Agencies
                 };
             RegisterEvents();
-            
+#if DEBUG
+            log.Debug("ReservationViewModel:OnAddCommand end");
+#endif            
         }
 
         private void OnEditReservationCommand(ReservationWrapper reservation)
         {
             Reservation dbReservation = null;
-            try
+            WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
-                WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
-                {
-                    dbReservation = reservationClient.GetReservation(reservation.ReservationId);
-                });
-            }
-            catch (Exception ex)
+                dbReservation = reservationClient.GetReservation(reservation.ReservationId);
+            });
+            if (dbReservation == null)
             {
-                log.Error("GetReservation Failed: " + ex.Message);
                 _messageDialogService.ShowInfoDialog("Could not load reservation,\nmaybe it was deleted in the meantime by another user.", "Info");
                 return;
             }
@@ -221,6 +209,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             set
             {
                 _selectedDate = value;
+#if DEBUG
+                log.Debug("SelectedDate : " + _selectedDate);
+#endif
                 if (_selectedDate < LastSelectedDate.AddMonths(-1) ||
                     _selectedDate > LastSelectedDate.AddMonths(1))
                 {
@@ -239,6 +230,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public async void LoadReservationsForDayRangeAsync(DateTime date)
         {
+#if DEBUG
+            log.Debug("LoadReservationsForDayRangeAsync start");
+#endif
             var orderClient = _serviceFactory.CreateClient<IOrderService>();
             {
                 var uiContext = SynchronizationContext.Current;
@@ -272,38 +266,34 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public void LoadReservationsForDayRange(DateTime date)
         {
-            try
+#if DEBUG
+            log.Debug("LoadReservationsForDayRange start");
+#endif
+            WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
             {
-                WithClient<IOrderService>(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
+                var reservations = orderClient.GetReservationsForDayRange(date.AddMonths(-1), date.AddMonths(1));
+                if (reservations != null)
                 {
-                    var reservations = orderClient.GetReservationsForDayRange(date.AddMonths(-1), date.AddMonths(1));
-                    if (reservations != null)
+                    log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Length);
+                    Reservations.Clear();
+                    ContinualReservations.Clear();
+                    foreach (var reservation in reservations)
                     {
-                        log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Length);
-                        Reservations.Clear();
-                        ContinualReservations.Clear();
-                        foreach (var reservation in reservations)
-                        {
-                            Reservations.Add(ReservationHelper.CreateReservationWrapper(reservation));
-                        }
-                        Reservations.ToList().ForEach((reservation) =>
-                        {
-                            ContinualReservations.Add(ReservationHelper.CloneReservationWrapper(reservation));
-                        });
+                        Reservations.Add(ReservationHelper.CreateReservationWrapper(reservation));
                     }
-                });
-            }
-            catch (Exception ex)
-            {
-                log.Error("LoadReservationsForDayRange: Failed to load reservations for day range: " + ex.Message);
-            }
+                    Reservations.ToList().ForEach((reservation) =>
+                    {
+                        ContinualReservations.Add(ReservationHelper.CloneReservationWrapper(reservation));
+                    });
+                }
+            }, "LoadReservationsForDayRange");
         }
 
         public static DateTime LastSelectedDate;
 
         protected override void OnViewLoaded()
         {
-            log.Debug("OnViewLoaded: Calling LoadReservationsForDayRange");
+            log.Debug("ReservationViewModel OnViewLoaded Start");
             Customers = new ObservableCollection<Customer>();
             LoadReservationsForDayRange(_selectedDate);
             SelectedDate = DateTime.Today;
@@ -323,6 +313,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void FilterByDate(DateTime filterDate)
         {
+#if DEBUG
+            log.Debug("FilterByDate Start");
+#endif
             ReservationsView.Filter = null;
             ReservationsView.Filter += x =>
                 ((ReservationWrapper)x).Tours[0].StartDate == filterDate;
@@ -332,6 +325,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ContinualReservationsView.Filter += x =>
             ((ReservationWrapper)x).Tours.ToList().Exists(tour => filterDate > tour.StartDate &&
             filterDate <= tour.EndDate);
+#if DEBUG
+            log.Debug("FilterByDate End");
+#endif
         }
 
         private void CurrentReservationViewModel_ReservationUpdated(object sender, ReservationEventArgs e)
@@ -411,7 +407,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
     public class GroupsToTotalConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!(value is ReadOnlyObservableCollection<Object>)) return "";
             var items = (ReadOnlyObservableCollection<Object>)value;
@@ -420,7 +416,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
+            CultureInfo culture)
         {
             return value;
         }
@@ -428,13 +424,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
     public class TotalPriceConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var reservation = (ReservationWrapper)value;
-            return Support.ReservationUtils.CalculateReservationTotalPrice(reservation);
+            return ReservationUtils.CalculateReservationTotalPrice(reservation);
         }
 
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -442,10 +438,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
     public class CustomersGroupConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var items = ((System.Windows.Data.CollectionViewGroup) (value))?.Items;
+            var items = ((CollectionViewGroup) (value))?.Items;
             var customers = new ObservableCollection<CustomerWrapper>();
+            if (items == null) return customers;
             foreach (var reservation in items.Cast<ReservationWrapper>())
             {
                 foreach (var customer in reservation.Customers)
@@ -453,10 +450,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     customers.Add(customer);
                 }
             }
+
             return customers;
         }
 
-        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -467,8 +465,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var reservation = (ReservationWrapper)value;
-            double totalPrice = Support.ReservationUtils.CalculateReservationTotalPrice(reservation);
-            return totalPrice - reservation.AdvancePayment;
+            var totalPrice = ReservationUtils.CalculateReservationTotalPrice(reservation);
+            if (reservation != null)
+            {
+                return totalPrice - reservation.AdvancePayment;
+            }
+            return totalPrice;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -482,7 +484,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var reservation = ((ReservationWrapper)(value));
-            return string.Format("{0}, {1}, Jordan Reservation ID: {2}", reservation.Tours[0].TourType.TourTypeName, reservation.Tours[0].Private ? "Private" : "Regular", reservation.GroupID);
+            if (reservation != null)
+                return string.Format("{0}, {1}, Jordan Reservation ID: {2}", reservation.Tours[0].TourType.TourTypeName,
+                    reservation.Tours[0].Private ? "Private" : "Regular", reservation.GroupID);
+            return string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -497,7 +502,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var reservation = ((ReservationWrapper)(value));
-            return string.Format("{0}", reservation.Tours[0].TourType.TourTypeName);
+            return reservation != null ? string.Format("{0}", reservation.Tours[0].TourType.TourTypeName) : string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,

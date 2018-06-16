@@ -37,24 +37,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnLoginCommand(Operator op)
         {
-            try
+
+            WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
             {
-                WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
+                var oper = operatorClient.GetOperator(op.OperatorName, op.Password);
+                if (oper != null)
                 {
-                    var oper = operatorClient.GetOperator(op.OperatorName, op.Password);
-                    if (oper != null)
-                    {
-                        Authenticated?.Invoke(this, new AuthenticationEventArgs(oper));
-                    }
-                    else
-                        AuthenticationFailed = true;
-                });
-            }
-            catch (Exception ex)
-            {
-                log.Error("Exception Get Operator: " + ex.Message);
-                CommunicationFailed = true;
-            }
+                    Authenticated?.Invoke(this, new AuthenticationEventArgs(oper));
+                }
+                else
+                    AuthenticationFailed = true;
+            }, "OnLoginCommand");
         }
 
         protected override void OnViewLoaded()

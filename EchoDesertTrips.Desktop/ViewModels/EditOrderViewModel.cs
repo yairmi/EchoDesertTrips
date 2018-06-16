@@ -23,6 +23,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             IMessageDialogService messageDialogService,
             ReservationWrapper reservstion)
         {
+#if DEBUG
+            log.Debug("EditOrderViewModel ctor start");
+#endif
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
             SetReservation(reservstion);
@@ -32,6 +35,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CustomerGridViewModel = new CustomerGridViewModel(_serviceFactory, _messageDialogService, Reservation);
             TourGridViewModel = new TourGridViewModel(_serviceFactory, _messageDialogService, Reservation);
             AgencyViewModel = new AgencyViewModel(_serviceFactory, Reservation);
+#if DEBUG
+            log.Debug("EditOrderViewModel ctor end");
+#endif
         }
 
         public DelegateCommand<object> SaveCommand { get; }
@@ -48,10 +54,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             return IsReservationDirty();
         }
+#if DEBUG
+        private bool _lastDertinessValue = false;
+#endif
 
         private bool IsReservationDirty()
         {
-            return Reservation.IsAnythingDirty();
+            var bDirty = Reservation.IsAnythingDirty();
+#if DEBUG
+            if (bDirty != _lastDertinessValue)
+            {
+                log.Debug("EditOrderViewModel dirty = " + bDirty);
+                _lastDertinessValue = bDirty;
+            }
+#endif
+            return bDirty;
         }
 
         public event EventHandler<ReservationEventArgs> ReservationUpdated;
@@ -73,21 +90,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     WithClient<IOrderService>(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
                     {
                         var reservation = ReservationHelper.CreateReservation(Reservation);
-                        try
+                        var reservationData = reservationClient.UpdateReservation(reservation); //Update or Add
+                        if (reservationData.DbReservation != null)
                         {
-                            var reservationData = reservationClient.UpdateReservation(reservation); //Update or Add
-
-                            if (reservationData.DbReservation != null)
-                            {
-                                var reservationWrapper = ReservationHelper.CreateReservationWrapper(reservationData.DbReservation);
-                                ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationWrapper, true, false));
-                            }
+                            var reservationWrapper = ReservationHelper.CreateReservationWrapper(reservationData.DbReservation);
+                            ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationWrapper, true, false));
                         }
-                        catch (Exception ex)
-                        {
-                            log.Error("Exception in save new reservation: " + ex.Message);
-                        }
-                    });
+                    }, "OnSaveCommand (new Reservation)");
                 }
                 else if (IsReservationDirty())
                 {
@@ -180,7 +189,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                             reservationWrapper = ReservationHelper.CreateReservationWrapper(reservationData.DbReservation); //rw.CopyReservation(reservationData.DbReservation);
                             ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationWrapper, false, false));
                         }
-                    });
+                    }, "OnSaveCommand (existing Reservation)");
                 }
             }
             //else
@@ -197,11 +206,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+#if DEBUG
+            log.Debug("EditOrderViewModel OnViewLoaded start");
+#endif
             TourGridViewModel.TourTypes = TourTypes;
             TourGridViewModel.Hotels = Hotels;
             TourGridViewModel.Optionals = Optionals;
-
             AgencyViewModel.Agencies = Agencies;
+#if DEBUG
+            log.Debug("EditOrderViewModel OnViewLoaded end");
+#endif
         }
         
         private void SetReservation(ReservationWrapper reservation)

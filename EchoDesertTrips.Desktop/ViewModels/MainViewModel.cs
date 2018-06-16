@@ -184,9 +184,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public void UnRegisterClient()
         {
-            log.Debug("UnRegisterClient Client Started: " + Operator.OperatorName);
             if (Operator == null)
                 return;
+            log.Debug("UnRegisterClient Client Started: " + Operator.OperatorName);
             var operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
             try
             {
@@ -232,48 +232,45 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     if (e.IsCompleted)
                     {
-                        if (inventoryData != null)
+                        uiContext.Send((x) =>
                         {
-                            uiContext.Send((x) =>
+                            log.Debug("Inventory Loading");
+                            TourTypes.Clear();
+                            Hotels.Clear();
+                            Optionals.Clear();
+                            Agencies.Clear();
+                            foreach (var tourType in inventoryData.Result.TourTypes)
                             {
-                                log.Debug("Inventory Loading");
-                                TourTypes.Clear();
-                                Hotels.Clear();
-                                Optionals.Clear();
-                                Agencies.Clear();
-                                foreach (var tourType in inventoryData.Result.TourTypes)
-                                {
-                                    if (tourType.Visible)
-                                        TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
-                                }
-                                foreach (var hotel in inventoryData.Result.Hotels)
-                                {
-                                    if (hotel.Visible)
-                                        Hotels.Add(hotel);
-                                }
-                                foreach (var optional in inventoryData.Result.Optionals)
-                                {
-                                    if (optional.Visible)
-                                        Optionals.Add(optional);
-                                }
+                                if (tourType.Visible)
+                                    TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
+                            }
+                            foreach (var hotel in inventoryData.Result.Hotels)
+                            {
+                                if (hotel.Visible)
+                                    Hotels.Add(hotel);
+                            }
+                            foreach (var optional in inventoryData.Result.Optionals)
+                            {
+                                if (optional.Visible)
+                                    Optionals.Add(optional);
+                            }
 
-                                foreach (var agency in inventoryData.Result.Agencies)
-                                {
-                                    Agencies.Add(agency);
-                                }
+                            foreach (var agency in inventoryData.Result.Agencies)
+                            {
+                                Agencies.Add(agency);
+                            }
 
-                                ReservationsViewModel.TourTypes = TourTypes;
-                                ReservationsViewModel.Hotels = Hotels;
-                                ReservationsViewModel.Optionals = Optionals;
-                                ReservationsViewModel.Agencies = Agencies;
+                            ReservationsViewModel.TourTypes = TourTypes;
+                            ReservationsViewModel.Hotels = Hotels;
+                            ReservationsViewModel.Optionals = Optionals;
+                            ReservationsViewModel.Agencies = Agencies;
 
-                                AdminViewModel.TourTypes = TourTypes;
-                                AdminViewModel.Hotels = Hotels;
-                                AdminViewModel.Optionals = Optionals;
-                                AdminViewModel.Agencies = Agencies;
+                            AdminViewModel.TourTypes = TourTypes;
+                            AdminViewModel.Hotels = Hotels;
+                            AdminViewModel.Optionals = Optionals;
+                            AdminViewModel.Agencies = Agencies;
 
-                            }, null);
-                        }
+                        }, null);
                     }
                 });
             }
