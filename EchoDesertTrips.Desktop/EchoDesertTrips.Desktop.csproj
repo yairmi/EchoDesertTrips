@@ -223,18 +223,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CustomEventArgs\EditReservationEventArgs.cs" />
     <Compile Include="Reports\ReportGenerator.cs" />
-    <Compile Include="Support\AgencyEventArgs.cs" />
-    <Compile Include="Support\AuthenticationEventArgs.cs" />
+    <Compile Include="CustomEventArgs\AgencyEventArgs.cs" />
+    <Compile Include="CustomEventArgs\AuthenticationEventArgs.cs" />
     <Compile Include="Support\BoolToOppositeConverter.cs" />
     <Compile Include="Support\BoolToYesNoConverter.cs" />
-    <Compile Include="Support\CustomerEventArgs.cs" />
-    <Compile Include="Support\CustomerOrderEventArgs.cs" />
+    <Compile Include="CustomEventArgs\CustomerEventArgs.cs" />
+    <Compile Include="CustomEventArgs\CustomerOrderEventArgs.cs" />
     <Compile Include="Support\Destination.cs" />
     <Compile Include="Support\EnterKeyTraversal.cs" />
     <Compile Include="Support\ExpanderToBooleanConverter.cs" />
     <Compile Include="Support\GroupWidthCoverter.cs" />
-    <Compile Include="Support\HotelEventArgs.cs" />
+    <Compile Include="CustomEventArgs\HotelEventArgs.cs" />
     <Compile Include="Support\ListWrapper.cs" />
     <Compile Include="Support\Mapper.cs" />
     <Compile Include="Support\MaxHeightConverter.cs" />
@@ -242,12 +243,12 @@
     <Compile Include="Support\PercentageConverter.cs" />
     <Compile Include="Support\PhoneNumberValidation.cs" />
     <Compile Include="Support\Prices.cs" />
-    <Compile Include="Support\ReservationEventArgs.cs" />
+    <Compile Include="CustomEventArgs\ReservationEventArgs.cs" />
     <Compile Include="Support\RelayCommand.cs" />
     <Compile Include="Support\ReservationUtils.cs" />
     <Compile Include="Support\RoomTypeIdToRoomTypeNameConverter.cs" />
     <Compile Include="Support\TourEventArgs.cs" />
-    <Compile Include="Support\TourTypeEventArgs.cs" />
+    <Compile Include="CustomEventArgs\TourTypeEventArgs.cs" />
     <Compile Include="Support\ViewModelAuthenticatedToVisibilityConverter.cs" />
     <Compile Include="Support\ViewModelNullToVisibilityConverter.cs" />
     <Compile Include="Support\BoolToVisiblityConverter.cs" />
@@ -259,12 +260,14 @@
     <Compile Include="ViewModels\EditAgentsViewModel.cs" />
     <Compile Include="ViewModels\EditCustomerGridViewModel.cs" />
     <Compile Include="ViewModels\EditHotelViewModel.cs" />
+    <Compile Include="ViewModels\EditReservationViewModel.cs" />
     <Compile Include="ViewModels\EditTourGridViewModel.cs" />
     <Compile Include="ViewModels\EditTourTypeViewModel.cs" />
+    <Compile Include="ViewModels\GeneralReservationViewModel.cs" />
     <Compile Include="ViewModels\HotelViewModel.cs" />
     <Compile Include="ViewModels\LoginControlViewModel.cs" />
+    <Compile Include="ViewModels\MainTabViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\EditOrderViewModel.cs" />
     <Compile Include="ViewModels\OperatorViewModel.cs" />
     <Compile Include="ViewModels\OptionalsViewModel.cs" />
     <Compile Include="ViewModels\ReservationsViewModel.cs" />
@@ -295,17 +298,26 @@
     <Compile Include="Views\EditHotelView.xaml.cs">
       <DependentUpon>EditHotelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EditReservationView.xaml.cs">
+      <DependentUpon>EditReservationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditTourGridView.xaml.cs">
       <DependentUpon>EditTourGridView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditTourTypeView.xaml.cs">
       <DependentUpon>EditTourTypeView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\GeneralReservationView.xaml.cs">
+      <DependentUpon>GeneralReservationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HotelView.xaml.cs">
       <DependentUpon>HotelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginControlView.xaml.cs">
       <DependentUpon>LoginControlView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainTabView.xaml.cs">
+      <DependentUpon>MainTabView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
@@ -378,6 +390,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EditReservationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\EditTourGridView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -386,11 +402,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\GeneralReservationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\HotelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LoginControlView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

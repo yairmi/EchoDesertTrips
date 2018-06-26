@@ -25,7 +25,9 @@ namespace Core.Common.UI.Core
             var hwnd = new WindowInteropHelper(this).Handle;
             SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_SYSMENU);
 
-            SizeToContent = SizeToContent.WidthAndHeight;
+            //SizeToContent = SizeToContent.WidthAndHeight;
+
+            WindowState = WindowState.Maximized;
         }
     }
 }

@@ -11,17 +11,18 @@ using System.Windows.Data;
 using System.Windows;
 using System.Linq;
 using AutoMapper;
+using System.ComponentModel.Composition;
+using EchoDesertTrips.Desktop.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
     public class CustomerGridViewModel : ViewModelBase
     {
-
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
         private readonly ReservationWrapper _currentReservation;
         private bool _editZeroCustomerId = false;
-        //Remove CustomerWrapper
+
         public CustomerGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageBoxDialogService,
             ReservationWrapper currentReservation)
@@ -32,11 +33,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowSomeEventCommand = new DelegateCommand<CustomerWrapper>(OnRowSomeEventCommand);
             DeleteCustomerCommand = new DelegateCommand<CustomerWrapper>(OnDeleteCustomerCommand);
             EditCustomerCommand = new DelegateCommand<CustomerWrapper>(OnEditCustomerCommand);
-            AddCustomerCommand = new DelegateCommand<object>(OnAddCustomerCommand);
+            //AddCustomerCommand = new DelegateCommand<object>(OnAddCustomerCommand);
             Customers = new ObservableCollection<CustomerWrapper>();
             _currentReservation = currentReservation;
             Customers = currentReservation.Customers;
-            //_totalCustomers = 0;
         }
 
         public CustomerGridViewModel()
@@ -44,6 +44,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             
         }
 
+        public override string ViewTitle => "PAX";
 
         public DelegateCommand<CustomerWrapper> DeleteCustomerCommand { get; set; }
 
@@ -69,20 +70,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //Remove CustomerWrapper
         private CustomerWrapper _lastUpdatedCustomer;
 
-        private void OnAddCustomerCommand(object obj)
-        {
-            if (GetCustomerLeft(_currentReservation) > 0)
-            {
-                CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, null, _currentReservation);
-                RegisterEvents();
-                ShowPopupWindow("Add PAX");
-            }
-            else
-            {
-                _messageDialogService.ShowInfoDialog((string)Application.Current.FindResource("YouMustAddCustomersToToursHotels"), "Information");
-            }
-        }
-
         private void OnEditCustomerCommand(CustomerWrapper customer)
         {
             if (customer.CustomerId == 0)
@@ -92,13 +79,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             else
                 _editZeroCustomerId = false;
+            CurrentCustomerViewModel = null;
             CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, customer, _currentReservation);
             RegisterEvents();
-            ShowPopupWindow("Edit PAX");
         }
 
         public DelegateCommand<CustomerWrapper> EditCustomerCommand { get; }
-        public DelegateCommand<object> AddCustomerCommand { get; }
 
         private EditCustomerGridViewModel _editCustomerViewModel;
 
@@ -163,6 +149,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+            CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, null, _currentReservation);
+            RegisterEvents();
         }
 
         private void CurrentCustomerViewModel_CustomerUpdated(object sender, CustomerEventArgs e)
@@ -191,30 +179,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Customers.Add(customerWrapper);
             }
-            if (GetCustomerLeft(_currentReservation) <= 0)
-            {
-                _childWindow.Close();
-                CurrentCustomerViewModel = null;
-            }
         }
 
         private void CurrentCustomerViewModel_CustomerCancelled(object sender, CustomerEventArgs e)
         {
             CurrentCustomerViewModel = null;
-            _childWindow.Close();
-        }
-
-        private PopupWindow _childWindow;
-
-        protected void ShowPopupWindow(string title)
-        {
-            _childWindow = new PopupWindow
-            {
-                Title = title,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Content = CurrentCustomerViewModel
-            };
-            _childWindow.ShowDialog();
         }
 
         private void RegisterEvents()

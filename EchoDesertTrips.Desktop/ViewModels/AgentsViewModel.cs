@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Windows.Data;
 using Core.Common.Contracts;
 using Core.Common.UI.Core;
-using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using System.Linq;
-using System.Windows.Controls;
-using EchoDesertTrips.Desktop.ViewModels;
-using EchoDesertTrips.Desktop.Support;
 using Core.Common.Utils;
+using EchoDesertTrips.Desktop.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {

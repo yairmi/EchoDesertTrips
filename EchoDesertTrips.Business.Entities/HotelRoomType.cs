@@ -20,7 +20,7 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int RoomTypeId { get; set; }
         [DataMember]
-        public RoomType RoomType { get; set; }
+        virtual public RoomType RoomType { get; set; }
         [DataMember]
         public float PricePerPerson { get; set; }
         [DataMember]

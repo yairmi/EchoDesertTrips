@@ -12,7 +12,7 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int HotelRoomTypeId { get; set; }
         [DataMember]
-        public HotelRoomType HotelRoomType { get; set; }
+        virtual public HotelRoomType HotelRoomType { get; set; }
         [DataMember]
         public int Capacity { get; set; }
         [DataMember]

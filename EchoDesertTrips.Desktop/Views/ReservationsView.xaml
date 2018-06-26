@@ -331,7 +331,7 @@
                     </Expander>
                 </Grid>
             </Grid>
-            <Border  Grid.Row="1" 
+            <!--<Border  Grid.Row="1" 
              Grid.Column="1" 
              HorizontalAlignment="Stretch" 
              CornerRadius="4" 
@@ -342,7 +342,7 @@
              Width="{Binding Path=ActualWidth, ElementName=mainGrid, Converter={StaticResource percentageConverter}, ConverterParameter='0.8'}"
              Visibility="{Binding CurrentReservationViewModel, Converter={StaticResource viewModelNullToVisibilityConverter}}">
                 <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentReservationViewModel}" />
-            </Border>
+            </Border>-->
         </Grid>
     </Grid>
 </core:UserControlViewBase>

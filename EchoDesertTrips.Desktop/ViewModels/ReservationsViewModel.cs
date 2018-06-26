@@ -14,6 +14,8 @@ using System.Windows;
 using System.Threading.Tasks;
 using System.Threading;
 using EchoDesertTrips.Desktop.Reports;
+using EchoDesertTrips.Desktop.CustomEventArgs;
+using System.Windows.Controls;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -31,7 +33,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
             EditReservationCommand = new DelegateCommand<ReservationWrapper>(OnEditReservationCommand);
-            AddReservationCommand = new DelegateCommand<object>(OnAddCommand);
+            AddReservationCommand = new DelegateCommand<object>(OnAddReservationCommand);
             SelectedDateChangedCommand = new DelegateCommand<object>(OnSelectedDateChangedCommand);
             DeleteReservationCommand = new DelegateCommand<ReservationWrapper>(OnDeleteReservationCommand);
             GenerateReportCommand = new DelegateCommand<Group>(OnGenerateReportCommand);
@@ -47,8 +49,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public DelegateCommand<ReservationWrapper> DeleteReservationCommand { get; set; }
 
-        public EditOrderViewModel EditOrderViewModel { get; set; }
-
         public DelegateCommand<ReservationWrapper> EditReservationCommand { get; private set; }
         public DelegateCommand<object> AddReservationCommand { get; private set; }
         public DelegateCommand<object> SelectedDateChangedCommand { get; private set; }
@@ -59,52 +59,65 @@ namespace EchoDesertTrips.Desktop.ViewModels
             var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
             if (result == MessageDialogResult.CANCEL)
                 return;
- 
+            int exceptionPosition = 0;
             WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
-                reservationClient.CancelReservation(obj.ReservationId);
-                Reservations.Remove(obj);
-                ContinualReservations.Remove(obj);
-                Client.NotifyServer(new EventDataType()
+                try
                 {
-                    ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-                    EventMessage = "1;" + obj.Tours[0].StartDate.ToString()
-                });
-            }, "OnDeleteReservationCommand");
+                    reservationClient.CancelReservation(obj.ReservationId);
+                    exceptionPosition = 1;
+                    Reservations.Remove(obj);
+                    exceptionPosition = 2;
+                    ContinualReservations.Remove(obj);
+                    exceptionPosition = 3;
+                    Client.NotifyServer(new EventDataType()
+                    {
+                        ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
+                        EventMessage = "1;" + obj.Tours[0].StartDate.ToString()
+                    });
+                }
+                catch(Exception ex)
+                {
+                    log.Error("OnDeleteReservationCommand dailed. position: " + exceptionPosition + ". Error: " + ex.Message);
+                }
+            });
         }
 
         private void OnGenerateReportCommand(Group group)
         {
             var reportGen = new ReportGenerator();
+            int exceptionPosition = 0;
             WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
             {
-                var reservations = orderClient.GetReservationsByGroupId(group.GroupId);
-                reportGen.GenerateReport(reservations, group.GroupId);
-            },"OnGenerateReportCommand");
+                try
+                {
+                    var reservations = orderClient.GetReservationsByGroupId(group.GroupId);
+                    exceptionPosition = 1;
+                    reportGen.GenerateReport(reservations, group.GroupId);
+                }
+                catch(Exception ex)
+                {
+                    log.Error("OnGenerateReportCommand dailed. position: " + exceptionPosition + ". Error: " + ex.Message);
+                }
+            });
         }
 
-        private void OnAddCommand(object arg)
+        private void OnAddReservationCommand(object arg)
         {
 #if DEBUG
             log.Debug("ReservationViewModel:OnAddCommand start");
 #endif
-            CurrentReservationViewModel =
-                new EditOrderViewModel(_serviceFactory, _messageDialogService, null)
-                {
-                    Operator = Operator,
-                    Hotels = Hotels,
-                    TourTypes = TourTypes,
-                    Optionals = Optionals,
-                    Agencies = Agencies
-                };
-            RegisterEvents();
+            ReservationEdited?.Invoke(this, new EditReservationEventArgs(null));
 #if DEBUG
             log.Debug("ReservationViewModel:OnAddCommand end");
-#endif            
+#endif
         }
 
         private void OnEditReservationCommand(ReservationWrapper reservation)
         {
+#if DEBUG
+            log.Debug("ReservationViewModel:OnEditReservationCommand start");
+#endif
             Reservation dbReservation = null;
             WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
@@ -116,17 +129,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 return;
             }
             var reservationWrapper = ReservationHelper.CreateReservationWrapper(dbReservation);
-            CurrentReservationViewModel =
-                new EditOrderViewModel(_serviceFactory, _messageDialogService,
-                    reservationWrapper)
-                {
-                    Operator = Operator,
-                    Hotels = Hotels,
-                    TourTypes = TourTypes,
-                    Optionals = Optionals,
-                    Agencies = Agencies
-                };
-            RegisterEvents();
+            ReservationEdited?.Invoke(this, new EditReservationEventArgs(reservationWrapper));
+#if DEBUG
+            log.Debug("ReservationViewModel:OnEditReservationCommand end");
+#endif
         }
 
         public override string ViewTitle => "Reservations";
@@ -179,21 +185,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 _customers = value;
                 OnPropertyChanged(()=>Customers);
-            }
-        }
-
-        private EditOrderViewModel _editReservationViewModel;
-
-        public EditOrderViewModel CurrentReservationViewModel
-        {
-            get { return _editReservationViewModel; }
-            set
-            {
-                if (_editReservationViewModel != value)
-                {
-                    _editReservationViewModel = value;
-                    OnPropertyChanged(() => CurrentReservationViewModel, false);
-                }
             }
         }
 
@@ -269,24 +260,36 @@ namespace EchoDesertTrips.Desktop.ViewModels
 #if DEBUG
             log.Debug("LoadReservationsForDayRange start");
 #endif
+            int exceptionPosition = 0;
             WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
             {
-                var reservations = orderClient.GetReservationsForDayRange(date.AddMonths(-1), date.AddMonths(1));
-                if (reservations != null)
+                try
                 {
-                    log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Length);
-                    Reservations.Clear();
-                    ContinualReservations.Clear();
-                    foreach (var reservation in reservations)
+                    var reservations = orderClient.GetReservationsForDayRange(date.AddMonths(-1), date.AddMonths(1));
+                    exceptionPosition = 1;
+                    if (reservations != null)
                     {
-                        Reservations.Add(ReservationHelper.CreateReservationWrapper(reservation));
+                        log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Length);
+                        Reservations.Clear();
+                        exceptionPosition = 2;
+                        ContinualReservations.Clear();
+                        exceptionPosition = 3;
+                        foreach (var reservation in reservations)
+                        {
+                            Reservations.Add(ReservationHelper.CreateReservationWrapper(reservation));
+                        }
+                        exceptionPosition = 4;
+                        Reservations.ToList().ForEach((reservation) =>
+                        {
+                            ContinualReservations.Add(ReservationHelper.CloneReservationWrapper(reservation));
+                        });
                     }
-                    Reservations.ToList().ForEach((reservation) =>
-                    {
-                        ContinualReservations.Add(ReservationHelper.CloneReservationWrapper(reservation));
-                    });
                 }
-            }, "LoadReservationsForDayRange");
+                catch(Exception ex)
+                {
+                    log.Error("LoadReservationsForDayRange failed. position: " + exceptionPosition + ". Error: " + ex.Message);
+                }
+            });
         }
 
         public static DateTime LastSelectedDate;
@@ -313,45 +316,59 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void FilterByDate(DateTime filterDate)
         {
-#if DEBUG
-            log.Debug("FilterByDate Start");
-#endif
-            ReservationsView.Filter = null;
-            ReservationsView.Filter += x =>
-                ((ReservationWrapper)x).Tours[0].StartDate == filterDate;
-
-            ContinualReservationsView.Filter = null;
-            ContinualReservationsView.Filter = null;
-            ContinualReservationsView.Filter += x =>
-            ((ReservationWrapper)x).Tours.ToList().Exists(tour => filterDate > tour.StartDate &&
-            filterDate <= tour.EndDate);
-#if DEBUG
-            log.Debug("FilterByDate End");
-#endif
+            int exceptionPosition = 0;
+            try
+            {
+                ReservationsView.Filter = null;
+                ReservationsView.Filter += x =>
+                    ((ReservationWrapper)x).Tours[0].StartDate == filterDate;
+                exceptionPosition = 1;
+                ContinualReservationsView.Filter = null;
+                ContinualReservationsView.Filter = null;
+                exceptionPosition = 2;
+                ContinualReservationsView.Filter += x =>
+                ((ReservationWrapper)x).Tours.ToList().Exists(tour => filterDate > tour.StartDate &&
+                filterDate <= tour.EndDate);
+            }
+            catch(Exception ex)
+            {
+                log.Error("Exception in filter by day. Position: " + exceptionPosition + ". Error" + ex.Message);
+            }
         }
 
-        private void CurrentReservationViewModel_ReservationUpdated(object sender, ReservationEventArgs e)
+        public void UpdateReservations(ReservationEventArgs e)
         {
-            if (!e.IsNew)
+            int exceptionPosition = 0;
+            try
             {
-                //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
-                //Is a temporary object and it is not part of the Grid collection trips.
-                var reservation = Reservations.FirstOrDefault(item => item.ReservationId == e.Reservation.ReservationId);
-                if (reservation != null)
+                if (!e.IsNew)
                 {
-                    var index = Reservations.IndexOf(reservation);
-                    Reservations[index] = e.Reservation;
-                    ContinualReservations[index] = e.Reservation;
+                    exceptionPosition = 1;
+                    //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
+                    //Is a temporary object and it is not part of the Grid collection trips.
+                    var reservation = Reservations.FirstOrDefault(item => item.ReservationId == e.Reservation.ReservationId);
+                    exceptionPosition = 2;
+                    if (reservation != null)
+                    {
+                        var index = Reservations.IndexOf(reservation);
+                        Reservations[index] = e.Reservation;
+                        exceptionPosition = 3;
+                        ContinualReservations[index] = e.Reservation;
+                        exceptionPosition = 4;
+                    }
+                }
+                else
+                {
+                    exceptionPosition = 5;
+                    Reservations.Add(e.Reservation);
+                    exceptionPosition = 6;
+                    ContinualReservations.Add(e.Reservation);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Reservations.Add(e.Reservation);
-                ContinualReservations.Add(e.Reservation);
+                log.Error("CurrentReservationViewModel_ReservationUpdated failed. Position: " + exceptionPosition + ". error: " + ex.Message);
             }
-
-            ReservationsView.Refresh();
-            ContinualReservationsView.Refresh();
             if (!e.IsDbWon)
             {
                 try
@@ -367,22 +384,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     log.Error("CurrentReservationViewModel_ReservationUpdated: Failed to notify server: " + ex.Message);
                 }
             }
-
-            CurrentReservationViewModel = null;
         }
 
-        private void CurrentReservationViewModel_ReservationCancelled(object sender, ReservationEventArgs e)
-        {
-            CurrentReservationViewModel = null;
-        }
-
-        private void RegisterEvents()
-        {
-            CurrentReservationViewModel.ReservationUpdated -= CurrentReservationViewModel_ReservationUpdated;
-            CurrentReservationViewModel.ReservationUpdated += CurrentReservationViewModel_ReservationUpdated;
-            CurrentReservationViewModel.ReservationCancelled -= CurrentReservationViewModel_ReservationCancelled;
-            CurrentReservationViewModel.ReservationCancelled += CurrentReservationViewModel_ReservationCancelled;
-        }
+        public event EventHandler<EditReservationEventArgs> ReservationEdited;
 
         private void OnSelectedDateChangedCommand(object obj)
         {

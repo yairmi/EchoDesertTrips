@@ -8,6 +8,7 @@ using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
 using Core.Common.Utils;
+using EchoDesertTrips.Desktop.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {

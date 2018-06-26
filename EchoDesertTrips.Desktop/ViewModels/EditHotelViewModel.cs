@@ -4,6 +4,7 @@ using Core.Common.Core;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
+using EchoDesertTrips.Desktop.CustomEventArgs;
 using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;

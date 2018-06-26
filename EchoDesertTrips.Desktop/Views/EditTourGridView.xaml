@@ -47,15 +47,16 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
             <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
-            <Grid Grid.Row="1" Grid.Column="0">
+        <Grid Grid.Row="1" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -71,7 +72,6 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Pickup Address:" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Start Date:" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="End Date:" />
-                <!--<TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Tours:" />-->
                 <ComboBox x:Name="cbTourType" Grid.Row="0" Grid.Column="1" 
                                             SelectedItem="{Binding DataContext.Tour.TourType,  
                                             RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}},
@@ -106,7 +106,7 @@
                                                HorizontalAlignment="Left"
                                                CellStyle="{StaticResource DataGridBorder}"
                                                Margin="0"
-                                               Height="280"
+                                               Height="220"
                                                Width="Auto">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn>
@@ -164,7 +164,7 @@
                                       SelectedItem="{Binding DataContext.SelectedHotel, 
                                       RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
                                       Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      SelectedValue="{Binding HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
+                                      SelectedValue="{Binding SelectedHotel.HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
                                       ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
                                       SelectedValuePath="HotelId"
                                       DisplayMemberPath="HotelName"
@@ -174,20 +174,6 @@
                                       HorizontalAlignment="Left"
                                       Width="140"
                                       Margin="0,0,0,10"/>
-                <!--<ComboBox Grid.Row="1" Grid.Column="1" x:Name="cbTourHotels" 
-                                              SelectedItem="{Binding Path=DataContext.SelectedTourHotel, 
-                                              RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
-                                              Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                              SelectedValue="{Binding Hotel.HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                              ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
-                                              SelectedValuePath="Hotel.HotelId"
-                                              DisplayMemberPath="Hotel.HotelName"
-                                              IsReadOnly="True"
-                                              ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                              AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Tour.TourHotels}"
-                                              HorizontalAlignment="Left"
-                                              Width="140"
-                                              Margin="0,0,0,10"/>-->
                 <DataGrid Grid.Row="1" Grid.Column="1" x:Name="dgRoomTypes"
                                               HeadersVisibility="All"
                                               RowHeaderWidth="40"
@@ -197,7 +183,7 @@
                                               HorizontalAlignment="Left"
                                               CellStyle="{StaticResource DataGridBorder}"
                                               Margin="0,0,10,0"
-                                              Height="245"
+                                              Height="185"
                                               Width="Auto">
                     <DataGrid.Resources>
                         <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
@@ -245,10 +231,10 @@
                     </DataGrid.RowValidationErrorTemplate>
                 </DataGrid>                
             </Grid>
-            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
-                <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" />
-                <Button Content="Clear" Margin="5" Command="{Binding ClearCommand}" />
-                <Button Content="Exit" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />
-            </StackPanel>
-        </Grid>
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+            <Button Content="Save" Margin="5" Width="100" Command="{Binding SaveCommand}" />
+            <Button Content="Clear" Margin="5" Width="100" Command="{Binding ClearCommand}" />
+            <!--<Button Content="Exit" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />-->
+        </StackPanel>
+    </Grid>
 </core:UserControlViewBase>

@@ -15,11 +15,11 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int TourHotelId { get; set; }
         [DataMember]
-        public Hotel Hotel { get; set; }
+        virtual public Hotel Hotel { get; set; }
         [DataMember]
         public int? HotelId { get; set; }
         [DataMember]
-        public List<TourHotelRoomType> TourHotelRoomTypes { get; set; }
+        virtual public List<TourHotelRoomType> TourHotelRoomTypes { get; set; }
         public int EntityId
         {
             get

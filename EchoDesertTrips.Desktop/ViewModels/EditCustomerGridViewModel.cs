@@ -3,6 +3,7 @@ using Core.Common.Contracts;
 using Core.Common.Core;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Entities;
+using EchoDesertTrips.Desktop.CustomEventArgs;
 using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;
@@ -31,8 +32,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _customerWrapper = customer;
             _currentReservation = currentReservation;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
-            ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCanExecute);
-            ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
+            ClearCommand = new DelegateCommand<object>(OnClearCommand, /*OnClearCanExecute*/OnCommandCanExecute);
+//            ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
 #if DEBUG
             log.Debug("EditCustomerGridViewModel ctor end");
 #endif
@@ -40,17 +41,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public DelegateCommand<object> SaveCommand { get; }
         public DelegateCommand<object> ClearCommand { get; }
-        public DelegateCommand<object> ExitWithoutSavingCommand { get; }
+//        public DelegateCommand<object> ExitWithoutSavingCommand { get; }
 
         private bool OnCommandCanExecute(object obj)
         {
             return IsCustomerDirty();
         }
 
-        private bool OnClearCanExecute(object obj)
-        {
-            return (IsCustomerDirty() && Customer.CustomerId == 0);
-        }
+        //private bool OnClearCanExecute(object obj)
+        //{
+        //    return (IsCustomerDirty() && Customer.CustomerId == 0);
+        //}
 
         //After pressing the 'Save' button
         private void OnSaveCommand(object obj)
@@ -109,16 +110,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Customer = new CustomerWrapper();
         }
 
-        private void OnExitWithoutSavingCommand(object obj)
-        {
-            if (IsCustomerDirty())
-            {
-                var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
-                if (result == MessageDialogResult.CANCEL)
-                    return;
-            }
-            CustomerCancelled?.Invoke(this, new CustomerEventArgs(null, true));
-        }
+        //private void OnExitWithoutSavingCommand(object obj)
+        //{
+        //    if (IsCustomerDirty())
+        //    {
+        //        var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
+        //        if (result == MessageDialogResult.CANCEL)
+        //            return;
+        //    }
+        //    CustomerCancelled?.Invoke(this, new CustomerEventArgs(null, true));
+        //}
 #if DEBUG
         private bool _lastDertinessValue = false;
 #endif
@@ -144,7 +145,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            var config = new MapperConfiguration(cfg => {
+            ControllEnabled = GetCustomerLeft(_currentReservation) > 0 || _customerWrapper != null;
+
+            var config = new MapperConfiguration(cfg =>
+            {
                 cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
             });
 
@@ -190,6 +194,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     _customerLeft = value;
                     OnPropertyChanged(() => CustomersLeft);
                 }
+            }
+        }
+
+        private bool _controllEnabled;
+
+        public bool ControllEnabled
+        {
+            get
+            {
+                return _controllEnabled;
+            }
+            set
+            {
+                _controllEnabled = value;
+                OnPropertyChanged(() => ControllEnabled);
             }
         }
 

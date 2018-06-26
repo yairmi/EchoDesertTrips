@@ -8,7 +8,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="800">
     <core:UserControlViewBase.Resources>
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
         <ControlTemplate x:Key="ErrorTemplate">
@@ -32,34 +32,26 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button x:Name="btnAddNewCustomer" Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" />        
+            <!--<Button x:Name="btnAddNewCustomer" Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" />-->
+            <Border  Grid.Row="1" 
+             HorizontalAlignment="Left" 
+             CornerRadius="4" 
+             Margin="10" 
+             BorderBrush="SteelBlue" 
+             BorderThickness="1" 
+             Background="BlanchedAlmond">
+                <ContentControl Grid.Row="1" HorizontalAlignment="Left" Margin="10,0,0,0" Content="{Binding CurrentCustomerViewModel}" />
+            </Border>
             <DataGrid x:Name="dgCustomerWrapper" 
-                  Grid.Row="1"
-                  RowDetailsVisibilityMode="VisibleWhenSelected" 
-                  Margin="0,0,0,10" 
+                  Grid.Row="0"
+                  Margin="0,0,0,0" 
                   ItemsSource="{Binding Customers, Mode=TwoWay}" 
                   EnableRowVirtualization="True" 
+                  HorizontalAlignment="Left"
                   AutoGenerateColumns="False"
                   CellStyle="{StaticResource DataGridBorder}"
                   CanUserAddRows="False"
-                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='448'}">
-            <!--<DataGrid.Resources>
-                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                    <Setter Property="Padding" Value="-2"/>
-                    <Style.Triggers>
-                        <Trigger Property="Validation.HasError" Value="True">
-                            <Setter Property="Background" Value="Red"/>
-                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self},
-                            Path=(Validation.Errors)[0].ErrorContent}"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.Resources>-->
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="RowEditEnding">
-                    <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->            
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='608'}">
             <DataGrid.Columns>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
@@ -83,31 +75,10 @@
                     </DataGridTemplateColumn>
                     <DataGridTextColumn x:Name="firstNameColumn" Width="Auto" IsReadOnly="True" Header="First Name" Binding="{Binding FirstName, Mode=TwoWay}"/>
                     <DataGridTextColumn x:Name="lastNameColumn" Width="Auto" IsReadOnly="True" Header="Last Name" Binding="{Binding LastName, Mode=TwoWay}"/>
-                    <DataGridTextColumn x:Name="dateOfBirdthColumn" IsReadOnly="True" Width="*" Header="Date Of Birdth" Binding="{Binding DateOfBirdth, StringFormat=d}"/>
-                <!--<DataGridTemplateColumn x:Name="dateOfBirdthColumn" Width="Auto" Header="Date Of Birdth">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <DatePicker SelectedDate="{Binding DateOfBirdth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
+                    <DataGridTextColumn x:Name="dateOfBirdthColumn" IsReadOnly="True" Width="Auto" Header="Date Of Birdth" Binding="{Binding DateOfBirdth, StringFormat=d}"/>
                     <DataGridTextColumn x:Name="passportNumberColumn" IsReadOnly="True" Width="Auto" Header="Passport Number" Binding="{Binding PassportNumber, Mode=TwoWay}"/>
-                    <DataGridTextColumn x:Name="issueDataColumn" IsReadOnly="True" Width="*" Header="Issue Date" Binding="{Binding IssueData, StringFormat=d}"/>
-                    <DataGridTextColumn x:Name="expireyDateColumn" IsReadOnly="True" Width="*" Header="Expiry Date" Binding="{Binding ExpireyDate, StringFormat=d}"/>
-                <!--<DataGridTemplateColumn x:Name="issueDataColumn" Width="Auto" Header="Issue Data">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <DatePicker SelectedDate="{Binding IssueData, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>                
-                <DataGridTemplateColumn x:Name="expireyDateColumn" Width="Auto" Header="Expirey Date">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <DatePicker SelectedDate="{Binding ExpireyDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
+                    <DataGridTextColumn x:Name="issueDataColumn" IsReadOnly="True" Width="Auto" Header="Issue Date" Binding="{Binding IssueData, StringFormat=d}"/>
+                    <DataGridTextColumn x:Name="expireyDateColumn" IsReadOnly="True" Width="Auto" Header="Expiry Date" Binding="{Binding ExpireyDate, StringFormat=d}"/>
                     <DataGridCheckBoxColumn x:Name="hasVisaColumn" Width="Auto" IsReadOnly="True" Header="Has Visa" Binding="{Binding HasVisa}"/>
                     <DataGridTextColumn x:Name="nationalityColumn" Width="Auto" IsReadOnly="True" Header="Nationality" Binding="{Binding Nationality, Mode=TwoWay}"/>
                     <DataGridTextColumn x:Name="phone1Column" Width="Auto" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
@@ -119,25 +90,6 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-            <!--<DataGrid.RowValidationRules>
-                <local:CustomerValidationRule ValidationStep="UpdatedValue"/>
-            </DataGrid.RowValidationRules>
-            <DataGrid.RowValidationErrorTemplate>
-                <ControlTemplate>
-                    <Grid Margin="0,-2,10,-2" 
-                    ToolTip="{Binding RelativeSource={RelativeSource
-                    FindAncestor, AncestorType={x:Type DataGridRow}},
-                    Path=(Validation.Errors)[0].ErrorContent}">
-                        <Ellipse StrokeThickness="0" Fill="Red" 
-                        Width="22" 
-                        Height="22"
-                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="!" FontSize="22" 
-                        FontWeight="Bold" Foreground="White" 
-                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Grid>
-                </ControlTemplate>
-            </DataGrid.RowValidationErrorTemplate>-->
         </DataGrid>
     </Grid>
     </Grid>        

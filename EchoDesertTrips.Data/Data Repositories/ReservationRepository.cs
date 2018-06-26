@@ -126,7 +126,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
         {
             using (var entityContext = new EchoDesertTripsContext())
             {
-                var reservations = (from e in entityContext.ReservationSet
+                /*var reservations = (from e in entityContext.ReservationSet
                                     where e.Tours.Any(
                                        t => t.StartDate >= dayFrom
                                        && t.StartDate <= dayTo)
@@ -141,7 +141,19 @@ namespace EchoDesertTrips.Data.Data_Repositories
                             .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
                             .Include(o => o.Tours.Select(th => th.TourHotels
                             .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
+                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));*/
+
+                var reservations = (from e in entityContext.ReservationSet
+                                    where e.Tours.Any(
+                                       t => t.StartDate >= dayFrom
+                                       && t.StartDate <= dayTo)
+                                    select e);
+
+                foreach (var reservation in reservations)
+                {
+                    var r = reservation.GetType();
+                } 
+
                 var hotels = (from e in entityContext.HotelSet select e).ToList();
                 foreach (var reservation in reservations)
                     UpdateHotel(entityContext, reservation, hotels);

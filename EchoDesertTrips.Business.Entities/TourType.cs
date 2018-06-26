@@ -39,7 +39,7 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public byte Days { get; set; }
         [DataMember]
-        public List<TourTypeDescription> TourTypeDescriptions { get; set; }
+        virtual public List<TourTypeDescription> TourTypeDescriptions { get; set; }
         [DataMember]
         public bool IncramentExternalId { get; set; }
         [DataMember]

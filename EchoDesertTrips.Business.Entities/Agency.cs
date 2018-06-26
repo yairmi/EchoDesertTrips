@@ -19,7 +19,7 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public string Phone2 { get; set; }
         [DataMember]
-        public List<Agent> Agents { get; set; }
+        virtual public List<Agent> Agents { get; set; }
 
         public int EntityId
         {

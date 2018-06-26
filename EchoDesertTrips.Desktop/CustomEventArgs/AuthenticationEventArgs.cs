@@ -1,7 +1,7 @@
 ﻿using EchoDesertTrips.Client.Entities;
 using System;
 
-namespace EchoDesertTrips.Desktop.Support
+namespace EchoDesertTrips.Desktop.CustomEventArgs
 {
     public class AuthenticationEventArgs : EventArgs
     {

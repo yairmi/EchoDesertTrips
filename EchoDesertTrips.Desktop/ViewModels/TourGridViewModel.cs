@@ -14,6 +14,7 @@ using EchoDesertTrips.Desktop.Support;
 using AutoMapper;
 using Core.Common.Utils;
 using Core.Common.Extensions;
+using System.ComponentModel.Composition;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -21,7 +22,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        private readonly ReservationWrapper _currentReservation;
+        private ReservationWrapper _currentReservation;
         private bool _editZeroTourId = false;
 
         public TourGridViewModel(IServiceFactory serviceFactory,
@@ -43,6 +44,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         }
 
+        public override string ViewTitle => "Tours";
+
         public DelegateCommand<TourWrapper> DeleteTourCommand { get; set; }
 
         private void OnDeleteTourCommand(TourWrapper tour)
@@ -53,29 +56,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Tours.Remove(tour);
         }
 
-        //private void OnAddOptionalCommand(Optional obj)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public DelegateCommand<Optional> AddOptionalCommand { get; set; }
-
         public ICollectionView ItemsView { get; set; }
-
-        //public DelegateCommand<TourWrapper> RowEditEndingCommand { get; set; }
-        //public DelegateCommand<object> RowSelectedCommand { get; set; }
         public DelegateCommand<TourWrapper> RowExpanded { get; set; }
         private bool CanAddTourCommand(object obj)
         {
-            return _currentReservation.ReservationId == 0 && _addNewEnabled == true;
+            return _reservation.ReservationId == 0 && _addNewEnabled == true;
         }
 
 
 
         private void OnAddTourCommand(object obj)
         {
+            CurrentTourViewModel = null;
+
             CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, null,
-                _currentReservation.ReservationId == 0)
+                _reservation.ReservationId == 0)
             {
                 TourTypes = TourTypes,
                 Hotels = Hotels,
@@ -83,7 +78,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             };
             _addNewEnabled = false;
             RegisterEvents();
-            ShowPopupWindow("Add Tour");
         }
 
         private void OnEditTourCommand(TourWrapper tour)
@@ -96,15 +90,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             else
                 _editZeroTourId = false;
 
+            CurrentTourViewModel = null;
+
             CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, tour,
-                _currentReservation.ReservationId == 0)
+                _reservation.ReservationId == 0)
             {
                 TourTypes = TourTypes,
                 Hotels = Hotels,
                 Optionals = Optionals
             };
             RegisterEvents();
-            ShowPopupWindow("Edit Tour");
         }
 
         public DelegateCommand<TourWrapper> EditTourCommand { get; private set; }
@@ -134,8 +129,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
 
         }
-
-        //public ObservableCollection<TourWrapper> GetTours() { return Tours; }
 
         private ObservableCollection<TourWrapper> _tours;
 
@@ -200,20 +193,38 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        //public Optional SelectedItem
-        //{
-        //    get;
-        //    set;
-        //}
+        private ReservationWrapper _reservation;
+
+        public ReservationWrapper Reservation
+        {
+            get
+            {
+                return _reservation;
+            }
+            set
+            {
+                _reservation = value;
+                OnPropertyChanged(() => Reservation);
+            }
+        }
 
         protected override void OnViewLoaded()
         {
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
-            Tours = _currentReservation.Tours;
+            Reservation = _currentReservation;
+            Tours = Reservation.Tours;
             Tours.ToList().ForEach(InitTourOptionals);
-            _currentReservation.CleanAll();
+            //Reservation.CleanAll();
             ItemsView = CollectionViewSource.GetDefaultView(Tours);
             ItemsView.GroupDescriptions.Add(new PropertyGroupDescription("TourId"));
+            CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, null,
+                Reservation.ReservationId == 0)
+            {
+                TourTypes = TourTypes,
+                Hotels = Hotels,
+                Optionals = Optionals
+            };
+            RegisterEvents();
         }
 
         //For GUI - After selecting Hotel from Drop Down
@@ -263,21 +274,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void CurrentTourViewModel_TourCancelled(object sender, TourEventArgs e)
         {
             CurrentTourViewModel = null;
-            _childWindow.Close();
             _addNewEnabled = true;
-        }
-
-        private PopupWindow _childWindow;
-
-        protected void ShowPopupWindow(string title)
-        {
-            _childWindow = new PopupWindow
-            {
-                Title = title,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Content = CurrentTourViewModel
-            };
-            _childWindow.ShowDialog();
         }
 
         private void RegisterEvents()
@@ -288,34 +285,4 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTourViewModel.TourCancelled += CurrentTourViewModel_TourCancelled;
         }
     }
-    /*public class TourValidationRule : ValidationRule
-    {
-        public override ValidationResult Validate(object value,
-            System.Globalization.CultureInfo cultureInfo)
-        {
-            TourWrapper tour = (value as BindingGroup).Items[0] as TourWrapper;
-            if (tour.TourType.TourTypeId == 0)
-            {
-                return new ValidationResult(false,
-                    "Tour Type should not be empty");
-            }
-            else
-            if (tour.PickupAddress == string.Empty)
-            {
-                return new ValidationResult(false,
-                    "PickUp Address should not be empty.");
-            }
-            else
-            if (tour.StartDate > tour.EndDate)
-            {
-                return new ValidationResult(false,
-                    "Start Date must be earlier than End Date.");
-            }
-            else
-            {
-                var validationResult = ValidationResult.ValidResult;
-                return validationResult;
-            }
-        }
-    }*/
 }

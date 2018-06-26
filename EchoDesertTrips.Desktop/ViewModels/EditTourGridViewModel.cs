@@ -34,8 +34,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _isNewReservation = isNewReservation;
 
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
-            ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCanExecute);
-            ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitCommand);
+            ClearCommand = new DelegateCommand<object>(OnClearCommand, /*OnClearCanExecute*/OnCommandCanExecute);
+//            ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitCommand);
             CellEditEndingRoomTypeCommand = new DelegateCommand<TourHotelRoomType>(OnCellEditEndingRoomTypeCommand);
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
 #if DEBUG
@@ -45,7 +45,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public DelegateCommand<object> SaveCommand { get; private set; }
         public DelegateCommand<object> ClearCommand { get; private set; }
-        public DelegateCommand<object> ExitWithoutSavingCommand { get; private set; }
+        //public DelegateCommand<object> ExitWithoutSavingCommand { get; private set; }
         public DelegateCommand<TourHotelRoomType> CellEditEndingRoomTypeCommand { get; set; }
 
         private void OnCellEditEndingRoomTypeCommand(TourHotelRoomType tourHotelRoomType)
@@ -58,10 +58,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
             return IsTourDirty();
         }
 
-        private bool OnClearCanExecute(object obj)
-        {
-            return (IsTourDirty() && Tour.TourId == 0);
-        }
+        //private bool OnClearCanExecute(object obj)
+        //{
+        //    return (IsTourDirty() && Tour.TourId == 0);
+        //}
 
         private void OnSaveCommand(object obj)
         {
@@ -96,16 +96,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CreateNewTour();
         }
 
-        private void OnExitCommand(object obj)
-        {
-            if (IsTourDirty())
-            {
-                var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
-                if (result == MessageDialogResult.CANCEL)
-                    return;
-            }
-            TourCancelled?.Invoke(this, new TourEventArgs(null, true));
-        }
 #if DEBUG
         private bool _lastDertinessValue = false;
 #endif

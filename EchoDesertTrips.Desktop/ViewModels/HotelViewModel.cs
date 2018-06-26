@@ -5,13 +5,10 @@ using Core.Common.Contracts;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
-using System.Windows.Controls;
-using Core.Common.Core;
-using EchoDesertTrips.Desktop.Support;
 using Core.Common.Utils;
+using EchoDesertTrips.Desktop.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {

@@ -10,7 +10,7 @@
              d:DesignHeight="350" d:DesignWidth="1024">
     <UserControl.Resources>
         <conv:BoolToVisiblityConverter x:Key="boolToVisiblityConverter" />
-    </UserControl.Resources>    
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="41"/>
@@ -33,11 +33,6 @@
         <view:LoginControlView x:Name="LoginControl" Grid.Row="1" 
                                Content="{Binding LoginControlViewModel}" 
                                Visibility="{Binding LoginVisible, Converter={StaticResource boolToVisiblityConverter}}"/>
-        <TabControl Grid.Row="2" Visibility="{Binding MainWindowVisible, Converter={StaticResource boolToVisiblityConverter}}">
-            <TabItem Header="{Binding ReservationsViewModel.ViewTitle}" Content="{Binding ReservationsViewModel}"/>
-            <TabItem Header="{Binding DashboardViewModel.ViewTitle}" Content="{Binding DashboardViewModel}"/>            
-            <TabItem Header="{Binding AdminViewModel.ViewTitle}" Content="{Binding AdminViewModel}" Visibility="{Binding AdminVisible, Converter={StaticResource boolToVisiblityConverter}}"/>
-            <TabItem/>
-        </TabControl>
+        <ContentControl Content="{Binding CurrentViewModel}" Grid.Row="2"/>
     </Grid>
 </core:UserControlViewBase>

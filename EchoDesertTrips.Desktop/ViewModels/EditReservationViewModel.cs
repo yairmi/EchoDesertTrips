@@ -4,57 +4,38 @@ using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
 using System;
-using System.Collections.Generic;
 using System.Windows;
-using Core.Common.Core;
+using System.ComponentModel.Composition;
 using EchoDesertTrips.Desktop.CustomEventArgs;
-
-
-//Customer Grid
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
-    public class EditOrderViewModel : ViewModelBase
+    public class EditReservationViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
 
-        //[ImportingConstructor]
-        public EditOrderViewModel(IServiceFactory serviceFactory,
+        public EditReservationViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService,
             ReservationWrapper reservstion)
         {
-#if DEBUG
-            log.Debug("EditOrderViewModel ctor start");
-#endif
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
             SetReservation(reservstion);
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
-            CheckBoxAgreeChecked = new DelegateCommand<bool>(OnCheckBoxAgreeChecked);
             CustomerGridViewModel = new CustomerGridViewModel(_serviceFactory, _messageDialogService, Reservation);
             TourGridViewModel = new TourGridViewModel(_serviceFactory, _messageDialogService, Reservation);
-            AgencyViewModel = new AgencyViewModel(_serviceFactory, Reservation);
-#if DEBUG
-            log.Debug("EditOrderViewModel ctor end");
-#endif
+            GeneralReservationViewModel = new GeneralReservationViewModel(_serviceFactory, _messageDialogService, Reservation);
         }
+
+        public TourGridViewModel TourGridViewModel { get; set; }
+        public CustomerGridViewModel CustomerGridViewModel { get; set; }
+        public GeneralReservationViewModel GeneralReservationViewModel { get; set; }
 
         public DelegateCommand<object> SaveCommand { get; }
         public DelegateCommand<object> ExitWithoutSavingCommand { get; }
-        public DelegateCommand<bool> CheckBoxAgreeChecked { get; }
 
-        private void OnCheckBoxAgreeChecked(bool checkBoxCheked)
-        {
-            AgencyViewModel.IsEnabled = checkBoxCheked;
-        }
-
-        //After pressing the 'Save' button
-        private bool OnSaveCommandCanExecute(object obj)
-        {
-            return IsReservationDirty();
-        }
 #if DEBUG
         private bool _lastDertinessValue = false;
 #endif
@@ -70,6 +51,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
 #endif
             return bDirty;
+        }
+
+        //After pressing the 'Save' button
+        private bool OnSaveCommandCanExecute(object obj)
+        {
+            return IsReservationDirty();
         }
 
         public event EventHandler<ReservationEventArgs> ReservationUpdated;
@@ -107,7 +94,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         }
                         catch (Exception ex)
                         {
-                            log.Error("OnSaveCommand failed adding new reservation. position: "+ exceptionPosition + ". Error: " + ex.Message);
+                            log.Error("OnSaveCommand failed adding new reservation. position: " + exceptionPosition + ". Error: " + ex.Message);
                         }
 
                     });
@@ -219,42 +206,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 exceptionPosition = 12;
                             }
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             log.Error("OnSaveCommand failed update reservation. position: " + exceptionPosition + ". Error: " + ex.Message);
                         }
                     });
                 }
             }
-        }
-
-        protected override void AddModels(List<ObjectBase> models)
-        {
-            models.Add(Reservation);
-        }
-
-        protected override void OnViewLoaded()
-        {
-#if DEBUG
-            log.Debug("EditOrderViewModel OnViewLoaded start");
-#endif
-            TourGridViewModel.TourTypes = TourTypes;
-            TourGridViewModel.Hotels = Hotels;
-            TourGridViewModel.Optionals = Optionals;
-            AgencyViewModel.Agencies = Agencies;
-#if DEBUG
-            log.Debug("EditOrderViewModel OnViewLoaded end");
-#endif
-        }
-        
-        private void SetReservation(ReservationWrapper reservation)
-        {
-            if (reservation == null)
-            {
-                reservation = new ReservationWrapper();
-            }
-            Reservation = reservation;
-            CleanAll();
         }
 
         public event EventHandler<ReservationEventArgs> ReservationCancelled;
@@ -270,9 +228,29 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ReservationCancelled?.Invoke(this, new ReservationEventArgs(/*reservation*/null, true, false));
         }
 
-        public TourGridViewModel TourGridViewModel { get; set; }
-        public CustomerGridViewModel CustomerGridViewModel { get; set; }
-        public AgencyViewModel AgencyViewModel { get; set; }
+        protected override void OnViewLoaded()
+        {
+#if DEBUG
+            log.Debug("EditOrderViewModel OnViewLoaded start");
+#endif
+            TourGridViewModel.TourTypes = TourTypes;
+            TourGridViewModel.Hotels = Hotels;
+            TourGridViewModel.Optionals = Optionals;
+            GeneralReservationViewModel.Agencies = Agencies;
+#if DEBUG
+            log.Debug("EditOrderViewModel OnViewLoaded end");
+#endif
+        }
+
+        private void SetReservation(ReservationWrapper reservation)
+        {
+            if (reservation == null)
+            {
+                reservation = new ReservationWrapper();
+            }
+            Reservation = reservation;
+            CleanAll();
+        }
 
         private ReservationWrapper _reservation;
 
@@ -285,34 +263,5 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 OnPropertyChanged(() => Reservation, false);
             }
         }
-
-        private Object _selectedeExpander;
-
-        public Object SelectedExpander
-        {
-            get
-            {
-                return _selectedeExpander;
-            }
-            set
-            {
-                _selectedeExpander = value;
-                OnPropertyChanged(() => SelectedExpander, false);
-            }
-        }
     }
-
-    //public class ExpanderToBooleanConverter : IValueConverter
-    //{
-    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        return (value == parameter);
-    //    }
-
-    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        if (System.Convert.ToBoolean(value)) return parameter;
-    //        return null;
-    //    }
-    //}
 }

@@ -13,7 +13,7 @@ namespace EchoDesertTrips.Data
         {
             Database.SetInitializer<EchoDesertTripsContext>(null);
             //Configuration.LazyLoadingEnabled = true;
-            Configuration.ProxyCreationEnabled = false;
+            Configuration.ProxyCreationEnabled = true;
         }
 
         public DbSet<Agency> AgencySet { get; set; }

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EchoDesertTrips.Desktop.Support
+namespace EchoDesertTrips.Desktop.CustomEventArgs
 {
-    public class CustomerOrderEventArgs
+    public class CustomerOrderEventArgs : EventArgs
     {
         public CustomerOrderEventArgs(Customer customer, Reservation reservation, bool isNew)
         {
