@@ -56,8 +56,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Expander Grid.Row="0" IsExpanded="{Binding SelectedExpander, Mode=TwoWay, 
-                        Converter={StaticResource expanderToBooleanConverter}, ConverterParameter=1}">
+                    <Expander Grid.Row="0" IsExpanded="{Binding IsExpanded, ElementName=Expender2, 
+                        Converter={StaticResource expanderToBooleanConverter}}">
                     <Expander.Header>
                         <TextBlock Text="Reservations"/>
                     </Expander.Header>                        
@@ -236,8 +236,7 @@
                     </DataGrid>
                     </StackPanel>
                 </Expander>
-                    <Expander Grid.Row="1" IsExpanded="{Binding SelectedExpander, Mode=TwoWay, 
-                        Converter={StaticResource expanderToBooleanConverter}, ConverterParameter=2}">
+                    <Expander Grid.Row="1" Name="Expender2">
                         <Expander.Header>
                             <TextBlock Text="Continual Reservations"/>
                         </Expander.Header>

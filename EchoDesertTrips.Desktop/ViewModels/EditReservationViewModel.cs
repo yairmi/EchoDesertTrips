@@ -10,27 +10,26 @@ using EchoDesertTrips.Desktop.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class EditReservationViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-
+        [ImportingConstructor]
         public EditReservationViewModel(IServiceFactory serviceFactory,
-            IMessageDialogService messageDialogService,
-            ReservationWrapper reservstion)
+            IMessageDialogService messageDialogService)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            SetReservation(reservstion);
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
-            CustomerGridViewModel = new CustomerGridViewModel(_serviceFactory, _messageDialogService, Reservation);
-            TourGridViewModel = new TourGridViewModel(_serviceFactory, _messageDialogService, Reservation);
-            GeneralReservationViewModel = new GeneralReservationViewModel(_serviceFactory, _messageDialogService, Reservation);
         }
-
+        [Import]
         public TourGridViewModel TourGridViewModel { get; set; }
+        [Import]
         public CustomerGridViewModel CustomerGridViewModel { get; set; }
+        [Import]
         public GeneralReservationViewModel GeneralReservationViewModel { get; set; }
 
         public DelegateCommand<object> SaveCommand { get; }
@@ -69,8 +68,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.Operator = Operator;
                 Reservation.OperatorId = Operator.OperatorId;
                 ReservationUtils.CreateExternalId(Reservation);
-                ReservationUtils.RemoveUnselectedHotels(Reservation);
-                ReservationUtils.RemoveUnselectedOptionals(Reservation);
+                //ReservationUtils.RemoveUnselectedHotels(Reservation);
+                //ReservationUtils.RemoveUnselectedOptionals(Reservation);
                 int exceptionPosition = 0;
                 if (Reservation.ReservationId == 0) //New Reservation
                 {
@@ -225,7 +224,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (result == MessageDialogResult.CANCEL)
                     return;
             }
-            ReservationCancelled?.Invoke(this, new ReservationEventArgs(/*reservation*/null, true, false));
+            ReservationCancelled?.Invoke(this, new ReservationEventArgs(null, true, false));
         }
 
         protected override void OnViewLoaded()
@@ -236,32 +235,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             TourGridViewModel.TourTypes = TourTypes;
             TourGridViewModel.Hotels = Hotels;
             TourGridViewModel.Optionals = Optionals;
+            TourGridViewModel.Reservation = Reservation;
+
+            CustomerGridViewModel.Reservation = Reservation;
+
+            GeneralReservationViewModel.Reservation = Reservation;
             GeneralReservationViewModel.Agencies = Agencies;
 #if DEBUG
             log.Debug("EditOrderViewModel OnViewLoaded end");
 #endif
         }
 
-        private void SetReservation(ReservationWrapper reservation)
+        public void SetReservation(ReservationWrapper reservation)
         {
-            if (reservation == null)
-            {
-                reservation = new ReservationWrapper();
-            }
-            Reservation = reservation;
+            Reservation = reservation == null ? new ReservationWrapper() : reservation;
             CleanAll();
-        }
-
-        private ReservationWrapper _reservation;
-
-        public ReservationWrapper Reservation
-        {
-            get { return _reservation; }
-            set
-            {
-                _reservation = value;
-                OnPropertyChanged(() => Reservation, false);
-            }
         }
     }
 }

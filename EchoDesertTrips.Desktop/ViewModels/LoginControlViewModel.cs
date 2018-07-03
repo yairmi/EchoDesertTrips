@@ -6,15 +6,16 @@ using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
 using System.Windows.Controls;
 using EchoDesertTrips.Desktop.CustomEventArgs;
+using System.ComponentModel.Composition;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
-    //[Export]
-    //[PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class LoginControlViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
-        //[ImportingConstructor]
+        [ImportingConstructor]
         public LoginControlViewModel(IServiceFactory serviceFactory)
         {
             _serviceFactory = serviceFactory;

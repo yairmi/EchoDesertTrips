@@ -33,18 +33,19 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
-            <TabControl Grid.Row="1">
+            <TabControl Grid.Row="1" BorderThickness="4" BorderBrush="LightSkyBlue">
                 <TabControl.Resources>
                     <Style TargetType="TabItem">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="TabItem">
-                                    <Border Name="Border" BorderThickness="1,1,1,0" BorderBrush="Gainsboro" CornerRadius="4,4,0,0" Margin="2,0">
+                                    <Border Name="Border" BorderThickness="2,2,2,0" BorderBrush="Gainsboro" CornerRadius="4,4,0,0" Margin="2,0">
                                         <ContentPresenter x:Name="ContentSite"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         ContentSource="Header"
-                                        Margin="10,2"/>
+                                        TextBlock.FontSize="18"
+                                        Margin="50,2"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">

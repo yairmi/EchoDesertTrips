@@ -25,15 +25,14 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Enable Agency:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <CheckBox x:Name="checkBoxAgree" Grid.Row="0" Margin="3" Grid.Column="1" IsChecked="{Binding IsEnabled}"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Agency:" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        <!--<ComboBox x:Name="AgenciesCombo" Grid.Row="1" Grid.Column="1" Margin="3" Width="160" 
+                  ItemsSource="{Binding Agencies, Mode=TwoWay}" 
+                  SelectedItem="{Binding SelectedAgency, Mode=TwoWay}"
+                  IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">-->
         <ComboBox x:Name="AgenciesCombo" Grid.Row="1" Grid.Column="1" Margin="3" Width="160" 
                   ItemsSource="{Binding Agencies, Mode=TwoWay}" 
-                  SelectedItem="{Binding Reservation.Agency}"
-                  IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding SelectionAgencyChangedCommand}" CommandParameter="{Binding ElementName=AgenciesCombo, Path=SelectedItem}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
+                  SelectedItem="{Binding SelectedAgency, Mode=TwoWay}"
+                  IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">        
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding AgencyName}"/>
@@ -41,15 +40,14 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <TextBlock Grid.Row="1" Grid.Column="2" Margin="3" Text="Agent:" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        <!--<ComboBox x:Name="AgentsCombo" Grid.Row="1" Grid.Column="3" Margin="3" Width="160" 
+                  ItemsSource="{Binding SelectedAgency.Agents, Mode=TwoWay}" 
+                  SelectedItem="{Binding SelectedAgent, Mode=TwoWay}"
+                  IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">-->
         <ComboBox x:Name="AgentsCombo" Grid.Row="1" Grid.Column="3" Margin="3" Width="160" 
-                  ItemsSource="{Binding Reservation.Agency.Agents, Mode=TwoWay}" 
-                  SelectedItem="{Binding Reservation.Agent, Mode=TwoWay}"
-                  IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding SelectionAgentChangedCommand}" CommandParameter="{Binding ElementName=AgentsCombo, Path=SelectedItem}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
+                  ItemsSource="{Binding SelectedItem.Agents, ElementName=AgenciesCombo}"
+                  SelectedItem="{Binding SelectedAgent, Mode=TwoWay}"
+                  IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">        
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock>

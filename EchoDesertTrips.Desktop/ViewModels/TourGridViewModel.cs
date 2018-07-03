@@ -1,33 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using Core.Common.Contracts;
-using Core.Common.Core;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Entities;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Linq;
-using System.Windows.Controls;
 using System.Windows;
 using EchoDesertTrips.Desktop.Support;
 using AutoMapper;
 using Core.Common.Utils;
-using Core.Common.Extensions;
 using System.ComponentModel.Composition;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class TourGridViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        private ReservationWrapper _currentReservation;
-        private bool _editZeroTourId = false;
-
+        //private ReservationWrapper _currentReservation;
+        //private bool _editZeroTourId = false;
+        [ImportingConstructor]
         public TourGridViewModel(IServiceFactory serviceFactory,
-            IMessageDialogService messageBoxDialogService,
-            ReservationWrapper currentReservation)
+            IMessageDialogService messageBoxDialogService)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
@@ -36,7 +32,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             EditTourCommand = new DelegateCommand<TourWrapper>(OnEditTourCommand);
             AddTourCommand = new DelegateCommand<object>(OnAddTourCommand, CanAddTourCommand);
             _addNewEnabled = true;
-            _currentReservation = currentReservation;
+            //_currentReservation = currentReservation;
         }
 
         public TourGridViewModel()
@@ -60,7 +56,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<TourWrapper> RowExpanded { get; set; }
         private bool CanAddTourCommand(object obj)
         {
-            return _reservation.ReservationId == 0 && _addNewEnabled == true;
+            return Reservation.ReservationId == 0 && _addNewEnabled == true;
         }
 
 
@@ -68,57 +64,36 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnAddTourCommand(object obj)
         {
             CurrentTourViewModel = null;
-
-            CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, null,
-                _reservation.ReservationId == 0)
-            {
-                TourTypes = TourTypes,
-                Hotels = Hotels,
-                Optionals = Optionals
-            };
+            _editTourViewModel.CreateTour(null);
+            _editTourViewModel.TourTypes = TourTypes;
+            _editTourViewModel.Hotels = Hotels;
+            _editTourViewModel.Optionals = Optionals;
+            _editTourViewModel.EnableCBTourType = true; //TODO: try to remove this property
+            CurrentTourViewModel = _editTourGridViewModel;
             _addNewEnabled = false;
             RegisterEvents();
         }
 
+        [Import]
+        private EditTourGridViewModel _editTourGridViewModel { get; set; }
+
         private void OnEditTourCommand(TourWrapper tour)
         {
-            if (tour.TourId == 0)
-            {
-                tour.TourId = Tours.Max(x => x.TourId) + 1;
-                _editZeroTourId = true;
-            }
-            else
-                _editZeroTourId = false;
-
-            CurrentTourViewModel = null;
-
-            CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, tour,
-                _reservation.ReservationId == 0)
-            {
-                TourTypes = TourTypes,
-                Hotels = Hotels,
-                Optionals = Optionals
-            };
+            tour.bInEdit = true;
+            _editTourViewModel.CreateTour(tour);
+            _editTourViewModel.TourTypes = TourTypes;
+            _editTourViewModel.Hotels = Hotels;
+            _editTourViewModel.Optionals = Optionals;
+            _editTourViewModel.EnableCBTourType = Reservation.ReservationId == 0; //TODO: try to remove this property
             RegisterEvents();
         }
 
         public DelegateCommand<TourWrapper> EditTourCommand { get; private set; }
         public DelegateCommand<object> AddTourCommand { get; private set; }
-
+        [Import]
         private EditTourGridViewModel _editTourViewModel;
 
-        public EditTourGridViewModel CurrentTourViewModel
-        {
-            get { return _editTourViewModel; }
-            set
-            {
-                if (_editTourViewModel != value)
-                {
-                    _editTourViewModel = value;
-                    OnPropertyChanged(() => CurrentTourViewModel, false);
-                }
-            }
-        }
+        public EditTourGridViewModel CurrentTourViewModel { get; set; }
 
         private void OnRowExpanded(TourWrapper tour)
         {
@@ -193,37 +168,35 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private ReservationWrapper _reservation;
+        //private ReservationWrapper _reservation;
 
-        public ReservationWrapper Reservation
-        {
-            get
-            {
-                return _reservation;
-            }
-            set
-            {
-                _reservation = value;
-                OnPropertyChanged(() => Reservation);
-            }
-        }
+        //public ReservationWrapper Reservation
+        //{
+        //    get
+        //    {
+        //        return _reservation;
+        //    }
+        //    set
+        //    {
+        //        _reservation = value;
+        //        OnPropertyChanged(() => Reservation);
+        //    }
+        //}
 
         protected override void OnViewLoaded()
         {
+            _editTourViewModel.TourTypes = TourTypes;
+            _editTourViewModel.Hotels = Hotels;
+            _editTourViewModel.Optionals = Optionals;
+            _editTourViewModel.EnableCBTourType = Reservation.ReservationId == 0; //TODO: try to remove this property
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
-            Reservation = _currentReservation;
+            //************* check it
             Tours = Reservation.Tours;
-            Tours.ToList().ForEach(InitTourOptionals);
-            //Reservation.CleanAll();
+            //Tours.ToList().ForEach(InitTourOptionals);
+            //*************
             ItemsView = CollectionViewSource.GetDefaultView(Tours);
             ItemsView.GroupDescriptions.Add(new PropertyGroupDescription("TourId"));
-            CurrentTourViewModel = new EditTourGridViewModel(_serviceFactory, _messageDialogService, null,
-                Reservation.ReservationId == 0)
-            {
-                TourTypes = TourTypes,
-                Hotels = Hotels,
-                Optionals = Optionals
-            };
+            CurrentTourViewModel = _editTourViewModel;
             RegisterEvents();
         }
 
@@ -249,17 +222,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             IMapper iMapper = config.CreateMapper();
             var tourWrapper = TourHelper.CloneTourWrapper(e.Tour);
-            if (!e.IsNew || _editZeroTourId == true)
+            if (!e.IsNew)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
-                var tour = Tours.FirstOrDefault(item => item.TourId == e.Tour.TourId);
+                tourWrapper.bInEdit = false;
+                var tour = Tours.FirstOrDefault(item => item.bInEdit == true);
                 if (tour != null)
                 {
                     var index = Tours.IndexOf(tour);
                     Tours[index] = tourWrapper;
-                    if (_editZeroTourId == true)
-                        tourWrapper.TourId = 0;
                 }
             }
             else
@@ -267,8 +239,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Tours.Add(tourWrapper);
             }
             Tours.OrderBy(tour => tour.StartDate);
-            //AddNewEnabled = true;
-            //CurrentTourViewModel = null;
+
+            _editTourGridViewModel.EnableCBTourType = Reservation.ReservationId == 0;
         }
 
         private void CurrentTourViewModel_TourCancelled(object sender, TourEventArgs e)

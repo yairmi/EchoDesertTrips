@@ -218,6 +218,18 @@ namespace Core.Common.UI.Core
             }
         }
 
+        private ReservationWrapper _reservation;
+
+        public ReservationWrapper Reservation
+        {
+            get { return _reservation; }
+            set
+            {
+                _reservation = value;
+                OnPropertyChanged(() => Reservation, false);
+            }
+        }
+
         protected virtual void OnToggleErrorsCommandExecute(object arg)
         {
             ErrorsVisible = !ErrorsVisible;
@@ -273,6 +285,7 @@ namespace Core.Common.UI.Core
             }
             tour.TourOptionals.Clear();
             tour.TourOptionals = tourOptionals;
+            //tour.TourOptionals.ToList().ForEach((tourOptional) => tourOptional.CleanAll());
         }
 
         protected int GetCustomerLeft(ReservationWrapper reservation)

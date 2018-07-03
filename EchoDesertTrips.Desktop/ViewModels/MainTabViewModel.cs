@@ -24,15 +24,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            ReservationsViewModel.TourTypes = TourTypes;
-            ReservationsViewModel.Hotels = Hotels;
-            ReservationsViewModel.Optionals = Optionals;
-            ReservationsViewModel.Agencies = Agencies;
-
-            AdminViewModel.TourTypes = TourTypes;
-            AdminViewModel.Hotels = Hotels;
-            AdminViewModel.Optionals = Optionals;
-            AdminViewModel.Agencies = Agencies;
+            ReservationsViewModel.Operator = Operator;
+            AdminViewModel.Operator = Operator;
+            ReservationsViewModel.Client = Client;
+            AdminViewModel.Client = Client;
         }
     }
 }

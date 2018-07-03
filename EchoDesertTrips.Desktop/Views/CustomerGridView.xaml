@@ -32,66 +32,80 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             <!--<Button x:Name="btnAddNewCustomer" Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" />-->
-            <Border  Grid.Row="1" 
+            <Border  Grid.Row="0" 
+            Grid.Column="0"
+            HorizontalAlignment="Left" 
+            CornerRadius="4" 
+            Margin="0" 
+            BorderBrush="SteelBlue" 
+            BorderThickness="1" 
+            Background="BlanchedAlmond">
+                    <ContentControl HorizontalAlignment="Left" Margin="5,5,5,5" Content="{Binding CurrentCustomerViewModel}" />
+            </Border>
+            <Border Grid.Row="0" Grid.Column="1"
              HorizontalAlignment="Left" 
+             VerticalAlignment="Top"
              CornerRadius="4" 
-             Margin="10" 
+             Margin="5,0,0,0" 
              BorderBrush="SteelBlue" 
              BorderThickness="1" 
              Background="BlanchedAlmond">
-                <ContentControl Grid.Row="1" HorizontalAlignment="Left" Margin="10,0,0,0" Content="{Binding CurrentCustomerViewModel}" />
-            </Border>
-            <DataGrid x:Name="dgCustomerWrapper" 
-                  Grid.Row="0"
-                  Margin="0,0,0,0" 
+                <DataGrid x:Name="dgCustomerWrapper" 
+                  Margin="5,5,5,5" 
                   ItemsSource="{Binding Customers, Mode=TwoWay}" 
                   EnableRowVirtualization="True" 
                   HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
                   AutoGenerateColumns="False"
                   CellStyle="{StaticResource DataGridBorder}"
                   CanUserAddRows="False"
-                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='608'}">
-            <DataGrid.Columns>
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Margin="0,0,10,0">
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="0,0,10,0">
                                     <Hyperlink Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
                                             CommandParameter="{Binding}" IsEnabled="{Binding ElementName=btnAddNewCustomer, Path=IsEnabled}">
                                     <TextBlock Text="Delete" FontSize="14" FontWeight="Bold"/>
                                     </Hyperlink>
                                 </TextBlock>
-                                    <TextBlock Margin="0">
+                                        <TextBlock Margin="0">
                                     <Hyperlink Command="{Binding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
                                            CommandParameter="{Binding}" IsEnabled="{Binding ElementName=btnAddNewCustomer, Path=IsEnabled}">
                                     <TextBlock Text="Edit" FontSize="14" FontWeight="Bold"/>
                                 </Hyperlink>
                                 </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn x:Name="firstNameColumn" Width="Auto" IsReadOnly="True" Header="First Name" Binding="{Binding FirstName, Mode=TwoWay}"/>
-                    <DataGridTextColumn x:Name="lastNameColumn" Width="Auto" IsReadOnly="True" Header="Last Name" Binding="{Binding LastName, Mode=TwoWay}"/>
-                    <DataGridTextColumn x:Name="dateOfBirdthColumn" IsReadOnly="True" Width="Auto" Header="Date Of Birdth" Binding="{Binding DateOfBirdth, StringFormat=d}"/>
-                    <DataGridTextColumn x:Name="passportNumberColumn" IsReadOnly="True" Width="Auto" Header="Passport Number" Binding="{Binding PassportNumber, Mode=TwoWay}"/>
-                    <DataGridTextColumn x:Name="issueDataColumn" IsReadOnly="True" Width="Auto" Header="Issue Date" Binding="{Binding IssueData, StringFormat=d}"/>
-                    <DataGridTextColumn x:Name="expireyDateColumn" IsReadOnly="True" Width="Auto" Header="Expiry Date" Binding="{Binding ExpireyDate, StringFormat=d}"/>
-                    <DataGridCheckBoxColumn x:Name="hasVisaColumn" Width="Auto" IsReadOnly="True" Header="Has Visa" Binding="{Binding HasVisa}"/>
-                    <DataGridTextColumn x:Name="nationalityColumn" Width="Auto" IsReadOnly="True" Header="Nationality" Binding="{Binding Nationality, Mode=TwoWay}"/>
-                    <DataGridTextColumn x:Name="phone1Column" Width="Auto" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
-                    <DataGridTextColumn x:Name="phone2Column" Width="Auto" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-    </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn x:Name="firstNameColumn" Width="Auto" IsReadOnly="True" Header="First Name" Binding="{Binding FirstName, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="lastNameColumn" Width="Auto" IsReadOnly="True" Header="Last Name" Binding="{Binding LastName, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="dateOfBirdthColumn" IsReadOnly="True" Width="Auto" Header="Date Of Birdth" Binding="{Binding DateOfBirdth, StringFormat=d}"/>
+                        <DataGridTextColumn x:Name="passportNumberColumn" IsReadOnly="True" Width="Auto" Header="Passport Number" Binding="{Binding PassportNumber, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="issueDataColumn" IsReadOnly="True" Width="Auto" Header="Issue Date" Binding="{Binding IssueData, StringFormat=d}"/>
+                        <DataGridTextColumn x:Name="expireyDateColumn" IsReadOnly="True" Width="Auto" Header="Expiry Date" Binding="{Binding ExpireyDate, StringFormat=d}"/>
+                        <DataGridCheckBoxColumn x:Name="hasVisaColumn" Width="Auto" IsReadOnly="True" Header="Has Visa" Binding="{Binding HasVisa}"/>
+                        <DataGridTextColumn x:Name="nationalityColumn" Width="Auto" IsReadOnly="True" Header="Nationality" Binding="{Binding Nationality, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="phone1Column" Width="Auto" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="phone2Column" Width="Auto" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
     </Grid>        
 </core:UserControlViewBase>
 

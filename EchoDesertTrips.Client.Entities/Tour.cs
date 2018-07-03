@@ -35,6 +35,7 @@ namespace EchoDesertTrips.Client.Entities
             TourType = new TourTypeWrapper();
             _startDate = DateTime.Today;
             _endDate = DateTime.Today;
+            bInEdit = false;
 
             _pickupAddress = string.Empty;
         }
@@ -272,6 +273,8 @@ namespace EchoDesertTrips.Client.Entities
                 OnPropertyChanged(() => Private);
             }
         }
+
+        public bool bInEdit { get; set; }
 
         class TourValidator : AbstractValidator<TourWrapper>
         {

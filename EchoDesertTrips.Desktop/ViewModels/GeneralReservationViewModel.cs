@@ -1,27 +1,25 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.UI.Core;
-using EchoDesertTrips.Client.Entities;
+using System.ComponentModel.Composition;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class GeneralReservationViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-
+        [ImportingConstructor]
         public GeneralReservationViewModel(IServiceFactory serviceFactory,
-            IMessageDialogService messageBoxDialogService,
-            ReservationWrapper reservation)
+            IMessageDialogService messageBoxDialogService)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
-            Reservation = reservation;
-
-            AgencyViewModel = new AgencyViewModel(_serviceFactory, Reservation);
         }
 
         public override string ViewTitle => "General";
-
+        [Import]
         public AgencyViewModel AgencyViewModel { get; set; }
 
         public DelegateCommand<bool> CheckBoxAgreeChecked { get; }
@@ -37,24 +35,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             log.Debug("EditOrderViewModel OnViewLoaded start");
 #endif
             AgencyViewModel.Agencies = Agencies;
+            AgencyViewModel.Reservation = Reservation;
+            AgencyViewModel.SelectedAgency = null;
+            AgencyViewModel.SelectedAgent = null;
 #if DEBUG
             log.Debug("EditOrderViewModel OnViewLoaded end");
 #endif
-        }
-
-        private ReservationWrapper _reservation;
-
-        public ReservationWrapper Reservation
-        {
-            get
-            {
-                return _reservation;
-            }
-            set
-            {
-                _reservation = value;
-                OnPropertyChanged(() => Reservation);
-            }
         }
     }
 }

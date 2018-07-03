@@ -24,7 +24,6 @@ namespace EchoDesertTrips.Client.Entities
             {
                 if (_agencyId != value)
                 {
-                    //bool dirty = _agencyId != 0;
                     _agencyId = value;
                     OnPropertyChanged(() => AgencyId, true);
                 }
@@ -44,7 +43,6 @@ namespace EchoDesertTrips.Client.Entities
             {
                 if (_agencyName != value)
                 {
-                    //bool dirty = _agencyName != null;
                     _agencyName = value;
                     OnPropertyChanged(() => AgencyName, true);
                 }

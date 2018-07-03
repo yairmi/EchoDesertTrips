@@ -8,13 +8,12 @@ namespace EchoDesertTrips.Desktop.Support
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value == parameter);
+            return !((bool)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (System.Convert.ToBoolean(value)) return parameter;
-            return null;
+            return !((bool)value);
         }
     }
 }

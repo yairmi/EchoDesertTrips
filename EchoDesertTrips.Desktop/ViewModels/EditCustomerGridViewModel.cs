@@ -7,33 +7,30 @@ using EchoDesertTrips.Desktop.CustomEventArgs;
 using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class EditCustomerGridViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        private CustomerWrapper _customerWrapper;
-        private ReservationWrapper _currentReservation;
 
+        [ImportingConstructor]
         public EditCustomerGridViewModel(IServiceFactory serviceFactory,
-            IMessageDialogService messageDialogService,
-            CustomerWrapper customer,
-            ReservationWrapper currentReservation)
+            IMessageDialogService messageDialogService)
         {
 #if DEBUG
             log.Debug("EditCustomerGridViewModel ctor start");
 #endif
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            _customerWrapper = customer;
-            _currentReservation = currentReservation;
-            SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnCommandCanExecute);
-            ClearCommand = new DelegateCommand<object>(OnClearCommand, /*OnClearCanExecute*/OnCommandCanExecute);
-//            ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
+            SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
+            ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCommandCanExecute);
 #if DEBUG
             log.Debug("EditCustomerGridViewModel ctor end");
 #endif
@@ -41,17 +38,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public DelegateCommand<object> SaveCommand { get; }
         public DelegateCommand<object> ClearCommand { get; }
-//        public DelegateCommand<object> ExitWithoutSavingCommand { get; }
 
-        private bool OnCommandCanExecute(object obj)
+        private bool OnSaveCommandCanExecute(object obj)
         {
             return IsCustomerDirty();
         }
 
-        //private bool OnClearCanExecute(object obj)
-        //{
-        //    return (IsCustomerDirty() && Customer.CustomerId == 0);
-        //}
+        private bool OnClearCommandCanExecute(object obj)
+        {
+            return true;    //This is for the case that the user Edit an existing and made no change and after it he want to clear it.
+        }
 
         //After pressing the 'Save' button
         private void OnSaveCommand(object obj)
@@ -62,41 +58,32 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (Customer.IsValid)
             {
-                var bIsNew = Customer.CustomerId == 0;
-                CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, bIsNew));
-                if (bIsNew == true)
+                if (Customer.CustomerId == 0)
                 {
-                    CustomersLeft = GetCustomerLeft(_currentReservation);
-                    Customer = null;
-                    Customer = new CustomerWrapper();
+                    bool bIsNew = _editedNewCustomer == false;
+                    CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, bIsNew));
                 }
-                CleanAll();
+                else
+                {
+                    CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, false));
+                }
+                CreateNewCustomer();
             }
+            CustomersLeft = GetCustomerLeft(Reservation);
         }
 
-/*        private int _maxNumberOfCustomers;
-
-        public int MaxNumberOfCustomers
+        private void CreateNewCustomer()
         {
-            get
+            Customer = null;
+
+            ControllEnabled = GetCustomerLeft(Reservation) > 0;// || _customer != null;
+            if (ControllEnabled)
             {
-                return _maxNumberOfCustomers;
+                Customer = new CustomerWrapper();
+                _editedNewCustomer = false;
+                Customer.CleanAll();
             }
-            private set
-            {
-                _currentReservation.Tours.ToList().ForEach((tour) =>
-                {
-                    tour.TourHotels.ToList().ForEach((tourHotel) =>
-                    {
-                        tourHotel.TourHotelRoomTypes.ToList().ForEach((hotelRoomType) =>
-                        {
-                            _maxNumberOfCustomers += (hotelRoomType.Persons);
-                        });
-                    });
-                });
-                _maxNumberOfCustomers = value > _maxNumberOfCustomers ? value : _maxNumberOfCustomers;
-            }
-        }*/
+        }
 
         private void OnClearCommand(object obj)
         {
@@ -106,8 +93,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (result == MessageDialogResult.CANCEL)
                     return;
             }
-            Customer = null;
-            Customer = new CustomerWrapper();
+            //Customer = null;
+            //Customer = new CustomerWrapper();
+            CreateNewCustomer();
         }
 
         //private void OnExitWithoutSavingCommand(object obj)
@@ -126,7 +114,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool IsCustomerDirty()
         {
-            var bDirty = Customer.IsAnythingDirty();
+            var bDirty = Customer != null ? Customer.IsAnythingDirty() : false;
 #if DEBUG
             if (bDirty != _lastDertinessValue)
             {
@@ -145,24 +133,48 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            ControllEnabled = GetCustomerLeft(_currentReservation) > 0 || _customerWrapper != null;
+            ControllEnabled = GetCustomerLeft(Reservation) > 0;// || _customer != null;
 
-            var config = new MapperConfiguration(cfg =>
+            //var config = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
+            //});
+
+            //if (_customerWrapper != null)
+            //{
+
+            //    IMapper iMapper = config.CreateMapper();
+            //    Customer = iMapper.Map<CustomerWrapper, CustomerWrapper>(_customerWrapper);
+            //}
+            //else
+            //    Customer = new CustomerWrapper();
+            //CustomersLeft = GetCustomerLeft(_currentReservation);
+            //CleanAll();
+        }
+
+        public void SetCustomer(CustomerWrapper customer)
+        {
+            if (customer != null)
             {
-                cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
-            });
-
-            if (_customerWrapper != null)
-            {
-
+                ControllEnabled = true;
+                _editedNewCustomer = customer.CustomerId == 0;
+                var config = new MapperConfiguration(cfg => {
+                    cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
+                });
                 IMapper iMapper = config.CreateMapper();
-                Customer = iMapper.Map<CustomerWrapper, CustomerWrapper>(_customerWrapper);
+                Customer = iMapper.Map<CustomerWrapper, CustomerWrapper>(customer);
             }
             else
+            {
+                _editedNewCustomer = false;
                 Customer = new CustomerWrapper();
-            CustomersLeft = GetCustomerLeft(_currentReservation);
-            CleanAll();
+            }
+
+            Customer.CleanAll();
+
         }
+
+        private bool _editedNewCustomer;
 
         private CustomerWrapper _customer;
 

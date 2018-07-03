@@ -157,6 +157,7 @@ namespace EchoDesertTrips.Client.Entities
             DateOfBirdth = DateTime.Today;
             IssueData = DateTime.Today;
             ExpireyDate = DateTime.Today;
+            bInEdit = false;
 
             _firstName = string.Empty;
             _lastName = string.Empty;
@@ -429,6 +430,8 @@ namespace EchoDesertTrips.Client.Entities
                 }
             }
         }
+
+        public bool bInEdit { get; set; }
 
         class CustomerValidator : AbstractValidator<CustomerWrapper>
         {

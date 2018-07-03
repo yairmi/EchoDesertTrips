@@ -16,16 +16,16 @@ using EchoDesertTrips.Desktop.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class CustomerGridViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        private readonly ReservationWrapper _currentReservation;
-        private bool _editZeroCustomerId = false;
 
+        [ImportingConstructor]
         public CustomerGridViewModel(IServiceFactory serviceFactory,
-            IMessageDialogService messageBoxDialogService,
-            ReservationWrapper currentReservation)
+            IMessageDialogService messageBoxDialogService)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
@@ -33,15 +33,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowSomeEventCommand = new DelegateCommand<CustomerWrapper>(OnRowSomeEventCommand);
             DeleteCustomerCommand = new DelegateCommand<CustomerWrapper>(OnDeleteCustomerCommand);
             EditCustomerCommand = new DelegateCommand<CustomerWrapper>(OnEditCustomerCommand);
-            //AddCustomerCommand = new DelegateCommand<object>(OnAddCustomerCommand);
             Customers = new ObservableCollection<CustomerWrapper>();
-            _currentReservation = currentReservation;
-            Customers = currentReservation.Customers;
         }
 
         public CustomerGridViewModel()
         {
-            
+
         }
 
         public override string ViewTitle => "PAX";
@@ -72,21 +69,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnEditCustomerCommand(CustomerWrapper customer)
         {
-            if (customer.CustomerId == 0)
-            {
-                customer.CustomerId = Customers.Max(x => x.CustomerId) + 1;
-                _editZeroCustomerId = true;
-            }
-            else
-                _editZeroCustomerId = false;
-            CurrentCustomerViewModel = null;
-            CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, customer, _currentReservation);
+            customer.bInEdit = true;
+            _editCustomerViewModel.SetCustomer(customer);
+            _editCustomerViewModel.Reservation = Reservation;
+            CurrentCustomerViewModel = _editCustomerViewModel;
             RegisterEvents();
         }
 
         public DelegateCommand<CustomerWrapper> EditCustomerCommand { get; }
-
-        private EditCustomerGridViewModel _editCustomerViewModel;
+        [Import]
+        private EditCustomerGridViewModel _editCustomerViewModel { get;set;}
 
         public EditCustomerGridViewModel CurrentCustomerViewModel
         {
@@ -111,14 +103,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 ValidateModel();
                 if (customer.IsValid)
                 {
-                    /*WithClient<ICustomerService>(_serviceFactory.CreateClient<ICustomerService>(), customerClient =>
-                    {
-                        var cw = new CustomerWrapper();
-                        var customer = new Customer();
-                        cw.UpdateCustomer(customerWrraper, customer);
-                        var savedCustomer = customerClient.UpdateCustomer(customer); //Update or Add
-                        customerWrraper.CustomerId = savedCustomer.CustomerId;
-                    });*/
                 }
             }
         }
@@ -149,7 +133,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            CurrentCustomerViewModel = new EditCustomerGridViewModel(_serviceFactory, _messageDialogService, null, _currentReservation);
+            Customers = Reservation.Customers;
+            _editCustomerViewModel.Reservation = Reservation;
+            _editCustomerViewModel.SetCustomer(null);
+            _editCustomerViewModel.CustomersLeft = GetCustomerLeft(Reservation);
+            CurrentCustomerViewModel = _editCustomerViewModel;
             RegisterEvents();
         }
 
@@ -162,17 +150,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             var iMapper = config.CreateMapper();
             var customerWrapper = iMapper.Map<CustomerWrapper, CustomerWrapper>(e.Customer);
 
-            if (!e.IsNew || _editZeroCustomerId == true)
+            if (!e.IsNew)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
-                var customer = Customers.FirstOrDefault(item => item.CustomerId == e.Customer.CustomerId);
+                customerWrapper.bInEdit = false;
+                var customer = Customers.FirstOrDefault(item => item.bInEdit == true);
                 if (customer != null)
                 {
                     var index = Customers.IndexOf(customer);
                     Customers[index] = customerWrapper;
-                    if (_editZeroCustomerId == true)
-                        customerWrapper.CustomerId = 0;
                 }
             }
             else

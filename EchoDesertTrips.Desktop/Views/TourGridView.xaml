@@ -24,32 +24,50 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                <!--<RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>-->
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
                 <!--<Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}" IsEnabled="{Binding AddNewEnabled}" />-->
                 <!--<Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}"/>-->
-            <Border  Grid.Row="2" 
-             HorizontalAlignment="Left" 
-             CornerRadius="4" 
-             Margin="10" 
-             BorderBrush="SteelBlue" 
-             BorderThickness="1" 
-             Background="BlanchedAlmond">
-                <ContentControl Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" Content="{Binding CurrentTourViewModel}" />
-            </Border>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <StackPanel  Orientation="Horizontal" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0">
                 <TextBlock VerticalAlignment="Center">Enter number of PAX:</TextBlock>
                 <TextBox Width="30" Margin="5,0,0,0" Height="14" Text="{Binding Reservation.NumberOfCustomers, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
-            <DataGrid Grid.Row="0"
-                  x:Name="dgTourWrapper"
-                  Margin="0,0,0,0" 
+            <Border Grid.Row="1" Grid.Column="0"
+             HorizontalAlignment="Left" 
+             VerticalAlignment="Top"
+             CornerRadius="4" 
+             Margin="0" 
+             BorderBrush="SteelBlue" 
+             BorderThickness="1" 
+             Background="BlanchedAlmond">
+                    <ContentControl HorizontalAlignment="Left" Margin="5,5,5,5" Content="{Binding CurrentTourViewModel}" />
+            </Border>
+            <!--<StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center">Enter number of PAX:</TextBlock>
+                <TextBox Width="30" Margin="5,0,0,0" Height="14" Text="{Binding Reservation.NumberOfCustomers, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>-->
+            <Border Grid.Row="1" Grid.Column="1"
+             HorizontalAlignment="Left" 
+             VerticalAlignment="Top"
+             CornerRadius="4" 
+             Margin="20,0,0,0" 
+             BorderBrush="SteelBlue" 
+             BorderThickness="1" 
+             Background="BlanchedAlmond">
+                <DataGrid x:Name="dgTourWrapper"
+                  Margin="5,5,5,5" 
                   ItemsSource="{Binding Tours}"
                   AutoGenerateColumns="False"
                   CellStyle="{StaticResource DataGridBorder}"
                   HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
                   CanUserAddRows="False"
-                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='623'}">
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='338'}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="RowEditEnding">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
@@ -78,11 +96,11 @@
                         </DataGridTemplateColumn>
                         <DataGridTextColumn x:Name="tourTypeNameColumn" Width="Auto" Header="Tour Type" IsReadOnly="True"
                                     Binding="{Binding TourType.TourTypeName, Mode=TwoWay}"/>
-                    <DataGridTextColumn x:Name="collectionAddressColumn" Width="Auto" Header="Pickup Address" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="collectionAddressColumn" Width="Auto" Header="Pickup Address" IsReadOnly="True"
                                     Binding="{Binding PickupAddress}"/>
-                    <DataGridTextColumn x:Name="startDateColumn" Width="Auto" Header="Start Date" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="startDateColumn" Width="Auto" Header="Start Date" IsReadOnly="True"
                                     Binding="{Binding StartDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
-                    <DataGridTextColumn x:Name="endDateColumn" Width="Auto" Header="End Date" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="endDateColumn" Width="Auto" Header="End Date" IsReadOnly="True"
                                     Binding="{Binding EndDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
                     </DataGrid.Columns>
                     <!--<DataGrid.RowDetailsTemplate>
@@ -195,7 +213,9 @@
                                               Margin="20, 20, 20, 20">
                                                     <DataGrid.Columns>
                                                         <DataGridTextColumn x:Name="DestinationNameColumn" Width="Auto" IsReadOnly="True" Header="Destination" Binding="{Binding DestinationName}"/>
-                                                        --><!--<DataGridCheckBoxColumn x:Name="PrivateColumn" Width="Auto" Header="Private" IsReadOnly="True" Binding="{Binding Private}"/>--><!--
+                                                        -->
+                    <!--<DataGridCheckBoxColumn x:Name="PrivateColumn" Width="Auto" Header="Private" IsReadOnly="True" Binding="{Binding Private}"/>-->
+                    <!--
                                                     </DataGrid.Columns>
                                                 </DataGrid>
                                             </Grid>
@@ -206,7 +226,8 @@
                         </DataTemplate>
                     </DataGrid.RowDetailsTemplate>-->
                 </DataGrid>
-            </Grid>
+            </Border>
+        </Grid>
             <!--<ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentTourViewModel}" />-->
         </Grid>
 </core:UserControlViewBase>
