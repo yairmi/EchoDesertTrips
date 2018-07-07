@@ -209,9 +209,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //For GUI (RoomTypes DataGrid DataSource) - After selecting Hotel from Drop Down
         private void UpdateTourHotelRoomTypes(Hotel hotel)
         {
+            TourHotelRoomTypes.Clear();
             if (hotel == null)
                 return;
-            TourHotelRoomTypes.Clear();
             //Init all rooms(tourhotelroomtype) for selected hotel
             hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
             {
