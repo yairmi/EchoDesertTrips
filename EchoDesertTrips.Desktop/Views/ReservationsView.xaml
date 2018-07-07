@@ -195,7 +195,7 @@
                                                                     <Expander.Content>
                                                                         <Grid>
                                                                             <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="{Binding ElementName=GroupGrid}"/>
+                                                                                <ColumnDefinition Width="{Binding Path=Width, ElementName=GroupGrid}"/>
                                                                             </Grid.ColumnDefinitions>
                                                                             <DataGrid Grid.Column="0" x:Name="dataGridCustomers" 
                                                                             ItemsSource="{Binding Converter={StaticResource customersGroupConverter}}"

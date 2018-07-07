@@ -26,13 +26,12 @@
                Stretch="UniformToFill" Width="134"/>
             <StackPanel Orientation="Horizontal" Grid.Column="1">
                 <TextBlock Text="{Binding Operator.OperatorName}" FontSize="18" FontWeight="DemiBold" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                <Button Content="Log Out" Height="30" Command="{Binding LogOutCommand}"
-                    Visibility="{Binding MainWindowVisible, Converter={StaticResource boolToVisiblityConverter}}"/>
+                <Button Content="Log Out" Height="30" Command="{Binding LogOutCommand}"/>
             </StackPanel>
         </Grid>
-        <view:LoginControlView x:Name="LoginControl" Grid.Row="1" 
+        <!--<view:LoginControlView x:Name="LoginControl" Grid.Row="1" 
                                Content="{Binding LoginControlViewModel}" 
-                               Visibility="{Binding LoginVisible, Converter={StaticResource boolToVisiblityConverter}}"/>
+                               Visibility="{Binding LoginVisible, Converter={StaticResource boolToVisiblityConverter}}"/>-->
         <ContentControl Content="{Binding CurrentViewModel}" Grid.Row="2"/>
     </Grid>
 </core:UserControlViewBase>

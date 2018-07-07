@@ -12,8 +12,8 @@ namespace EchoDesertTrips.Data
             : base("EchoDesertTrips")
         {
             Database.SetInitializer<EchoDesertTripsContext>(null);
-            //Configuration.LazyLoadingEnabled = true;
-            Configuration.ProxyCreationEnabled = true;
+            //Configuration.LazyLoadingEnabled = false;
+            Configuration.ProxyCreationEnabled = false;
         }
 
         public DbSet<Agency> AgencySet { get; set; }

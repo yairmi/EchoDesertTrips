@@ -35,20 +35,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<object> SaveCommand { get; }
         public DelegateCommand<object> ExitWithoutSavingCommand { get; }
 
-#if DEBUG
+
         private bool _lastDertinessValue = false;
-#endif
 
         private bool IsReservationDirty()
         {
             var bDirty = Reservation.IsAnythingDirty();
-#if DEBUG
             if (bDirty != _lastDertinessValue)
             {
                 log.Debug("EditOrderViewModel dirty = " + bDirty);
                 _lastDertinessValue = bDirty;
             }
-#endif
             return bDirty;
         }
 
@@ -229,9 +226,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-#if DEBUG
             log.Debug("EditOrderViewModel OnViewLoaded start");
-#endif
             TourGridViewModel.TourTypes = TourTypes;
             TourGridViewModel.Hotels = Hotels;
             TourGridViewModel.Optionals = Optionals;
@@ -241,9 +236,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             GeneralReservationViewModel.Reservation = Reservation;
             GeneralReservationViewModel.Agencies = Agencies;
-#if DEBUG
             log.Debug("EditOrderViewModel OnViewLoaded end");
-#endif
         }
 
         public void SetReservation(ReservationWrapper reservation)

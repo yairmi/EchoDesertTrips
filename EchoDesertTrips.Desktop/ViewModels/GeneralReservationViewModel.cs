@@ -31,16 +31,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-#if DEBUG
-            log.Debug("EditOrderViewModel OnViewLoaded start");
-#endif
+            log.Debug("GeneralReservationViewModel OnViewLoaded start");
             AgencyViewModel.Agencies = Agencies;
             AgencyViewModel.Reservation = Reservation;
             AgencyViewModel.SelectedAgency = null;
             AgencyViewModel.SelectedAgent = null;
-#if DEBUG
-            log.Debug("EditOrderViewModel OnViewLoaded end");
-#endif
+            log.Debug("GeneralReservationViewModel OnViewLoaded end");
         }
     }
 }

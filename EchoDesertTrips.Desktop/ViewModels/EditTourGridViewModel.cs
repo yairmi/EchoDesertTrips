@@ -26,18 +26,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public EditTourGridViewModel(IServiceFactory serviceFactory,
                 IMessageDialogService messageBoxDialogService)
         {
-#if DEBUG
             log.Debug("EditTourGridViewModel ctor start");
-#endif
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, /*OnClearCanExecute*/OnClearCommandCanExecute);
             CellEditEndingRoomTypeCommand = new DelegateCommand<TourHotelRoomType>(OnCellEditEndingRoomTypeCommand);
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
-#if DEBUG
             log.Debug("EditTourGridViewModel ctor end");
-#endif
         }
 
         public DelegateCommand<object> SaveCommand { get; private set; }
@@ -101,21 +97,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CreateTour();
         }
 
-#if DEBUG
         private bool _lastDertinessValue = false;
-#endif
 
         private bool IsTourDirty()
         {
             var bDirty = Tour != null ? Tour.IsAnythingDirty() : false;
-#if DEBUG
             if (bDirty != _lastDertinessValue)
             {
 
                 log.Debug("EditTourGridViewModel dirty = " + bDirty);
                 _lastDertinessValue = bDirty;
             }
-#endif
             return bDirty;
         }
 
@@ -128,32 +120,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             CreateTour(null);//This create an empty tour. which result in displaying empty fields
         }
-
-//        public void SetTour(TourWrapper tour)
-//        {
-//#if DEBUG
-//            log.Debug("EditTourGridViewModel OnViewLoaded start");
-//#endif
-//            if (tour != null)
-//            {
-//                _editedNewTour = tour.TourId == 0;
-//                Tour = TourHelper.CloneTourWrapper(tour);
-//                SelectedHotel = Tour.TourHotels.Count > 0 ? Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId) :
-//                    null;
-//                InitTourOptionals(Tour);
-//                Tour.CleanAll();
-//            }
-//            else
-//            {
-//                CreateNewTour();
-//            }
-//            CreateTour(tour);
-
-////            EnableCBTourType = _isNewReservation;
-//#if DEBUG
-//            log.Debug("EditTourGridViewModel OnViewLoaded end");
-//#endif
-//        }
 
         private bool _editedNewTour;
         
@@ -175,17 +141,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             InitTourOptionals(Tour);
             Tour.CleanAll();
         }    
-
-        //private void CreateNewTour()
-        //{
-        //    Tour = null;
-        //    Tour = new TourWrapper();
-        //    InitTourOptionals(Tour);
-        //    SelectedHotel = Tour.TourHotels.Count > 0 ? Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId) :
-        //        null;
-        //    _editedNewTour = false;
-        //    Tour.CleanAll();
-        //}
 
         private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
 
@@ -254,9 +209,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //For GUI (RoomTypes DataGrid DataSource) - After selecting Hotel from Drop Down
         private void UpdateTourHotelRoomTypes(Hotel hotel)
         {
-            TourHotelRoomTypes.Clear();
             if (hotel == null)
                 return;
+            TourHotelRoomTypes.Clear();
             //Init all rooms(tourhotelroomtype) for selected hotel
             hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
             {
@@ -303,46 +258,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-
-        /*private ObservableCollection<TourOptionalWrapper> _tourOptionals;
-
-        public ObservableCollection<TourOptionalWrapper> TourOptionals
-        {
-            get
-            {
-                return _tourOptionals;
-            }
-            set
-            {
-                _tourOptionals = value;
-                OnPropertyChanged(() => TourOptionals);
-            }
-        }
-
-        private void MergeOptionalsInTourToTourOptionals(TourWrapper tour)
-        {
-            foreach (var optional in Optionals)
-            {
-                var tourOptional = tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
-                if (tourOptional == null)
-                {
-                    var newTourOptional = new TourOptionalWrapper()
-                    {
-                        Selected = false,
-                        Optional = optional,
-                        OptionalId = optional.OptionalId,
-                        TourId = tour.TourId,
-                        PriceInclusive = false
-                    };
-                    _tourOptionals.Add(newTourOptional);
-                }
-                else
-                {
-                    tourOptional.Selected = true;
-                    _tourOptionals.Add(tourOptional);
-                }
-            }
-        }*/
 
         public event EventHandler<TourEventArgs> TourUpdated;
         public event EventHandler<TourEventArgs> TourCancelled;

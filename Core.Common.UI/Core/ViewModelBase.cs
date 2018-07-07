@@ -305,6 +305,6 @@ namespace Core.Common.UI.Core
             return Math.Max(reservation.NumberOfCustomers, customersInHotels) - reservation.Customers.Count;
         }
 
-        protected readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     }
 }

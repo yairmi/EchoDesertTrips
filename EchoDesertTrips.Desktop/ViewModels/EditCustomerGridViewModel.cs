@@ -24,16 +24,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public EditCustomerGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService)
         {
-#if DEBUG
             log.Debug("EditCustomerGridViewModel ctor start");
-#endif
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCommandCanExecute);
-#if DEBUG
             log.Debug("EditCustomerGridViewModel ctor end");
-#endif
         }
 
         public DelegateCommand<object> SaveCommand { get; }
@@ -108,21 +104,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //    }
         //    CustomerCancelled?.Invoke(this, new CustomerEventArgs(null, true));
         //}
-#if DEBUG
         private bool _lastDertinessValue = false;
-#endif
-
         private bool IsCustomerDirty()
         {
             var bDirty = Customer != null ? Customer.IsAnythingDirty() : false;
-#if DEBUG
             if (bDirty != _lastDertinessValue)
             {
 
                 log.Debug("EditCustomerGridViewModel dirty = " + bDirty);
                 _lastDertinessValue = bDirty;
             }
-#endif
             return bDirty;
         }
 

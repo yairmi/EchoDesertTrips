@@ -104,20 +104,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnAddReservationCommand(object arg)
         {
-#if DEBUG
             log.Debug("ReservationViewModel:OnAddCommand start");
-#endif
             ReservationEdited?.Invoke(this, new EditReservationEventArgs(null));
-#if DEBUG
             log.Debug("ReservationViewModel:OnAddCommand end");
-#endif
         }
 
         private void OnEditReservationCommand(ReservationWrapper reservation)
         {
-#if DEBUG
             log.Debug("ReservationViewModel:OnEditReservationCommand start");
-#endif
             Reservation dbReservation = null;
             WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
@@ -130,9 +124,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             var reservationWrapper = ReservationHelper.CreateReservationWrapper(dbReservation);
             ReservationEdited?.Invoke(this, new EditReservationEventArgs(reservationWrapper));
-#if DEBUG
             log.Debug("ReservationViewModel:OnEditReservationCommand end");
-#endif
         }
 
         public override string ViewTitle => "Reservations";
@@ -200,11 +192,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             set
             {
                 _selectedDate = value;
-#if DEBUG
                 log.Debug("SelectedDate : " + _selectedDate);
-#endif
-                if (_selectedDate < LastSelectedDate.AddMonths(-1) ||
-                    _selectedDate > LastSelectedDate.AddMonths(1))
+                if (_selectedDate < LastSelectedDate.AddDays(-7) ||
+                    _selectedDate > LastSelectedDate.AddDays(7))
                 {
                     log.Debug("SelectedDate: Calling LoadReservationsForDayRange");
                     LoadReservationsForDayRange(_selectedDate);
@@ -216,18 +206,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public bool IsDayInRange(DateTime date)
         {
-            return (date > _selectedDate.AddMonths(-1) && date < _selectedDate.AddMonths(1));
+            return (date > _selectedDate.AddDays(-7) && date < _selectedDate.AddDays(7));
         }
 
         public async void LoadReservationsForDayRangeAsync(DateTime date)
         {
-#if DEBUG
             log.Debug("LoadReservationsForDayRangeAsync start");
-#endif
             var orderClient = _serviceFactory.CreateClient<IOrderService>();
             {
                 var uiContext = SynchronizationContext.Current;
-                var task = Task.Factory.StartNew(() => orderClient.GetReservationsForDayRangeAsynchronous(date.AddMonths(-1), date.AddMonths(1)));
+                var task = Task.Factory.StartNew(() => orderClient.GetReservationsForDayRangeAsynchronous(date.AddDays(-7), date.AddDays(7)));
                 var reservations = await task;
                 await reservations.ContinueWith(e =>
                 {
@@ -257,15 +245,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public void LoadReservationsForDayRange(DateTime date)
         {
-#if DEBUG
             log.Debug("LoadReservationsForDayRange start");
-#endif
             int exceptionPosition = 0;
             WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
             {
                 try
                 {
-                    var reservations = orderClient.GetReservationsForDayRange(date.AddMonths(-1), date.AddMonths(1));
+                    var reservations = orderClient.GetReservationsForDayRange(date.AddDays(-7), date.AddDays(7));
                     exceptionPosition = 1;
                     if (reservations != null)
                     {
@@ -304,13 +290,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 ReservationsView = CollectionViewSource.GetDefaultView(Reservations);
                 ReservationsView.GroupDescriptions.Add(new PropertyGroupDescription(".", new GroupReservationsConverter()));
-                ReservationsView.SortDescriptions.Add(new SortDescription("Days", ListSortDirection.Ascending));
+                //ReservationsView.SortDescriptions.Add(new SortDescription("Days", ListSortDirection.Ascending));
             }
             if (ContinualReservationsView == null)
             {
                 ContinualReservationsView = CollectionViewSource.GetDefaultView(ContinualReservations);
                 ContinualReservationsView.GroupDescriptions.Add(new PropertyGroupDescription(".",new  GroupContinualReservationsConverter()));
-                ContinualReservationsView.SortDescriptions.Add(new SortDescription("Days", ListSortDirection.Ascending));
+                //ContinualReservationsView.SortDescriptions.Add(new SortDescription("Days", ListSortDirection.Ascending));
             }
         }
 
