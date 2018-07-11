@@ -154,6 +154,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (Client == null)
                 {
                     CreateClient();
+                    log.Debug("UnRegisterClient. Client was NULL. After Client Creation");
                 }
                 else
                 if (Client != null && Client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
@@ -161,8 +162,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     Client.Abort();
                     Client = null;
                     CreateClient();
+                    log.Debug("UnRegisterClient. Client was NOT NULL. After Client Creation");
                 }
                 Client.UnRegisterClient(operatorNameId);
+                log.Debug("UnRegisterClient. After UnRegister Client");
             }
             catch (Exception ex)
             {
@@ -213,41 +216,48 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     {
                         uiContext.Send((x) =>
                         {
-                            log.Debug("Inventory Loading");
-                            TourTypes.Clear();
-                            Hotels.Clear();
-                            Optionals.Clear();
-                            Agencies.Clear();
-                            foreach (var tourType in inventoryData.Result.TourTypes)
+                            try
                             {
-                                if (tourType.Visible)
-                                    TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
-                            }
-                            foreach (var hotel in inventoryData.Result.Hotels)
-                            {
-                                if (hotel.Visible)
-                                    Hotels.Add(hotel);
-                            }
-                            foreach (var optional in inventoryData.Result.Optionals)
-                            {
-                                if (optional.Visible)
-                                    Optionals.Add(optional);
-                            }
+                                log.Debug("Inventory Loading");
+                                TourTypes.Clear();
+                                Hotels.Clear();
+                                Optionals.Clear();
+                                Agencies.Clear();
+                                foreach (var tourType in inventoryData.Result.TourTypes)
+                                {
+                                    if (tourType.Visible)
+                                        TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
+                                }
+                                foreach (var hotel in inventoryData.Result.Hotels)
+                                {
+                                    if (hotel.Visible)
+                                        Hotels.Add(hotel);
+                                }
+                                foreach (var optional in inventoryData.Result.Optionals)
+                                {
+                                    if (optional.Visible)
+                                        Optionals.Add(optional);
+                                }
 
-                            foreach (var agency in inventoryData.Result.Agencies)
-                            {
-                                Agencies.Add(agency);
+                                foreach (var agency in inventoryData.Result.Agencies)
+                                {
+                                    Agencies.Add(agency);
+                                }
+
+                                _mainTabViewModel.ReservationsViewModel.TourTypes = TourTypes;
+                                _mainTabViewModel.ReservationsViewModel.Hotels = Hotels;
+                                _mainTabViewModel.ReservationsViewModel.Optionals = Optionals;
+                                _mainTabViewModel.ReservationsViewModel.Agencies = Agencies;
+
+                                _mainTabViewModel.AdminViewModel.TourTypes = TourTypes;
+                                _mainTabViewModel.AdminViewModel.Hotels = Hotels;
+                                _mainTabViewModel.AdminViewModel.Optionals = Optionals;
+                                _mainTabViewModel.AdminViewModel.Agencies = Agencies;
                             }
-
-                            _mainTabViewModel.ReservationsViewModel.TourTypes = TourTypes;
-                            _mainTabViewModel.ReservationsViewModel.Hotels = Hotels;
-                            _mainTabViewModel.ReservationsViewModel.Optionals = Optionals;
-                            _mainTabViewModel.ReservationsViewModel.Agencies = Agencies;
-
-                            _mainTabViewModel.AdminViewModel.TourTypes = TourTypes;
-                            _mainTabViewModel.AdminViewModel.Hotels = Hotels;
-                            _mainTabViewModel.AdminViewModel.Optionals = Optionals;
-                            _mainTabViewModel.AdminViewModel.Agencies = Agencies;
+                            catch(Exception ex)
+                            {
+                                log.Error("LoadInventoryAsync Exception:" + ex.Message);
+                            }
                         }, null);
                     }
                 });
