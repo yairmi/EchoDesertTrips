@@ -7,6 +7,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
              xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support" 
+             FocusManager.FocusedElement="{Binding ElementName=firstNameColumn}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
     <core:UserControlViewBase.Resources>
@@ -24,15 +25,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                <!--<RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>-->
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <!--<Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}" IsEnabled="{Binding AddNewEnabled}" />-->
-                <!--<Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddTourCommand}"/>-->
             <StackPanel  Orientation="Horizontal" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0">
                 <TextBlock VerticalAlignment="Center">Enter number of PAX:</TextBlock>
                 <TextBox Width="30" Margin="5,0,0,0" Height="14" Text="{Binding Reservation.NumberOfCustomers, UpdateSourceTrigger=PropertyChanged}"/>
@@ -47,10 +44,6 @@
              Background="BlanchedAlmond">
                     <ContentControl HorizontalAlignment="Left" Margin="5,5,5,5" Content="{Binding CurrentTourViewModel}" />
             </Border>
-            <!--<StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center">Enter number of PAX:</TextBlock>
-                <TextBox Width="30" Margin="5,0,0,0" Height="14" Text="{Binding Reservation.NumberOfCustomers, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>-->
             <Border Grid.Row="1" Grid.Column="1"
              HorizontalAlignment="Left" 
              VerticalAlignment="Top"
@@ -64,7 +57,7 @@
                   ItemsSource="{Binding Tours}"
                   AutoGenerateColumns="False"
                   CellStyle="{StaticResource DataGridBorder}"
-                  HorizontalAlignment="Stretch"
+                  HorizontalAlignment="Left"
                   VerticalAlignment="Top"
                   CanUserAddRows="False"
                   Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='338'}">
@@ -74,33 +67,33 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="84">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel  x:Name="spEditDelete" Orientation="Horizontal">
                                         <TextBlock Margin="0,0,10,0">
                                     <Hyperlink Command="{Binding DataContext.DeleteTourCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
                                             CommandParameter="{Binding}">
-                                    <TextBlock Text="Delete" FontSize="14" FontWeight="Bold"/>
+                                    <TextBlock Text="Delete" FontSize="14" FontWeight="Bold" Width="44"/>
                                     </Hyperlink>
                                 </TextBlock>
                                         <TextBlock Margin="0">
                                     <Hyperlink Command="{Binding DataContext.EditTourCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
                                            CommandParameter="{Binding}">
-                                    <TextBlock Text="Edit" FontSize="14" FontWeight="Bold"/>
+                                    <TextBlock Text="Edit" FontSize="14" FontWeight="Bold" Width="30"/>
                                 </Hyperlink>
                                 </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn x:Name="tourTypeNameColumn" Width="130" Header="Tour Type" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="tourTypeNameColumn" Width="100" Header="Tour Type" IsReadOnly="True"
                                     Binding="{Binding TourType.TourTypeName, Mode=TwoWay}"/>
-                        <DataGridTextColumn x:Name="collectionAddressColumn" Width="130" Header="Pickup Address" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="collectionAddressColumn" Width="120" Header="Pickup Address" IsReadOnly="True"
                                     Binding="{Binding PickupAddress}"/>
-                        <DataGridTextColumn x:Name="startDateColumn" Width="110" Header="Start Date" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="startDateColumn" Width="100" Header="Start Date" IsReadOnly="True"
                                     Binding="{Binding StartDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
-                        <DataGridTextColumn x:Name="endDateColumn" Width="110" Header="End Date" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="endDateColumn" Width="100" Header="End Date" IsReadOnly="True"
                                     Binding="{Binding EndDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
                     </DataGrid.Columns>
                     <!--<DataGrid.RowDetailsTemplate>

@@ -40,7 +40,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool IsReservationDirty()
         {
-            var bDirty = Reservation.IsAnythingDirty();
+            var bDirty = Reservation.IsAnythingDirty() && Reservation.Tours.Count > 0;
             if (bDirty != _lastDertinessValue)
             {
                 log.Debug("EditOrderViewModel dirty = " + bDirty);
@@ -65,8 +65,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.Operator = Operator;
                 Reservation.OperatorId = Operator.OperatorId;
                 ReservationUtils.CreateExternalId(Reservation);
-                //ReservationUtils.RemoveUnselectedHotels(Reservation);
-                //ReservationUtils.RemoveUnselectedOptionals(Reservation);
                 int exceptionPosition = 0;
                 if (Reservation.ReservationId == 0) //New Reservation
                 {

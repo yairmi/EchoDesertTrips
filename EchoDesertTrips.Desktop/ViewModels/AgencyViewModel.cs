@@ -11,6 +11,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     public class AgencyViewModel : ViewModelBase
     {
         private IServiceFactory _serviceFactory;
+        private bool bLoaded;
         [ImportingConstructor]
         public AgencyViewModel(IServiceFactory serviceFactory)
         {
@@ -19,14 +20,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            /*if (Reservation.Agency != null && Reservation.Agent != null)
-            {
-                Reservation.Agency = Agencies.FirstOrDefault(n => n.AgencyId == Reservation.Agency.AgencyId);
-                Reservation.Agent = Reservation.Agency.Agents.FirstOrDefault(n => n.AgentId == Reservation.Agent.AgentId);
-            }*/
+            bLoaded = false;
             SelectedAgency = Reservation.Agency != null ? Agencies.FirstOrDefault(n => n.AgencyId == Reservation.Agency.AgencyId) : null;
             if (SelectedAgency != null)
                 SelectedAgent = Reservation.Agent != null ? SelectedAgency.Agents.FirstOrDefault(n => n.AgentId == Reservation.Agent.AgentId) : null;
+            bLoaded = true;
         }
 
         private bool _isEnabled;
@@ -54,10 +52,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             set
             {
-                if ((Reservation.Agency == null ) || (value != null && value.AgencyId != Reservation.Agency.AgencyId))
-                    Reservation.Agency = value;
-                _selectedAgency = value;
-                OnPropertyChanged(() => SelectedAgency);
+                if ((value != null && Reservation.Agency == null)
+                    || (value != null && ((Agency)value).AgencyId != Reservation.Agency.AgencyId)
+                    || (value == null && Reservation.Agency != null)
+                    || bLoaded == false)
+                {
+                    if (bLoaded)
+                        Reservation.Agency = value;
+                    _selectedAgency = value;
+                    OnPropertyChanged(() => SelectedAgency);
+                }
             }
         }
         private Agent _selectedAgent;
@@ -69,10 +73,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             set
             {
-                if ((Reservation.Agent == null) || (value != null && value.AgentId != Reservation.Agent.AgentId))
-                    Reservation.Agent = value;
-                _selectedAgent = value;
-                OnPropertyChanged(() => SelectedAgent);
+                if ((value != null && Reservation.Agent == null)
+                    || (value != null && ((Agent)value).AgentId != Reservation.Agent.AgentId)
+                    || (value == null && Reservation.Agent != null)
+                    || bLoaded == false)
+                {
+                    if (bLoaded)
+                        Reservation.Agent = value;
+                    _selectedAgent = value;
+                    OnPropertyChanged(() => SelectedAgent);
+                }
             }
         }
     }

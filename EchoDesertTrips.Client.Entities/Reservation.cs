@@ -359,7 +359,6 @@ namespace EchoDesertTrips.Client.Entities
                 RuleFor(obj => obj.AdvancePayment >= 0);
                 RuleFor(obj => obj.Comments).MaximumLength(100);
                 RuleFor(obj => obj.Messages).MaximumLength(100);
-                RuleFor(obj => obj.Tours).NotEmpty();
             }
         }
 

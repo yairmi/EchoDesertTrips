@@ -59,43 +59,43 @@
                   Margin="5,5,5,5" 
                   ItemsSource="{Binding Customers, Mode=TwoWay}" 
                   EnableRowVirtualization="True" 
-                  HorizontalAlignment="Stretch"
+                  HorizontalAlignment="Left"
                   VerticalAlignment="Top"
                   AutoGenerateColumns="False"
                   CellStyle="{StaticResource DataGridBorder}"
                   CanUserAddRows="False"
                   Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="84">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Margin="0,0,10,0">
                                     <Hyperlink Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
                                             CommandParameter="{Binding}" IsEnabled="{Binding ElementName=btnAddNewCustomer, Path=IsEnabled}">
-                                    <TextBlock Text="Delete" FontSize="14" FontWeight="Bold"/>
+                                    <TextBlock Text="Delete" FontSize="14" FontWeight="Bold" Width="44"/>
                                     </Hyperlink>
                                 </TextBlock>
                                         <TextBlock Margin="0">
                                     <Hyperlink Command="{Binding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
                                            CommandParameter="{Binding}" IsEnabled="{Binding ElementName=btnAddNewCustomer, Path=IsEnabled}">
-                                    <TextBlock Text="Edit" FontSize="14" FontWeight="Bold"/>
+                                    <TextBlock Text="Edit" FontSize="14" FontWeight="Bold" Width="30"/>
                                 </Hyperlink>
                                 </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn x:Name="firstNameColumn" Width="100" IsReadOnly="True" Header="First Name" Binding="{Binding FirstName, Mode=TwoWay}"/>
-                        <DataGridTextColumn x:Name="lastNameColumn" Width="100" IsReadOnly="True" Header="Last Name" Binding="{Binding LastName, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="firstNameColumn" Width="90" IsReadOnly="True" Header="First Name" Binding="{Binding FirstName, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="lastNameColumn" Width="90" IsReadOnly="True" Header="Last Name" Binding="{Binding LastName, Mode=TwoWay}"/>
                         <DataGridTextColumn x:Name="dateOfBirdthColumn" IsReadOnly="True" Width="120" Header="Date Of Birdth" Binding="{Binding DateOfBirdth, StringFormat=d}"/>
-                        <DataGridTextColumn x:Name="passportNumberColumn" IsReadOnly="True" Width="110" Header="Passport" Binding="{Binding PassportNumber, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="passportNumberColumn" IsReadOnly="True" Width="90" Header="Passport" Binding="{Binding PassportNumber, Mode=TwoWay}"/>
                         <DataGridTextColumn x:Name="issueDataColumn" IsReadOnly="True" Width="90" Header="Issue Date" Binding="{Binding IssueData, StringFormat=d}"/>
                         <DataGridTextColumn x:Name="expireyDateColumn" IsReadOnly="True" Width="100" Header="Expiry Date" Binding="{Binding ExpireyDate, StringFormat=d}"/>
                         <DataGridCheckBoxColumn x:Name="hasVisaColumn" Width="80" IsReadOnly="True" Header="Has Visa" Binding="{Binding HasVisa}"/>
                         <DataGridTextColumn x:Name="nationalityColumn" Width="100" IsReadOnly="True" Header="Nationality" Binding="{Binding Nationality, Mode=TwoWay}"/>
-                        <DataGridTextColumn x:Name="phone1Column" Width="90" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
-                        <DataGridTextColumn x:Name="phone2Column" Width="90" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="phone1Column" Width="80" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="phone2Column" Width="80" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

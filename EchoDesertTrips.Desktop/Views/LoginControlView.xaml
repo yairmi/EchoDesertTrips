@@ -9,6 +9,7 @@
              xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"   
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:conv="clr-namespace:EchoDesertTrips.Desktop.Support"
+             FocusManager.FocusedElement="{Binding ElementName=txtName}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -37,7 +38,6 @@
                 </i:Interaction.Triggers>
             </TextBox>
             <TextBlock Text="Password" Grid.Row="2" Margin="10"/>
-            <!--TextBox x:Name="txtPassword" Text="{Binding CurrentOperator.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2" Margin="10" MinWidth="150" HorizontalAlignment="Left"/-->
             <PasswordBox Name="PasswordBox" Grid.Column="1" Grid.Row="2" Margin="10" MinWidth="150" HorizontalAlignment="Left">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PasswordChanged">
@@ -48,7 +48,7 @@
                     </i:EventTrigger>                    
                 </i:Interaction.Triggers>
             </PasswordBox>
-            <Button Command="{Binding LoginCommand}" CommandParameter="{Binding CurrentOperator}" Content="Log in" Grid.Row="3" Grid.Column="1" Margin="10" HorizontalAlignment="Left" Width="120"/>
+            <Button Command="{Binding LoginCommand}" CommandParameter="{Binding CurrentOperator}" Content="Log in" Grid.Row="3" Grid.Column="1" Margin="10" HorizontalAlignment="Left" Width="120" IsDefault="True"/>
             <TextBlock Text="Incorrect User Name Or Password" 
                        Foreground="Red" 
                        FontWeight="Bold" 

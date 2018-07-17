@@ -34,8 +34,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             log.Debug("GeneralReservationViewModel OnViewLoaded start");
             AgencyViewModel.Agencies = Agencies;
             AgencyViewModel.Reservation = Reservation;
-            AgencyViewModel.SelectedAgency = null;
-            AgencyViewModel.SelectedAgent = null;
+            //AgencyViewModel.SelectedAgency = null;
+            //AgencyViewModel.SelectedAgent = null;
             log.Debug("GeneralReservationViewModel OnViewLoaded end");
         }
     }
