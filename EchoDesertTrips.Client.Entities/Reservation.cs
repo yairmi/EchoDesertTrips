@@ -28,7 +28,9 @@ namespace EchoDesertTrips.Client.Entities
         public int GroupID { get; set; }
         public DateTime CreationTime { get; set; } //TODO : Consider DTO
         public DateTime UpdateTime { get; set; }
-        public int NumberOfCustomers { get; set; }
+        public int Adults { get; set; }
+        public int Childs { get; set; }
+        public int Infants { get; set; }
         public byte[] RowVersion { get; set; }
     }
 
@@ -334,15 +336,63 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private int _numberOfCustomers;
+        //private int _numberOfCustomers;
 
-        public int NumberOfCustomers
+        //public int NumberOfCustomers
+        //{
+        //    get { return _numberOfCustomers; }
+        //    set
+        //    {
+        //        _numberOfCustomers = value;
+        //        OnPropertyChanged(() => NumberOfCustomers, true);
+        //    }
+        //}
+        private int _adults;
+        public int Adults
         {
-            get { return _numberOfCustomers; }
+            get
+            {
+                return _adults;
+            }
             set
             {
-                _numberOfCustomers = value;
-                OnPropertyChanged(() => NumberOfCustomers, true);
+                if (_adults != value)
+                {
+                    _adults = value;
+                    OnPropertyChanged(() => Adults, true);
+                }
+            }
+        }
+        private int _childs;
+        public int Childs
+        {
+            get
+            {
+                return _childs;
+            }
+            set
+            {
+                if (_childs != value)
+                {
+                    _childs = value;
+                    OnPropertyChanged(() => Childs, true);
+                }
+            }
+        }
+        private int _infants;
+        public int Infants
+        {
+            get
+            {
+                return _infants;
+            }
+            set
+            {
+                if (_infants != value)
+                {
+                    _infants = value;
+                    OnPropertyChanged(() => Infants, true);
+                }
             }
         }
 
@@ -354,7 +404,7 @@ namespace EchoDesertTrips.Client.Entities
         {
             public ReservationValidator()
             {
-                RuleFor(obj => obj.NumberOfCustomers > 0);
+                //RuleFor(obj => obj.NumberOfCustomers > 0);
                 RuleFor(obj => obj.ReservationId > 0);
                 RuleFor(obj => obj.AdvancePayment >= 0);
                 RuleFor(obj => obj.Comments).MaximumLength(100);
@@ -368,7 +418,7 @@ namespace EchoDesertTrips.Client.Entities
         }
     }
 
-    public class ReservationHelper
+    public class ReservationMapper
     {
         public static ReservationWrapper CreateReservationWrapper(Reservation reservation)
         {

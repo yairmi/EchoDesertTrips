@@ -65,18 +65,30 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 CreateNewCustomer();
             }
-            CustomersLeft = GetCustomerLeft(Reservation);
+            CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
+            if (CustomersLeft <= 0)
+            {
+                if (Reservation.Tours.Count() > 0)
+                {
+                    Reservation.Adults = Reservation.Customers.ToList()
+                        .Where((customer) => Reservation.Tours[0].StartDate.Subtract(customer.DateOfBirdth).TotalDays >= 4380).Count();
+                    Reservation.Childs = Reservation.Customers.ToList()
+                        .Where((customer) => Reservation.Tours[0].StartDate.Subtract(customer.DateOfBirdth).TotalDays < 4380 &&
+                        Reservation.Tours[0].StartDate.Subtract(customer.DateOfBirdth).TotalDays >= 730).Count();
+                    Reservation.Infants = Reservation.Customers.Count() - Reservation.Adults - Reservation.Childs;
+                }
+            }
         }
 
         private void CreateNewCustomer()
         {
             Customer = null;
 
-            ControllEnabled = GetCustomerLeft(Reservation) > 0;// || _customer != null;
+            ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
             if (ControllEnabled)
             {
                 Customer = new CustomerWrapper();
-                _editedNewCustomer = false;
+                //_editedNewCustomer = false;
                 Customer.CleanAll();
             }
         }
@@ -124,7 +136,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            ControllEnabled = GetCustomerLeft(Reservation) > 0;// || _customer != null;
+            ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
 
             //var config = new MapperConfiguration(cfg =>
             //{
@@ -216,6 +228,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         public event EventHandler<CustomerEventArgs> CustomerUpdated;
-        public event EventHandler<CustomerEventArgs> CustomerCancelled;
+        //public event EventHandler<CustomerEventArgs> CustomerCancelled;
     }
 }

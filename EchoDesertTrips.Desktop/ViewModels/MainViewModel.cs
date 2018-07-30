@@ -192,9 +192,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             //Reservations message
             if (strings[0] == "1")
             {
-                var isDayInRange = _mainTabViewModel.ReservationsViewModel.IsDayInRange(Convert.ToDateTime(strings[1]));
-                if (isDayInRange == true)
-                    _mainTabViewModel.ReservationsViewModel.LoadReservationsForDayRangeAsync(Convert.ToDateTime(strings[1]));
+                //var isDayInRange = _mainTabViewModel.ReservationsViewModel.IsDayInRange(Convert.ToDateTime(strings[1]));
+                //if (isDayInRange == true)
+                _mainTabViewModel.ReservationsViewModel.LoadReservationsForDayRangeAsync(Convert.ToDateTime(strings[1]));
             }
             //Inventory message
             if (strings[0] == "2")

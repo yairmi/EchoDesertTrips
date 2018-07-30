@@ -64,7 +64,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Reservation.Operator = Operator;
                 Reservation.OperatorId = Operator.OperatorId;
-                ReservationUtils.CreateExternalId(Reservation);
+                ReservationHelper.CreateExternalId(Reservation);
                 int exceptionPosition = 0;
                 if (Reservation.ReservationId == 0) //New Reservation
                 {
@@ -73,14 +73,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         try
                         {
                             exceptionPosition = 1;
-                            var reservation = ReservationHelper.CreateReservation(Reservation);
+                            var reservation = ReservationMapper.CreateReservation(Reservation);
                             exceptionPosition = 2;
                             var reservationData = reservationClient.UpdateReservation(reservation); //Update or Add
                             exceptionPosition = 3;
                             if (reservationData.DbReservation != null)
                             {
                                 exceptionPosition = 4;
-                                var reservationWrapper = ReservationHelper.CreateReservationWrapper(reservationData.DbReservation);
+                                var reservationWrapper = ReservationMapper.CreateReservationWrapper(reservationData.DbReservation);
                                 exceptionPosition = 5;
                                 ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationWrapper, true, false));
                                 exceptionPosition = 6;
@@ -100,7 +100,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         try
                         {
                             exceptionPosition = 1;
-                            var reservation = ReservationHelper.CreateReservation(Reservation);
+                            var reservation = ReservationMapper.CreateReservation(Reservation);
                             exceptionPosition = 2;
                             var reservationData = reservationClient.UpdateReservation(reservation); //Add or Update but in this case its Update
                             exceptionPosition = 3;
@@ -139,7 +139,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                             reservationData = reservationClient.UpdateReservation(reservation);
                                             if (!reservationData.InEdit)
                                             {
-                                                reservationWrapper = ReservationHelper.CreateReservationWrapper(reservation);
+                                                reservationWrapper = ReservationMapper.CreateReservationWrapper(reservation);
                                                 exceptionPosition = 5;
                                                 ReservationUpdated?.Invoke(this,
                                                     new ReservationEventArgs(reservationWrapper, false, false));
@@ -156,8 +156,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                             if (newReservation.DbReservation != null)
                                             {
                                                 exceptionPosition = 7;
-                                                var newReservationWrapper =
-                                                    ReservationHelper.CreateReservationWrapper(newReservation
+                                                var newReservationWrapper = 
+                                                    ReservationMapper.CreateReservationWrapper(newReservation
                                                         .DbReservation);
                                                 exceptionPosition = 8;
                                                 ReservationUpdated?.Invoke(this,
@@ -174,8 +174,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                         if (reservationData.DbReservation != null)
                                         {
                                             log.Info("DB Win. ReservationID = " + reservation.ReservationId);
-                                            reservationWrapper =
-                                                ReservationHelper.CreateReservationWrapper(reservationData
+                                            reservationWrapper = 
+                                                ReservationMapper.CreateReservationWrapper(reservationData
                                                     .DbReservation);
                                             ReservationUpdated?.Invoke(this,
                                                 new ReservationEventArgs(reservationWrapper, false,
@@ -195,7 +195,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                             else
                             {
                                 exceptionPosition = 11;
-                                reservationWrapper = ReservationHelper.CreateReservationWrapper(reservationData.DbReservation); //rw.CopyReservation(reservationData.DbReservation);
+                                reservationWrapper = ReservationMapper.CreateReservationWrapper(reservationData.DbReservation); //rw.CopyReservation(reservationData.DbReservation);
                                 ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationWrapper, false, false));
                                 exceptionPosition = 12;
                             }

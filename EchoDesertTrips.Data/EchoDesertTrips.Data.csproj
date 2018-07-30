@@ -147,6 +147,10 @@
     <Compile Include="Migrations\201806011223046_add_numberofcustomers_to_reservation.Designer.cs">
       <DependentUpon>201806011223046_add_numberofcustomers_to_reservation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807270602066_Infants.cs" />
+    <Compile Include="Migrations\201807270602066_Infants.Designer.cs">
+      <DependentUpon>201807270602066_Infants.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -191,6 +195,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806011223046_add_numberofcustomers_to_reservation.resx">
       <DependentUpon>201806011223046_add_numberofcustomers_to_reservation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807270602066_Infants.resx">
+      <DependentUpon>201807270602066_Infants.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

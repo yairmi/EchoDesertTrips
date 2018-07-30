@@ -16,6 +16,7 @@
         </Style>
         <support:BoolToOppositeConverter x:Key="boolToOppositeConverter" />
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
+        <viewModels:DeleteTourConverter x:Key="deleteTourConverter" />
     </core:UserControlViewBase.Resources>
     <Grid>
             <Grid.ColumnDefinitions>
@@ -31,8 +32,16 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
             <StackPanel  Orientation="Horizontal" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0">
-                <TextBlock VerticalAlignment="Center">Enter number of PAX:</TextBlock>
-                <TextBox Width="30" Margin="5,0,0,0" Height="14" Text="{Binding Reservation.NumberOfCustomers, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock VerticalAlignment="Center">Adults:</TextBlock>
+                <TextBox Width="30" Margin="2" Text="{Binding Adults, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock VerticalAlignment="Center">Childs:</TextBlock>
+                <TextBox Width="30" Margin="2" Text="{Binding Childs, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock VerticalAlignment="Center">Infants:</TextBlock>
+                <TextBox Width="30" Margin="2" Text="{Binding Infants, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock VerticalAlignment="Center" Margin="20,0,0,0">Total PAX:</TextBlock>
+                <TextBox Width="30" Margin="2" Text="{Binding NumberOfCustomers, Mode=OneWay}" IsReadOnly="True" Background="Aqua"/>
+                <TextBlock Text="Total Price: " Margin="10,0,0,0" VerticalAlignment="Center"/>
+                <TextBox Width="80" Margin="2" Text="{Binding TotalPrice, Mode=OneWay}" IsReadOnly="True" Background="Aqua"/>
             </StackPanel>
             <Border Grid.Row="1" Grid.Column="0"
              HorizontalAlignment="Left" 
@@ -71,18 +80,18 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel  x:Name="spEditDelete" Orientation="Horizontal">
-                                        <TextBlock Margin="0,0,10,0">
-                                    <Hyperlink Command="{Binding DataContext.DeleteTourCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                            CommandParameter="{Binding}">
-                                    <TextBlock Text="Delete" FontSize="14" FontWeight="Bold" Width="44"/>
-                                    </Hyperlink>
-                                </TextBlock>
-                                        <TextBlock Margin="0">
-                                    <Hyperlink Command="{Binding DataContext.EditTourCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                    <TextBlock Margin="0,0,10,0">
+                                        <Hyperlink Command="{Binding DataContext.DeleteTourCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                            CommandParameter="{Binding}" IsEnabled="{Binding Converter={StaticResource deleteTourConverter}}">
+                                        <TextBlock Text="Delete" FontSize="14" FontWeight="Bold" Width="44"/>
+                                        </Hyperlink>
+                                    </TextBlock>
+                                    <TextBlock Margin="0">
+                                        <Hyperlink Command="{Binding DataContext.EditTourCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
                                            CommandParameter="{Binding}">
-                                    <TextBlock Text="Edit" FontSize="14" FontWeight="Bold" Width="30"/>
-                                </Hyperlink>
-                                </TextBlock>
+                                        <TextBlock Text="Edit" FontSize="14" FontWeight="Bold" Width="30"/>
+                                        </Hyperlink>
+                                    </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

@@ -97,17 +97,17 @@ namespace EchoDesertTrips.Data.Data_Repositories
             }
         }
 
-        public IEnumerable<Reservation> GetReservationHistoryByCustomer(int customerId)
-        {
-            using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
-            {
-                var query = from e in entityContext.ReservationSet
-                            where e.Customers.Any(c => c.CustomerId == customerId)
-                            select e;
+        //public IEnumerable<Reservation> GetReservationHistoryByCustomer(int customerId)
+        //{
+        //    using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
+        //    {
+        //        var query = from e in entityContext.ReservationSet
+        //                    where e.Customers.Any(c => c.CustomerId == customerId)
+        //                    select e;
 
-                return query.ToArray();
-            }
-        }
+        //        return query.ToArray();
+        //    }
+        //}
 
         public IEnumerable<Reservation> GetReservationByEndDate(DateTime date)
         {

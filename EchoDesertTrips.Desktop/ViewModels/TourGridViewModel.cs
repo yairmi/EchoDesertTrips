@@ -10,6 +10,8 @@ using EchoDesertTrips.Desktop.Support;
 using AutoMapper;
 using Core.Common.Utils;
 using System.ComponentModel.Composition;
+using System;
+using System.Globalization;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -52,7 +54,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Tours.Remove(tour);
         }
 
-        public ICollectionView ItemsView { get; set; }
+        //public ICollectionView ItemsView { get; set; }
         public DelegateCommand<TourWrapper> RowExpanded { get; set; }
         private bool CanAddTourCommand(object obj)
         {
@@ -68,7 +70,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _editTourViewModel.TourTypes = TourTypes;
             _editTourViewModel.Hotels = Hotels;
             _editTourViewModel.Optionals = Optionals;
-            _editTourViewModel.EnableCBTourType = true; //TODO: try to remove this property
+            //_editTourViewModel.EnableCBTourType = true; //TODO: try to remove this property
             CurrentTourViewModel = _editTourGridViewModel;
             _addNewEnabled = false;
             RegisterEvents();
@@ -84,7 +86,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _editTourViewModel.TourTypes = TourTypes;
             _editTourViewModel.Hotels = Hotels;
             _editTourViewModel.Optionals = Optionals;
-            _editTourViewModel.EnableCBTourType = Reservation.ReservationId == 0; //TODO: try to remove this property
+            //_editTourViewModel.EnableCBTourType = Reservation.ReservationId == 0; //TODO: try to remove this property
             RegisterEvents();
         }
 
@@ -168,34 +170,91 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        //private ReservationWrapper _reservation;
+        public int Adults
+        {
+            get
+            {
+                return Reservation.Adults;
+            }
+            set
+            {
+                if (Reservation.Adults != value)
+                {
+                    Reservation.Adults = value;
+                    OnPropertyChanged(() => Adults);
+                    OnPropertyChanged(() => NumberOfCustomers);
+                    OnPropertyChanged(() => TotalPrice);
+                }
+            }
+        }
 
-        //public ReservationWrapper Reservation
-        //{
-        //    get
-        //    {
-        //        return _reservation;
-        //    }
-        //    set
-        //    {
-        //        _reservation = value;
-        //        OnPropertyChanged(() => Reservation);
-        //    }
-        //}
+        public int Childs
+        {
+            get
+            {
+                return Reservation.Childs;
+            }
+            set
+            {
+                if (Reservation.Childs != value)
+                {
+                    Reservation.Childs = value;
+                    OnPropertyChanged(() => Childs);
+                    OnPropertyChanged(() => NumberOfCustomers);
+                    OnPropertyChanged(() => TotalPrice);
+                }
+            }
+        }
+
+        public int Infants
+        {
+            get
+            {
+                return Reservation.Infants;
+            }
+            set
+            {
+                if (Reservation.Infants != value)
+                {
+                    Reservation.Infants = value;
+                    OnPropertyChanged(() => Infants);
+                    OnPropertyChanged(() => NumberOfCustomers);
+                    OnPropertyChanged(() => TotalPrice);
+                }
+            }
+        }
+
+        public int NumberOfCustomers
+        {
+            get
+            {
+                return Reservation.Adults + Reservation.Childs + Reservation.Infants;
+            }
+        }
+
+        public double TotalPrice
+        {
+            get
+            {
+                return Support.ReservationHelper.CalculateReservationTotalPrice(Reservation);
+            }
+        }
 
         protected override void OnViewLoaded()
         {
             _editTourViewModel.TourTypes = TourTypes;
             _editTourViewModel.Hotels = Hotels;
             _editTourViewModel.Optionals = Optionals;
-            _editTourViewModel.EnableCBTourType = Reservation.ReservationId == 0; //TODO: try to remove this property
+            //_editTourViewModel.EnableCBTourType = Reservation.ReservationId == 0; //TODO: try to remove this property
+            if (TourHotelRoomTypes != null)
+                TourHotelRoomTypes = null;
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
             //************* check it
             Tours = Reservation.Tours;
             //Tours.ToList().ForEach(InitTourOptionals);
             //*************
-            ItemsView = CollectionViewSource.GetDefaultView(Tours);
-            ItemsView.GroupDescriptions.Add(new PropertyGroupDescription("TourId"));
+            //ItemsView = CollectionViewSource.GetDefaultView(Tours);
+            //ItemsView.GroupDescriptions.Add(new PropertyGroupDescription("TourId"));
             CurrentTourViewModel = _editTourViewModel;
             RegisterEvents();
         }
@@ -220,7 +279,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 cfg.CreateMap<TourWrapper, TourWrapper>();
             });
 
-            IMapper iMapper = config.CreateMapper();
             var tourWrapper = TourHelper.CloneTourWrapper(e.Tour);
             if (!e.IsNew)
             {
@@ -239,8 +297,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Tours.Add(tourWrapper);
             }
             Tours.OrderBy(tour => tour.StartDate);
-
-            _editTourGridViewModel.EnableCBTourType = Reservation.ReservationId == 0;
+            //_editTourGridViewModel.EnableCBTourType = Reservation.ReservationId == 0;
+            OnPropertyChanged(() => TotalPrice);
+            //TourUpdatedFinished?.Invoke(this, new EventArgs());
         }
 
         private void CurrentTourViewModel_TourCancelled(object sender, TourEventArgs e)
@@ -255,6 +314,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTourViewModel.TourUpdated += CurrentTourViewModel_TourUpdated;
             CurrentTourViewModel.TourCancelled -= CurrentTourViewModel_TourCancelled;
             CurrentTourViewModel.TourCancelled += CurrentTourViewModel_TourCancelled;
+        }
+
+        //public event EventHandler TourUpdatedFinished;
+    }
+
+    public class DeleteTourConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var tour = (TourWrapper)value;
+            return (tour == null || tour.TourId == 0);
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

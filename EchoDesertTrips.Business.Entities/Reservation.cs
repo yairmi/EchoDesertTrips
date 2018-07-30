@@ -45,7 +45,11 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public DateTime UpdateTime { get; set; }
         [DataMember]
-        public int NumberOfCustomers { get; set; } 
+        public int Adults { get; set; }
+        [DataMember]
+        public int Childs { get; set; }
+        [DataMember]
+        public int Infants { get; set; }
         [DataMember]
         [Timestamp]
         public byte[] RowVersion { get; set; }

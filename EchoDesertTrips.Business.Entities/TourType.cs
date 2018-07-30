@@ -20,22 +20,12 @@ namespace EchoDesertTrips.Business.Entities
         public string AdultPrices { get; set; }
         [DataMember]
         public string ChildPrices { get; set; }
-        //[DataMember]
-        //public float PricePerChild { get; set; }
-        //[DataMember]
-        //public float PricePerAdult { get; set; }
-        ////[DataMember]
-        ////public List<TourDestination> TourDestinations { get; set; }
-        ////[DataMember]
-        ////public int TourDestinationId { get; set; }
-        //[DataMember]
-        //public List<TourTypeDestination> TourTypeDestinations { get; set; }
+        [DataMember]
+        public string InfantPrices { get; set; }
         [DataMember]
         public string Destinations { get; set; }
         [DataMember]
         public bool Private { get; set; }
-        //[DataMember]
-        //public string TourDescription { get; set; }
         [DataMember]
         public byte Days { get; set; }
         [DataMember]

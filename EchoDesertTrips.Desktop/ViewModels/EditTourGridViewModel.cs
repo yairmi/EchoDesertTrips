@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -138,7 +139,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             SelectedHotel = Tour.TourHotels.Count > 0 ? Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId) :
                 null;
-            InitTourOptionals(Tour);
+            InitTourOptionals();
             Tour.CleanAll();
         }    
 
@@ -176,20 +177,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private bool _enableCBTourType;
+        //private bool _enableCBTourType;
 
-        public bool EnableCBTourType
-        {
-            get
-            {
-                return _enableCBTourType;
-            }
-            set
-            {
-                _enableCBTourType = value;
-                OnPropertyChanged(() => EnableCBTourType);
-            }
-        }
+        //public bool EnableCBTourType
+        //{
+        //    get
+        //    {
+        //        return _enableCBTourType;
+        //    }
+        //    set
+        //    {
+        //        _enableCBTourType = value;
+        //        OnPropertyChanged(() => EnableCBTourType);
+        //    }
+        //}
 
         private TourWrapper _tour;
 
@@ -259,8 +260,50 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
+        public void InitTourOptionals()
+        {
+            var tourOptionals = new ObservableCollection<TourOptionalWrapper>();
+            foreach (var optional in Optionals)
+            {
+                var tourOptional = Tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
+                if (tourOptional == null)
+                {
+                    var newTourOptional = new TourOptionalWrapper()
+                    {
+                        Selected = false,
+                        Optional = optional,
+                        OptionalId = optional.OptionalId,
+                        TourId = Tour.TourId,
+                        PriceInclusive = false
+                    };
+                    tourOptionals.Add(newTourOptional);
+                }
+                else
+                {
+                    tourOptional.Selected = true;
+                    tourOptionals.Add(tourOptional);
+                }
+            }
+            Tour.TourOptionals.Clear();
+            Tour.TourOptionals = tourOptionals;
+        }
+
         public event EventHandler<TourEventArgs> TourUpdated;
         public event EventHandler<TourEventArgs> TourCancelled;
+    }
+
+    public class TourTypeControlConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var tour = (TourWrapper)value;
+            return (tour == null || tour.TourId == 0);
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class TourHotelRoomsValidationRule : ValidationRule

@@ -31,6 +31,7 @@
             </Style.Triggers>
         </Style>
         <support:BoolToOppositeConverter x:Key="boolToOppositeConverter" />
+        <viewModels:TourTypeControlConverter x:Key="tourTypeControlConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
         <Grid>
@@ -79,7 +80,7 @@
                 Width="150"
                 HorizontalAlignment="Left"
                 ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.TourTypes}"
-                IsEnabled="{Binding EnableCBTourType}">
+                IsEnabled="{Binding Converter={StaticResource tourTypeControlConverter}, Path=Tour}">
                 </ComboBox>
                 <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="150" Text="{Binding Tour.PickupAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
                 <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpStartDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>

@@ -79,6 +79,7 @@
                         <ColumnDefinition Width="Auto"/>                        
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
                         <TextBlock Margin="3" Text="Descriptions:"/>
@@ -152,6 +153,21 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="4">
+                        <TextBlock Margin="3" Text="Infant Prices:"/>
+                        <DataGrid  Width="Auto" Margin="3" x:Name="dgInfantPrices" 
+                                        ItemsSource="{Binding InfantPrices, Mode=TwoWay}"
+                                        RowDetailsVisibilityMode="Visible"
+                                        AutoGenerateColumns="False"
+                                        HorizontalAlignment="Left"
+                                        Height="180"
+                                        CellStyle="{StaticResource DataGridBorder}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn x:Name="InfantsCol" Width="Auto" Header="Infants #" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <DataGridTextColumn x:Name="InfantPriceCol" Width="Auto" Header="Price" Binding="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>                    
                 </Grid>
             </Grid>
             <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">

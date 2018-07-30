@@ -9,7 +9,7 @@ namespace EchoDesertTrips.Data.Contracts.Repository_Interfaces
 {
     public interface IReservationRepository : IDataRepository<Reservation>
     {
-        IEnumerable<Reservation> GetReservationHistoryByCustomer(int CustomerId);
+        //IEnumerable<Reservation> GetReservationHistoryByCustomer(int CustomerId);
         IEnumerable<Reservation> GetReservationByEndDate(DateTime date);
         IEnumerable<CustomerOrderInfo> GetCustomerOrderInfo();
         //IEnumerable<Reservation> GetReservationsByDay(DateTime Day);

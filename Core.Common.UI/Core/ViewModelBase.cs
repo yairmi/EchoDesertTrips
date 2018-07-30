@@ -259,52 +259,6 @@ namespace Core.Common.UI.Core
 
         }
 
-        protected void InitTourOptionals(TourWrapper tour)
-        {
-            var tourOptionals = new ObservableCollection<TourOptionalWrapper>();
-            foreach (var optional in Optionals)
-            {
-                var tourOptional = tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
-                if (tourOptional == null)
-                {
-                    var newTourOptional = new TourOptionalWrapper()
-                    {
-                        Selected = false,
-                        Optional = optional,
-                        OptionalId = optional.OptionalId,
-                        TourId = tour.TourId,
-                        PriceInclusive = false
-                    };
-                    tourOptionals.Add(newTourOptional);
-                }
-                else
-                {
-                    tourOptional.Selected = true;
-                    tourOptionals.Add(tourOptional);
-                }
-            }
-            tour.TourOptionals.Clear();
-            tour.TourOptionals = tourOptionals;
-            //tour.TourOptionals.ToList().ForEach((tourOptional) => tourOptional.CleanAll());
-        }
-
-        protected int GetCustomerLeft(ReservationWrapper reservation)
-        {
-            var customersInHotels = 0;
-            reservation.Tours?.ToList().ForEach((tour) =>
-            {
-                tour.TourHotels?.ToList().ForEach((tourHotel) =>
-                {
-                    tourHotel.TourHotelRoomTypes?.ToList().ForEach((hotelRoomType) =>
-                    {
-                        customersInHotels += (hotelRoomType.Persons);
-                    });
-                });
-            });
-
-            return Math.Max(reservation.NumberOfCustomers, customersInHotels) - reservation.Customers.Count;
-        }
-
         protected static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     }
 }

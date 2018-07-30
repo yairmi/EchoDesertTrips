@@ -68,6 +68,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         TourType.ChildPrices += childPrice.Serialize();
                     }
 
+                    TourType.InfantPrices = string.Empty;
+                    foreach (var infantPrice in InfantPrices)
+                    {
+                        TourType.InfantPrices += infantPrice.Serialize();
+                    }
+
                     var tourType = AutoMapperUtil.Map<TourTypeWrapper, TourType>(TourType);
                     var savedTourType = AutoMapperUtil.Map<TourType, TourTypeWrapper>(inventoryClient.UpdateTourType(tourType));
                     TourTypeUpdated?.Invoke(this, new TourTypeEventArgs(savedTourType, bIsNew));
@@ -102,7 +108,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Destinations = new ObservableCollection<Destination>();
             AdultPrices = new ObservableCollection<Prices>();
             ChildPrices = new ObservableCollection<Prices>();
-
+            InfantPrices = new ObservableCollection<Prices>();
             if (_tourTypeWrapper != null)
             {
                 TourType = TourTypeHelper.CreateTourTypeWrapper(_tourTypeWrapper);
@@ -129,6 +135,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     var prices = new Prices();
                     prices.Deserialize(pair);
                     ChildPrices.Add(prices);
+                }
+
+                pairs = SimpleSplitter.Split(TourType.InfantPrices, separators);
+                foreach (var pair in pairs)
+                {
+                    var prices = new Prices();
+                    prices.Deserialize(pair);
+                    InfantPrices.Add(prices);
                 }
             }
             else
@@ -198,6 +212,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 _childPrices = value;
                 OnPropertyChanged(() => ChildPrices);
+            }
+        }
+
+        private ObservableCollection<Prices> _infantPrices;
+
+        public ObservableCollection<Prices> InfantPrices
+        {
+            get
+            {
+                return _infantPrices;
+            }
+            set
+            {
+                _infantPrices = value;
+                OnPropertyChanged(() => InfantPrices);
             }
         }
 

@@ -18,6 +18,7 @@ namespace EchoDesertTrips.Client.Entities
         public string ChildPrices { get; set; }
         public string Destinations { get; set; }
         public bool Private { get; set; }
+        public string InfantPrices { get; set; }
         //public string TourDescription { get; set; }
         public byte Days { get; set; }
         public List<TourTypeDescription> TourTypeDescriptions { get; set; }
@@ -34,6 +35,7 @@ namespace EchoDesertTrips.Client.Entities
             _destinations = string.Empty;
             _adultPrices = string.Empty;
             _childPrices = string.Empty;
+            _infantPrices = string.Empty;
 
             _tourTypeDescriptions = new ObservableCollection<TourTypeDescription>();
             _incramentExternalId = true;
@@ -78,25 +80,6 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        //private string _tourDescription;
-
-        //public string TourDescription
-        //{
-        //    get
-        //    {
-        //        return _tourDescription;
-        //    }
-
-        //    set
-        //    {
-        //        if (_tourDescription != value)
-        //        {
-        //            _tourDescription = value;
-        //            OnPropertyChanged(() => TourDescription, true);
-        //        }
-        //    }
-        //}
-
         private string _adultPrices;
 
         public string AdultPrices
@@ -129,6 +112,24 @@ namespace EchoDesertTrips.Client.Entities
                 {
                     _childPrices = value;
                     OnPropertyChanged(() => ChildPrices);
+                }
+            }
+        }
+
+        private string _infantPrices;
+
+        public string InfantPrices
+        {
+            get
+            {
+                return _infantPrices;
+            }
+            set
+            {
+                if (_infantPrices != value)
+                {
+                    _infantPrices = value;
+                    OnPropertyChanged(() => InfantPrices);
                 }
             }
         }

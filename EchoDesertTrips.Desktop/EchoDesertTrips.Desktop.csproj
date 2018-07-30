@@ -231,12 +231,12 @@
     <Compile Include="Support\BoolToYesNoConverter.cs" />
     <Compile Include="CustomEventArgs\CustomerEventArgs.cs" />
     <Compile Include="CustomEventArgs\CustomerOrderEventArgs.cs" />
+    <Compile Include="Support\DateToColorConverter.cs" />
     <Compile Include="Support\Destination.cs" />
     <Compile Include="Support\EnterKeyTraversal.cs" />
     <Compile Include="Support\ExpanderToBooleanConverter.cs" />
     <Compile Include="Support\GroupWidthCoverter.cs" />
     <Compile Include="CustomEventArgs\HotelEventArgs.cs" />
-    <Compile Include="Support\ListWrapper.cs" />
     <Compile Include="Support\Mapper.cs" />
     <Compile Include="Support\MaxHeightConverter.cs" />
     <Compile Include="Support\MessageDialogService.cs" />
@@ -244,8 +244,8 @@
     <Compile Include="Support\PhoneNumberValidation.cs" />
     <Compile Include="Support\Prices.cs" />
     <Compile Include="CustomEventArgs\ReservationEventArgs.cs" />
-    <Compile Include="Support\RelayCommand.cs" />
-    <Compile Include="Support\ReservationUtils.cs" />
+    <Compile Include="Support\ReservationTotalCustomers.cs" />
+    <Compile Include="Support\ReservationHelper.cs" />
     <Compile Include="Support\RoomTypeIdToRoomTypeNameConverter.cs" />
     <Compile Include="Support\TourEventArgs.cs" />
     <Compile Include="CustomEventArgs\TourTypeEventArgs.cs" />

@@ -136,7 +136,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Customers = Reservation.Customers;
             _editCustomerViewModel.Reservation = Reservation;
             _editCustomerViewModel.SetCustomer(null);
-            _editCustomerViewModel.CustomersLeft = GetCustomerLeft(Reservation);
+            _editCustomerViewModel.CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             CurrentCustomerViewModel = _editCustomerViewModel;
             RegisterEvents();
         }
@@ -166,20 +166,23 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Customers.Add(customerWrapper);
             }
+            CustomerUpdatedFinished?.Invoke(this, new EventArgs());
         }
 
-        private void CurrentCustomerViewModel_CustomerCancelled(object sender, CustomerEventArgs e)
-        {
-            CurrentCustomerViewModel = null;
-        }
+        //private void CurrentCustomerViewModel_CustomerCancelled(object sender, CustomerEventArgs e)
+        //{
+        //    CurrentCustomerViewModel = null;
+        //}
 
         private void RegisterEvents()
         {
             CurrentCustomerViewModel.CustomerUpdated -= CurrentCustomerViewModel_CustomerUpdated;
             CurrentCustomerViewModel.CustomerUpdated += CurrentCustomerViewModel_CustomerUpdated;
-            CurrentCustomerViewModel.CustomerCancelled -= CurrentCustomerViewModel_CustomerCancelled;
-            CurrentCustomerViewModel.CustomerCancelled += CurrentCustomerViewModel_CustomerCancelled;
+            //CurrentCustomerViewModel.CustomerCancelled -= CurrentCustomerViewModel_CustomerCancelled;
+            //CurrentCustomerViewModel.CustomerCancelled += CurrentCustomerViewModel_CustomerCancelled;
         }
+
+        public event EventHandler CustomerUpdatedFinished;
     }
     public class CustomerValidationRule : ValidationRule
     {
