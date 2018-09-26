@@ -24,25 +24,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
             SelectedAgency = Reservation.Agency != null ? Agencies.FirstOrDefault(n => n.AgencyId == Reservation.Agency.AgencyId) : null;
             if (SelectedAgency != null)
                 SelectedAgent = Reservation.Agent != null ? SelectedAgency.Agents.FirstOrDefault(n => n.AgentId == Reservation.Agent.AgentId) : null;
+            _isChecked = false;
             bLoaded = true;
         }
 
-        private bool _isEnabled;
+        private bool _isChecked;
 
-        public bool IsEnabled
+        public bool IsChecked
         {
-            get { return _isEnabled || Reservation.Agency != null; }
+            get { return _isChecked || Reservation.Agency != null; }
             set
             {
-                _isEnabled = value;
-                if (_isEnabled == false)
+                _isChecked = value;
+                if (_isChecked == false)
                 {
                     Reservation.Agency = null;
                     Reservation.Agent = null;
                 }
-                OnPropertyChanged(() => IsEnabled, false);
+                OnPropertyChanged(() => IsChecked, false);
             }
         }
+
         private Agency _selectedAgency;
         public Agency SelectedAgency
         {

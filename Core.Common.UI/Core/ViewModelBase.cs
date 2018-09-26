@@ -16,7 +16,7 @@ namespace Core.Common.UI.Core
         {
             ToggleErrorsCommand = new DelegateCommand<object>(OnToggleErrorsCommandExecute, OnToggleErrorsCommandCanExecute);
             _optionals = new ObservableCollection<Optional>();
-            _tourTypes = new ObservableCollection<TourTypeWrapper>();
+            _tourTypes = new ObservableCollection<TourType>();
             _hotels = new ObservableCollection<Hotel>();
             _agencies = new ObservableCollection<Agency>();
             _roomTypes = new ObservableCollection<RoomType>();
@@ -155,9 +155,9 @@ namespace Core.Common.UI.Core
             }
         }
 
-        private ObservableCollection<TourTypeWrapper> _tourTypes;
+        private ObservableCollection<TourType> _tourTypes;
 
-        public ObservableCollection<TourTypeWrapper> TourTypes
+        public ObservableCollection<TourType> TourTypes
         {
             get
             {
@@ -218,9 +218,9 @@ namespace Core.Common.UI.Core
             }
         }
 
-        private ReservationWrapper _reservation;
+        private Reservation _reservation;
 
-        public ReservationWrapper Reservation
+        public Reservation Reservation
         {
             get { return _reservation; }
             set

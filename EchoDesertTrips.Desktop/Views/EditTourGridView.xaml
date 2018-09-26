@@ -215,92 +215,9 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
-            <!--<Grid Grid.Row="1" Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Margin="10,0,5,10" Text="Hotels:" />
-                <TextBlock Grid.Row="1" Grid.Column="0" Margin="10,0,4,0" Text="Rooms:" />
-                <ComboBox Grid.Row="0" Grid.Column="1" x:Name="cbHotels"
-                                      SelectedItem="{Binding DataContext.SelectedHotel, 
-                                      RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
-                                      Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      SelectedValue="{Binding SelectedHotel.HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                      ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
-                                      SelectedValuePath="HotelId"
-                                      DisplayMemberPath="HotelName"
-                                      IsReadOnly="True"
-                                      ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                      AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Hotels}"
-                                      HorizontalAlignment="Left"
-                                      Width="140"
-                                      Margin="0,0,0,10"/>
-                <DataGrid Grid.Row="1" Grid.Column="1" x:Name="dgRoomTypes"
-                                              HeadersVisibility="All"
-                                              RowHeaderWidth="40"
-                                              FontSize="12"
-                                              ItemsSource="{Binding TourHotelRoomTypes, Mode=TwoWay}"
-                                              AutoGenerateColumns="False"
-                                              HorizontalAlignment="Left"
-                                              CellStyle="{StaticResource DataGridBorder}"
-                                              Margin="0,0,10,0"
-                                              Height="185"
-                                              Width="Auto">
-                    <DataGrid.Resources>
-                        <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                            <Setter Property="Padding" Value="-2"/>
-                            <Style.Triggers>
-                                <Trigger Property="Validation.HasError" Value="True">
-                                    <Setter Property="Background" Value="Red"/>
-                                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self},
-                                     Path=(Validation.Errors)[0].ErrorContent}"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.Resources>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="CellEditEnding">
-                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CellEditEndingRoomTypeCommand, 
-                                           RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                           CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Width="Auto" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
-                        <DataGridTextColumn Width="Auto" Header="Price P.P." Binding="{Binding HotelRoomType.PricePerPerson}" IsReadOnly="True"/>
-                        <DataGridTextColumn Width="Auto" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <DataGridTextColumn Width="Auto" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    </DataGrid.Columns>
-                    <DataGrid.RowValidationRules>
-                        <viewModels:TourHotelRoomsValidationRule ValidationStep="UpdatedValue"/>
-                    </DataGrid.RowValidationRules>
-                    <DataGrid.RowValidationErrorTemplate>
-                        <ControlTemplate>
-                            <Grid Margin="0,-2,10,-2" 
-                            ToolTip="{Binding RelativeSource={RelativeSource
-                            FindAncestor, AncestorType={x:Type DataGridRow}},
-                            Path=(Validation.Errors)[0].ErrorContent}">
-                                <Ellipse StrokeThickness="0" Fill="Red" 
-                                Width="22" 
-                                Height="22"
-                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <TextBlock Text="!" FontSize="22" 
-                                FontWeight="Bold" Foreground="White" 
-                                HorizontalAlignment="Center" VerticalAlignment="Center"/>   
-                            </Grid>
-                        </ControlTemplate>
-                    </DataGrid.RowValidationErrorTemplate>
-                </DataGrid>                
-            </Grid>-->
-        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
-            <Button Content="Save" Margin="5" Width="100" Command="{Binding SaveCommand}" />
-            <Button Content="Clear" Margin="5" Width="100" Command="{Binding ClearCommand}" />
-            <!--<Button Content="Exit" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />-->
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,15,0,15">
+            <Button Content="Save" Margin="0,0,20,0" Width="100" Command="{Binding SaveCommand}" />
+            <Button Content="Clear" Width="100" Command="{Binding ClearCommand}" />
         </StackPanel>
     </Grid>
 </core:UserControlViewBase>

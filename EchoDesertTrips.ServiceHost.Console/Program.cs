@@ -16,6 +16,8 @@ namespace EchoDesertTrips.ServiceHost
     {
         static void Main(string[] args)
         {
+            Console1.App_Start.EntityFrameworkProfilerBootstrapper.PreStart();
+
             //GenericPrincipal principal = new GenericPrincipal(new GenericIdentity("Miguel"), new string[] { "CarRentalAdmin" });
 
             //Thread.CurrentPrincipal = principal;
@@ -113,3 +115,4 @@ namespace EchoDesertTrips.ServiceHost
         }
     }
 }
+

@@ -29,11 +29,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
-            RowEditEndingCommand = new DelegateCommand<CustomerWrapper>(OnRowEditEndingCommand);
-            RowSomeEventCommand = new DelegateCommand<CustomerWrapper>(OnRowSomeEventCommand);
-            DeleteCustomerCommand = new DelegateCommand<CustomerWrapper>(OnDeleteCustomerCommand);
-            EditCustomerCommand = new DelegateCommand<CustomerWrapper>(OnEditCustomerCommand);
-            Customers = new ObservableCollection<CustomerWrapper>();
+            RowEditEndingCommand = new DelegateCommand<Customer>(OnRowEditEndingCommand);
+            RowSomeEventCommand = new DelegateCommand<Customer>(OnRowSomeEventCommand);
+            DeleteCustomerCommand = new DelegateCommand<Customer>(OnDeleteCustomerCommand);
+            EditCustomerCommand = new DelegateCommand<Customer>(OnEditCustomerCommand);
+            Customers = new ObservableCollection<Customer>();
         }
 
         public CustomerGridViewModel()
@@ -43,9 +43,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public override string ViewTitle => "PAX";
 
-        public DelegateCommand<CustomerWrapper> DeleteCustomerCommand { get; set; }
+        public DelegateCommand<Customer> DeleteCustomerCommand { get; set; }
 
-        private void OnDeleteCustomerCommand(CustomerWrapper customer)
+        private void OnDeleteCustomerCommand(Customer customer)
         {
             var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
             if (result == MessageDialogResult.CANCEL)
@@ -53,9 +53,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Customers.Remove(customer);
         }
         //Remove CustomerWrapper
-        public DelegateCommand<CustomerWrapper> RowSomeEventCommand { get; set; }
+        public DelegateCommand<Customer> RowSomeEventCommand { get; set; }
 
-        private void OnRowSomeEventCommand(CustomerWrapper customerWrraper)
+        private void OnRowSomeEventCommand(Customer customerWrraper)
         {
             if (customerWrraper.IsDirty)
             {
@@ -65,9 +65,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
         //Remove CustomerWrapper
-        private CustomerWrapper _lastUpdatedCustomer;
+        private Customer _lastUpdatedCustomer;
 
-        private void OnEditCustomerCommand(CustomerWrapper customer)
+        private void OnEditCustomerCommand(Customer customer)
         {
             customer.bInEdit = true;
             _editCustomerViewModel.SetCustomer(customer);
@@ -76,7 +76,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RegisterEvents();
         }
 
-        public DelegateCommand<CustomerWrapper> EditCustomerCommand { get; }
+        public DelegateCommand<Customer> EditCustomerCommand { get; }
         [Import]
         private EditCustomerGridViewModel _editCustomerViewModel { get;set;}
 
@@ -93,9 +93,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public DelegateCommand<CustomerWrapper> RowEditEndingCommand { get; set; }
+        public DelegateCommand<Customer> RowEditEndingCommand { get; set; }
 
-        private void OnRowEditEndingCommand(CustomerWrapper customer)
+        private void OnRowEditEndingCommand(Customer customer)
         {
             if (customer.IsDirty)
             {
@@ -106,10 +106,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-        //Remove CustomerWrapper
-        private ObservableCollection<CustomerWrapper> _customers;
 
-        public ObservableCollection<CustomerWrapper> Customers
+        private ObservableCollection<Customer> _customers;
+
+        public ObservableCollection<Customer> Customers
         {
             get { return _customers; }
             private set
@@ -143,30 +143,30 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentCustomerViewModel_CustomerUpdated(object sender, CustomerEventArgs e)
         {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
-            });
+            //var config = new MapperConfiguration(cfg => {
+            //    cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
+            //});
 
-            var iMapper = config.CreateMapper();
-            var customerWrapper = iMapper.Map<CustomerWrapper, CustomerWrapper>(e.Customer);
-
+            //var iMapper = config.CreateMapper();
+            //var customerWrapper = iMapper.Map<CustomerWrapper, CustomerWrapper>(e.Customer);
+            var customer_e = e.Customer;
             if (!e.IsNew)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
-                customerWrapper.bInEdit = false;
+                customer_e.bInEdit = false;
                 var customer = Customers.FirstOrDefault(item => item.bInEdit == true);
                 if (customer != null)
                 {
                     var index = Customers.IndexOf(customer);
-                    Customers[index] = customerWrapper;
+                    Customers[index] = customer_e;
                 }
             }
             else
             {
-                Customers.Add(customerWrapper);
+                Customers.Add(customer_e);
             }
-            CustomerUpdatedFinished?.Invoke(this, new EventArgs());
+            //CustomerUpdatedFinished?.Invoke(this, new EventArgs());
         }
 
         //private void CurrentCustomerViewModel_CustomerCancelled(object sender, CustomerEventArgs e)
@@ -189,7 +189,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public override ValidationResult Validate(object value,
             System.Globalization.CultureInfo cultureInfo)
         {
-            CustomerWrapper customer = (value as BindingGroup).Items[0] as CustomerWrapper;
+            Customer customer = (value as BindingGroup).Items[0] as Customer;
             if (customer.FirstName == string.Empty)
             {
                 return new ValidationResult(false,

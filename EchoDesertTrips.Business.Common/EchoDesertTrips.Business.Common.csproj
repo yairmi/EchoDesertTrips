@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="ICustomerEngine.cs" />
     <Compile Include="IHotelEngine.cs" />
+    <Compile Include="IReservationEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ITourEngine.cs" />
   </ItemGroup>

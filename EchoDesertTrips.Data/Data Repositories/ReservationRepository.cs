@@ -8,6 +8,7 @@ using System.Linq;
 using System.Data.Entity;
 using EchoDesertTrips.Business.Contracts;
 using System.Data.Entity.Infrastructure;
+using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -40,9 +41,6 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 .Select(throomTypes => throomTypes.TourHotelRoomTypes
                 .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
             var hotels = (from e in entityContext.HotelSet select e).ToList();
-            foreach (var reservation in reservations)
-                UpdateHotel(entityContext, reservation, hotels);
-
             return reservations;
         }
 
@@ -69,16 +67,15 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 .FirstOrDefault();
             var hotels = (from e in entityContext.HotelSet select e).ToList();
             if (reservation == null) return null;
-            UpdateHotel(entityContext, reservation, hotels);
             return reservation;
 
         }
 
-        public IEnumerable<Reservation> GetReservationsByGroupId(int groupId)
+        public Reservation[] GetReservationsByGroupId(int groupId)
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
-                var reservations = (from e in entityContext.ReservationSet where e.GroupID == groupId select e)
+                /*var reservations = (from e in entityContext.ReservationSet where e.GroupID == groupId select e)
                 .Include(a => a.Agency.Agents)
                 .Include(a => a.Agent)
                 .Include(o => o.Customers)
@@ -91,25 +88,26 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 .Select(throomTypes => throomTypes.TourHotelRoomTypes
                 .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
                 var hotels = (from e in entityContext.HotelSet select e).ToList();
-                foreach (var reservation in reservations)
-                    UpdateHotel(entityContext, reservation, hotels);
+                return reservations.ToArray();*/
+                /////////////////////////////////
+                var reservations = (from e in entityContext.ReservationSet where e.GroupID == groupId select e);
+                reservations = reservations.Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)));
+                reservations = reservations.Include(o => o.Tours.Select(th => th.TourHotels
+                            .Select(throomTypes => throomTypes.TourHotelRoomTypes
+                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
+                reservations = reservations.Include(a => a.Agency.Agents);
+                reservations = reservations.Include(c => c.Customers);
+                reservations = reservations.Include(g => g.Group);
+                reservations = reservations.Include(t => t.Tours);
+                reservations = reservations.Include(t => t.Tours.Select(tt => tt.TourType));
+                log.Debug("ReservationRepository: GetReservationsForDayRange End of DB Session");
+                var hotels = (from e in entityContext.HotelSet select e).ToList();
+                log.Debug("ReservationRepository: GetReservationsForDayRange before return");
                 return reservations.ToArray();
             }
         }
 
-        //public IEnumerable<Reservation> GetReservationHistoryByCustomer(int customerId)
-        //{
-        //    using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
-        //    {
-        //        var query = from e in entityContext.ReservationSet
-        //                    where e.Customers.Any(c => c.CustomerId == customerId)
-        //                    select e;
-
-        //        return query.ToArray();
-        //    }
-        //}
-
-        public IEnumerable<Reservation> GetReservationByEndDate(DateTime date)
+        public Reservation[] GetReservationByEndDate(DateTime date)
         {
             return null;
         }
@@ -122,31 +120,50 @@ namespace EchoDesertTrips.Data.Data_Repositories
             }
         }
 
-        public IEnumerable<Reservation> GetReservationsForDayRange(DateTime dayFrom, DateTime dayTo)
+        public Reservation[] GetReservationsForDayRange(DateTime dayFrom, DateTime dayTo)
         {
             using (var entityContext = new EchoDesertTripsContext())
             {
+                /*log.Debug("ReservationRepository: GetReservationsForDayRange Include query Start");
+
                 var reservations = (from e in entityContext.ReservationSet
                                     where e.Tours.Any(
                                        t => t.StartDate >= dayFrom
                                        && t.StartDate <= dayTo)
                                     select e)
                             .Include(a => a.Agency.Agents)
-                            .Include(a => a.Agent)
                             .Include(o => o.Customers)
-                            .Include(o => o.Operator)
                             .Include(o => o.Group)
                             .Include(o => o.Tours.Select(t => t.TourType))
-                            .Include(o => o.Tours.Select(t => t.SubTours))
                             .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
                             .Include(o => o.Tours.Select(th => th.TourHotels
                             .Select(throomTypes => throomTypes.TourHotelRoomTypes
                             .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
-
                 var hotels = (from e in entityContext.HotelSet select e).ToList();
-                foreach (var reservation in reservations)
-                    UpdateHotel(entityContext, reservation, hotels);
-                return reservations.ToArray();
+                var r = reservations.ToArray();
+                log.Debug("ReservationRepository: GetReservationsForDayRange Include query End, before return");
+                return r;*/
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                log.Debug("ReservationRepository: GetReservationsForDayRange Separate queries Start");
+                var reservations = (from e in entityContext.ReservationSet
+                                    where e.Tours.Any(
+                                       t => t.StartDate >= dayFrom
+                                       && t.StartDate <= dayTo)
+                                    select e);
+
+                reservations = reservations.Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)));
+                reservations = reservations.Include(o => o.Tours.Select(th => th.TourHotels
+                            .Select(throomTypes => throomTypes.TourHotelRoomTypes
+                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
+                reservations = reservations.Include(a => a.Agency.Agents);
+                reservations = reservations.Include(c => c.Customers);
+                reservations = reservations.Include(g => g.Group);
+                reservations = reservations.Include(t => t.Tours);
+                reservations = reservations.Include(t => t.Tours.Select(tt => tt.TourType));
+                var hotels = (from e in entityContext.HotelSet select e).ToList();
+                var r = reservations.ToArray();
+                log.Debug("ReservationRepository: GetReservationsForDayRange Separate queries End, before return");
+                return r;
             }
         }
 
@@ -470,28 +487,6 @@ namespace EchoDesertTrips.Data.Data_Repositories
             reservation.Operator = null;
             reservation.Agency = null;
             reservation.Agent = null;
-        }
-
-        private void UpdateHotel(EchoDesertTripsContext entityContext, Reservation reservation, List<Hotel> hotels)
-        {
-            reservation.Tours.ForEach((tour) =>
-            {
-                if (tour.TourHotels != null)
-                {
-                    tour.TourHotels.ForEach((tourHotel) =>
-                    {
-                        if (tourHotel.TourHotelRoomTypes != null ||
-                            tourHotel.TourHotelRoomTypes.Capacity > 0)
-                            tourHotel.TourHotelRoomTypes.ForEach((tourHotelRoomType) =>
-                            {
-                                var hotel = hotels
-                                .FirstOrDefault(h => h.HotelId == tourHotelRoomType.HotelRoomType.HotelId);
-                                tourHotelRoomType.HotelRoomType.HotelName = (hotel == null) ? string.Empty : hotel.HotelName;
-                            });
-                    });
-                }
-            });
-
         }
 
         private void RemoveTour(EchoDesertTripsContext entityContext, Tour tour)

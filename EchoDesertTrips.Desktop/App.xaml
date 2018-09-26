@@ -53,6 +53,9 @@
         <Style x:Key="GroupBoxHeight1" TargetType="GroupBox">
             <Setter Property="Height" Value="220"/>
         </Style>
+        <Style x:Key="GridHeight" TargetType="Grid">
+            <Setter Property="Height" Value="300"/>
+        </Style>
         <Style x:Key="MultiLineTextBox" TargetType="{x:Type TextBox}">
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="AcceptsReturn" Value="True"/>
@@ -68,30 +71,9 @@
         <DataTemplate DataType="{x:Type vm:ReservationsViewModel}">
             <v:ReservationsView />
         </DataTemplate>
-        <!--<DataTemplate DataType="{x:Type vm:ToursViewModel}">
-            <v:ToursView />
-        </DataTemplate>-->
-        <!--<DataTemplate DataType="{x:Type vm:EditTripViewModel}">
-            <v:EditTripView />
-        </DataTemplate>-->
-        <!--<DataTemplate DataType="{x:Type vm:CustomersViewModel}">
-            <v:CustomersView />
-        </DataTemplate>-->
-        <!--<DataTemplate DataType="{x:Type vm:EditCustomerViewModel}">
-            <v:EditCustomerView />
-        </DataTemplate>-->
-        <!--<DataTemplate DataType="{x:Type vm:TourViewModel}">
-            <v:TourView />
-        </DataTemplate>-->
-        <!--<DataTemplate DataType="{x:Type vm:CustomerViewModel}">
-            <v:CustomerView />
-        </DataTemplate>-->
         <DataTemplate DataType="{x:Type vm:AgencyViewModel}">
             <v:AgencyView />
         </DataTemplate>
-        <!--<DataTemplate DataType="{x:Type vm:NationalityViewModel}">
-            <v:NationalityView />
-        </DataTemplate>-->
         <DataTemplate DataType="{x:Type vm:HotelViewModel}">
             <v:HotelView />
         </DataTemplate>

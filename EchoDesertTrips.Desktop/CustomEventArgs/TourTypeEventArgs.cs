@@ -5,12 +5,12 @@ namespace EchoDesertTrips.Desktop.CustomEventArgs
 {
     public class TourTypeEventArgs : EventArgs
     {
-        public TourTypeEventArgs(TourTypeWrapper tourType, bool isNew)
+        public TourTypeEventArgs(TourType tourType, bool isNew)
         {
             TourType = tourType;
             IsNew = isNew;
         }
-        public TourTypeWrapper TourType { get; set; }
+        public TourType TourType { get; set; }
         public bool IsNew { get; set; }
     }
 }

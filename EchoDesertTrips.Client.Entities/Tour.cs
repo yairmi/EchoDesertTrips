@@ -9,30 +9,14 @@ using System.Linq;
 
 namespace EchoDesertTrips.Client.Entities
 {
-    public class Tour
+    public class Tour : ObjectBase
     {
-        public int TourId { get; set; }
-        public TourType TourType { get; set; }
-        public int TourTypeId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string PickupAddress { get; set; }
-        public List<TourOptional> TourOptionals { get; set; }
-        //public List<TourHotelRoomType> TourHotelRoomTypes { get; set; }
-        public string Hotels { get; set; }
-        public string RoomTypes { get; set; }
-        public List<TourHotel> TourHotels { get; set; }
-        public List<SubTour> SubTours { get; set; }
-    }
-
-    public class TourWrapper : ObjectBase
-    {
-        public TourWrapper()
+        public Tour()
         {
-            _tourOptionals = new ObservableCollection<TourOptionalWrapper>();
+            _tourOptionals = new ObservableCollection<TourOptional>();
             _tourHotels = new ObservableCollection<TourHotel>();
-            _subTours = new ObservableCollection<SubTourWrapper>();
-            TourType = new TourTypeWrapper();
+            _subTours = new ObservableCollection<SubTour>();
+            TourType = new TourType();
             _startDate = DateTime.Today;
             _endDate = DateTime.Today;
             bInEdit = false;
@@ -59,9 +43,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private TourTypeWrapper _tourType;
+        private TourType _tourType;
 
-        public TourTypeWrapper TourType
+        public TourType TourType
         {
             get
             {
@@ -70,19 +54,22 @@ namespace EchoDesertTrips.Client.Entities
 
             set
             {
-                if ((_tourType != null && (_tourType.TourTypeId != ((TourTypeWrapper)value).TourTypeId) || (_tourType == null)))
+                if ((_tourType != null && (_tourType.TourTypeId != ((TourType)value).TourTypeId) || (_tourType == null)))
                 {
                     _tourType = value;
                     EndDate = _tourType.Days == 0? EndDate : StartDate.AddDays(_tourType.Days - 1);
                     string[] destinations = SimpleSplitter.Split(_tourType.Destinations);
-                    _subTours.Clear();
-                    destinations.ToList().ForEach((destination) =>
+                    if (_subTours != null)
                     {
-                        SubTours.Add(new SubTourWrapper()
+                        _subTours.Clear();
+                        destinations.ToList().ForEach((destination) =>
                         {
-                            DestinationName = destination,
+                            SubTours.Add(new SubTour()
+                            {
+                                DestinationName = destination,
+                            });
                         });
-                    });
+                    }
 
                     OnPropertyChanged(() => TourType, true);
                 }
@@ -166,9 +153,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private ObservableCollection<TourOptionalWrapper> _tourOptionals;
+        private ObservableCollection<TourOptional> _tourOptionals;
 
-        public ObservableCollection<TourOptionalWrapper> TourOptionals
+        public ObservableCollection<TourOptional> TourOptionals
         {
             get
             {
@@ -179,51 +166,6 @@ namespace EchoDesertTrips.Client.Entities
             {
                 _tourOptionals = value;
                 OnPropertyChanged(() => TourOptionals, false);
-            }
-        }
-
-        //private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
-
-        //public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes
-        //{
-        //    get
-        //    {
-        //        return _tourHotelRoomTypes;
-        //    }
-
-        //    set
-        //    {
-        //        _tourHotelRoomTypes = value;
-        //        OnPropertyChanged(() => TourHotelRoomTypes, false);
-        //    }
-        //}
-
-        private string _hotels;
-        public string Hotels
-        {
-            get
-            {
-                return _hotels;
-            }
-            set
-            {
-                _hotels = value;
-                OnPropertyChanged(() => Hotels, true);
-            }
-        }
-
-        private string _roomTypes;
-
-        public string RoomTypes
-        {
-            get
-            {
-                return _roomTypes;
-            }
-            set
-            {
-                _roomTypes = value;
-                OnPropertyChanged(() => RoomTypes, true);
             }
         }
 
@@ -243,9 +185,9 @@ namespace EchoDesertTrips.Client.Entities
         }
 
 
-        private ObservableCollection<SubTourWrapper> _subTours;
+        private ObservableCollection<SubTour> _subTours;
 
-        public ObservableCollection<SubTourWrapper> SubTours
+        public ObservableCollection<SubTour> SubTours
         {
             get
             {
@@ -276,7 +218,7 @@ namespace EchoDesertTrips.Client.Entities
 
         public bool bInEdit { get; set; }
 
-        class TourValidator : AbstractValidator<TourWrapper>
+        class TourValidator : AbstractValidator<Tour>
         {
             public TourValidator()
             {
@@ -295,18 +237,19 @@ namespace EchoDesertTrips.Client.Entities
 
     public class TourHelper
     {
-        public static TourWrapper CloneTourWrapper(TourWrapper tourWrapper)
+        public static Tour CloneTour(Tour tour)
         {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<TourWrapper, TourWrapper>();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Tour, Tour>();
                 cfg.CreateMap<TourHotel, TourHotel>();
-                cfg.CreateMap<TourOptionalWrapper, TourOptionalWrapper>();
+                cfg.CreateMap<TourOptional, TourOptional>();
                 cfg.CreateMap<TourHotelRoomType, TourHotelRoomType>();
             });
 
             IMapper iMapper = config.CreateMapper();
-            var _tourWrapper = iMapper.Map<TourWrapper, TourWrapper>(tourWrapper);
-            return _tourWrapper;
+            var _tour = iMapper.Map<Tour, Tour>(tour);
+            return _tour;
         }
     }
 }

@@ -37,24 +37,26 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <!--<Button x:Name="btnAddNewCustomer" Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" />-->
-            <Border  Grid.Row="0" 
+            <Border x:Name="borderEditCustomerControl" Grid.Row="0"  
             Grid.Column="0"
-            HorizontalAlignment="Left" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Top"
             CornerRadius="4" 
-            Margin="0" 
+            Margin="5" 
             BorderBrush="SteelBlue" 
             BorderThickness="1" 
             Background="BlanchedAlmond">
                     <ContentControl HorizontalAlignment="Left" Margin="5,5,5,5" Content="{Binding CurrentCustomerViewModel}" />
             </Border>
             <Border Grid.Row="0" Grid.Column="1"
-             HorizontalAlignment="Left" 
+             HorizontalAlignment="Center" 
              VerticalAlignment="Top"
              CornerRadius="4" 
-             Margin="5,0,0,0" 
+             Margin="5" 
              BorderBrush="SteelBlue" 
              BorderThickness="1" 
-             Background="BlanchedAlmond">
+             Background="BlanchedAlmond"
+             Height="{Binding ActualHeight, ElementName=borderEditCustomerControl}">
                 <DataGrid x:Name="dgCustomerWrapper" 
                   Margin="5,5,5,5" 
                   ItemsSource="{Binding Customers, Mode=TwoWay}" 
@@ -94,8 +96,8 @@
                         <DataGridTextColumn x:Name="expireyDateColumn" IsReadOnly="True" Width="100" Header="Expiry Date" Binding="{Binding ExpireyDate, StringFormat=d}"/>
                         <DataGridCheckBoxColumn x:Name="hasVisaColumn" Width="80" IsReadOnly="True" Header="Has Visa" Binding="{Binding HasVisa}"/>
                         <DataGridTextColumn x:Name="nationalityColumn" Width="100" IsReadOnly="True" Header="Nationality" Binding="{Binding Nationality, Mode=TwoWay}"/>
-                        <DataGridTextColumn x:Name="phone1Column" Width="80" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
-                        <DataGridTextColumn x:Name="phone2Column" Width="80" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="phone1Column" Width="75" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="phone2Column" Width="75" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

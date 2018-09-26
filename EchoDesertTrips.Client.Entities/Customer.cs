@@ -1,4 +1,5 @@
-﻿using Core.Common.Core;
+﻿using AutoMapper;
+using Core.Common.Core;
 using FluentValidation;
 using System;
 
@@ -132,7 +133,7 @@ namespace EchoDesertTrips.Client.Entities
         //public List<Reservation> Reservations { get; set; }
     }*/
 
-    public class Customer
+    /*public class Customer
     {
         public int CustomerId { get; set; }
         public string IdentityId { get; set; }
@@ -146,13 +147,12 @@ namespace EchoDesertTrips.Client.Entities
         public DateTime IssueData { get; set; }
         public DateTime ExpireyDate { get; set; }
         public string Nationality { get; set; }
-        //public int NationalityId { get; set; }
         public bool HasVisa { get; set; }
-    }
+    }*/
 
-    public class CustomerWrapper : ObjectBase
+    public class Customer : ObjectBase
     {
-        public CustomerWrapper()
+        public Customer()
         {
             DateOfBirdth = DateTime.Today;
             IssueData = DateTime.Today;
@@ -373,25 +373,6 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        //private int _nationalityId;
-
-        //public int NationalityId
-        //{
-        //    get
-        //    {
-        //        return _nationalityId;
-        //    }
-
-        //    set
-        //    {
-        //        if (_nationalityId != value)
-        //        {
-        //            _nationalityId = value;
-        //            OnPropertyChanged(() => NationalityId, true);
-        //        }
-        //    }
-        //}
-
         private bool _hasVisa;
 
         public bool HasVisa
@@ -433,7 +414,7 @@ namespace EchoDesertTrips.Client.Entities
 
         public bool bInEdit { get; set; }
 
-        class CustomerValidator : AbstractValidator<CustomerWrapper>
+        class CustomerValidator : AbstractValidator<Customer>
         {
             public CustomerValidator()
             {
@@ -450,6 +431,20 @@ namespace EchoDesertTrips.Client.Entities
         protected override IValidator GetValidator()
         {
             return new CustomerValidator();
+        }
+    }
+
+    public class CustomerHelper
+    {
+        public static Customer CloneCustomer(Customer customer)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Customer, Customer>();
+            });
+            IMapper iMapper = config.CreateMapper();
+            var _customer = iMapper.Map<Customer, Customer>(customer);
+            return _customer;
         }
     }
 }

@@ -73,7 +73,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
             return ExecuteFaultHandledOperation(() =>
             {
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-                var tourOptionalRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
                 var reservationData = new List<Reservation>();
                 IEnumerable<Reservation> reservations = reservationRepository.Get();
                 foreach (var reservation in reservations)
@@ -83,48 +82,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 return reservationData.ToArray();
             });
         }
-
-        /*        [OperationBehavior(TransactionScopeRequired = true)]
-                public Reservation UpdateReservation(Reservation reservation)
-                {
-                    return ExecuteFaultHandledOperation(() =>
-                    {
-                        UpdateTours(reservation.Tours);
-                        var tours = new List<Tour>();
-                        reservation.Tours.ForEach((item) =>
-                        {
-                            tours.Add((Tour)item.Clone());
-                        });
-
-                        reservation.Tours.ForEach((tour) =>
-                        {
-                            tour.TourOptionals = null;
-                            tour.TourHotelRoomTypes = null;
-                            tour.TourType = null;
-                        });
-
-                        reservation.Customers.ForEach((customer) =>
-                        {
-                            customer.Nationality = null;
-                        });
-
-                        IReservationRepository reservationRepository = 
-                            _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-
-                        Reservation updateEntity = null;
-
-                        if (reservation.ReservationId == 0)
-                        {
-                            updateEntity = reservationRepository.Add(reservation);
-                        }
-                        else
-                        {
-                            updateEntity = reservationRepository.Update(reservation);
-                        }
-                        updateEntity.Tours = tours;
-                        return updateEntity;
-                    });
-                }*/
 
         [OperationBehavior(TransactionScopeRequired = true)]
         public ReservationData UpdateReservation(Reservation reservation)
@@ -155,35 +112,50 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        //public Reservation[] GetReservationsForDay(DateTime Day)
-        //{
-        //    return ExecuteFaultHandledOperation(() =>
-        //    {
-        //        var orderRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-        //        var reservationData = new List<Reservation>();
-        //        IEnumerable<Reservation> reservations = orderRepository.GetReservationsByDay(Day);
-
-        //        foreach (var r in reservations)
-        //        {
-        //            reservationData.Add(r);
-        //        }
-        //        return reservationData.ToArray();
-        //    });
-        //}
-
         public Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo)
         {
             return ExecuteFaultHandledOperation(() =>
             {
+                log.Debug("ReservationManager: GetReservationsForDayRange Start");
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-                var reservationData = new List<Reservation>();
-                IEnumerable<Reservation> reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
+                var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
+                log.Debug("ReservationManager: GetReservationsForDayRange End");
+                //foreach (var reservation in reservations)
+                //{
+                //    if (reservation.Customers.Count() > 1)
+                //    {
+                //        var customer = reservation.Customers[0];
+                //        reservation.Customers.Clear();
+                //        reservation.Customers.Add(customer);
+                //    }
+                //}
+                //log.Debug("ReservationManager: clear customers end");
 
-                foreach (var r in reservations)
+                /////Conversion check start
+                /*log.Debug("ReservationManager: Conversion check start");
+                var reservationViews = new List<ReservationView>();
+                foreach (var reservation in reservations)
                 {
-                    reservationData.Add(r);
-                }
-                return reservationData.ToArray();
+                        var reservationView = new ReservationView()
+                        {
+                            ReservationId = reservation.ReservationId,
+                            NumberOfPaxs = reservation.Customers.Count(),
+                            PaxFullName = reservation.Customers.Count() > 0 ? string.Format("{0} {1}", reservation.Customers[0].LastName, reservation.Customers[0].FirstName) : string.Empty,
+                            PickUpTime = reservation.PickUpTime,
+                            PickUpAddress = reservation.Tours[0].PickupAddress,
+                            Phone = reservation.Customers.Count() > 0 ? reservation.Customers[0].Phone1 : string.Empty,
+                            HotelName = reservation.Tours[0].TourHotels.Count > 0 ? reservation.Tours[0].TourHotels[0].Hotel.HotelName : string.Empty,
+                            AgencyAndAgentName = reservation.Agency != null ? string.Format("{0} {1}", reservation.Agency.AgencyName, reservation.Agent.FullName) : string.Empty,
+                            //public double TotalPrice { get; set; }
+                            AdvancePayment = reservation.AdvancePayment,
+                            //public double Balance { get; set; }
+                            Comments = reservation.Comments,
+                            Messages = reservation.Messages
+                        };
+                        reservationViews.Add(reservationView);
+                    }
+                    log.Debug("ReservationManager: Conversion check end");*/
+                return reservations;
             });
         }
 
@@ -254,8 +226,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
                 var task = Task<Reservation[]>.Factory.StartNew(() =>
                 {
-                    var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
-                    return reservations.ToArray();
+                    return reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
                 });
                 return await task.ConfigureAwait(false);
             });
@@ -276,8 +247,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
                     throw new FaultException<NotFoundException>(ex, ex.Message);
                 }
-
-                return (reservations.ToArray());
+                return reservations;
             });
         }
 

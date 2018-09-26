@@ -83,12 +83,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void CreateNewCustomer()
         {
             Customer = null;
-
             ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
-            if (ControllEnabled)
+            if (_controllEnabled)
             {
-                Customer = new CustomerWrapper();
-                //_editedNewCustomer = false;
+                Customer = new Customer();
                 Customer.CleanAll();
             }
         }
@@ -101,21 +99,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (result == MessageDialogResult.CANCEL)
                     return;
             }
-            //Customer = null;
-            //Customer = new CustomerWrapper();
             CreateNewCustomer();
         }
 
-        //private void OnExitWithoutSavingCommand(object obj)
-        //{
-        //    if (IsCustomerDirty())
-        //    {
-        //        var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
-        //        if (result == MessageDialogResult.CANCEL)
-        //            return;
-        //    }
-        //    CustomerCancelled?.Invoke(this, new CustomerEventArgs(null, true));
-        //}
         private bool _lastDertinessValue = false;
         private bool IsCustomerDirty()
         {
@@ -137,40 +123,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
-
-            //var config = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
-            //});
-
-            //if (_customerWrapper != null)
-            //{
-
-            //    IMapper iMapper = config.CreateMapper();
-            //    Customer = iMapper.Map<CustomerWrapper, CustomerWrapper>(_customerWrapper);
-            //}
-            //else
-            //    Customer = new CustomerWrapper();
-            //CustomersLeft = GetCustomerLeft(_currentReservation);
-            //CleanAll();
         }
 
-        public void SetCustomer(CustomerWrapper customer)
+        public void SetCustomer(Customer customer)
         {
             if (customer != null)
             {
                 ControllEnabled = true;
                 _editedNewCustomer = customer.CustomerId == 0;
-                var config = new MapperConfiguration(cfg => {
-                    cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
-                });
-                IMapper iMapper = config.CreateMapper();
-                Customer = iMapper.Map<CustomerWrapper, CustomerWrapper>(customer);
+                Customer = CustomerHelper.CloneCustomer(customer);
             }
             else
             {
                 _editedNewCustomer = false;
-                Customer = new CustomerWrapper();
+                Customer = new Customer();
             }
 
             Customer.CleanAll();
@@ -179,9 +145,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool _editedNewCustomer;
 
-        private CustomerWrapper _customer;
+        private Customer _customer;
 
-        public CustomerWrapper Customer
+        public Customer Customer
         {
             get
             {
@@ -222,12 +188,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             set
             {
-                _controllEnabled = value;
-                OnPropertyChanged(() => ControllEnabled);
+                if (_controllEnabled != value)
+                {
+                    _controllEnabled = value;
+                    OnPropertyChanged(() => ControllEnabled);
+                }
             }
         }
 
         public event EventHandler<CustomerEventArgs> CustomerUpdated;
-        //public event EventHandler<CustomerEventArgs> CustomerCancelled;
     }
 }

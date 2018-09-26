@@ -31,10 +31,6 @@ namespace EchoDesertTrips.Business.Contracts
         [TransactionFlow(TransactionFlowOption.Allowed)]
         ReservationData UpdateReservation(Reservation reservation);
 
-        //[OperationContract]
-        //[FaultContract(typeof(NotFoundException))]
-        //Reservation[] GetReservationsForDay(DateTime Day);
-
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
@@ -48,11 +44,6 @@ namespace EchoDesertTrips.Business.Contracts
         [FaultContract(typeof(NotFoundException))]
         [TransactionFlow(TransactionFlowOption.Allowed)]
         Reservation GetReservation(int ReservationId);
-
-        //[OperationContract]
-        //[FaultContract(typeof(NotFoundException))]
-        //[TransactionFlow(TransactionFlowOption.Allowed)]
-        //ReservationData EditReservation(int ReservationId);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]

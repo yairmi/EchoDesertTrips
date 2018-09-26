@@ -87,10 +87,9 @@
                 <TextBox Grid.Row="8" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.Phone1, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" IsEnabled="{Binding ControllEnabled}"/>
                 <TextBox Grid.Row="9" Grid.Column="1" Margin="3" Width="160" Text="{Binding Customer.Phone2, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" IsEnabled="{Binding ControllEnabled}"/>
             </Grid>
-            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" IsEnabled="{Binding ControllEnabled}" />
-            <Button Content="Clear" Margin="5" Command="{Binding ClearCommand}" IsEnabled="{Binding ControllEnabled}"/>
-                <!--<Button Content="Exit" Margin="5" Command="{Binding ExitWithoutSavingCommand}" />-->
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,15,0,15">
+            <Button Content="Save" Margin="0,0,20,0" Width="100" Command="{Binding SaveCommand}" IsEnabled="{Binding ControllEnabled}" />
+            <Button Content="Clear" Width="100" Command="{Binding ClearCommand}" IsEnabled="{Binding ControllEnabled}"/>
             </StackPanel>
         </Grid>
 </core:UserControlViewBase>

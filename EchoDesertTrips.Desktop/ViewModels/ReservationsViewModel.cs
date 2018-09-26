@@ -17,6 +17,8 @@ using EchoDesertTrips.Desktop.Reports;
 using EchoDesertTrips.Desktop.CustomEventArgs;
 using System.Windows.Controls;
 using System.Configuration;
+using Core.Common.Extensions;
+using System.Collections.Generic;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -38,14 +40,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
             bool bResult = Int32.TryParse(ConfigurationManager.AppSettings["DaysRange"], out _daysRange);
             if (bResult == false)
                 _daysRange = _defaultDayReange;
-            EditReservationCommand = new DelegateCommand<ReservationWrapper>(OnEditReservationCommand);
+            EditReservationCommand = new DelegateCommand<Reservation>(OnEditReservationCommand);
             AddReservationCommand = new DelegateCommand<object>(OnAddReservationCommand);
             SelectedDateChangedCommand = new DelegateCommand<object>(OnSelectedDateChangedCommand);
-            DeleteReservationCommand = new DelegateCommand<ReservationWrapper>(OnDeleteReservationCommand);
+            DeleteReservationCommand = new DelegateCommand<Reservation>(OnDeleteReservationCommand);
             GenerateReportCommand = new DelegateCommand<Group>(OnGenerateReportCommand);
-
-            Reservations = new ObservableCollection<ReservationWrapper>();
-            ContinualReservations = new ObservableCollection<ReservationWrapper>();
+            DecreaseOneDayCommand = new DelegateCommand<object>(OnDecreaseOneDayCommand);
+            IncreaseOneDayCommand = new DelegateCommand<object>(OnIncreaseOneDayCommand);
+            _reservations = new RangeObservableCollection<Reservation>();
+            _continualReservations = new RangeObservableCollection<Reservation>();
             _selectedDate = DateTime.Today;
             _lastSelectedDate = _selectedDate.AddDays(_daysRange + 1);
         }
@@ -54,14 +57,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
         }
 
-        public DelegateCommand<ReservationWrapper> DeleteReservationCommand { get; set; }
+        public DelegateCommand<Reservation> DeleteReservationCommand { get; set; }
 
-        public DelegateCommand<ReservationWrapper> EditReservationCommand { get; private set; }
+        public DelegateCommand<Reservation> EditReservationCommand { get; private set; }
         public DelegateCommand<object> AddReservationCommand { get; private set; }
         public DelegateCommand<object> SelectedDateChangedCommand { get; private set; }
         public DelegateCommand<Group> GenerateReportCommand { get; private set; }
 
-        private void OnDeleteReservationCommand(ReservationWrapper obj)
+        public DelegateCommand<object> DecreaseOneDayCommand { get; }
+        public DelegateCommand<object> IncreaseOneDayCommand { get; }
+
+        private void OnIncreaseOneDayCommand(object obj)
+        {
+            SelectedDate = SelectedDate.AddDays(1);
+        }
+
+        private void OnDecreaseOneDayCommand(object obj)
+        {
+            SelectedDate = SelectedDate.AddDays(-1);
+        }
+
+        private void OnDeleteReservationCommand(Reservation obj)
         {
             var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
             if (result == MessageDialogResult.CANCEL)
@@ -73,9 +89,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     reservationClient.CancelReservation(obj.ReservationId);
                     exceptionPosition = 1;
-                    Reservations.Remove(obj);
+                    _reservations.Remove(obj);
                     exceptionPosition = 2;
-                    ContinualReservations.Remove(obj);
+                    _continualReservations.Remove(obj);
                     exceptionPosition = 3;
                     Client.NotifyServer(new EventDataType()
                     {
@@ -116,7 +132,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             log.Debug("ReservationViewModel:OnAddCommand end");
         }
 
-        private void OnEditReservationCommand(ReservationWrapper reservation)
+        private void OnEditReservationCommand(Reservation reservation)
         {
             log.Debug("ReservationViewModel:OnEditReservationCommand start");
             Reservation dbReservation = null;
@@ -129,48 +145,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 _messageDialogService.ShowInfoDialog("Could not load reservation,\nmaybe it was deleted in the meantime by another user.", "Info");
                 return;
             }
-            var reservationWrapper = EchoDesertTrips.Client.Entities.ReservationMapper.CreateReservationWrapper(dbReservation);
-            ReservationEdited?.Invoke(this, new EditReservationEventArgs(reservationWrapper));
+            //var reservationWrapper = EchoDesertTrips.Client.Entities.ReservationMapper.CreateReservationWrapper(dbReservation);
+            ReservationEdited?.Invoke(this, new EditReservationEventArgs(dbReservation));
             log.Debug("ReservationViewModel:OnEditReservationCommand end");
         }
 
         public override string ViewTitle => "Reservations";
 
-        private ObservableCollection<ReservationWrapper> _reservations;
-
-        public ObservableCollection<ReservationWrapper> Reservations
-        {
-            get
-            {
-                return _reservations;
-            }
-            set
-            {
-                if (value != _reservations)
-                {
-                    _reservations = value;
-                    OnPropertyChanged(() => Reservations, false);
-                }
-            }
-        }
-
-        private ObservableCollection<ReservationWrapper> _continualReservations;
-
-        public ObservableCollection<ReservationWrapper> ContinualReservations
-        {
-            get
-            {
-                return _continualReservations;
-            }
-            set
-            {
-                if (value != _continualReservations)
-                {
-                    _continualReservations = value;
-                    OnPropertyChanged(() => ContinualReservations, false);
-                }
-            }
-        }
+        //private ObservableCollection<Reservation> _reservations;
+        private RangeObservableCollection<Reservation> _reservations;
+        private RangeObservableCollection<Reservation> _continualReservations;
 
         public ICollectionView ReservationsView { get; set; }
         public ICollectionView ContinualReservationsView { get; set; }
@@ -215,23 +199,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         {
                             uiContext.Send((x) =>
                             {
-                                log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Result.Length);
-                                Reservations.Clear();
-                                ContinualReservations.Clear();
-                                foreach (var reservation in reservations.Result)
+                                if (reservations.Result != null)
                                 {
-                                    Reservations.Add(EchoDesertTrips.Client.Entities.ReservationMapper.CreateReservationWrapper(reservation));
+                                    _reservations.Clear();
+                                    _reservations.AddRange(reservations.Result);
+                                    _continualReservations.Clear();
+                                    _continualReservations.AddRange(_reservations);
                                 }
-                                Reservations.ToList().ForEach((reservation) =>
+                                else
                                 {
-                                    ContinualReservations.Add(EchoDesertTrips.Client.Entities.ReservationMapper.CloneReservationWrapper(reservation));
-                                });
+                                    log.Error("LoadReservationsForDayRangeAsync returns null");
+                                }
                             }, null);
                         }
                     });
                 }
-
-
                 var disposableClient = orderClient as IDisposable;
                 disposableClient?.Dispose();
             }
@@ -243,31 +225,28 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (_selectedDate < _lastSelectedDate.AddDays(_daysRange * (-1)) ||
                 _selectedDate > _lastSelectedDate.AddDays(_daysRange))
             {
-                log.Debug("LoadReservationsForDayRange execution start");
                 _lastSelectedDate = _selectedDate;
                 int exceptionPosition = 0;
+
                 WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
                 {
                     try
                     {
-                        var reservations = orderClient.GetReservationsForDayRange(_selectedDate.AddDays(_daysRange * (-1)), _selectedDate.AddDays(_daysRange));
                         exceptionPosition = 1;
-                        if (reservations != null)
+                        var reservations = orderClient.GetReservationsForDayRange(_selectedDate.AddDays(_daysRange * (-1)), _selectedDate.AddDays(_daysRange));
+                        exceptionPosition = 2;
+                        if (reservations!= null)
                         {
-                            log.Debug("LoadReservationsForDayRange: reservations count = " + reservations.Length);
-                            Reservations.Clear();
-                            exceptionPosition = 2;
-                            ContinualReservations.Clear();
+                            _reservations.Clear();
+                            _reservations.AddRange(reservations);
                             exceptionPosition = 3;
-                            foreach (var reservation in reservations)
-                            {
-                                Reservations.Add(EchoDesertTrips.Client.Entities.ReservationMapper.CreateReservationWrapper(reservation));
-                            }
+                            _continualReservations.Clear();
+                            _continualReservations.AddRange(_reservations);
                             exceptionPosition = 4;
-                            Reservations.ToList().ForEach((reservation) =>
-                            {
-                                ContinualReservations.Add(EchoDesertTrips.Client.Entities.ReservationMapper.CloneReservationWrapper(reservation));
-                            });
+                        }
+                        else
+                        {
+                            log.Error("LoadReservationsForDayRange returns null");
                         }
                     }
                     catch (Exception ex)
@@ -287,12 +266,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             LoadReservationsForDayRange();
             if (ReservationsView == null)
             {
-                ReservationsView = CollectionViewSource.GetDefaultView(Reservations);
+                ReservationsView = CollectionViewSource.GetDefaultView(_reservations);
                 ReservationsView.GroupDescriptions.Add(new PropertyGroupDescription(".", new GroupReservationsConverter()));
             }
             if (ContinualReservationsView == null)
             {
-                ContinualReservationsView = CollectionViewSource.GetDefaultView(ContinualReservations);
+                ContinualReservationsView = CollectionViewSource.GetDefaultView(_continualReservations);
                 ContinualReservationsView.GroupDescriptions.Add(new PropertyGroupDescription(".",new  GroupContinualReservationsConverter()));
             }
         }
@@ -304,16 +283,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 ReservationsView.Filter = null;
                 ReservationsView.Filter += x =>
-                    ((ReservationWrapper)x).Tours[0].StartDate == _selectedDate;
+                    ((Reservation)x).Tours[0].StartDate == _selectedDate;
                 exceptionPosition = 1;
-                ContinualReservationsView.Filter = null;
                 ContinualReservationsView.Filter = null;
                 exceptionPosition = 2;
                 ContinualReservationsView.Filter += x =>
-                ((ReservationWrapper)x).Tours.ToList().Exists(tour => _selectedDate > tour.StartDate &&
+                ((Reservation)x).Tours.ToList().Exists(tour => _selectedDate > tour.StartDate &&
                 _selectedDate <= tour.EndDate);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 log.Error("Exception in filter by day. Position: " + exceptionPosition + ". Error" + ex.Message);
             }
@@ -329,26 +307,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     exceptionPosition = 1;
                     //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                     //Is a temporary object and it is not part of the Grid collection trips.
-                    var reservation = Reservations.FirstOrDefault(item => item.ReservationId == e.Reservation.ReservationId);
+                    var reservation = _reservations.FirstOrDefault(item => item.ReservationId == e.Reservation.ReservationId);
                     exceptionPosition = 2;
                     if (reservation != null)
                     {
-                        var index = Reservations.IndexOf(reservation);
-                        Reservations[index] = e.Reservation;
+                        var index = _reservations.IndexOf(reservation);
+                        _reservations[index] = e.Reservation;
                         exceptionPosition = 3;
-                        ContinualReservations[index] = e.Reservation;
+                        _continualReservations[index] = e.Reservation;
                         exceptionPosition = 4;
                     }
                 }
                 else
                 {
                     SelectedDate = e.Reservation.Tours.OrderBy(t => t.StartDate).FirstOrDefault().StartDate;
-                    if (Reservations.FirstOrDefault(r => r.ReservationId == e.Reservation.ReservationId) == null)
+                    if (_reservations.FirstOrDefault(r => r.ReservationId == e.Reservation.ReservationId) == null)
                     {
                         exceptionPosition = 5;
-                        Reservations.Add(e.Reservation);
+                        _reservations.Add(e.Reservation);
                         exceptionPosition = 6;
-                        ContinualReservations.Add(e.Reservation);
+                        _continualReservations.Add(e.Reservation);
                     }
                 }
             }
@@ -402,7 +380,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (!(value is ReadOnlyObservableCollection<Object>)) return "";
             var items = (ReadOnlyObservableCollection<Object>)value;
-            var total = items.Cast<ReservationWrapper>().Sum(otItem => otItem.Customers.Count);
+            var total = items.Cast<Reservation>().Sum(otItem => otItem.Customers.Count);
             return total.ToString();
         }
 
@@ -417,7 +395,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var reservation = (ReservationWrapper)value;
+            var reservation = (Reservation)value;
             return Support.ReservationHelper.CalculateReservationTotalPrice(reservation);
         }
 
@@ -432,9 +410,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var items = ((CollectionViewGroup) (value))?.Items;
-            var customers = new ObservableCollection<CustomerWrapper>();
+            var customers = new ObservableCollection<Customer>();
             if (items == null) return customers;
-            foreach (var reservation in items.Cast<ReservationWrapper>())
+            foreach (var reservation in items.Cast<Reservation>())
             {
                 foreach (var customer in reservation.Customers)
                 {
@@ -455,7 +433,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var reservation = (ReservationWrapper)value;
+            var reservation = (Reservation)value;
             var totalPrice = Support.ReservationHelper.CalculateReservationTotalPrice(reservation);
             if (reservation != null)
             {
@@ -474,7 +452,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            var reservation = ((ReservationWrapper)(value));
+            var reservation = ((Reservation)(value));
             if (reservation != null)
                 return string.Format("{0}, {1}, Jordan Reservation ID: {2}", reservation.Tours[0].TourType.TourTypeName,
                     reservation.Tours[0].Private ? "Private" : "Regular", reservation.GroupID);
@@ -492,7 +470,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            var reservation = ((ReservationWrapper)(value));
+            var reservation = ((Reservation)(value));
             return reservation != null ? string.Format("{0}", reservation.Tours[0].TourType.TourTypeName) : string.Empty;
         }
 

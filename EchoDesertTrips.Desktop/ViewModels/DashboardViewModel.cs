@@ -123,7 +123,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CreatePage(Document document, Reservation[] reservations)
         {
-            // Each MigraDoc document needs at least one section. 
+            /*// Each MigraDoc document needs at least one section. 
             Section section = document.AddSection();
 
             // Create footer
@@ -211,7 +211,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 DefineTable(customersTable);
                 FillContent(customersTable, reservation);
                 section = document.AddSection();
-            });
+            });*/
 
             //row = table.AddRow();
             //row.HeadingFormat = true;
@@ -232,19 +232,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void FillContent(Table table, Reservation reservation)
         {
-            // Fill address in address text frame
-            /*XPathNavigator item = SelectItem("/invoice/to");
-            Paragraph paragraph = addressFrame.AddParagraph();
-            paragraph.AddText(GetValue(item, "name/singleName"));
-            paragraph.AddLineBreak();
-            paragraph.AddText(GetValue(item, "address/line1"));
-            paragraph.AddLineBreak();
-            paragraph.AddText(GetValue(item, "address/postalCode") + " " + GetValue(item, "address/city"));*/
-
-            // Iterate the invoice items
-            //double totalExtendedPrice = 0;
-            //XPathNodeIterator iter = this.navigator.Select("/invoice/items/*");
-            int index = 1;
+            /*int index = 1;
             reservation.Customers.ForEach((customer) =>
             {
                 // Each item fills two rows
@@ -311,7 +299,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             //paragraph.Format.Borders.Color = TableBorder;
             //paragraph.Format.Shading.Color = TableGray;
             //item = SelectItem("/invoice");
-            //paragraph.AddText(GetValue(item, "notes"));
+            //paragraph.AddText(GetValue(item, "notes"));*/
         }
 
         private void DefineTable(Table table)

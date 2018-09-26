@@ -25,7 +25,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            EditTourTypeCommand = new DelegateCommand<TourTypeWrapper>(OnEditTourTypeCommand);
+            EditTourTypeCommand = new DelegateCommand<TourType>(OnEditTourTypeCommand);
             AddTourTypeCommand = new DelegateCommand<object>(OnAddTourTypeCommand);
         }
 
@@ -35,13 +35,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RegisterEvents();
         }
 
-        private void OnEditTourTypeCommand(TourTypeWrapper obj)
+        private void OnEditTourTypeCommand(TourType obj)
         {
             CurrentTourTypeViewModel = new EditTourTypeViewModel(_serviceFactory, _messageDialogService, obj);
             RegisterEvents();
         }
 
-        public DelegateCommand<TourTypeWrapper> EditTourTypeCommand { get; private set; }
+        public DelegateCommand<TourType> EditTourTypeCommand { get; private set; }
         public DelegateCommand<object> AddTourTypeCommand { get; private set; }
 
         private EditTourTypeViewModel _editTourTypeViewModel;
@@ -81,7 +81,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentTourTypeViewModel_TourTypeUpdated(object sender, TourTypeEventArgs e)
         {
-            var mappedTourType = AutoMapperUtil.Map<TourTypeWrapper, TourTypeWrapper>(e.TourType);
+            //var mappedTourType = AutoMapperUtil.Map<TourTypeWrapper, TourTypeWrapper>(e.TourType);
+            var tourType_e = e.TourType;
             if (!e.IsNew)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
@@ -90,7 +91,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (tourType != null)
                 {
                     var index = TourTypes.IndexOf(tourType);
-                    TourTypes[index] = mappedTourType;
+                    TourTypes[index] = tourType_e;
                 }
             }
             else

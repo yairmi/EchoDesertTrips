@@ -9,7 +9,7 @@ namespace EchoDesertTrips.Desktop.Support
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var item = value as ReservationWrapper;
+            var item = value as Reservation;
             if (item != null)
                 return (item.Adults + item.Childs + item.Infants);
             return 0;

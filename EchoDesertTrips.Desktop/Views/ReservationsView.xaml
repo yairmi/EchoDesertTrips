@@ -21,7 +21,6 @@
         <viewModels:CustomersGroupConverter x:Key="customersGroupConverter"/>
         <viewModels:BalanceConverter x:Key="balanceConverter"/>
         <viewModels:GroupReservationsConverter x:Key="groupConverter"/>
-                
         <CollectionViewSource x:Key="CvsReservations" x:Name="ReservationsView">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="." Converter="{StaticResource groupConverter}" />
@@ -35,11 +34,13 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock Text="Reservations for day: " VerticalAlignment="Center" FontSize="14" />
+            <Button Content="&lt;&lt;" Margin="5" Command="{Binding DecreaseOneDayCommand}" />            
             <DatePicker Width="160"
-                            Margin="3"
+                            Margin="5"
                             VerticalAlignment="Top"
                             SelectedDate="{Binding Path=SelectedDate, Mode=TwoWay}"    >
             </DatePicker>
+            <Button Content="&gt;&gt;" Margin="5" Command="{Binding IncreaseOneDayCommand}" />
         </StackPanel>
         <Grid x:Name="childGrid" Grid.Row="1">
         <Grid.ColumnDefinitions>
@@ -64,10 +65,12 @@
                     <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
                         <Button x:Name="btnAddNew" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddReservationCommand}" />
                         <DataGrid x:Name="dgReservations"
-                        ItemsSource="{Binding ReservationsView}"
+                        ItemsSource="{Binding ReservationsView, IsAsync=True}"
                         CanUserAddRows="False"
                         AutoGenerateColumns="False"
                         RowHeight="16"
+                        EnableColumnVirtualization="true"
+                        EnableRowVirtualization="True"
                         Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}"
                         CellStyle="{StaticResource DataGridBorder}">
                         <DataGrid.ColumnHeaderStyle>
@@ -131,7 +134,7 @@
                             <DataGridTextColumn Header="Hotel" Binding="{Binding Tours[0].TourHotels[0].Hotel.HotelName}" Width="120"/>
                             <DataGridTextColumn Header="Agency" Width="100">
                                 <DataGridTextColumn.Binding>
-                                    <MultiBinding StringFormat="{}{0}: {1}">
+                                    <MultiBinding StringFormat="{}{0}: {1} {2}">
                                         <Binding Path="Agency.AgencyName"/>
                                         <Binding Path="Agent.LastName"/>
                                         <Binding Path="Agent.FirstName"/>
@@ -234,7 +237,7 @@
                             </Style>
                         </DataGrid.RowStyle>
                     </DataGrid>
-                    </StackPanel>
+                </StackPanel>
                 </Expander>
                     <Expander Grid.Row="1" Name="Expender2">
                         <Expander.Header>
@@ -242,9 +245,11 @@
                         </Expander.Header>
                         <StackPanel>
                             <DataGrid x:Name="dgContinualReservations" Grid.Row="1" Grid.Column="0"
-                            ItemsSource="{Binding ContinualReservationsView, Mode=TwoWay}"
+                            ItemsSource="{Binding ContinualReservationsView, Mode=TwoWay, IsAsync=True}"
                             CanUserAddRows="False"
                             AutoGenerateColumns="False" 
+                            EnableColumnVirtualization="true"
+                            EnableRowVirtualization="True"                                      
                             Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}"
                             CellStyle="{StaticResource DataGridBorder}">
                                 <DataGrid.ColumnHeaderStyle>

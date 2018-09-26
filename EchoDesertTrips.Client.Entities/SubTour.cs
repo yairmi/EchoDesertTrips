@@ -7,15 +7,7 @@ using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Client.Entities
 {
-    public class SubTour
-    {
-        public int SubTourId { get; set; }
-        public string DestinationName { get; set; }
-        //public bool Private { get; set; }
-        //public DateTime StartDate { get; set; }
-    }
-
-    public class SubTourWrapper : ObjectBase
+    public class SubTour : ObjectBase
     {
         public int SubTourId { get; set; }
 

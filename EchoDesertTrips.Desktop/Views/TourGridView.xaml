@@ -31,7 +31,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-            <StackPanel  Orientation="Horizontal" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0">
+            <StackPanel  Orientation="Horizontal" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=borderEditTourControl}" Grid.Row="0" Grid.Column="0">
                 <TextBlock VerticalAlignment="Center">Adults:</TextBlock>
                 <TextBox Width="30" Margin="2" Text="{Binding Adults, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBlock VerticalAlignment="Center">Childs:</TextBlock>
@@ -43,24 +43,25 @@
                 <TextBlock Text="Total Price: " Margin="10,0,0,0" VerticalAlignment="Center"/>
                 <TextBox Width="80" Margin="2" Text="{Binding TotalPrice, Mode=OneWay}" IsReadOnly="True" Background="Aqua"/>
             </StackPanel>
-            <Border Grid.Row="1" Grid.Column="0"
-             HorizontalAlignment="Left" 
+            <Border x:Name="borderEditTourControl" Grid.Row="1" Grid.Column="0"
+             HorizontalAlignment="Center"
              VerticalAlignment="Top"
              CornerRadius="4" 
-             Margin="0" 
+             Margin="5" 
              BorderBrush="SteelBlue" 
              BorderThickness="1" 
              Background="BlanchedAlmond">
-                    <ContentControl HorizontalAlignment="Left" Margin="5,5,5,5" Content="{Binding CurrentTourViewModel}" />
+                <ContentControl HorizontalAlignment="Left" Margin="5,5,5,5" Content="{Binding CurrentTourViewModel}" />
             </Border>
             <Border Grid.Row="1" Grid.Column="1"
-             HorizontalAlignment="Left" 
+             HorizontalAlignment="Center" 
              VerticalAlignment="Top"
              CornerRadius="4" 
-             Margin="20,0,0,0" 
              BorderBrush="SteelBlue" 
              BorderThickness="1" 
-             Background="BlanchedAlmond">
+             Background="BlanchedAlmond"
+             Margin="5"
+             Height="{Binding ActualHeight, ElementName=borderEditTourControl}" >
                 <DataGrid x:Name="dgTourWrapper"
                   Margin="5,5,5,5" 
                   ItemsSource="{Binding Tours}"
@@ -105,132 +106,9 @@
                         <DataGridTextColumn x:Name="endDateColumn" Width="100" Header="End Date" IsReadOnly="True"
                                     Binding="{Binding EndDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
                     </DataGrid.Columns>
-                    <!--<DataGrid.RowDetailsTemplate>
-                        <DataTemplate>
-                            <Expander IsExpanded="False" 
-                              Background="#FF112255" 
-                              BorderBrush="#FF002255" 
-                              Foreground="#FFEEEEEE" 
-                              BorderThickness="1,1,1,5">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Expanded">
-                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.RowExpanded, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                                <Expander.Header>
-                                    <DockPanel>
-                                        <TextBlock FontWeight="Bold" Text="Optionals And Hotel" HorizontalAlignment="Left"/>
-                                    </DockPanel>
-                                </Expander.Header>
-                                <Expander.Content>
-                                    <Grid Background="White">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <GroupBox Header="Optionals" HorizontalAlignment="Left" Grid.Column="0" Height="210">
-                                            <Grid>
-                                                <DataGrid ItemsSource="{Binding TourOptionals}"
-                                               AutoGenerateColumns="False" IsReadOnly="True"
-                                               CellStyle="{StaticResource DataGridBorder}"
-                                               Margin="20, 20, 20, 20">
-                                                    <DataGrid.Columns>
-                                                        <DataGridTextColumn x:Name="optionalDescription" IsReadOnly="True" Width="Auto" Header="Optional Description" Binding="{Binding Optional.OptionalDescription}"/>
-                                                        <DataGridTemplateColumn Header="Price P.P.">
-                                                            <DataGridTemplateColumn.CellTemplate>
-                                                                <DataTemplate>
-                                                                    <Viewbox Height="14">
-                                                                        <StackPanel Orientation="Horizontal">
-                                                                            <RadioButton GroupName="{Binding Optional.OptionalId}" IsEnabled="False" IsChecked="{Binding PriceInclusive, Converter={StaticResource boolToOppositeConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                                                            <TextBlock Text="{Binding Optional.PricePerPerson}" Width="40"/>
-                                                                        </StackPanel>
-                                                                    </Viewbox>
-                                                                </DataTemplate>
-                                                            </DataGridTemplateColumn.CellTemplate>
-                                                        </DataGridTemplateColumn>
-                                                        <DataGridTemplateColumn Header="Price Inclusive">
-                                                            <DataGridTemplateColumn.CellTemplate>
-                                                                <DataTemplate>
-                                                                    <Viewbox Height="14">
-                                                                        <StackPanel Orientation="Horizontal">
-                                                                            <RadioButton GroupName="{Binding Optional.OptionalId}" IsEnabled="False" IsChecked="{Binding PriceInclusive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                                                            <TextBlock Text="{Binding Optional.PriceInclusive}" Width="40"/>
-                                                                        </StackPanel>
-                                                                    </Viewbox>
-                                                                </DataTemplate>
-                                                            </DataGridTemplateColumn.CellTemplate>
-                                                        </DataGridTemplateColumn>
-                                                    </DataGrid.Columns>
-                                                </DataGrid>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="Hotel" HorizontalAlignment="Left" Grid.Column="1" Height="210">
-                                            <Grid Grid.Column="0">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <ComboBox x:Name="cbTourHotels" Grid.Row="0" 
-                                              SelectedItem="{Binding Path=DataContext.SelectedTourHotel, 
-                                              RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
-                                              UpdateSourceTrigger=PropertyChanged}"
-                                              SelectedValue="{Binding Hotel.HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                              ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
-                                              SelectedValuePath="Hotel.HotelId"
-                                              DisplayMemberPath="Hotel.HotelName"
-                                              IsReadOnly="True"
-                                              ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, 
-                                              AncestorType={x:Type core:UserControlViewBase}}, Mode=TwoWay, Path=DataContext.CurrentTour.TourHotels}"
-                                              HorizontalAlignment="Left"
-                                              Width="120"
-                                              Margin="20, 20, 0 ,20"/>
-                                                <DataGrid x:Name="DataGridRoomTypes" Grid.Row="1" 
-                                              ItemsSource="{Binding Path=DataContext.TourHotelRoomTypes, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, Mode =TwoWay}"
-                                              AutoGenerateColumns="False"
-                                              CellStyle="{StaticResource DataGridBorder}"
-                                              Margin="20, 0, 20, 20">
-                                                    <DataGrid.Columns>
-                                                        <DataGridTextColumn Width="Auto" Header="Room Type" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
-                                                        <DataGridTextColumn Width="Auto" Header="Price P.P." Binding="{Binding HotelRoomType.PricePerPerson}" IsReadOnly="True"/>
-                                                        <DataGridTextColumn Width="Auto" Header="Capacity" Binding="{Binding Capacity}" IsReadOnly="True"/>
-                                                        <DataGridTextColumn Width="Auto" Header="PAX" Binding="{Binding Persons}" IsReadOnly="True"/>
-                                                    </DataGrid.Columns>
-                                                </DataGrid>
-                                            </Grid>
-                                        </GroupBox>
-                                        <GroupBox Header="Sub Tours" HorizontalAlignment="Left" Grid.Column="2" Height="210">
-                                            <Grid>
-                                                <DataGrid x:Name="dgSubTours" FontSize="12"
-                                              ItemsSource="{Binding SubTours}"
-                                              AutoGenerateColumns="False"
-                                              HorizontalAlignment="Left"
-                                              CellStyle="{StaticResource DataGridBorder}"
-                                              Margin="20, 20, 20, 20">
-                                                    <DataGrid.Columns>
-                                                        <DataGridTextColumn x:Name="DestinationNameColumn" Width="Auto" IsReadOnly="True" Header="Destination" Binding="{Binding DestinationName}"/>
-                                                        -->
-                    <!--<DataGridCheckBoxColumn x:Name="PrivateColumn" Width="Auto" Header="Private" IsReadOnly="True" Binding="{Binding Private}"/>-->
-                    <!--
-                                                    </DataGrid.Columns>
-                                                </DataGrid>
-                                            </Grid>
-                                        </GroupBox>
-                                    </Grid>
-                                </Expander.Content>
-                            </Expander>
-                        </DataTemplate>
-                    </DataGrid.RowDetailsTemplate>-->
                 </DataGrid>
             </Border>
         </Grid>
-            <!--<ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentTourViewModel}" />-->
         </Grid>
 </core:UserControlViewBase>
 

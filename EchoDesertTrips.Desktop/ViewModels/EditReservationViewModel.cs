@@ -65,147 +65,170 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.Operator = Operator;
                 Reservation.OperatorId = Operator.OperatorId;
                 ReservationHelper.CreateExternalId(Reservation);
-                int exceptionPosition = 0;
-                if (Reservation.ReservationId == 0) //New Reservation
+                var startDay1 = new DateTime(Reservation.Tours[0].StartDate.Year, Reservation.Tours[0].StartDate.Month, Reservation.Tours[0].StartDate.Day);
+                var endDay1 = new DateTime(Reservation.Tours[0].EndDate.Year, Reservation.Tours[0].EndDate.Month, Reservation.Tours[0].EndDate.Day);
+                DateTime startDay2 = DateTime.Now;
+                DateTime endDay2 = DateTime.Now;
+                if (Reservation.Tours.Count > 1)
                 {
-                    WithClient<IOrderService>(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
-                    {
-                        try
-                        {
-                            exceptionPosition = 1;
-                            var reservation = ReservationMapper.CreateReservation(Reservation);
-                            exceptionPosition = 2;
-                            var reservationData = reservationClient.UpdateReservation(reservation); //Update or Add
-                            exceptionPosition = 3;
-                            if (reservationData.DbReservation != null)
-                            {
-                                exceptionPosition = 4;
-                                var reservationWrapper = ReservationMapper.CreateReservationWrapper(reservationData.DbReservation);
-                                exceptionPosition = 5;
-                                ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationWrapper, true, false));
-                                exceptionPosition = 6;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            log.Error("OnSaveCommand failed adding new reservation. position: " + exceptionPosition + ". Error: " + ex.Message);
-                        }
-
-                    });
+                    startDay2 = new DateTime(Reservation.Tours[1].StartDate.Year, Reservation.Tours[1].StartDate.Month, Reservation.Tours[1].StartDate.Day);
+                    endDay2 = new DateTime(Reservation.Tours[1].EndDate.Year, Reservation.Tours[1].EndDate.Month, Reservation.Tours[1].EndDate.Day);
                 }
-                else if (IsReservationDirty())
+                for (int j = 0; j < 10; j++)
                 {
-                    WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
+                    Reservation.Tours[0].StartDate = startDay1.AddDays(j);
+                    Reservation.Tours[0].EndDate = endDay1.AddDays(j);
+                    if (Reservation.Tours.Count > 1)
                     {
-                        try
+                        Reservation.Tours[1].StartDate = startDay2.AddDays(j);
+                        Reservation.Tours[1].EndDate = endDay2.AddDays(j);
+                    }
+                    for (int i = 0; i < 50; i++)
+                    {
+                        int exceptionPosition = 0;
+
+                        if (Reservation.ReservationId == 0) //New Reservation
                         {
-                            exceptionPosition = 1;
-                            var reservation = ReservationMapper.CreateReservation(Reservation);
+                            WithClient<IOrderService>(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
+                            {
+                                try
+                                {
+                                    exceptionPosition = 1;
+                            //var reservation = ReservationMapper.CreateReservation(Reservation);
                             exceptionPosition = 2;
-                            var reservationData = reservationClient.UpdateReservation(reservation); //Add or Update but in this case its Update
+                                    var reservationData = reservationClient.UpdateReservation(Reservation); //Update or Add
                             exceptionPosition = 3;
-                            ReservationWrapper reservationWrapper;
+                                    if (reservationData.DbReservation != null)
+                                    {
+                                        exceptionPosition = 4;
+                                //var reservationWrapper = ReservationMapper.CreateReservationWrapper(reservationData.DbReservation);
+                                exceptionPosition = 5;
+                                        ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationData.DbReservation, true, false));
+                                        exceptionPosition = 6;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    log.Error("OnSaveCommand failed adding new reservation. position: " + exceptionPosition + ". Error: " + ex.Message);
+                                }
+
+                            });
+                        }
+                        else if (IsReservationDirty())
+                        {
+                            WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
+                            {
+                                try
+                                {
+                                    exceptionPosition = 1;
+                            //var reservation = ReservationMapper.CreateReservation(Reservation);
+                            exceptionPosition = 2;
+                                    var reservationData = reservationClient.UpdateReservation(Reservation); //Add or Update but in this case its Update
+                            exceptionPosition = 3;
+                            //ReservationWrapper reservationWrapper;
 
                             if (reservationData.InEdit)
-                            {
-                                var inEdit = true;
-                                while (inEdit)
-                                {
-                                    string message;
-                                    if (reservationData.DbReservation == null)
                                     {
-                                        log.Info("Reservation was deleted by someone else. ReservationID = " +
-                                                 reservation.ReservationId);
+                                        var inEdit = true;
+                                        while (inEdit)
+                                        {
+                                            string message;
+                                            if (reservationData.DbReservation == null)
+                                            {
+                                                log.Info("Reservation was deleted by someone else. ReservationID = " +
+                                                         Reservation.ReservationId);
 
-                                        message =
-                                            "The Reservation was deleted by someone else.\nClick OK to save your changes anyway,\nClick Cancel to discard your changes.";
-                                    }
-                                    else
-                                    {
-                                        log.Info("Reservation was edited by someone else. ReservationID = " +
-                                                 reservation.ReservationId);
-                                        message =
-                                            $"The Reservation has been changed In the meantime by {reservationData.DbReservation.Operator.OperatorName} {".\nClick OK to save your changes anyway,\nClick Cancel to reload the entity from the database."}";
-                                    }
+                                                message =
+                                                    "The Reservation was deleted by someone else.\nClick OK to save your changes anyway,\nClick Cancel to discard your changes.";
+                                            }
+                                            else
+                                            {
+                                                log.Info("Reservation was edited by someone else. ReservationID = " +
+                                                         Reservation.ReservationId);
+                                                message =
+                                                    $"The Reservation has been changed In the meantime by {reservationData.DbReservation.Operator.OperatorName} {".\nClick OK to save your changes anyway,\nClick Cancel to reload the entity from the database."}";
+                                            }
 
-                                    var result = _messageDialogService.ShowOkCancelDialog(message, "Question");
+                                            var result = _messageDialogService.ShowOkCancelDialog(message, "Question");
                                     //Client win
                                     if (result == MessageDialogResult.OK)
-                                    {
-                                        if (reservationData.DbReservation != null) //Update existing record
-                                        {
-                                            reservation.RowVersion = reservationData.DbReservation.RowVersion;
-                                            exceptionPosition = 4;
-                                            reservationData = reservationClient.UpdateReservation(reservation);
-                                            if (!reservationData.InEdit)
                                             {
-                                                reservationWrapper = ReservationMapper.CreateReservationWrapper(reservation);
+                                                if (reservationData.DbReservation != null) //Update existing record
+                                        {
+                                                    Reservation.RowVersion = reservationData.DbReservation.RowVersion;
+                                                    exceptionPosition = 4;
+                                                    reservationData = reservationClient.UpdateReservation(Reservation);
+                                                    if (!reservationData.InEdit)
+                                                    {
+                                                //reservationWrapper = ReservationMapper.CreateReservationWrapper(reservation);
                                                 exceptionPosition = 5;
-                                                ReservationUpdated?.Invoke(this,
-                                                    new ReservationEventArgs(reservationWrapper, false, false));
-                                                exceptionPosition = 6;
+                                                        ReservationUpdated?.Invoke(this,
+                                                            new ReservationEventArgs(Reservation, false, false));
+                                                        exceptionPosition = 6;
+                                                        inEdit = false;
+                                                    }
+                                                }
+                                                else //Insert Deleted (By other user) record
+                                        {
+                                                    Reservation.ReservationId = 0;
+                                                    Reservation.RowVersion = null;
+
+                                                    var newReservation = reservationClient.UpdateReservation(Reservation);
+                                                    if (newReservation.DbReservation != null)
+                                                    {
+                                                        exceptionPosition = 7;
+                                                //var newReservationWrapper = 
+                                                //    ReservationMapper.CreateReservationWrapper(newReservation
+                                                //        .DbReservation);
+                                                exceptionPosition = 8;
+                                                        ReservationUpdated?.Invoke(this,
+                                                            new ReservationEventArgs(newReservation.DbReservation, true, false));
+                                                    }
+
+                                                    inEdit = false;
+                                                }
+
+                                            }
+                                    //Data base win
+                                    else
+                                            {
+                                                if (reservationData.DbReservation != null)
+                                                {
+                                                    log.Info("DB Win. ReservationID = " + Reservation.ReservationId);
+                                            //reservationWrapper = 
+                                            //    ReservationMapper.CreateReservationWrapper(reservationData
+                                            //        .DbReservation);
+                                            ReservationUpdated?.Invoke(this,
+                                                        new ReservationEventArgs(reservationData.DbReservation, false,
+                                                            true)); //The last parameter is true since the record was retrieved from DB and there is no need to update other clients
+                                        }
+                                                else
+                                                {
+                                                    exceptionPosition = 9;
+                                                    ReservationCancelled?.Invoke(this, new ReservationEventArgs(null, true, false));
+                                                    exceptionPosition = 10;
+                                                }
+
                                                 inEdit = false;
                                             }
                                         }
-                                        else //Insert Deleted (By other user) record
-                                        {
-                                            reservation.ReservationId = 0;
-                                            reservation.RowVersion = null;
-
-                                            var newReservation = reservationClient.UpdateReservation(reservation);
-                                            if (newReservation.DbReservation != null)
-                                            {
-                                                exceptionPosition = 7;
-                                                var newReservationWrapper = 
-                                                    ReservationMapper.CreateReservationWrapper(newReservation
-                                                        .DbReservation);
-                                                exceptionPosition = 8;
-                                                ReservationUpdated?.Invoke(this,
-                                                    new ReservationEventArgs(newReservationWrapper, true, false));
-                                            }
-
-                                            inEdit = false;
-                                        }
-
                                     }
-                                    //Data base win
                                     else
                                     {
-                                        if (reservationData.DbReservation != null)
-                                        {
-                                            log.Info("DB Win. ReservationID = " + reservation.ReservationId);
-                                            reservationWrapper = 
-                                                ReservationMapper.CreateReservationWrapper(reservationData
-                                                    .DbReservation);
-                                            ReservationUpdated?.Invoke(this,
-                                                new ReservationEventArgs(reservationWrapper, false,
-                                                    true)); //The last parameter is true since the record was retrieved from DB and there is no need to update other clients
-                                        }
-                                        else
-                                        {
-                                            exceptionPosition = 9;
-                                            ReservationCancelled?.Invoke(this, new ReservationEventArgs(null, true, false));
-                                            exceptionPosition = 10;
-                                        }
-
-                                        inEdit = false;
+                                        exceptionPosition = 11;
+                                //reservationWrapper = ReservationMapper.CreateReservationWrapper(); //rw.CopyReservation(reservationData.DbReservation);
+                                ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationData.DbReservation, false, false));
+                                        exceptionPosition = 12;
                                     }
                                 }
-                            }
-                            else
-                            {
-                                exceptionPosition = 11;
-                                reservationWrapper = ReservationMapper.CreateReservationWrapper(reservationData.DbReservation); //rw.CopyReservation(reservationData.DbReservation);
-                                ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservationWrapper, false, false));
-                                exceptionPosition = 12;
-                            }
+                                catch (Exception ex)
+                                {
+                                    log.Error("OnSaveCommand failed update reservation. position: " + exceptionPosition + ". Error: " + ex.Message);
+                                }
+                            });
                         }
-                        catch (Exception ex)
-                        {
-                            log.Error("OnSaveCommand failed update reservation. position: " + exceptionPosition + ". Error: " + ex.Message);
-                        }
-                    });
-                }
+                    }//remove
+                }//remove
             }
         }
 
@@ -237,9 +260,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             log.Debug("EditOrderViewModel OnViewLoaded end");
         }
 
-        public void SetReservation(ReservationWrapper reservation)
+        public void SetReservation(Reservation reservation)
         {
-            Reservation = reservation == null ? new ReservationWrapper() : reservation;
+            Reservation = reservation == null ? new Reservation() : reservation;
             CleanAll();
         }
     }

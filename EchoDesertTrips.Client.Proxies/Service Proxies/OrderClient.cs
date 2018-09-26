@@ -33,14 +33,12 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
             return Channel.UpdateReservation(reservation);
         }
 
-        //public Reservation[] GetReservationsForDay(DateTime Day)
-        //{
-        //    return Channel.GetReservationsForDay(Day);
-        //}
-
         public Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo)
         {
-            return Channel.GetReservationsForDayRange(DayFrom, DayTo);
+            log.Debug("OrderClient: GetReservationsForDayRange Start");
+            var reservations = Channel.GetReservationsForDayRange(DayFrom, DayTo);
+            log.Debug("OrderClient: GetReservationsForDayRange End");
+            return reservations;
         }
 
         public void DeleteTour(Tour Tour)
@@ -57,11 +55,6 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
         {
             return Channel.GetReservation(ReservationId);
         }
-
-        //public ReservationData EditReservation(int ReservationId)
-        //{
-        //    return Channel.EditReservation(ReservationId);
-        //}
 
         public Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
         {

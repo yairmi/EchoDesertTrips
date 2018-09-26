@@ -22,20 +22,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         [Import]
         public AgencyViewModel AgencyViewModel { get; set; }
 
-        public DelegateCommand<bool> CheckBoxAgreeChecked { get; }
-
-        private void OnCheckBoxAgreeChecked(bool checkBoxCheked)
-        {
-            AgencyViewModel.IsEnabled = checkBoxCheked;
-        }
-
         protected override void OnViewLoaded()
         {
             log.Debug("GeneralReservationViewModel OnViewLoaded start");
             AgencyViewModel.Agencies = Agencies;
             AgencyViewModel.Reservation = Reservation;
-            //AgencyViewModel.SelectedAgency = null;
-            //AgencyViewModel.SelectedAgent = null;
             log.Debug("GeneralReservationViewModel OnViewLoaded end");
         }
     }

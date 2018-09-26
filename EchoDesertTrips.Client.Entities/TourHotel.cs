@@ -8,7 +8,7 @@ namespace EchoDesertTrips.Client.Entities
     {
         public TourHotel()
         {
-            TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>(); 
+            _tourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>(); 
         }
 
         private int _tourHotelId;

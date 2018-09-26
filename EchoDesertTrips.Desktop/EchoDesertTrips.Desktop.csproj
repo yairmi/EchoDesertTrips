@@ -246,7 +246,6 @@
     <Compile Include="CustomEventArgs\ReservationEventArgs.cs" />
     <Compile Include="Support\ReservationTotalCustomers.cs" />
     <Compile Include="Support\ReservationHelper.cs" />
-    <Compile Include="Support\RoomTypeIdToRoomTypeNameConverter.cs" />
     <Compile Include="Support\TourEventArgs.cs" />
     <Compile Include="CustomEventArgs\TourTypeEventArgs.cs" />
     <Compile Include="Support\ViewModelAuthenticatedToVisibilityConverter.cs" />

@@ -10,10 +10,10 @@ namespace EchoDesertTrips.Desktop.CustomEventArgs
 {
     public class EditReservationEventArgs : EventArgs
     {
-        public EditReservationEventArgs(ReservationWrapper reservation)
+        public EditReservationEventArgs(Reservation reservation)
         {
             _reservation = reservation;
         }
-        public ReservationWrapper _reservation { get; set; }
+        public Reservation _reservation { get; set; }
     }
 }

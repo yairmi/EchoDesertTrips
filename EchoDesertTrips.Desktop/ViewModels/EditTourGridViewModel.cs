@@ -80,7 +80,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 else
                 {
                     TourUpdated?.Invoke(this, new TourEventArgs(Tour, false));
-                    Tour.CleanAll();
+                    //Tour.CleanAll();
                 }
                 CreateTour();
             }
@@ -124,17 +124,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool _editedNewTour;
         
-        public void CreateTour(TourWrapper tour = null)
+        public void CreateTour(Tour tour = null)
         {
             if (tour != null)
             {
-                Tour = TourHelper.CloneTourWrapper(tour);
+                Tour = TourHelper.CloneTour(tour);
                 _editedNewTour = tour.TourId == 0;
             }
             else
             {
                 Tour = null;
-                Tour = new TourWrapper();
+                Tour = new Tour();
                 _editedNewTour = false;
             }
             SelectedHotel = Tour.TourHotels.Count > 0 ? Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId) :
@@ -177,24 +177,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        //private bool _enableCBTourType;
+        private Tour _tour;
 
-        //public bool EnableCBTourType
-        //{
-        //    get
-        //    {
-        //        return _enableCBTourType;
-        //    }
-        //    set
-        //    {
-        //        _enableCBTourType = value;
-        //        OnPropertyChanged(() => EnableCBTourType);
-        //    }
-        //}
-
-        private TourWrapper _tour;
-
-        public TourWrapper Tour
+        public Tour Tour
         {
             get
             {
@@ -262,13 +247,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public void InitTourOptionals()
         {
-            var tourOptionals = new ObservableCollection<TourOptionalWrapper>();
+            var tourOptionals = new ObservableCollection<TourOptional>();
             foreach (var optional in Optionals)
             {
                 var tourOptional = Tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
                 if (tourOptional == null)
                 {
-                    var newTourOptional = new TourOptionalWrapper()
+                    var newTourOptional = new TourOptional()
                     {
                         Selected = false,
                         Optional = optional,
@@ -296,7 +281,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var tour = (TourWrapper)value;
+            var tour = (Tour)value;
             return (tour == null || tour.TourId == 0);
         }
 

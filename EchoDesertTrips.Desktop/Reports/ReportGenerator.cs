@@ -35,7 +35,7 @@ namespace EchoDesertTrips.Desktop.Reports
 
         private void CreatePages(Reservation[] reservations)
         {
-            var _arial10 = new Font("Arial", 10);
+            /*var _arial10 = new Font("Arial", 10);
             _arial10.Bold = true;
             var _arial8 = new Font("Arial", 8);
             _arial8.Bold = true;
@@ -86,7 +86,7 @@ namespace EchoDesertTrips.Desktop.Reports
                 DefineTable(customersTable);
                 FillContent(customersTable, reservation);
                 section = _document.AddSection();
-            });
+            });*/
         }
 
         private void DefineTable(Table table)
@@ -161,7 +161,7 @@ namespace EchoDesertTrips.Desktop.Reports
 
         private void FillContent(Table table, Reservation reservation)
         {
-            // Fill address in address text frame
+            /*// Fill address in address text frame
             int index = 1;
             reservation.Customers.ForEach((customer) =>
             {
@@ -218,7 +218,7 @@ namespace EchoDesertTrips.Desktop.Reports
                 paragraph.AddFormattedText(customer.Phone1, TextFormat.Bold);
 
                 table.SetEdge(0, table.Rows.Count - 2, 6, 2, Edge.Box, BorderStyle.Single, 0.75);
-            });
+            });*/
         }
 
         private const int _fontSizeSmall = 7;

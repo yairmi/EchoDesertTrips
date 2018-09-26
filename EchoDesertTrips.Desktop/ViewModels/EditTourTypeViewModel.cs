@@ -18,15 +18,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        private TourTypeWrapper _tourTypeWrapper;
+        private TourType _tourType_input;
 
         public EditTourTypeViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService,
-            TourTypeWrapper tourType)
+            TourType tourType)
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            _tourTypeWrapper = tourType;
+            _tourType_input = tourType;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             CancelCommand = new DelegateCommand<object>(OnCancelCommand);
         }
@@ -74,9 +74,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         TourType.InfantPrices += infantPrice.Serialize();
                     }
 
-                    var tourType = AutoMapperUtil.Map<TourTypeWrapper, TourType>(TourType);
-                    var savedTourType = AutoMapperUtil.Map<TourType, TourTypeWrapper>(inventoryClient.UpdateTourType(tourType));
+                    //var tourType = AutoMapperUtil.Map<TourTypeWrapper, TourType>(TourType);
+                    //var savedTourType = AutoMapperUtil.Map<TourType, TourTypeWrapper>(inventoryClient.UpdateTourType(tourType));
+                    //TourTypeUpdated?.Invoke(this, new TourTypeEventArgs(savedTourType, bIsNew));
+
+                    //var tourType = AutoMapperUtil.Map<TourTypeWrapper, TourType>(TourType);
+                    var savedTourType = inventoryClient.UpdateTourType(TourType);
                     TourTypeUpdated?.Invoke(this, new TourTypeEventArgs(savedTourType, bIsNew));
+
                 });
             }
         }
@@ -109,9 +114,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             AdultPrices = new ObservableCollection<Prices>();
             ChildPrices = new ObservableCollection<Prices>();
             InfantPrices = new ObservableCollection<Prices>();
-            if (_tourTypeWrapper != null)
+            if (_tourType_input != null)
             {
-                TourType = TourTypeHelper.CreateTourTypeWrapper(_tourTypeWrapper);
+                TourType = TourTypeHelper.CloneTourType(_tourType_input);
                 string[] words = SimpleSplitter.Split(TourType.Destinations);
                 foreach (var word in words)
                 {
@@ -147,7 +152,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             else
             {
-                TourType = new TourTypeWrapper();
+                TourType = new TourType();
             }
 
             Days = TourType.Days;
@@ -155,9 +160,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CleanAll();
         }
 
-        private TourTypeWrapper _tourType;
+        private TourType _tourType;
 
-        public TourTypeWrapper TourType
+        public TourType TourType
         {
             get
             {

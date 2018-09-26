@@ -1,25 +1,66 @@
-﻿using Core.Common.Extensions;
-using Core.Common.Utils;
-using EchoDesertTrips.Client.Entities;
+﻿using EchoDesertTrips.Business.Common;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
+using EchoDesertTrips.Business.Entities;
+using Core.Common.Utils;
 
-namespace EchoDesertTrips.Desktop.Support
+namespace EchoDesertTrips.Business.Business_Engines
 {
-    public class ReservationHelper
+    [Export(typeof(IReservationEngine))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class ReservationEngine : IReservationEngine
     {
-        public static double CalculateReservationTotalPrice(Reservation reservation)
+        private class Prices
         {
-            //var adultPersons = reservation.Customers.ToList()
-            //    .Where((customer) => reservation.CreationTime.Subtract(customer.DateOfBirdth).TotalDays > 4380);
-            //var adults = adultPersons.Count();
-            //var childrens = reservation.Customers.Count - adults;
+            //public string Serialize()
+            //{
+            //    return $"{Persons},{Price};";
+            //}
+
+            public void Deserialize(string pair)
+            {
+                string[] prices = SimpleSplitter.Split(pair);
+                _persons = Int32.Parse(prices[0]);
+                _price = Double.Parse(prices[1]);
+            }
+
+            //private int _persons;
+
+            public int Persons;
+            /*{
+                get
+                {
+                    return _persons;
+                }
+                set
+                {
+                    _persons = value;
+                    OnPropertyChanged(() => Persons, true);
+                }
+            }*/
+
+            //private double _price;
+
+            public double Price;
+            /*{
+                get
+                {
+                    return _price;
+                }
+                set
+                {
+                    _price = value;
+                    OnPropertyChanged(() => Price, true);
+                }
+            }*/
+        }
+        public double CalculateReservationTotalPrice(Reservation reservation)
+        {
             double totalPrice = 0;
-            var adultPrices = new Dictionary<int,double>();
-            var childPrices = new Dictionary<int,double>();
+            var adultPrices = new Dictionary<int, double>();
+            var childPrices = new Dictionary<int, double>();
             var infantPrices = new Dictionary<int, double>();
             foreach (var tour in reservation.Tours)
             {
@@ -94,14 +135,10 @@ namespace EchoDesertTrips.Desktop.Support
 
                 foreach (var tourOptional in tour.TourOptionals)
                 {
-                    totalPrice += tourOptional.PriceInclusive == true? tourOptional.Optional.PriceInclusive:
+                    totalPrice += tourOptional.PriceInclusive == true ? tourOptional.Optional.PriceInclusive :
                         tourOptional.Optional.PricePerPerson * reservation.Customers.Count;
                 }
 
-                //foreach (var tourHotelRoomType in tour.TourHotelRoomTypes)
-                //{
-                //    totalPrice += tourHotelRoomType.Capacity * tourHotelRoomType.Persons * tourHotelRoomType.HotelRoomType.PricePerPerson;
-                //}
                 tour.TourHotels.ToList().ForEach((tourHotel) =>
                 {
                     tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
@@ -111,64 +148,6 @@ namespace EchoDesertTrips.Desktop.Support
                 });
             }
             return totalPrice;
-        }
-
-        public static int GetCustomerLeft(Reservation reservation)
-        {
-            var customersInHotels = 0;
-            reservation.Tours?.ToList().ForEach((tour) =>
-            {
-                tour.TourHotels?.ToList().ForEach((tourHotel) =>
-                {
-                    tourHotel.TourHotelRoomTypes?.ToList().ForEach((hotelRoomType) =>
-                    {
-                        customersInHotels += (hotelRoomType.Persons);
-                    });
-                });
-            });
-
-            return Math.Max(reservation.Adults + reservation.Childs + reservation.Infants, customersInHotels) - reservation.Customers.Count;
-        }
-
-        public static void CreateExternalId(Reservation reservation)
-        {
-            if (reservation.Tours[0].TourType.IncramentExternalId)
-            {
-                StringBuilder reservationForHashCode = new StringBuilder();
-                reservationForHashCode.Append(reservation.Tours[0].StartDate.Date.ToString("d"));
-                reservation.Tours.ToList().ForEach((tour) =>
-                {
-                    reservationForHashCode.Append(tour.TourType.TourTypeName);
-                    reservationForHashCode.Append(tour.TourType.Private);
-                });
-                if (reservation.Group == null)
-                    reservation.Group = new Group();
-                reservation.Group.ExternalId = HashCodeUtil.GetHashCodeBernstein(reservationForHashCode.ToString());
-            }
-
-        }
-
-        public static void RemoveUnselectedHotels(Reservation reservation)
-        {
-            reservation.Tours.ToList().ForEach((tour) =>
-            {
-                tour.TourHotels.ToList().ForEach((tourHotel) =>
-                {
-                    tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
-                });
-
-                tour.TourHotels.RemoveItems(t => !t.TourHotelRoomTypes.Any());
-            });
-
-            
-        }
-
-        public static void RemoveUnselectedOptionals(Reservation reservation)
-        {
-            reservation.Tours.ToList().ForEach((tour) =>
-            {
-                tour.TourOptionals.RemoveItems(t => t.Selected == false);
-            });
         }
     }
 }

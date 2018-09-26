@@ -9,37 +9,12 @@ using AutoMapper;
 
 namespace EchoDesertTrips.Client.Entities
 {
-    public class Reservation
+    public class Reservation : ObjectBase
     {
-        public int ReservationId { get; set; }
-        public Operator Operator { get; set; }
-        public int? OperatorId { get; set; }
-        public List<Customer> Customers { get; set; }
-        public List<Tour> Tours { get; set; }
-        public Agency Agency { get; set; }
-        public int? AgencyId { get; set; }
-        public Agent Agent { get; set; }
-        public int? AgentId { get; set; }
-        public double AdvancePayment { get; set; }
-        public DateTime PickUpTime { get; set; }
-        public string Comments { get; set; }
-        public string Messages { get; set; }
-        public Group Group { get; set; }
-        public int GroupID { get; set; }
-        public DateTime CreationTime { get; set; } //TODO : Consider DTO
-        public DateTime UpdateTime { get; set; }
-        public int Adults { get; set; }
-        public int Childs { get; set; }
-        public int Infants { get; set; }
-        public byte[] RowVersion { get; set; }
-    }
-
-    public class ReservationWrapper : ObjectBase
-    {
-        public ReservationWrapper()
+        public Reservation()
         {
-            _customers = new ObservableCollection<CustomerWrapper>(); 
-            _tours = new ObservableCollection<TourWrapper>();
+            _customers = new ObservableCollection<Customer>(); 
+            _tours = new ObservableCollection<Tour>();
             _group = new Group();
             Agency = null;
             Agent = null;
@@ -103,9 +78,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private ObservableCollection<CustomerWrapper> _customers;
+        private ObservableCollection<Customer> _customers;
 
-        public ObservableCollection<CustomerWrapper> Customers
+        public ObservableCollection<Customer> Customers
         {
             get
             {
@@ -119,9 +94,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private ObservableCollection<TourWrapper> _tours;
+        private ObservableCollection<Tour> _tours;
 
-        public ObservableCollection<TourWrapper> Tours
+        public ObservableCollection<Tour> Tours
         {
             get
             {
@@ -135,7 +110,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private int _tourId;
+        /*private int _tourId;
 
         public int TourId
         {
@@ -152,7 +127,7 @@ namespace EchoDesertTrips.Client.Entities
                     OnPropertyChanged(() => TourId, true);
                 }
             }
-        }
+        }*/
 
         private Agency _agency;
 
@@ -336,6 +311,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
+        public DateTime UpdateTime { get; set; }
+
         //private int _numberOfCustomers;
 
         //public int NumberOfCustomers
@@ -396,11 +373,11 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public DateTime UpdateTime { get; set; }
+
 
         public byte[] RowVersion { get; set; }
 
-        class ReservationValidator : AbstractValidator<ReservationWrapper>
+        class ReservationValidator : AbstractValidator<Reservation>
         {
             public ReservationValidator()
             {
@@ -418,7 +395,7 @@ namespace EchoDesertTrips.Client.Entities
         }
     }
 
-    public class ReservationMapper
+    /*public class ReservationMapper
     {
         public static ReservationWrapper CreateReservationWrapper(Reservation reservation)
         {
@@ -471,5 +448,5 @@ namespace EchoDesertTrips.Client.Entities
             var rw = iMapper.Map<ReservationWrapper, ReservationWrapper>(reservationWrapper);
             return rw;
         }
-    }
+    }*/
 }

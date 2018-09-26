@@ -226,7 +226,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 foreach (var tourType in inventoryData.Result.TourTypes)
                                 {
                                     if (tourType.Visible)
-                                        TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
+                                        //TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
+                                        TourTypes.Add(tourType);
                                 }
                                 foreach (var hotel in inventoryData.Result.Hotels)
                                 {

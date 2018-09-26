@@ -29,9 +29,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
-            RowExpanded = new DelegateCommand<TourWrapper>(OnRowExpanded);
-            DeleteTourCommand = new DelegateCommand<TourWrapper>(OnDeleteTourCommand);
-            EditTourCommand = new DelegateCommand<TourWrapper>(OnEditTourCommand);
+            RowExpanded = new DelegateCommand<Tour>(OnRowExpanded);
+            DeleteTourCommand = new DelegateCommand<Tour>(OnDeleteTourCommand);
+            EditTourCommand = new DelegateCommand<Tour>(OnEditTourCommand);
             AddTourCommand = new DelegateCommand<object>(OnAddTourCommand, CanAddTourCommand);
             _addNewEnabled = true;
             //_currentReservation = currentReservation;
@@ -44,9 +44,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public override string ViewTitle => "Tours";
 
-        public DelegateCommand<TourWrapper> DeleteTourCommand { get; set; }
+        public DelegateCommand<Tour> DeleteTourCommand { get; set; }
 
-        private void OnDeleteTourCommand(TourWrapper tour)
+        private void OnDeleteTourCommand(Tour tour)
         {
             var result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("ShortAreYouSureMessage"), "Question");
             if (result == MessageDialogResult.CANCEL)
@@ -55,7 +55,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         //public ICollectionView ItemsView { get; set; }
-        public DelegateCommand<TourWrapper> RowExpanded { get; set; }
+        public DelegateCommand<Tour> RowExpanded { get; set; }
         private bool CanAddTourCommand(object obj)
         {
             return Reservation.ReservationId == 0 && _addNewEnabled == true;
@@ -79,7 +79,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         [Import]
         private EditTourGridViewModel _editTourGridViewModel { get; set; }
 
-        private void OnEditTourCommand(TourWrapper tour)
+        private void OnEditTourCommand(Tour tour)
         {
             tour.bInEdit = true;
             _editTourViewModel.CreateTour(tour);
@@ -90,14 +90,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RegisterEvents();
         }
 
-        public DelegateCommand<TourWrapper> EditTourCommand { get; private set; }
+        public DelegateCommand<Tour> EditTourCommand { get; private set; }
         public DelegateCommand<object> AddTourCommand { get; private set; }
         [Import]
         private EditTourGridViewModel _editTourViewModel;
 
         public EditTourGridViewModel CurrentTourViewModel { get; set; }
 
-        private void OnRowExpanded(TourWrapper tour)
+        private void OnRowExpanded(Tour tour)
         {
             CurrentTour = tour;
             if (_currentTour.TourHotels != null && _currentTour.TourHotels.Count > 0)
@@ -107,9 +107,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         }
 
-        private ObservableCollection<TourWrapper> _tours;
+        private ObservableCollection<Tour> _tours;
 
-        public ObservableCollection<TourWrapper> Tours
+        public ObservableCollection<Tour> Tours
         {
             get { return _tours; }
             set
@@ -119,9 +119,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private TourWrapper _currentTour;
+        private Tour _currentTour;
 
-        public TourWrapper CurrentTour
+        public Tour CurrentTour
         {
             get
             {
@@ -275,26 +275,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentTourViewModel_TourUpdated(object sender, TourEventArgs e)
         {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<TourWrapper, TourWrapper>();
-            });
+            //var config = new MapperConfiguration(cfg => {
+            //    cfg.CreateMap<TourWrapper, TourWrapper>();
+            //});
 
-            var tourWrapper = TourHelper.CloneTourWrapper(e.Tour);
+            //var tourWrapper = TourHelper.CloneTourWrapper(e.Tour);
+            var tour_e = e.Tour;
             if (!e.IsNew)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
-                tourWrapper.bInEdit = false;
+                tour_e.bInEdit = false;
                 var tour = Tours.FirstOrDefault(item => item.bInEdit == true);
                 if (tour != null)
                 {
                     var index = Tours.IndexOf(tour);
-                    Tours[index] = tourWrapper;
+                    Tours[index] = tour_e;
                 }
             }
             else
             {
-                Tours.Add(tourWrapper);
+                Tours.Add(tour_e);
             }
             Tours.OrderBy(tour => tour.StartDate);
             //_editTourGridViewModel.EnableCBTourType = Reservation.ReservationId == 0;
@@ -323,7 +324,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var tour = (TourWrapper)value;
+            var tour = (Tour)value;
             return (tour == null || tour.TourId == 0);
         }
 

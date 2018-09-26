@@ -9,15 +9,7 @@ using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Client.Entities
 {
-    public class TourOptional
-    {
-        public int TourId { get; set; }
-        public int OptionalId { get; set; }
-        public Optional Optional { get; set; }
-        public bool PriceInclusive { get; set; }
-    }
-
-    public class TourOptionalWrapper : ObjectBase
+    public class TourOptional : ObjectBase
     {
         public int TourId { get; set; }
         public int OptionalId { get; set; }

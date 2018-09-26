@@ -10,26 +10,9 @@ using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Client.Entities
 {
-    public class TourType
+    public class TourType : ObjectBase
     {
-        public int TourTypeId { get; set; }
-        public string TourTypeName { get; set; }
-        public string AdultPrices { get; set; }
-        public string ChildPrices { get; set; }
-        public string Destinations { get; set; }
-        public bool Private { get; set; }
-        public string InfantPrices { get; set; }
-        //public string TourDescription { get; set; }
-        public byte Days { get; set; }
-        public List<TourTypeDescription> TourTypeDescriptions { get; set; }
-        public bool IncramentExternalId { get; set; }
-        public bool Visible { get; set; }
-    }
-
-
-    public class TourTypeWrapper : ObjectBase
-    {
-        public TourTypeWrapper()
+        public TourType()
         {
             _tourTypeName = string.Empty;
             _destinations = string.Empty;
@@ -198,7 +181,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        class TourTypeValidator : AbstractValidator<TourTypeWrapper>
+        class TourTypeValidator : AbstractValidator<TourType>
         {
             public TourTypeValidator()
             {
@@ -216,7 +199,20 @@ namespace EchoDesertTrips.Client.Entities
 
     public class TourTypeHelper
     {
-        public static TourTypeWrapper CreateTourTypeWrapper(TourTypeWrapper tourTypeWrapper)
+        public static TourType CloneTourType(TourType tourType)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<TourType, TourType>()
+                .ForMember(t => t.AdultPrices, o => o.NullSubstitute(string.Empty))
+                .ForMember(t => t.ChildPrices, o => o.NullSubstitute(string.Empty))
+                .ForMember(t => t.InfantPrices, o => o.NullSubstitute(string.Empty));
+            });
+            IMapper iMapper = config.CreateMapper();
+            var _tourType = iMapper.Map<TourType, TourType>(tourType);
+            return _tourType;
+        }
+
+        /*public static TourTypeWrapper CreateTourTypeWrapper(TourTypeWrapper tourTypeWrapper)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<TourTypeWrapper, TourTypeWrapper>()
@@ -238,6 +234,6 @@ namespace EchoDesertTrips.Client.Entities
             IMapper iMapper = config.CreateMapper();
             var _tourTypeWrapper = iMapper.Map<TourType, TourTypeWrapper>(tourType);
             return _tourTypeWrapper;
-        }
+        }*/
     }
 }
