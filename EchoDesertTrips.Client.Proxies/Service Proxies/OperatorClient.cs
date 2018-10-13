@@ -33,5 +33,10 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
         {
             return Channel.GetAllOperators();
         }
+
+        public Operator GetOperatorByID(int OperatorID)
+        {
+            return Channel.GetOperatorByID(OperatorID);
+        }
     }
 }

@@ -4,6 +4,7 @@ using Core.Common.Core;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EchoDesertTrips.Business.Entities
 {
@@ -53,6 +54,18 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         [Timestamp]
         public byte[] RowVersion { get; set; }
+        [DataMember]
+        public bool Lock { get; set; }
+        [DataMember]
+        public DateTime LockTime { get; set; }
+        [DataMember]
+        public int LockedById { get; set; }
+        [DataMember]
+        [NotMapped]
+        public int ActualNumberOfCustomers { get; set; }
+        [DataMember]
+        [NotMapped]
+        public bool RowVersionConflict { get; set; }
         public int EntityId
         {
             get

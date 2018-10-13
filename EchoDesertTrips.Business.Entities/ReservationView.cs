@@ -17,11 +17,14 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int Paxs { get; set; }
         [DataMember]
-        public string PaxFullName { get; set; }
+        public Customer Customer { get; set; }
+        [DataMember]
+        public List<Tour> Tours { get; set; }
+        //public DateTime StartDate { get; set; }
         [DataMember]
         public DateTime PickUpTime { get; set; }
-        [DataMember]
-        public string PickUpAddress { get; set; }
+        //[DataMember]
+        //public string PickUpAddress { get; set; }
         [DataMember]
         public string Phone { get; set; }
         [DataMember]
@@ -32,12 +35,14 @@ namespace EchoDesertTrips.Business.Entities
         public double TotalPrice { get; set; }
         [DataMember]
         public double AdvancePayment { get; set; }
-        [DataMember]
-        public double Balance { get; set; }
+        //[DataMember]
+        //public double Balance { get; set; }
         [DataMember]
         public string Comments { get; set; }
         [DataMember]
         public string Messages { get; set; }
+        [DataMember]
+        public int GroupID { get; set; }
         public int EntityId
         {
             get

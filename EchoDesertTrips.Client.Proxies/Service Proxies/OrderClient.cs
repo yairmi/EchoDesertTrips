@@ -13,9 +13,9 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
     [PartCreationPolicy(CreationPolicy.NonShared)]
     class OrderClient : UserClientBase<IOrderService>, IOrderService
     {
-        public void CancelReservation(int reservationId)
+        public Reservation DeleteReservation(int reservationId)
         {
-            Channel.CancelReservation(reservationId);
+            return Channel.DeleteReservation(reservationId);
         }
 
         public Reservation[] GetAllReservations()
@@ -28,7 +28,7 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
             return Channel.GetDeadReservations();
         }
 
-        public ReservationData UpdateReservation( Reservation reservation)
+        public Reservation UpdateReservation( Reservation reservation)
         {
             return Channel.UpdateReservation(reservation);
         }
@@ -51,10 +51,10 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
             Channel.DeleteCustomer(customer);
         }
 
-        public Reservation GetReservation(int ReservationId)
-        {
-            return Channel.GetReservation(ReservationId);
-        }
+        //public Reservation GetReservation(int ReservationId)
+        //{
+        //    return Channel.GetReservation(ReservationId);
+        //}
 
         public Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
         {
@@ -64,6 +64,26 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
         public Reservation[] GetReservationsByGroupId(int GroupId)
         {
             return Channel.GetReservationsByGroupId(GroupId);
+        }
+
+        public Reservation[] GetCustomersByReservationGroupId(int GroupId)
+        {
+            return Channel.GetCustomersByReservationGroupId(GroupId);
+        }
+
+        public Task<Reservation[]> GetCustomersByReservationGroupIdAsynchronous(int GroupID)
+        {
+            return Channel.GetCustomersByReservationGroupIdAsynchronous(GroupID);
+        }
+
+        public Reservation EditReservation(int ReservationID, Operator o)
+        {
+            return Channel.EditReservation(ReservationID, o);
+        }
+
+        public void UnLock(int ReservationID)
+        {
+            Channel.UnLock(ReservationID);
         }
     }
 }

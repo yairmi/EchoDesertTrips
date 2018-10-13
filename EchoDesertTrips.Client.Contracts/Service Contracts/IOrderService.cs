@@ -18,7 +18,7 @@ namespace EchoDesertTrips.Client.Contracts
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         [TransactionFlow(TransactionFlowOption.Allowed)]
-        void CancelReservation(int reservationId);
+        Reservation DeleteReservation(int reservationId);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
@@ -26,7 +26,7 @@ namespace EchoDesertTrips.Client.Contracts
 
         [OperationContract]
         [FaultContract(typeof(UpdateConcurrencyException))]
-        ReservationData UpdateReservation(Reservation reservation);
+        Reservation UpdateReservation(Reservation reservation);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
@@ -42,10 +42,10 @@ namespace EchoDesertTrips.Client.Contracts
         [TransactionFlow(TransactionFlowOption.Allowed)]
         void DeleteCustomer(Customer customer);
 
-        [OperationContract]
-        [FaultContract(typeof(NotFoundException))]
-        [TransactionFlow(TransactionFlowOption.Allowed)]
-        Reservation GetReservation(int ReservationId);
+        //[OperationContract]
+        //[FaultContract(typeof(NotFoundException))]
+        //[TransactionFlow(TransactionFlowOption.Allowed)]
+        //Reservation GetReservation(int ReservationId);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
@@ -54,5 +54,22 @@ namespace EchoDesertTrips.Client.Contracts
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         Reservation[] GetReservationsByGroupId(int GroupId);
+
+        [OperationContract]
+        [FaultContract(typeof(NotFoundException))]
+        Reservation[] GetCustomersByReservationGroupId(int GroupId);
+
+        [OperationContract]
+        [FaultContract(typeof(NotFoundException))]
+        Task<Reservation[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId);
+
+        [OperationContract]
+        [FaultContract(typeof(NotFoundException))]
+        [TransactionFlow(TransactionFlowOption.Allowed)]
+        Reservation EditReservation(int ReservationID, Operator o);
+
+        [OperationContract]
+        [FaultContract(typeof(NotFoundException))]
+        void UnLock(int ReservationID);
     }
 }

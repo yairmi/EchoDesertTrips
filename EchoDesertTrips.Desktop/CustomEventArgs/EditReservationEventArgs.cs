@@ -10,10 +10,12 @@ namespace EchoDesertTrips.Desktop.CustomEventArgs
 {
     public class EditReservationEventArgs : EventArgs
     {
-        public EditReservationEventArgs(Reservation reservation)
+        public EditReservationEventArgs(Reservation reservation, bool viewMode)
         {
-            _reservation = reservation;
+            Reservation = reservation;
+            ViewMode = viewMode;
         }
-        public Reservation _reservation { get; set; }
+        public Reservation Reservation { get; set; }
+        public bool ViewMode { get; set; }
     }
 }

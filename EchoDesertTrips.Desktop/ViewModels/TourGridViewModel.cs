@@ -245,16 +245,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _editTourViewModel.TourTypes = TourTypes;
             _editTourViewModel.Hotels = Hotels;
             _editTourViewModel.Optionals = Optionals;
-            //_editTourViewModel.EnableCBTourType = Reservation.ReservationId == 0; //TODO: try to remove this property
+            _editTourViewModel.ViewMode = ViewMode;
             if (TourHotelRoomTypes != null)
                 TourHotelRoomTypes = null;
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
-            //************* check it
             Tours = Reservation.Tours;
-            //Tours.ToList().ForEach(InitTourOptionals);
-            //*************
-            //ItemsView = CollectionViewSource.GetDefaultView(Tours);
-            //ItemsView.GroupDescriptions.Add(new PropertyGroupDescription("TourId"));
             CurrentTourViewModel = _editTourViewModel;
             RegisterEvents();
         }

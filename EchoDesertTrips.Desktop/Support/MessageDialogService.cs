@@ -21,5 +21,15 @@ namespace EchoDesertTrips.Desktop.Support
                 MessageDialogResult.OK :
                 MessageDialogResult.CANCEL;
         }
+
+        public MessageDialogResult ShowYesNoCancelDialog(string text, string title)
+        {
+            var result = MessageBox.Show(text, title, MessageBoxButton.YesNoCancel);
+            if (result == MessageBoxResult.Yes)
+                return MessageDialogResult.YES;
+            if (result == MessageBoxResult.No)
+                return MessageDialogResult.NO;
+            return MessageDialogResult.CANCEL;
+        }
     }
 }

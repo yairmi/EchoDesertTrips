@@ -27,5 +27,9 @@ namespace EchoDesertTrips.Business.Contracts
         [OperationContract]
         [TransactionFlow(TransactionFlowOption.Allowed)]
         Operator[] GetAllOperators();
+
+        [OperationContract]
+        [TransactionFlow(TransactionFlowOption.Allowed)]
+        Operator GetOperatorByID(int OperatorID);
     }
 }

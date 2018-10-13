@@ -14,6 +14,9 @@ using EchoDesertTrips.Business.Contracts.Data_Contracts;
 using System.Data.Entity.Infrastructure;
 using Core.Common.Utils;
 using System.Threading.Tasks;
+using EchoDesertTrips.Business.Common;
+using System.Transactions;
+using System.Configuration;
 
 namespace EchoDesertTrips.Business.Managers.Managers
 {
@@ -36,6 +39,17 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
         [Import]
         public IBusinessEngineFactory _BusinessEngineFactory;
+        private const int POOL_SIZE = 64;
+        private static readonly Dictionary<int, object> _lockers = new Dictionary<int, object>();
+        private static object GetLocker(int id)
+        {
+            lock (_lockers)
+            {
+                if (!_lockers.ContainsKey(id))
+                    _lockers.Add(id, new object());
+                return _lockers[id];
+            }
+        }
 
         public Reservation[] GetDeadReservations()
         {
@@ -49,66 +63,106 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 return (reservations != null ? reservations.ToArray() : null);
             });
         }
+
         [OperationBehavior(TransactionScopeRequired = true)]
-        public void CancelReservation(int reservationId)
+        public Reservation DeleteReservation(int reservationId)
         {
-            ExecuteFaultHandledOperation(() =>
+            return ExecuteFaultHandledOperation(() =>
             {
                 IReservationRepository reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-
-                Reservation reservation = reservationRepository.Get(reservationId);
-
-                if (reservation == null)
+                lock (GetLocker(reservationId % POOL_SIZE))
                 {
-                    NotFoundException ex = new NotFoundException(string.Format("No order found for ID '{0}'", reservationId));
-
-                    throw new FaultException<NotFoundException>(ex, ex.Message);
+                    var reservation = reservationRepository.Get(reservationId);
+                    if (reservation != null && reservation.Lock == false)
+                    {
+                        reservationRepository.RemoveReservation(reservationId);
+                    }
+                    return reservationRepository.Get(reservationId);
                 }
-
-                reservationRepository.RemoveReservation(reservation.ReservationId);
             });
         }
+
         public Reservation[] GetAllReservations()
         {
-            return ExecuteFaultHandledOperation(() =>
-            {
-                var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-                var reservationData = new List<Reservation>();
-                IEnumerable<Reservation> reservations = reservationRepository.Get();
-                foreach (var reservation in reservations)
-                {
-                    reservationData.Add(reservation);
-                }
-                return reservationData.ToArray();
-            });
+            return null;
         }
 
         [OperationBehavior(TransactionScopeRequired = true)]
-        public ReservationData UpdateReservation(Reservation reservation)
+        public Reservation UpdateReservation(Reservation reservation)
         {
             return ExecuteFaultHandledOperation(() =>
             {
-                ReservationData reservationData = new ReservationData()
-                {
-                    DbReservation = null,
-                    ClientReservation = null
-                };
+                var res = new Reservation();
 
                 IReservationRepository reservationRepository =
                     _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
 
-                if (reservation.ReservationId == 0)
+                if (reservation.ReservationId == 0) //Add new 
                 {
-                    reservationData.DbReservation = reservationRepository.AddReservation(reservation);
+                    res = reservationRepository.AddReservation(reservation);
                 }
                 else
                 {
                     var mappedReservation = AutoMapperUtil.Map<Reservation, Reservation>(reservation);
-                    reservationData = reservationRepository.UpdateReservation(mappedReservation);
+                    res = reservationRepository.UpdateReservation(mappedReservation);
                     //reservationData.DbReservation = reservationRepository.Get(reservation.ReservationId);
                 }
 
-                return reservationData;
+                return res;
+            });
+        }
+
+        [OperationBehavior(TransactionScopeRequired = true)]
+        public Reservation EditReservation(int ReservationID, Operator o)
+        {
+            return ExecuteFaultHandledOperation(() =>
+            {
+                lock (GetLocker(ReservationID % POOL_SIZE))
+                {
+                    bool bCanEdit = false;
+
+                    IReservationRepository reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
+                    var reservation = reservationRepository.Get(ReservationID);
+
+                    int nLockTimeout = 30;
+                    bool bResult = Int32.TryParse(ConfigurationManager.AppSettings["LockTimeout"], out nLockTimeout);
+
+                    if (reservation.Lock && ((reservation.LockTime.AddMinutes(nLockTimeout) < DateTime.Now) || (reservation.LockedById == o.OperatorId)))
+                    {
+                        //Record is locked but time elapsed. 
+                        //The lock is not released since the new request grab it.
+                        bCanEdit = true;
+                        if (reservation.LockedById != o.OperatorId)
+                        {
+                            reservation.LockTime = DateTime.Now;
+                            reservation.LockedById = o.OperatorId;
+                            reservation = reservationRepository.Update(reservation);
+                        }
+                    }
+                    else
+                    if (reservation.Lock == false)
+                    {
+                        bCanEdit = true;
+                        reservation.Lock = true;
+                        reservation.LockTime = DateTime.Now;
+                        reservation.LockedById = o.OperatorId;
+                        reservation = reservationRepository.Update(reservation);
+                    }
+                    reservation.Lock = !(bCanEdit == true);
+                    return reservation;
+                }
+            });
+        }
+
+        public void UnLock(int ReservationID)
+        {
+            ExecuteFaultHandledOperation(() =>
+            {
+                var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
+                var reservation = reservationRepository.Get(ReservationID);
+                reservation.Lock = false;
+                reservation.LockedById = -1;
+                reservationRepository.Update(reservation);
             });
         }
 
@@ -120,41 +174,10 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
                 var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
                 log.Debug("ReservationManager: GetReservationsForDayRange End");
-                //foreach (var reservation in reservations)
-                //{
-                //    if (reservation.Customers.Count() > 1)
-                //    {
-                //        var customer = reservation.Customers[0];
-                //        reservation.Customers.Clear();
-                //        reservation.Customers.Add(customer);
-                //    }
-                //}
-                //log.Debug("ReservationManager: clear customers end");
-
-                /////Conversion check start
-                /*log.Debug("ReservationManager: Conversion check start");
-                var reservationViews = new List<ReservationView>();
-                foreach (var reservation in reservations)
-                {
-                        var reservationView = new ReservationView()
-                        {
-                            ReservationId = reservation.ReservationId,
-                            NumberOfPaxs = reservation.Customers.Count(),
-                            PaxFullName = reservation.Customers.Count() > 0 ? string.Format("{0} {1}", reservation.Customers[0].LastName, reservation.Customers[0].FirstName) : string.Empty,
-                            PickUpTime = reservation.PickUpTime,
-                            PickUpAddress = reservation.Tours[0].PickupAddress,
-                            Phone = reservation.Customers.Count() > 0 ? reservation.Customers[0].Phone1 : string.Empty,
-                            HotelName = reservation.Tours[0].TourHotels.Count > 0 ? reservation.Tours[0].TourHotels[0].Hotel.HotelName : string.Empty,
-                            AgencyAndAgentName = reservation.Agency != null ? string.Format("{0} {1}", reservation.Agency.AgencyName, reservation.Agent.FullName) : string.Empty,
-                            //public double TotalPrice { get; set; }
-                            AdvancePayment = reservation.AdvancePayment,
-                            //public double Balance { get; set; }
-                            Comments = reservation.Comments,
-                            Messages = reservation.Messages
-                        };
-                        reservationViews.Add(reservationView);
-                    }
-                    log.Debug("ReservationManager: Conversion check end");*/
+                //The following is done to improve preformance
+                IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
+                reservationEngine.PrepareReservationsForTransmition(reservations);
+                log.Debug("Before return");
                 return reservations;
             });
         }
@@ -199,26 +222,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        public Reservation GetReservation(int ReservationId)
-        {
-            return ExecuteFaultHandledOperation(() =>
-            {
-                IReservationRepository reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-
-                var reservation = reservationRepository.Get(ReservationId);
-
-                if (reservation == null)
-                {
-                    log.Error("No reservation found for ID: " + ReservationId);
-                    NotFoundException ex = new NotFoundException(string.Format("No reservation found for ID '{0}'", ReservationId));
-
-                    throw new FaultException<NotFoundException>(ex, ex.Message);
-                }
-
-                return (reservation);
-            });
-        }
-
         public async Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
         {
             return await ExecuteFaultHandledOperation(async () =>
@@ -226,7 +229,10 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
                 var task = Task<Reservation[]>.Factory.StartNew(() =>
                 {
-                    return reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
+                    var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
+                    IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
+                    reservationEngine.PrepareReservationsForTransmition(reservations);
+                    return reservations;
                 });
                 return await task.ConfigureAwait(false);
             });
@@ -248,6 +254,38 @@ namespace EchoDesertTrips.Business.Managers.Managers
                     throw new FaultException<NotFoundException>(ex, ex.Message);
                 }
                 return reservations;
+            });
+        }
+
+        public Reservation[] GetCustomersByReservationGroupId(int GroupId)
+        {
+            return ExecuteFaultHandledOperation(() =>
+            {
+                IReservationRepository reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
+
+                var reservations = reservationRepository.GetCustomersByReservationGroupId(GroupId);
+
+                if (reservations == null)
+                {
+                    log.Error("No reservation found for GroupId: " + GroupId);
+                    NotFoundException ex = new NotFoundException(string.Format("No reservation found for GroupId '{0}'", GroupId));
+
+                    throw new FaultException<NotFoundException>(ex, ex.Message);
+                }
+                return reservations;
+            });
+        }
+
+        public async Task<Reservation[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId)
+        {
+            return await ExecuteFaultHandledOperation(async () =>
+            {
+                var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
+                var task = Task<Reservation[]>.Factory.StartNew(() =>
+                {
+                    return reservationRepository.GetCustomersByReservationGroupId(GroupId);
+                });
+                return await task.ConfigureAwait(false);
             });
         }
 

@@ -377,6 +377,31 @@ namespace EchoDesertTrips.Client.Entities
 
         public byte[] RowVersion { get; set; }
 
+        public bool Lock { get; set; }
+
+        public DateTime LockTime { get; set; }
+
+        public int LockedById { get; set; }
+
+        private int _actualNumberOfCustomers;
+
+        public int ActualNumberOfCustomers
+        {
+            get
+            {
+                if (_actualNumberOfCustomers == 0)
+                    return Customers.Count;
+                return _actualNumberOfCustomers;
+            }
+            set
+            {
+                _actualNumberOfCustomers = value;
+                OnPropertyChanged(() => ActualNumberOfCustomers);
+            }
+        }
+
+        public bool RowVersionConflict { get; set; }
+
         class ReservationValidator : AbstractValidator<Reservation>
         {
             public ReservationValidator()

@@ -11,5 +11,7 @@ namespace EchoDesertTrips.Business.Common
     public interface IReservationEngine : IBusinessEngine
     {
         double CalculateReservationTotalPrice(Reservation reservation);
+        List<Tour> CopyTours(Reservation reservation);
+        void PrepareReservationsForTransmition(Reservation[] Reservations);
     }
 }

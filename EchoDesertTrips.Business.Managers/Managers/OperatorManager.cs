@@ -88,5 +88,16 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
+        public Operator GetOperatorByID(int OperatorID)
+        {
+            return ExecuteFaultHandledOperation(() =>
+            {
+                IOperatorRepository operatorRepository =
+                    _DataRepositoryFactory.GetDataRepository<IOperatorRepository>();
+
+                Operator op = operatorRepository.Get(OperatorID);
+                return op;
+            });
+        }
     }
 }

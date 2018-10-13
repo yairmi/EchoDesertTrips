@@ -105,7 +105,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private bool _lastDertinessValue = false;
         private bool IsCustomerDirty()
         {
-            var bDirty = Customer != null ? Customer.IsAnythingDirty() : false;
+            var bDirty = Customer != null ? Customer.IsAnythingDirty() && (!ViewMode) : false;
             if (bDirty != _lastDertinessValue)
             {
 

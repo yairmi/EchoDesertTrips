@@ -255,6 +255,7 @@
     <Compile Include="ViewModels\AgencyViewModel.cs" />
     <Compile Include="ViewModels\AgentsViewModel.cs" />
     <Compile Include="ViewModels\CustomerGridViewModel.cs" />
+    <Compile Include="ViewModels\CustomersGroupViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\EditAgentsViewModel.cs" />
     <Compile Include="ViewModels\EditCustomerGridViewModel.cs" />
@@ -284,6 +285,10 @@
     </Compile>
     <Compile Include="Views\CustomerGridView.xaml.cs">
       <DependentUpon>CustomerGridView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CustomersGroupView.xaml.cs">
+      <DependentUpon>CustomersGroupView.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Views\DashboardView.xaml.cs">
       <DependentUpon>DashboardView.xaml</DependentUpon>
@@ -320,9 +325,6 @@
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\EditOrderView.xaml.cs">
-      <DependentUpon>EditOrderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OperatorView.xaml.cs">
       <DependentUpon>OperatorView.xaml</DependentUpon>
@@ -373,6 +375,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CustomersGroupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DashboardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -418,10 +424,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\EditOrderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Data.Entity;
-using EchoDesertTrips.Business.Contracts;
 using System.Data.Entity.Infrastructure;
-using System.Threading.Tasks;
+using System.Configuration;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -21,27 +20,14 @@ namespace EchoDesertTrips.Data.Data_Repositories
             return null;
         }
 
-        protected override Reservation UpdateEntity(EchoDesertTripsContext entityContext, Reservation entity)
+        protected override Reservation UpdateEntity(EchoDesertTripsContext entityContext, Reservation reservation)
         {
-            return null;
+            return GetEntity(entityContext, reservation.ReservationId);
         }
 
         protected override IEnumerable<Reservation> GetEntities(EchoDesertTripsContext entityContext)
         {
-            var reservations = (from e in entityContext.ReservationSet select e)
-                .Include(a => a.Agency.Agents)
-                .Include(a => a.Agent)
-                .Include(o => o.Customers)
-                .Include(o => o.Operator)
-                .Include(o => o.Group)
-                .Include(o => o.Tours.Select(t => t.TourType))
-                .Include(o => o.Tours.Select(t => t.SubTours))
-                .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
-                .Include(o => o.Tours.Select(th => th.TourHotels
-                .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
-            var hotels = (from e in entityContext.HotelSet select e).ToList();
-            return reservations;
+            return null;
         }
 
         protected override IEnumerable<Reservation> GetEntities(EchoDesertTripsContext entityContext, int id)
@@ -75,22 +61,28 @@ namespace EchoDesertTrips.Data.Data_Repositories
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
-                /*var reservations = (from e in entityContext.ReservationSet where e.GroupID == groupId select e)
-                .Include(a => a.Agency.Agents)
-                .Include(a => a.Agent)
-                .Include(o => o.Customers)
-                .Include(o => o.Operator)
-                .Include(o => o.Group)
-                .Include(o => o.Tours.Select(t => t.TourType.TourTypeDescriptions))
-                .Include(o => o.Tours.Select(t => t.SubTours))
-                .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
-                .Include(o => o.Tours.Select(th => th.TourHotels
-                .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
-                var hotels = (from e in entityContext.HotelSet select e).ToList();
-                return reservations.ToArray();*/
-                /////////////////////////////////
                 var reservations = (from e in entityContext.ReservationSet where e.GroupID == groupId select e);
+                reservations = reservations.Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)));
+                reservations = reservations.Include(o => o.Tours.Select(th => th.TourHotels
+                            .Select(throomTypes => throomTypes.TourHotelRoomTypes
+                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
+                reservations = reservations.Include(a => a.Agency.Agents);
+                reservations = reservations.Include(c => c.Customers);
+                reservations = reservations.Include(g => g.Group);
+                reservations = reservations.Include(t => t.Tours);
+                reservations = reservations.Include(t => t.Tours.Select(tt => tt.TourType));
+                log.Debug("ReservationRepository: GetReservationsForDayRange End of DB Session");
+                var hotels = (from e in entityContext.HotelSet select e).ToList();
+                log.Debug("ReservationRepository: GetReservationsForDayRange before return");
+                return reservations.ToArray();
+            }
+        }
+
+        public Reservation[] GetCustomersByReservationGroupId(int GroupId)
+        {
+            using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
+            {
+                var reservations = (from e in entityContext.ReservationSet where e.GroupID == GroupId select e);
                 reservations = reservations.Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)));
                 reservations = reservations.Include(o => o.Tours.Select(th => th.TourHotels
                             .Select(throomTypes => throomTypes.TourHotelRoomTypes
@@ -171,50 +163,35 @@ namespace EchoDesertTrips.Data.Data_Repositories
         {
             using (var entityContext = new EchoDesertTripsContext())
             {
-                var existingReservation = (from r in entityContext.ReservationSet
-                                   where r.ReservationId == reservationId
-                                   select r)
-                                   .Include(r => r.Customers)
-                                   .Include(t => t.Tours.Select(o => o.TourOptionals))
-                                   .Include(t => t.Tours.Select(s => s.SubTours))
-                                   .Include(t => t.Tours.Select(o => o.TourHotels.Select(th => th.TourHotelRoomTypes)))
-                                   .FirstOrDefault();
-                if (existingReservation != null)
+                var existingReservation = GetEntity(entityContext, reservationId);
+                var customer = existingReservation.Customers.FirstOrDefault();
+                while (customer != null)
                 {
-                    var customer = existingReservation.Customers.FirstOrDefault();
-                    while (customer != null)
-                    {
-                        entityContext.CustomerSet.Remove(customer);
-                        customer = existingReservation.Customers.FirstOrDefault();
-                    }
-
-                    var tour = existingReservation.Tours.FirstOrDefault();
-                    while (tour != null)
-                    {
-                        RemoveTour(entityContext, tour);
-                        tour = existingReservation.Tours.FirstOrDefault();
-                    }
-
-                    entityContext.Entry(existingReservation).State = EntityState.Deleted;
-                    entityContext.SaveChanges();
+                    entityContext.CustomerSet.Remove(customer);
+                    customer = existingReservation.Customers.FirstOrDefault();
                 }
+                existingReservation.Tours.RemoveRange(0, existingReservation.Tours.Count);
+                var tour = existingReservation.Tours.FirstOrDefault();
+                while (tour != null)
+                {
+                    RemoveTour(entityContext, tour);
+                    tour = existingReservation.Tours.FirstOrDefault();
+                }
+
+                entityContext.Entry(existingReservation).State = EntityState.Deleted;
+                entityContext.SaveChanges();
             }
         }
 
-        public ReservationData UpdateReservation(Reservation reservation)
+        public Reservation UpdateReservation(Reservation reservation)
         {
-            var reservationData = new ReservationData()
-            {
-                ClientReservation = null,
-                DbReservation = null,
-                InEdit = false
-            };
             using (var entityContext = new EchoDesertTripsContext())
             {
+                Reservation exsitingReservation = null;
                 try
                 { 
                     ResetNavProperties(reservation);
-                    var exsitingReservation = (from e in entityContext.ReservationSet where e.ReservationId == reservation.ReservationId select e)
+                    exsitingReservation = (from e in entityContext.ReservationSet where e.ReservationId == reservation.ReservationId select e)
                                 .Include(r => r.Customers)
                                 .Include(t => t.Tours.Select(h => h.TourHotels.Select(th => th.TourHotelRoomTypes)))
                                 .Include(t => t.Tours.Select(o => o.TourOptionals))
@@ -440,11 +417,10 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    reservationData.InEdit = true;
+                    log.Error("Update Reservation failed. Save was done during edit. Exception: " + ex.Message);
                 }
+                return exsitingReservation;
             }
-            reservationData.DbReservation = Get(reservation.ReservationId);
-            return reservationData;
         }
 
         public Reservation AddReservation(Reservation reservation)

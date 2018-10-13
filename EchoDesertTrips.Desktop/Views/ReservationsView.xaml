@@ -8,17 +8,19 @@
              xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
              xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" >
     <!--d:DesignHeight="300" d:DesignWidth="300"-->
     <core:UserControlViewBase.Resources>
         <support:ViewModelNullToVisibilityConverter x:Key="viewModelNullToVisibilityConverter" />
         <support:PercentageConverter x:Key="percentageConverter" />
-        <support:BoolToYesNoConverter x:Key="boolToYesNoConverter"/>
+        <!--<support:BoolToYesNoConverter x:Key="boolToYesNoConverter"/>-->
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
         <support:ExpanderToBooleanConverter x:Key="expanderToBooleanConverter" />
+        <support:BoolToVisiblityConverter x:Key="boolToVisiblityConverter" />
         <viewModels:GroupsToTotalConverter x:Key="groupsConverter" />
         <viewModels:TotalPriceConverter x:Key="totalPriceConverter"/>
-        <viewModels:CustomersGroupConverter x:Key="customersGroupConverter"/>
+        <!--<viewModels:CustomersGroupConverter x:Key="customersGroupConverter"/>-->
         <viewModels:BalanceConverter x:Key="balanceConverter"/>
         <viewModels:GroupReservationsConverter x:Key="groupConverter"/>
         <CollectionViewSource x:Key="CvsReservations" x:Name="ReservationsView">
@@ -34,13 +36,36 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock Text="Reservations for day: " VerticalAlignment="Center" FontSize="14" />
-            <Button Content="&lt;&lt;" Margin="5" Command="{Binding DecreaseOneDayCommand}" />            
+            <Button Content="&lt;&lt;" Margin="5" Command="{Binding DecreaseOneDayCommand}" IsEnabled="{Binding DataContext.IsEnabled, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" />            
             <DatePicker Width="160"
                             Margin="5"
                             VerticalAlignment="Top"
-                            SelectedDate="{Binding Path=SelectedDate, Mode=TwoWay}"    >
+                            SelectedDate="{Binding Path=SelectedDate, Mode=TwoWay}" 
+                            IsEnabled="{Binding DataContext.IsEnabled, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}"   >
             </DatePicker>
-            <Button Content="&gt;&gt;" Margin="5" Command="{Binding IncreaseOneDayCommand}" />
+            <Button Content="&gt;&gt;" Margin="5" Command="{Binding IncreaseOneDayCommand}" IsEnabled="{Binding DataContext.IsEnabled, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" />
+            <TextBlock Name="MyFadingText"
+                   Text="Loading..." 
+                   FontSize="20" 
+                   FontWeight="Bold"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Margin="20,0,0,0"
+                   Visibility="{Binding LoadingVisible, Converter={StaticResource boolToVisiblityConverter}}">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="TextBlock.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                            Storyboard.TargetName="MyFadingText" 
+                            Storyboard.TargetProperty="(TextBlock.Opacity)"
+                            From="1.0" To="0.0" Duration="0:0:1" 
+                            AutoReverse="True" RepeatBehavior="Forever" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
         </StackPanel>
         <Grid x:Name="childGrid" Grid.Row="1">
         <Grid.ColumnDefinitions>
@@ -63,7 +88,7 @@
                         <TextBlock Text="Reservations"/>
                     </Expander.Header>                        
                     <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
-                        <Button x:Name="btnAddNew" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddReservationCommand}" />
+                            <Button x:Name="btnAddNew" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddReservationCommand}" IsEnabled="{Binding DataContext.IsEnabled, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}"/>
                         <DataGrid x:Name="dgReservations"
                         ItemsSource="{Binding ReservationsView, IsAsync=True}"
                         CanUserAddRows="False"
@@ -92,13 +117,13 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock>
-                                    <Hyperlink Command="{Binding DataContext.DeleteReservationCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding}">
+                                    <Hyperlink Command="{Binding DataContext.DeleteReservationCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding}" IsEnabled="{Binding DataContext.IsEnabled, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}">
                                         <TextBlock Text="Delete" FontSize="14" FontWeight="Bold"/>
                                     </Hyperlink>
                                 </TextBlock>
                                             <TextBlock Text="    " />
                                             <TextBlock>
-                                    <Hyperlink Command="{Binding DataContext.EditReservationCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding}">
+                                    <Hyperlink Command="{Binding DataContext.EditReservationCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding}" IsEnabled="{Binding DataContext.IsEnabled, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}">
                                         <TextBlock Text="Edit" FontSize="14" FontWeight="Bold"/>
                                     </Hyperlink>
                                 </TextBlock>
@@ -116,7 +141,7 @@
                             <DataGridTemplateColumn Header="PAX #" Width="70">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Customers.Count}" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding ActualNumberOfCustomers}" HorizontalAlignment="Center"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -178,8 +203,7 @@
                                                         <Expander.Header>
                                                             <DockPanel>
                                                                 <TextBlock FontWeight="Bold" Text="{Binding Path=Name}" HorizontalAlignment="Left" Margin="5,0,0,0" Width="Auto"/>
-                                                                        <!--<Button x:Name="ReportBtn" HorizontalAlignment="Right" Content="Report" Margin="0,0,10,0" Command="{Binding DataContext.GenerateReportCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=Items[0].Group}"/>-->
-                                                                    </DockPanel>
+                                                            </DockPanel>
                                                         </Expander.Header>
                                                         <Expander.Content>
                                                             <Grid x:Name="GroupGrid">
@@ -189,37 +213,19 @@
                                                                     <RowDefinition Height="Auto"/>
                                                                 </Grid.RowDefinitions>
                                                                 <ItemsPresenter  Grid.Row="1" />
-                                                                <Expander x:Name="CustomerExpander" Grid.Row="2" IsExpanded="False" Background="CadetBlue" BorderBrush="CadetBlue" Foreground="#FFEEEEEE" BorderThickness="1,1,1,5">
-                                                                    <Expander.Header>
-                                                                        <DockPanel>
-                                                                            <TextBlock FontWeight="Bold" Text="{Binding Path=Items, Converter={StaticResource groupsConverter}, StringFormat= 'PAX #: \{0\}'}"/>
-                                                                        </DockPanel>
-                                                                    </Expander.Header>
-                                                                    <Expander.Content>
-                                                                        <Grid>
-                                                                            <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="{Binding Path=Width, ElementName=GroupGrid}"/>
-                                                                            </Grid.ColumnDefinitions>
-                                                                            <DataGrid Grid.Column="0" x:Name="dataGridCustomers" 
-                                                                            ItemsSource="{Binding Converter={StaticResource customersGroupConverter}}"
-                                                                            EnableRowVirtualization="True" 
-                                                                            CellStyle="{StaticResource DataGridBorder}"
-                                                                            Margin="20,10,0,63"
-                                                                            AutoGenerateColumns="False">
-                                                                                <DataGrid.Columns>
-                                                                                    <DataGridTextColumn x:Name="LastName" Header="Last Name" Binding="{Binding LastName}"/>
-                                                                                    <DataGridTextColumn x:Name="FirstName" Header="First Name" Binding="{Binding FirstName}"/>
-                                                                                    <DataGridTextColumn x:Name="BirdthDate" Header="Birdth Date" Binding="{Binding DateOfBirdth, StringFormat=dd-MM-yyyy}"/>
-                                                                                    <DataGridTextColumn x:Name="Passport" Header="Passport #" Binding="{Binding PassportNumber}"/>
-                                                                                    <DataGridTextColumn x:Name="IssueDate" Header="Issue Date" Binding="{Binding IssueData, StringFormat=dd-MM-yyyy}"/>
-                                                                                    <DataGridTextColumn x:Name="ExpiryDate" Header="Expirey Date" Binding="{Binding ExpireyDate, StringFormat=dd-MM-yyyy}"/>
-                                                                                    <DataGridTextColumn x:Name="Nationality" Header="Nationality" Binding="{Binding Nationality}"/>
-                                                                                    <DataGridTextColumn x:Name="HasVisa" Header="Has Visa" Binding="{Binding Converter={StaticResource boolToYesNoConverter}}"/>
-                                                                                </DataGrid.Columns>
-                                                                            </DataGrid>
-                                                                        </Grid>
-                                                                    </Expander.Content>
-                                                                </Expander>
+                                                                <Button Grid.Row="2" 
+                                                                        Command="{Binding Path=DataContext.ShowCustomersCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                                                        CommandParameter="{Binding Path=Items[0]}" 
+                                                                        Width="120" 
+                                                                        Height="26" 
+                                                                        HorizontalAlignment="Left">
+                                                                    <Button.Content>
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Text="PAX #: "/>
+                                                                        <TextBlock Text="{Binding Path=Items, Converter={StaticResource groupsConverter}}"/>
+                                                                        </StackPanel>
+                                                                    </Button.Content>
+                                                                </Button>
                                                             </Grid>
                                                         </Expander.Content>
                                                     </Expander>
@@ -335,18 +341,18 @@
                     </Expander>
                 </Grid>
             </Grid>
-            <!--<Border  Grid.Row="1" 
+            <Border  Grid.Row="1" 
              Grid.Column="1" 
-             HorizontalAlignment="Stretch" 
+             HorizontalAlignment="Left" 
              CornerRadius="4" 
              Margin="10" 
              BorderBrush="SteelBlue" 
              BorderThickness="3" 
              Background="BlanchedAlmond"
-             Width="{Binding Path=ActualWidth, ElementName=mainGrid, Converter={StaticResource percentageConverter}, ConverterParameter='0.8'}"
-             Visibility="{Binding CurrentReservationViewModel, Converter={StaticResource viewModelNullToVisibilityConverter}}">
-                <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentReservationViewModel}" />
-            </Border>-->
+             Width="{Binding Path=ActualWidth, ElementName=mainGrid, Converter={StaticResource percentageConverter}, ConverterParameter='0.6'}"
+             Visibility="{Binding CustomersGroupViewModel, Converter={StaticResource viewModelNullToVisibilityConverter}}">
+                <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CustomersGroupViewModel}" />
+            </Border>
         </Grid>
     </Grid>
 </core:UserControlViewBase>

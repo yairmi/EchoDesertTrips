@@ -89,7 +89,6 @@
     <Compile Include="Optional.cs" />
     <Compile Include="Reservation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReservationView.cs" />
     <Compile Include="RoomType.cs" />
     <Compile Include="SubTour.cs" />
     <Compile Include="Tour.cs" />

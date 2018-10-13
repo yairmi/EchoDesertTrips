@@ -137,6 +137,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _editCustomerViewModel.Reservation = Reservation;
             _editCustomerViewModel.SetCustomer(null);
             _editCustomerViewModel.CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
+            _editCustomerViewModel.ViewMode = ViewMode;
             CurrentCustomerViewModel = _editCustomerViewModel;
             RegisterEvents();
         }

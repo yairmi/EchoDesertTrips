@@ -101,7 +101,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _editReservationViewModel.TourTypes = TourTypes;
             _editReservationViewModel.Optionals = Optionals;
             _editReservationViewModel.Agencies = Agencies;
-            _editReservationViewModel.SetReservation(e._reservation);
+            _editReservationViewModel.SetReservation(e.Reservation);
+            _editReservationViewModel.ViewMode = e.ViewMode;
             _editReservationViewModel.ReservationUpdated -= _editReservationViewModel_ReservationUpdated;
             _editReservationViewModel.ReservationUpdated += _editReservationViewModel_ReservationUpdated;
             _editReservationViewModel.ReservationCancelled -= _editReservationViewModel_ReservationCancelled;

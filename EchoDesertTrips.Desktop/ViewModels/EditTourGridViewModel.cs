@@ -102,7 +102,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool IsTourDirty()
         {
-            var bDirty = Tour != null ? Tour.IsAnythingDirty() : false;
+            var bDirty = Tour != null ? Tour.IsAnythingDirty() && (!ViewMode) : false;
             if (bDirty != _lastDertinessValue)
             {
 

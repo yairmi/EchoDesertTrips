@@ -112,8 +112,10 @@
       <HintPath>..\packages\System.Composition.TypedParts.1.0.31\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -158,6 +160,22 @@
     <Compile Include="Migrations\201809102305201_views.cs" />
     <Compile Include="Migrations\201809102305201_views.Designer.cs">
       <DependentUpon>201809102305201_views.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810031725235_lockisaddedtoreservation.cs" />
+    <Compile Include="Migrations\201810031725235_lockisaddedtoreservation.Designer.cs">
+      <DependentUpon>201810031725235_lockisaddedtoreservation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810060542258_newfield-lockedby.cs" />
+    <Compile Include="Migrations\201810060542258_newfield-lockedby.Designer.cs">
+      <DependentUpon>201810060542258_newfield-lockedby.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810060658503_remove-lockedby.cs" />
+    <Compile Include="Migrations\201810060658503_remove-lockedby.Designer.cs">
+      <DependentUpon>201810060658503_remove-lockedby.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810060741529_newfield-lockedbyid.cs" />
+    <Compile Include="Migrations\201810060741529_newfield-lockedbyid.Designer.cs">
+      <DependentUpon>201810060741529_newfield-lockedbyid.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -209,6 +227,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809102305201_views.resx">
       <DependentUpon>201809102305201_views.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810031725235_lockisaddedtoreservation.resx">
+      <DependentUpon>201810031725235_lockisaddedtoreservation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810060542258_newfield-lockedby.resx">
+      <DependentUpon>201810060542258_newfield-lockedby.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810060658503_remove-lockedby.resx">
+      <DependentUpon>201810060658503_remove-lockedby.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810060741529_newfield-lockedbyid.resx">
+      <DependentUpon>201810060741529_newfield-lockedbyid.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

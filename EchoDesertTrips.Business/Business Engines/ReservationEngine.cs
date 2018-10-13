@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using EchoDesertTrips.Business.Entities;
 using Core.Common.Utils;
+using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Business.Business_Engines
 {
@@ -14,48 +15,18 @@ namespace EchoDesertTrips.Business.Business_Engines
     {
         private class Prices
         {
-            //public string Serialize()
-            //{
-            //    return $"{Persons},{Price};";
-            //}
-
             public void Deserialize(string pair)
             {
                 string[] prices = SimpleSplitter.Split(pair);
-                _persons = Int32.Parse(prices[0]);
-                _price = Double.Parse(prices[1]);
+                Persons = Int32.Parse(prices[0]);
+                Price = Double.Parse(prices[1]);
             }
 
-            //private int _persons;
-
             public int Persons;
-            /*{
-                get
-                {
-                    return _persons;
-                }
-                set
-                {
-                    _persons = value;
-                    OnPropertyChanged(() => Persons, true);
-                }
-            }*/
-
-            //private double _price;
 
             public double Price;
-            /*{
-                get
-                {
-                    return _price;
-                }
-                set
-                {
-                    _price = value;
-                    OnPropertyChanged(() => Price, true);
-                }
-            }*/
         }
+
         public double CalculateReservationTotalPrice(Reservation reservation)
         {
             double totalPrice = 0;
@@ -148,6 +119,47 @@ namespace EchoDesertTrips.Business.Business_Engines
                 });
             }
             return totalPrice;
+        }
+
+        public List<Tour> CopyTours(Reservation reservation)
+        {
+            List<Tour> tours = new List<Tour>();
+            foreach(var tour in reservation.Tours)
+            {
+                var tourNew = new Tour
+                {
+                    StartDate = tour.StartDate,
+                    EndDate = tour.EndDate,
+                    PickupAddress = tour.PickupAddress,
+                    TourType = new TourType
+                    {
+                        TourTypeName = tour.TourType.TourTypeName,
+                        Private = tour.TourType.Private
+                    }
+                   
+                };
+                tours.Add(tourNew);
+            }
+            return tours;
+        }
+
+        public void PrepareReservationsForTransmition(Reservation[] Reservations)
+        {
+            Parallel.ForEach(Reservations, new ParallelOptions { MaxDegreeOfParallelism = 4 }, (reservation) =>
+            {
+                reservation.ActualNumberOfCustomers = reservation.Customers.Count;
+                var customer = reservation.Customers.Count > 0 ? reservation.Customers[0] : null;
+                reservation.Customers.Clear();
+                if (customer != null)
+                    reservation.Customers.Add(customer);
+                foreach (var tour in reservation.Tours)
+                {
+                    tour.TourOptionals.ForEach((tourOptional) =>
+                    {
+                        tourOptional.Optional.OptionalDescription = string.Empty;
+                    });
+                }
+            });
         }
     }
 }

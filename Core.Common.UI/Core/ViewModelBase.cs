@@ -35,7 +35,7 @@ namespace Core.Common.UI.Core
 
         protected virtual void OnViewLoaded() { }
 
-        protected void WithClient<T>(T proxy, Action<T> codeToExecute, string methodName = "")
+        protected void WithClient<T>(T proxy, Action<T> codeToExecute, string methodName = "", int position = 0)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Core.Common.UI.Core
             }
             catch (Exception e)
             {
-                log.Error(methodName + " failed: " + e.Message);
+                log.Error(string.Format("Method Name {0} failed in postion {1}. Exception: {2}", methodName, position, e.Message));
             }
             finally
             {
@@ -229,6 +229,8 @@ namespace Core.Common.UI.Core
                 OnPropertyChanged(() => Reservation, false);
             }
         }
+
+        public bool ViewMode { get; set; }
 
         protected virtual void OnToggleErrorsCommandExecute(object arg)
         {
