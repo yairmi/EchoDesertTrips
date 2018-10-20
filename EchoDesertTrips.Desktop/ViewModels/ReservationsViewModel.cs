@@ -213,7 +213,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Operator Operator = null;
                 WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
                 {
-                    Operator = operatorClient.GetOperatorByID(reservation.LockedById);
+                    Operator = operatorClient.GetOperatorByID(dbReservation.LockedById);
                 });
                 var OperatorName = Operator == null ? string.Empty : Operator.OperatorName;
                 string message = string.Format("Reservation is locked by {0}.\n\n   Press \"OK\" To view the Reservation or\n   Press \"Cancel\" to cancel Edit.", OperatorName);
