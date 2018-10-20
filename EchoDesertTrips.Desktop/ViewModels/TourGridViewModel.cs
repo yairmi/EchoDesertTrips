@@ -296,6 +296,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
             //_editTourGridViewModel.EnableCBTourType = Reservation.ReservationId == 0;
             OnPropertyChanged(() => TotalPrice);
             //TourUpdatedFinished?.Invoke(this, new EventArgs());
+            if (e.RemovedItems > 0)
+            {
+                PropertyRemovedFromTour?.Invoke(this, null);
+            }
         }
 
         private void CurrentTourViewModel_TourCancelled(object sender, TourEventArgs e)
@@ -312,7 +316,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTourViewModel.TourCancelled += CurrentTourViewModel_TourCancelled;
         }
 
-        //public event EventHandler TourUpdatedFinished;
+        public event EventHandler PropertyRemovedFromTour;
     }
 
     public class DeleteTourConverter : IValueConverter

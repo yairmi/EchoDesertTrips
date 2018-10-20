@@ -105,7 +105,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 {
                     var mappedReservation = AutoMapperUtil.Map<Reservation, Reservation>(reservation);
                     res = reservationRepository.UpdateReservation(mappedReservation);
-                    //reservationData.DbReservation = reservationRepository.Get(reservation.ReservationId);
                 }
 
                 return res;

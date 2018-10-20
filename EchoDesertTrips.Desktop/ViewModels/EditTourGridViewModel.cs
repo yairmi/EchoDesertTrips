@@ -64,22 +64,23 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (Tour.IsValid)
             {
+                int removedItems = 0;
                 //Remove Unselected Hotels
                 Tour.TourHotels.ToList().ForEach((tourHotel) =>
                 {
-                    tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
+                    removedItems += tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
                 });
-                Tour.TourHotels.RemoveItems(t => !t.TourHotelRoomTypes.Any());
+                removedItems += Tour.TourHotels.RemoveItems(t => !t.TourHotelRoomTypes.Any());
                 //Remove Unselected Optionals
-                Tour.TourOptionals.RemoveItems(t => t.Selected == false);
+                removedItems += Tour.TourOptionals.RemoveItems(t => t.Selected == false);
                 if (Tour.TourId == 0)
                 {
                     bool bIsNew = _editedNewTour == false;
-                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, bIsNew));
+                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, removedItems, bIsNew));
                 }
                 else
                 {
-                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, false));
+                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, removedItems, false));
                     //Tour.CleanAll();
                 }
                 CreateTour();

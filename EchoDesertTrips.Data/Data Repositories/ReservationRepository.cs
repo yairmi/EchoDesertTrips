@@ -188,6 +188,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
             using (var entityContext = new EchoDesertTripsContext())
             {
                 Reservation exsitingReservation = null;
+                bool bRowVersionConflict = false;
                 try
                 { 
                     ResetNavProperties(reservation);
@@ -247,8 +248,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                     if (subTour.SubTourId != 0)
                                     {
                                         var existingSubTour = (from e in entityContext.SubTourSet
-                                            where e.SubTourId == subTour.SubTourId
-                                            select e).FirstOrDefault();
+                                            where e.SubTourId == subTour.SubTourId select e).FirstOrDefault();
                                         entityContext.Entry(existingSubTour).CurrentValues.SetValues(subTour);
                                     }
                                 }
@@ -261,9 +261,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                 foreach (var tourOptional in tour.TourOptionals)
                                 {
                                     var existingTourOptional = (from e in entityContext.TourOptionalSet
-                                        where e.TourId == tourOptional.TourId
-                                              && e.OptionalId == tourOptional.OptionalId
-                                        select e).FirstOrDefault();
+                                        where e.TourId == tourOptional.TourId && e.OptionalId == tourOptional.OptionalId select e).FirstOrDefault();
                                     if (existingTourOptional == null) //new TourOptional
                                     {
                                         entityContext.TourOptionalSet.Add(tourOptional);
@@ -278,8 +276,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                             {
                                 for (var i = exsitingTour.TourOptionals.Count - 1; i >= 0; i--)
                                 {
-                                    var exist = tour.TourOptionals.Exists(t =>
-                                        t.TourId == exsitingTour.TourOptionals[i].TourId
+                                    var exist = tour.TourOptionals.Exists(t => t.TourId == exsitingTour.TourOptionals[i].TourId
                                         && t.OptionalId == exsitingTour.TourOptionals[i].OptionalId);
                                     if (!exist)
                                     {
@@ -294,8 +291,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                 tour.TourHotels.ForEach((tourHotel) =>
                                 {
                                     var existingTourHotel = (from e in entityContext.TourHotelSet
-                                        where e.TourHotelId == tourHotel.TourHotelId
-                                        select e).Include(t => t.TourHotelRoomTypes).FirstOrDefault();
+                                        where e.TourHotelId == tourHotel.TourHotelId select e).Include(t => t.TourHotelRoomTypes).FirstOrDefault();
                                     if (existingTourHotel == null)
                                     {
                                         exsitingTour.TourHotels.Add(tourHotel);
@@ -306,10 +302,8 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                     {
                                         tourHotel.TourHotelRoomTypes.ForEach((tourHotelRoomType) =>
                                         {
-                                            var existingTourHotelRoomType =
-                                                (from e in entityContext.TourHotelRoomTypesSet
-                                                    where e.TourHotelRoomTypeId == tourHotelRoomType.TourHotelRoomTypeId
-                                                    select e).FirstOrDefault();
+                                            var existingTourHotelRoomType = (from e in entityContext.TourHotelRoomTypesSet
+                                                    where e.TourHotelRoomTypeId == tourHotelRoomType.TourHotelRoomTypeId select e).FirstOrDefault();
                                             if (existingTourHotelRoomType == null) //new tourHotelRoomType
                                             {
                                                 existingTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
@@ -369,23 +363,20 @@ namespace EchoDesertTrips.Data.Data_Repositories
                         }
 
                         //Delete Tours that are not exist in reservation (The most updated Reservation)
-                        for (var i = exsitingReservation.Tours.Count - 1; i >= 0; i--)
+                        /*for (var i = exsitingReservation.Tours.Count - 1; i >= 0; i--)
                         {
                             var exist = reservation.Tours.Exists(n => n.TourId == exsitingReservation.Tours[i].TourId);
                             if (!exist)
                             {
                                 RemoveTour(entityContext, exsitingReservation.Tours[i]);
-                                //entityContext.Entry(exsitingReservation.Tours[i]).State = EntityState.Deleted;
                             }
-                        }
+                        }*/
 
                         //Handle Customers
                         foreach (var customer in reservation.Customers)
                         {
                             var exsitingCustomer = (from e in entityContext.CustomerSet
-                                    where e.CustomerId == customer.CustomerId
-                                    select e)
-                                .FirstOrDefault();
+                                    where e.CustomerId == customer.CustomerId select e).FirstOrDefault();
                             if (exsitingCustomer != null)
                             {
                                 entityContext.Entry(exsitingCustomer).CurrentValues.SetValues(customer);
@@ -418,8 +409,11 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 catch (DbUpdateConcurrencyException ex)
                 {
                     log.Error("Update Reservation failed. Save was done during edit. Exception: " + ex.Message);
+                    bRowVersionConflict = true;
                 }
-                return exsitingReservation;
+                var reservationDB = Get(reservation.ReservationId);
+                reservationDB.RowVersionConflict = bRowVersionConflict;
+                return reservationDB;
             }
         }
 
@@ -441,6 +435,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 entityContext.Entry(reservation).State = EntityState.Added;
                 reservation.UpdateTime = DateTime.Now;
                 reservation.CreationTime = DateTime.Now;
+                reservation.LockTime = DateTime.Now;
                 entityContext.SaveChanges();
             }
             var existingReservation = Get(reservation.ReservationId);

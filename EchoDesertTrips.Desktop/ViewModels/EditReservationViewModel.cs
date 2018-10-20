@@ -41,7 +41,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool IsReservationDirty()
         {
-            var bDirty = Reservation.IsAnythingDirty() && Reservation.Tours.Count > 0 && (!ViewMode);
+            var bDirty = SomethingDeleted || (Reservation.IsAnythingDirty() && Reservation.Tours.Count > 0 && (!ViewMode));
             if (bDirty != _lastDertinessValue)
             {
                 log.Debug("EditOrderViewModel dirty = " + bDirty);
@@ -107,24 +107,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        /*private async void UnLock(int ReservationID)
-        {
-            var orderClient = _serviceFactory.CreateClient<IOrderService>();
-            {
-                try
-                {
-                    var reservations = await Task.Factory.StartNew(() =>
-                    {
-                        return orderClient.UnLock(ReservationID);
-                    });
-                }
-                catch (Exception ex)
-                {
-                    log.Error("UnLock Exception: " + ex.Message);
-                }
-            }
-        }*/
-
         private void UnLock(int ReservationID)
         {
             WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
@@ -162,7 +144,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             GeneralReservationViewModel.Reservation = Reservation;
             GeneralReservationViewModel.Agencies = Agencies;
+
+            SomethingDeleted = false;
+
+            CustomerGridViewModel.CustomerDeleted -= EditReservationViewModel_SomethingRemoved;
+            CustomerGridViewModel.CustomerDeleted += EditReservationViewModel_SomethingRemoved;
+
+            TourGridViewModel.PropertyRemovedFromTour -= EditReservationViewModel_SomethingRemoved;
+            TourGridViewModel.PropertyRemovedFromTour += EditReservationViewModel_SomethingRemoved;
+
             log.Debug("EditOrderViewModel OnViewLoaded end");
+        }
+
+        private void EditReservationViewModel_SomethingRemoved(object sender, EventArgs e)
+        {
+            SomethingDeleted = true;
         }
 
         public void SetReservation(Reservation reservation)
@@ -170,5 +166,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Reservation = reservation == null ? new Reservation() : reservation;
             CleanAll();
         }
+
+        public bool SomethingDeleted;
     }
 }

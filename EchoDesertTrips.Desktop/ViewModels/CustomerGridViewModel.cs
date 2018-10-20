@@ -33,7 +33,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowSomeEventCommand = new DelegateCommand<Customer>(OnRowSomeEventCommand);
             DeleteCustomerCommand = new DelegateCommand<Customer>(OnDeleteCustomerCommand);
             EditCustomerCommand = new DelegateCommand<Customer>(OnEditCustomerCommand);
-            Customers = new ObservableCollection<Customer>();
+            //Customers = new ObservableCollection<Customer>();
         }
 
         public CustomerGridViewModel()
@@ -51,6 +51,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (result == MessageDialogResult.CANCEL)
                 return;
             Customers.Remove(customer);
+            CustomerDeleted?.Invoke(this, null);
         }
         //Remove CustomerWrapper
         public DelegateCommand<Customer> RowSomeEventCommand { get; set; }
@@ -167,23 +168,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Customers.Add(customer_e);
             }
-            //CustomerUpdatedFinished?.Invoke(this, new EventArgs());
         }
-
-        //private void CurrentCustomerViewModel_CustomerCancelled(object sender, CustomerEventArgs e)
-        //{
-        //    CurrentCustomerViewModel = null;
-        //}
 
         private void RegisterEvents()
         {
             CurrentCustomerViewModel.CustomerUpdated -= CurrentCustomerViewModel_CustomerUpdated;
             CurrentCustomerViewModel.CustomerUpdated += CurrentCustomerViewModel_CustomerUpdated;
-            //CurrentCustomerViewModel.CustomerCancelled -= CurrentCustomerViewModel_CustomerCancelled;
-            //CurrentCustomerViewModel.CustomerCancelled += CurrentCustomerViewModel_CustomerCancelled;
         }
 
-        public event EventHandler CustomerUpdatedFinished;
+        public event EventHandler CustomerDeleted;
     }
     public class CustomerValidationRule : ValidationRule
     {
