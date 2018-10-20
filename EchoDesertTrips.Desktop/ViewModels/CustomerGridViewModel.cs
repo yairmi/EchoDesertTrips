@@ -33,7 +33,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowSomeEventCommand = new DelegateCommand<Customer>(OnRowSomeEventCommand);
             DeleteCustomerCommand = new DelegateCommand<Customer>(OnDeleteCustomerCommand);
             EditCustomerCommand = new DelegateCommand<Customer>(OnEditCustomerCommand);
-            //Customers = new ObservableCollection<Customer>();
         }
 
         public CustomerGridViewModel()
@@ -51,6 +50,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (result == MessageDialogResult.CANCEL)
                 return;
             Customers.Remove(customer);
+            _editCustomerViewModel.CustomerDeleted();
             CustomerDeleted?.Invoke(this, null);
         }
         //Remove CustomerWrapper
@@ -136,7 +136,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             Customers = Reservation.Customers;
             _editCustomerViewModel.Reservation = Reservation;
-            _editCustomerViewModel.CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             _editCustomerViewModel.ViewMode = ViewMode;
             CurrentCustomerViewModel = _editCustomerViewModel;
             RegisterEvents();

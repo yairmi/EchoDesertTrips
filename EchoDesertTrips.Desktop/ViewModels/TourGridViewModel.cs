@@ -269,11 +269,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentTourViewModel_TourUpdated(object sender, TourEventArgs e)
         {
-            //var config = new MapperConfiguration(cfg => {
-            //    cfg.CreateMap<TourWrapper, TourWrapper>();
-            //});
-
-            //var tourWrapper = TourHelper.CloneTourWrapper(e.Tour);
             var tour_e = e.Tour;
             if (!e.IsNew)
             {
@@ -292,9 +287,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Tours.Add(tour_e);
             }
             Tours.OrderBy(tour => tour.StartDate);
-            //_editTourGridViewModel.EnableCBTourType = Reservation.ReservationId == 0;
             OnPropertyChanged(() => TotalPrice);
-            //TourUpdatedFinished?.Invoke(this, new EventArgs());
             if (e.RemovedItems > 0)
             {
                 PropertyRemovedFromTour?.Invoke(this, null);

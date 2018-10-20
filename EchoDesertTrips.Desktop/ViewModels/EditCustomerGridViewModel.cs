@@ -56,16 +56,19 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 if (Customer.CustomerId == 0)
                 {
-                    bool bIsNew = _editedNewAddedCustomer == false;
-                    CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, bIsNew));
+                    CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, Customer.bInEdit == false));
                 }
                 else
                 {
                     CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, false));
                 }
-                CreateCustomer();
+                CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
+                if (CustomersLeft > 0)
+                    CreateCustomer();
+                else
+                    ControllEnabled = false;
             }
-            CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
+            //CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             if (CustomersLeft <= 0)
             {
                 if (Reservation.Tours.Count() > 0)
@@ -80,14 +83,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private bool _editedNewAddedCustomer;
-
         public void CreateCustomer(Customer customer = null)
         {
             if (customer != null)
             {
                 Customer = CustomerHelper.CloneCustomer(customer);
-                _editedNewAddedCustomer = Customer.CustomerId == 0;
                 ControllEnabled = true;
             }
             else
@@ -97,13 +97,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 log.Debug("GC Customer. Before WaitForPendingFinalizers");
                 GC.WaitForPendingFinalizers();
                 log.Debug("GC Customer. After WaitForPendingFinalizers");
-                ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
-                if (_controllEnabled)
-                {
-                    Customer = new Customer();
-                    Customer.CleanAll();
-                }
-                _editedNewAddedCustomer = false;
+                Customer = new Customer();
+                Customer.CleanAll();
             }
         }
 
@@ -138,9 +133,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
+            CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
+            ControllEnabled = CustomersLeft > 0;
             if (ControllEnabled)
                 CreateCustomer();
+        }
+
+        public void CustomerDeleted()
+        {
+            CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
+            ControllEnabled = true;
+            CreateCustomer();
         }
 
         private Customer _customer;
