@@ -86,7 +86,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _editTourViewModel.TourTypes = TourTypes;
             _editTourViewModel.Hotels = Hotels;
             _editTourViewModel.Optionals = Optionals;
-            //_editTourViewModel.EnableCBTourType = Reservation.ReservationId == 0; //TODO: try to remove this property
             RegisterEvents();
         }
 

@@ -75,7 +75,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 removedItems += Tour.TourOptionals.RemoveItems(t => t.Selected == false);
                 if (Tour.TourId == 0)
                 {
-                    bool bIsNew = _editedNewTour == false;
+                    bool bIsNew = _editedNewAddedTour == false;
                     TourUpdated?.Invoke(this, new TourEventArgs(Tour, removedItems, bIsNew));
                 }
                 else
@@ -120,23 +120,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            CreateTour(null);//This create an empty tour. which result in displaying empty fields
+            CreateTour();//This create an empty tour. which result in displaying empty fields
         }
 
-        private bool _editedNewTour;
+        private bool _editedNewAddedTour;
         
         public void CreateTour(Tour tour = null)
         {
             if (tour != null)
             {
                 Tour = TourHelper.CloneTour(tour);
-                _editedNewTour = tour.TourId == 0;
+                _editedNewAddedTour = tour.TourId == 0;
             }
             else
             {
                 Tour = null;
+                GC.Collect();
+                log.Debug("GC Tour. Before WaitForPendingFinalizers");
+                GC.WaitForPendingFinalizers();
+                log.Debug("GC Tour. After WaitForPendingFinalizers");
                 Tour = new Tour();
-                _editedNewTour = false;
+                _editedNewAddedTour = false;
             }
             SelectedHotel = Tour.TourHotels.Count > 0 ? Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId) :
                 null;

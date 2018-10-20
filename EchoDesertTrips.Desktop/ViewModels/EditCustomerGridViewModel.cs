@@ -56,14 +56,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 if (Customer.CustomerId == 0)
                 {
-                    bool bIsNew = _editedNewCustomer == false;
+                    bool bIsNew = _editedNewAddedCustomer == false;
                     CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, bIsNew));
                 }
                 else
                 {
                     CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, false));
                 }
-                CreateNewCustomer();
+                CreateCustomer();
             }
             CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             if (CustomersLeft <= 0)
@@ -80,14 +80,30 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private void CreateNewCustomer()
+        private bool _editedNewAddedCustomer;
+
+        public void CreateCustomer(Customer customer = null)
         {
-            Customer = null;
-            ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
-            if (_controllEnabled)
+            if (customer != null)
             {
-                Customer = new Customer();
-                Customer.CleanAll();
+                Customer = CustomerHelper.CloneCustomer(customer);
+                _editedNewAddedCustomer = Customer.CustomerId == 0;
+                ControllEnabled = true;
+            }
+            else
+            {
+                Customer = null;
+                GC.Collect();
+                log.Debug("GC Customer. Before WaitForPendingFinalizers");
+                GC.WaitForPendingFinalizers();
+                log.Debug("GC Customer. After WaitForPendingFinalizers");
+                ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
+                if (_controllEnabled)
+                {
+                    Customer = new Customer();
+                    Customer.CleanAll();
+                }
+                _editedNewAddedCustomer = false;
             }
         }
 
@@ -99,7 +115,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (result == MessageDialogResult.CANCEL)
                     return;
             }
-            CreateNewCustomer();
+            CreateCustomer();
         }
 
         private bool _lastDertinessValue = false;
@@ -123,27 +139,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             ControllEnabled = ReservationHelper.GetCustomerLeft(Reservation) > 0;
+            if (ControllEnabled)
+                CreateCustomer();
         }
-
-        public void SetCustomer(Customer customer)
-        {
-            if (customer != null)
-            {
-                ControllEnabled = true;
-                _editedNewCustomer = customer.CustomerId == 0;
-                Customer = CustomerHelper.CloneCustomer(customer);
-            }
-            else
-            {
-                _editedNewCustomer = false;
-                Customer = new Customer();
-            }
-
-            Customer.CleanAll();
-
-        }
-
-        private bool _editedNewCustomer;
 
         private Customer _customer;
 

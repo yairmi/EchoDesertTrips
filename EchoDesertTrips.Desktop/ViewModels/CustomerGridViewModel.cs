@@ -71,7 +71,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnEditCustomerCommand(Customer customer)
         {
             customer.bInEdit = true;
-            _editCustomerViewModel.SetCustomer(customer);
+            _editCustomerViewModel.CreateCustomer(customer);
             _editCustomerViewModel.Reservation = Reservation;
             CurrentCustomerViewModel = _editCustomerViewModel;
             RegisterEvents();
@@ -116,7 +116,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             private set
             {
                 _customers = value;
-                OnPropertyChanged(()=> Customers, false);
+                OnPropertyChanged(() => Customers, false);
             }
         }
 
@@ -136,7 +136,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             Customers = Reservation.Customers;
             _editCustomerViewModel.Reservation = Reservation;
-            _editCustomerViewModel.SetCustomer(null);
             _editCustomerViewModel.CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             _editCustomerViewModel.ViewMode = ViewMode;
             CurrentCustomerViewModel = _editCustomerViewModel;
@@ -145,12 +144,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentCustomerViewModel_CustomerUpdated(object sender, CustomerEventArgs e)
         {
-            //var config = new MapperConfiguration(cfg => {
-            //    cfg.CreateMap<CustomerWrapper, CustomerWrapper>();
-            //});
-
-            //var iMapper = config.CreateMapper();
-            //var customerWrapper = iMapper.Map<CustomerWrapper, CustomerWrapper>(e.Customer);
             var customer_e = e.Customer;
             if (!e.IsNew)
             {
