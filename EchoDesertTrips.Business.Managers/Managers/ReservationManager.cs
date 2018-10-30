@@ -8,14 +8,10 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.ServiceModel;
-using EchoDesertTrips.Data.Contracts.DTOs;
 using Core.Common.Core;
-using EchoDesertTrips.Business.Contracts.Data_Contracts;
-using System.Data.Entity.Infrastructure;
 using Core.Common.Utils;
 using System.Threading.Tasks;
 using EchoDesertTrips.Business.Common;
-using System.Transactions;
 using System.Configuration;
 
 namespace EchoDesertTrips.Business.Managers.Managers
@@ -39,7 +35,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
         [Import]
         public IBusinessEngineFactory _BusinessEngineFactory;
-        private const int POOL_SIZE = 64;
+        private const int POOL_SIZE = 32;
         private static readonly Dictionary<int, object> _lockers = new Dictionary<int, object>();
         private static object GetLocker(int id)
         {
@@ -228,7 +224,9 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
                 var task = Task<Reservation[]>.Factory.StartNew(() =>
                 {
+                    log.Debug("ReservationManager: GetReservationsForDayRangeAsynchronous DB Query Start");
                     var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
+                    log.Debug("ReservationManager: GetReservationsForDayRangeAsynchronous DB Query End");
                     IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
                     reservationEngine.PrepareReservationsForTransmition(reservations);
                     return reservations;

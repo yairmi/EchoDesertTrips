@@ -349,7 +349,7 @@
              BorderBrush="SteelBlue" 
              BorderThickness="3" 
              Background="BlanchedAlmond"
-             Width="{Binding Path=ActualWidth, ElementName=mainGrid, Converter={StaticResource percentageConverter}, ConverterParameter='0.6'}"
+             Width="{Binding Path=ActualWidth, ElementName=mainGrid, Converter={StaticResource percentageConverter}, ConverterParameter='0.615'}"
              Visibility="{Binding CustomersGroupViewModel, Converter={StaticResource viewModelNullToVisibilityConverter}}">
                 <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CustomersGroupViewModel}" />
             </Border>

@@ -94,9 +94,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Customer = null;
                 GC.Collect();
-                log.Debug("GC Customer. Before WaitForPendingFinalizers");
                 GC.WaitForPendingFinalizers();
-                log.Debug("GC Customer. After WaitForPendingFinalizers");
                 Customer = new Customer();
                 Customer.CleanAll();
             }

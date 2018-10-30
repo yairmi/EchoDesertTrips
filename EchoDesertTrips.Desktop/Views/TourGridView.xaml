@@ -42,6 +42,8 @@
                 <TextBox Width="30" Margin="2" Text="{Binding NumberOfCustomers, Mode=OneWay}" IsReadOnly="True" Background="Aqua"/>
                 <TextBlock Text="Total Price: " Margin="10,0,0,0" VerticalAlignment="Center"/>
                 <TextBox Width="80" Margin="2" Text="{Binding TotalPrice, Mode=OneWay}" IsReadOnly="True" Background="Aqua"/>
+                <TextBlock Text="Reservation ID: " Margin="10,0,0,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding ReservationID}" Margin="10,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
             <Border x:Name="borderEditTourControl" Grid.Row="1" Grid.Column="0"
              HorizontalAlignment="Center"

@@ -38,7 +38,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
 
         protected override Reservation GetEntity(EchoDesertTripsContext entityContext, int id)
         {
-            var reservation = (from e in entityContext.ReservationSet where e.ReservationId == id select e)
+            return (from e in entityContext.ReservationSet where e.ReservationId == id select e)
                 .Include(a => a.Agency.Agents)
                 .Include(a => a.Agent)
                 .Include(o => o.Customers)
@@ -47,34 +47,27 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 .Include(o => o.Tours.Select(t => t.TourType))
                 .Include(o => o.Tours.Select(t => t.SubTours))
                 .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
+                .Include(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
                 .Include(o => o.Tours.Select(th => th.TourHotels
                 .Select(throomTypes => throomTypes.TourHotelRoomTypes
                 .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))))
                 .FirstOrDefault();
-            var hotels = (from e in entityContext.HotelSet select e).ToList();
-            if (reservation == null) return null;
-            return reservation;
-
         }
 
         public Reservation[] GetReservationsByGroupId(int groupId)
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
-                var reservations = (from e in entityContext.ReservationSet where e.GroupID == groupId select e);
-                reservations = reservations.Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)));
-                reservations = reservations.Include(o => o.Tours.Select(th => th.TourHotels
+                return (from e in entityContext.ReservationSet where e.GroupID == groupId select e)
+                            .Include(a => a.Agency.Agents)
+                            .Include(o => o.Customers)
+                            .Include(o => o.Group)
+                            .Include(o => o.Tours.Select(t => t.TourType))
+                            .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
+                            .Include(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
+                            .Include(o => o.Tours.Select(th => th.TourHotels
                             .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
-                reservations = reservations.Include(a => a.Agency.Agents);
-                reservations = reservations.Include(c => c.Customers);
-                reservations = reservations.Include(g => g.Group);
-                reservations = reservations.Include(t => t.Tours);
-                reservations = reservations.Include(t => t.Tours.Select(tt => tt.TourType));
-                log.Debug("ReservationRepository: GetReservationsForDayRange End of DB Session");
-                var hotels = (from e in entityContext.HotelSet select e).ToList();
-                log.Debug("ReservationRepository: GetReservationsForDayRange before return");
-                return reservations.ToArray();
+                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType)))).ToArray();
             }
         }
 
@@ -82,20 +75,8 @@ namespace EchoDesertTrips.Data.Data_Repositories
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
-                var reservations = (from e in entityContext.ReservationSet where e.GroupID == GroupId select e);
-                reservations = reservations.Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)));
-                reservations = reservations.Include(o => o.Tours.Select(th => th.TourHotels
-                            .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
-                reservations = reservations.Include(a => a.Agency.Agents);
-                reservations = reservations.Include(c => c.Customers);
-                reservations = reservations.Include(g => g.Group);
-                reservations = reservations.Include(t => t.Tours);
-                reservations = reservations.Include(t => t.Tours.Select(tt => tt.TourType));
-                log.Debug("ReservationRepository: GetReservationsForDayRange End of DB Session");
-                var hotels = (from e in entityContext.HotelSet select e).ToList();
-                log.Debug("ReservationRepository: GetReservationsForDayRange before return");
-                return reservations.ToArray();
+                return (from e in entityContext.ReservationSet where e.GroupID == GroupId select e)
+                            .Include(o => o.Customers).ToArray();
             }
         }
 
@@ -116,46 +97,16 @@ namespace EchoDesertTrips.Data.Data_Repositories
         {
             using (var entityContext = new EchoDesertTripsContext())
             {
-                /*log.Debug("ReservationRepository: GetReservationsForDayRange Include query Start");
-
-                var reservations = (from e in entityContext.ReservationSet
-                                    where e.Tours.Any(
-                                       t => t.StartDate >= dayFrom
-                                       && t.StartDate <= dayTo)
-                                    select e)
+                return (from e in entityContext.ReservationSet where e.Tours.Any(t => t.StartDate >= dayFrom && t.StartDate <= dayTo) select e)
                             .Include(a => a.Agency.Agents)
                             .Include(o => o.Customers)
                             .Include(o => o.Group)
                             .Include(o => o.Tours.Select(t => t.TourType))
                             .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
+                            .Include(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
                             .Include(o => o.Tours.Select(th => th.TourHotels
                             .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
-                var hotels = (from e in entityContext.HotelSet select e).ToList();
-                var r = reservations.ToArray();
-                log.Debug("ReservationRepository: GetReservationsForDayRange Include query End, before return");
-                return r;*/
-                ///////////////////////////////////////////////////////////////////////////////////////////
-                log.Debug("ReservationRepository: GetReservationsForDayRange Separate queries Start");
-                var reservations = (from e in entityContext.ReservationSet
-                                    where e.Tours.Any(
-                                       t => t.StartDate >= dayFrom
-                                       && t.StartDate <= dayTo)
-                                    select e);
-
-                reservations = reservations.Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)));
-                reservations = reservations.Include(o => o.Tours.Select(th => th.TourHotels
-                            .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))));
-                reservations = reservations.Include(a => a.Agency.Agents);
-                reservations = reservations.Include(c => c.Customers);
-                reservations = reservations.Include(g => g.Group);
-                reservations = reservations.Include(t => t.Tours);
-                reservations = reservations.Include(t => t.Tours.Select(tt => tt.TourType));
-                var hotels = (from e in entityContext.HotelSet select e).ToList();
-                var r = reservations.ToArray();
-                log.Debug("ReservationRepository: GetReservationsForDayRange Separate queries End, before return");
-                return r;
+                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType)))).ToArray();
             }
         }
 

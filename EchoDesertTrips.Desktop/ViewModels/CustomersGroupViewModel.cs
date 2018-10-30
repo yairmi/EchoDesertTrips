@@ -1,8 +1,6 @@
 ﻿using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Entities;
 using System;
-using System.Windows.Data;
-using System.Windows.Forms;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -13,8 +11,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CustomersForGroup = new RangeObservableCollection<Customer>();
             CloseCommand = new DelegateCommand<Reservation>(OnCloseCommand);
         }
-
-
 
         public RangeObservableCollection<Customer> CustomersForGroup { get; set; }
 
@@ -49,20 +45,5 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         public event EventHandler Close;
-    }
-
-    public class StartAtOne : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            var i = (int)value;
-            return i + 1;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter,
-            System.Globalization.CultureInfo culture)
-        {
-            return value;
-        }
-    }
+    }   
 }

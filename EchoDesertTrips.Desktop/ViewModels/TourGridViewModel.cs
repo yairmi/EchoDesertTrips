@@ -223,6 +223,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
+        public int ReservationID
+        {
+            get
+            {
+                return Reservation.ReservationId;
+            }
+            set
+            {
+                OnPropertyChanged(() => ReservationID);
+            }
+        }
+
         public int NumberOfCustomers
         {
             get

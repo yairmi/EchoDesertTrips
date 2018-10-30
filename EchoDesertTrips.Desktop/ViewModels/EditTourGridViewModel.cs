@@ -131,9 +131,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Tour = null;
                 GC.Collect();
-                log.Debug("GC Tour. Before WaitForPendingFinalizers");
                 GC.WaitForPendingFinalizers();
-                log.Debug("GC Tour. After WaitForPendingFinalizers");
                 Tour = new Tour();
             }
             SelectedHotel = Tour.TourHotels.Count > 0 ? Hotels.FirstOrDefault(h => h.HotelId == Tour.TourHotels[0].Hotel.HotelId) :

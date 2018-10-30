@@ -13,8 +13,6 @@
         <support:BoolToYesNoConverter x:Key="boolToYesNoConverter"/>
         <support:BoolToVisiblityConverter x:Key="boolToVisiblityConverter" />
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
-        <viewModels:StartAtOne x:Key="startAtOne"/>
-        <!--<viewModels:IndexConverter x:Key="indexConverter" />-->
     </core:UserControlViewBase.Resources>    
     <Grid>
         <Grid.RowDefinitions>
@@ -53,17 +51,22 @@
         </StackPanel>
         <DataGrid Grid.Row="1" x:Name="dataGridCustomers"
             DataContext="{Binding}"
-            EnableRowVirtualization="True" 
             CellStyle="{StaticResource DataGridBorder}"                  
             ItemsSource="{Binding CustomersForGroup}"
             Margin="20,10,20,10"
             AutoGenerateColumns="False"
             Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}"
             VerticalScrollBarVisibility="Auto"
-            IsReadOnly="True"
-            AlternationCount="{Binding CustomersForGroup.Count}">
+            HeadersVisibility="All"
+            IsReadOnly="True" LoadingRow="dataGridCustomers_LoadingRow">
+            <DataGrid.RowHeaderStyle>
+                <Style TargetType="DataGridRowHeader">
+                    <Setter Property="Width" Value="36"/>
+                    <Setter Property="HorizontalContentAlignment"  Value="Center"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </DataGrid.RowHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Row#" Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex),Converter={StaticResource startAtOne }}"></DataGridTextColumn>
                 <DataGridTextColumn x:Name="LastName" Header="Last Name" Binding="{Binding LastName}"/>
                 <DataGridTextColumn x:Name="FirstName" Header="First Name" Binding="{Binding FirstName}"/>
                 <DataGridTextColumn x:Name="BirdthDate" Header="Birdth Date" Binding="{Binding DateOfBirdth, StringFormat=dd-MM-yyyy}"/>
