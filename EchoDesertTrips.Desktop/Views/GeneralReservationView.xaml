@@ -12,7 +12,7 @@
              HorizontalAlignment="Left" 
              VerticalAlignment="Top"
              CornerRadius="4" 
-             Margin="0" 
+             Margin="10,5,0,0" 
              BorderBrush="SteelBlue" 
              BorderThickness="1" 
              Background="BlanchedAlmond">

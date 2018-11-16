@@ -46,13 +46,13 @@
             BorderBrush="SteelBlue" 
             BorderThickness="1" 
             Background="BlanchedAlmond">
-                    <ContentControl HorizontalAlignment="Left" Margin="5,5,5,5" Content="{Binding CurrentCustomerViewModel}" />
+                    <ContentControl HorizontalAlignment="Left" Margin="10,5,0,0" Content="{Binding CurrentCustomerViewModel}" />
             </Border>
             <Border Grid.Row="0" Grid.Column="1"
-             HorizontalAlignment="Center" 
+             HorizontalAlignment="Right" 
              VerticalAlignment="Top"
              CornerRadius="4" 
-             Margin="5" 
+             Margin="0,5,10,0" 
              BorderBrush="SteelBlue" 
              BorderThickness="1" 
              Background="BlanchedAlmond"

@@ -35,7 +35,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
         [Import]
         public IBusinessEngineFactory _BusinessEngineFactory;
-        private const int POOL_SIZE = 32;
+        private const int POOL_SIZE = 16;
         private static readonly Dictionary<int, object> _lockers = new Dictionary<int, object>();
         private static object GetLocker(int id)
         {

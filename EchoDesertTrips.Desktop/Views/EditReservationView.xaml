@@ -6,11 +6,16 @@
         xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
         xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
         xmlns:control="clr-namespace:Core.Common.UI.Controls;assembly=Core.Common.UI"
-        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"                          
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls" 
+        xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="400">
+    <core:UserControlViewBase.Resources>
+        <support:PercentageConverter x:Key="percentageConverter" />
+        <support:ToFixSizeConverter x:Key="toFixSizeConverter" />
+    </core:UserControlViewBase.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <Grid>
+        <Grid Name="EditReservationGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -20,7 +25,9 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
-            <TabControl Grid.Row="1" BorderThickness="4" BorderBrush="LightSkyBlue">
+            <TabControl x:Name="EditReservationTab" Grid.Row="1" BorderThickness="4" BorderBrush="LightSkyBlue" 
+                        Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={StaticResource toFixSizeConverter}, ConverterParameter='206'}"
+                        Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={StaticResource toFixSizeConverter}, ConverterParameter='20'}">
                 <TabControl.Resources>
                     <Style TargetType="TabItem">
                         <Setter Property="Template">
