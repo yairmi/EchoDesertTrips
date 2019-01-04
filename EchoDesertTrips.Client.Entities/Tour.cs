@@ -16,11 +16,10 @@ namespace EchoDesertTrips.Client.Entities
             _tourOptionals = new ObservableCollection<TourOptional>();
             _tourHotels = new ObservableCollection<TourHotel>();
             _subTours = new ObservableCollection<SubTour>();
-            TourType = new TourType();
+            _tourType = new TourType();
             _startDate = DateTime.Today;
-            _endDate = DateTime.Today;
+            _endDate = (_tourType == null ||_tourType.Days == 0) ? _endDate : StartDate.AddDays(_tourType.Days - 1);
             bInEdit = false;
-
             _pickupAddress = string.Empty;
         }
 
@@ -54,14 +53,17 @@ namespace EchoDesertTrips.Client.Entities
 
             set
             {
-                if ((_tourType != null && (_tourType.TourTypeId != ((TourType)value).TourTypeId) || (_tourType == null)))
+                if ((_tourType != null && (_tourType.TourTypeId != ((TourType)value).TourTypeId) || 
+                    (_tourType == null)))
                 {
                     _tourType = value;
-                    EndDate = _tourType.Days == 0? EndDate : StartDate.AddDays(_tourType.Days - 1);
-                    string[] destinations = SimpleSplitter.Split(_tourType.Destinations);
+                    EndDate = _tourType.Days == 0 ? EndDate : StartDate.AddDays(_tourType.Days - 1);
+                    //Currently subTours are not retrieved by GetReservationsForDayRange, so the value of _subTours will be null in that case
+                    //When the user creates a new tour the value of _subTours
                     if (_subTours != null)
                     {
                         _subTours.Clear();
+                        string[] destinations = SimpleSplitter.Split(_tourType.Destinations);
                         destinations.ToList().ForEach((destination) =>
                         {
                             SubTours.Add(new SubTour()

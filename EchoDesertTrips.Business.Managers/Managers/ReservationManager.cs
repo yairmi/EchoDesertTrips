@@ -99,8 +99,8 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 }
                 else
                 {
-                    var mappedReservation = AutoMapperUtil.Map<Reservation, Reservation>(reservation);
-                    res = reservationRepository.UpdateReservation(mappedReservation);
+                    //var mappedReservation = AutoMapperUtil.Map<Reservation, Reservation>(reservation);
+                    res = reservationRepository.UpdateReservation(reservation);
                 }
 
                 return res;

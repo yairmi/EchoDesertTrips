@@ -23,8 +23,6 @@ namespace EchoDesertTrips.Business.Entities
         public string PickupAddress { get; set; }
         [DataMember]
         virtual public List<TourOptional> TourOptionals { get; set; }
-        //[DataMember]
-        //public List<TourHotelRoomType> TourHotelRoomTypes { get; set; }
         [DataMember]
         virtual public List<TourHotel> TourHotels { get; set; }
         [DataMember]

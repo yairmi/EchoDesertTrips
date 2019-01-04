@@ -62,6 +62,7 @@ namespace EchoDesertTrips.Data.Migrations
                     {
                         GroupId = c.Int(nullable: false, identity: true),
                         ExternalId = c.String(),
+                        Updated = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.GroupId);
             
@@ -140,7 +141,13 @@ namespace EchoDesertTrips.Data.Migrations
                         GroupID = c.Int(nullable: false),
                         CreationTime = c.DateTime(nullable: false),
                         UpdateTime = c.DateTime(nullable: false),
+                        Adults = c.Int(nullable: false),
+                        Childs = c.Int(nullable: false),
+                        Infants = c.Int(nullable: false),
                         RowVersion = c.Binary(nullable: false, fixedLength: true, timestamp: true, storeType: "rowversion"),
+                        Lock = c.Boolean(nullable: false),
+                        LockTime = c.DateTime(nullable: false),
+                        LockedById = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.ReservationId)
                 .ForeignKey("dbo.Agency", t => t.AgencyId)
@@ -233,6 +240,7 @@ namespace EchoDesertTrips.Data.Migrations
                         TourTypeName = c.String(),
                         AdultPrices = c.String(),
                         ChildPrices = c.String(),
+                        InfantPrices = c.String(),
                         Destinations = c.String(),
                         Private = c.Boolean(nullable: false),
                         Days = c.Byte(nullable: false),

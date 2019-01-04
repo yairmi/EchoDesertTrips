@@ -14,13 +14,11 @@
     <core:UserControlViewBase.Resources>
         <support:ViewModelNullToVisibilityConverter x:Key="viewModelNullToVisibilityConverter" />
         <support:PercentageConverter x:Key="percentageConverter" />
-        <!--<support:BoolToYesNoConverter x:Key="boolToYesNoConverter"/>-->
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
         <support:ExpanderToBooleanConverter x:Key="expanderToBooleanConverter" />
         <support:BoolToVisiblityConverter x:Key="boolToVisiblityConverter" />
         <viewModels:GroupsToTotalConverter x:Key="groupsConverter" />
         <viewModels:TotalPriceConverter x:Key="totalPriceConverter"/>
-        <!--<viewModels:CustomersGroupConverter x:Key="customersGroupConverter"/>-->
         <viewModels:BalanceConverter x:Key="balanceConverter"/>
         <viewModels:GroupReservationsConverter x:Key="groupConverter"/>
         <CollectionViewSource x:Key="CvsReservations" x:Name="ReservationsView">

@@ -1,11 +1,7 @@
 ﻿using System;
 using Core.Common.Core;
 using FluentValidation;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using Core.Common.Utils;
-using AutoMapper;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -419,59 +415,4 @@ namespace EchoDesertTrips.Client.Entities
             return new ReservationValidator();
         }
     }
-
-    /*public class ReservationMapper
-    {
-        public static ReservationWrapper CreateReservationWrapper(Reservation reservation)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Reservation, ReservationWrapper>();
-                cfg.CreateMap<Tour, TourWrapper>();
-                cfg.CreateMap<TourOptional, TourOptionalWrapper>();
-                cfg.CreateMap<SubTour, SubTourWrapper>();
-                cfg.CreateMap<TourType, TourTypeWrapper>()
-                .ForMember(t => t.AdultPrices, o => o.NullSubstitute(string.Empty))
-                .ForMember(t => t.ChildPrices, o => o.NullSubstitute(string.Empty));
-                cfg.CreateMap<Customer, CustomerWrapper>();
-            });
-
-            var iMapper = config.CreateMapper();
-            var reservationWrapper = iMapper.Map<Reservation, ReservationWrapper>(reservation);
-            return reservationWrapper;
-        }
-
-        public static Reservation CreateReservation(ReservationWrapper reservationWrapper)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<ReservationWrapper, Reservation>();
-                cfg.CreateMap<TourWrapper, Tour>();
-                cfg.CreateMap<TourOptionalWrapper, TourOptional>();
-                cfg.CreateMap<SubTour, SubTourWrapper>();
-                cfg.CreateMap<TourTypeWrapper, TourType>();
-                cfg.CreateMap<CustomerWrapper, Customer>();
-            });
-
-            IMapper iMapper = config.CreateMapper();
-            var reservation = iMapper.Map<ReservationWrapper, Reservation>(reservationWrapper);
-            return reservation;
-        }
-
-        public static ReservationWrapper CloneReservationWrapper(ReservationWrapper reservationWrapper)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<ReservationWrapper, ReservationWrapper>();
-                cfg.CreateMap<Tour, TourWrapper>();
-                cfg.CreateMap<TourOptional, TourOptionalWrapper>();
-                cfg.CreateMap<SubTour, SubTourWrapper>();
-                cfg.CreateMap<TourType, TourTypeWrapper>()
-                .ForMember(t => t.AdultPrices, o => o.NullSubstitute(string.Empty))
-                .ForMember(t => t.ChildPrices, o => o.NullSubstitute(string.Empty));
-                cfg.CreateMap<Customer, CustomerWrapper>();
-            });
-
-            var iMapper = config.CreateMapper();
-            var rw = iMapper.Map<ReservationWrapper, ReservationWrapper>(reservationWrapper);
-            return rw;
-        }
-    }*/
 }

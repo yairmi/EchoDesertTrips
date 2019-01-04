@@ -11,7 +11,6 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Threading;
-using EchoDesertTrips.Desktop.Reports;
 using EchoDesertTrips.Desktop.CustomEventArgs;
 using System.Configuration;
 
@@ -39,7 +38,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             AddReservationCommand = new DelegateCommand<object>(OnAddReservationCommand);
             SelectedDateChangedCommand = new DelegateCommand<object>(OnSelectedDateChangedCommand);
             DeleteReservationCommand = new DelegateCommand<Reservation>(OnDeleteReservationCommand);
-            GenerateReportCommand = new DelegateCommand<Group>(OnGenerateReportCommand);
             DecreaseOneDayCommand = new DelegateCommand<object>(OnDecreaseOneDayCommand);
             IncreaseOneDayCommand = new DelegateCommand<object>(OnIncreaseOneDayCommand);
             ShowCustomersCommand = new DelegateCommand<object>(ShowCustomers, ShowCustomersCanExecute);
@@ -173,18 +171,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     EventMessage = "1;" + obj.Tours[0].StartDate.ToString()
                 });
              }
-        }
-
-        private void OnGenerateReportCommand(Group group)
-        {
-            var reportGen = new ReportGenerator();
-            int exceptionPosition = 0;
-            WithClient(_serviceFactory.CreateClient<IOrderService>(), orderClient =>
-            {
-                var reservations = orderClient.GetReservationsByGroupId(group.GroupId);
-                exceptionPosition = 1;
-                reportGen.GenerateReport(reservations, group.GroupId);
-            }, "OnGenerateReportCommand", exceptionPosition);
         }
 
         private void OnAddReservationCommand(object arg)

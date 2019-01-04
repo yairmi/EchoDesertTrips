@@ -11,7 +11,7 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
 {
     [Export(typeof(IOrderService))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    class OrderClient : UserClientBase<IOrderService>, IOrderService
+    public class OrderClient : UserClientBase<IOrderService>, IOrderService
     {
         public Reservation DeleteReservation(int reservationId)
         {

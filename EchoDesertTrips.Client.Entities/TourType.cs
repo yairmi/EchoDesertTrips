@@ -211,29 +211,5 @@ namespace EchoDesertTrips.Client.Entities
             var _tourType = iMapper.Map<TourType, TourType>(tourType);
             return _tourType;
         }
-
-        /*public static TourTypeWrapper CreateTourTypeWrapper(TourTypeWrapper tourTypeWrapper)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<TourTypeWrapper, TourTypeWrapper>()
-                .ForMember(t => t.AdultPrices, o => o.NullSubstitute(string.Empty))
-                .ForMember(t => t.ChildPrices, o => o.NullSubstitute(string.Empty));
-            });
-            IMapper iMapper = config.CreateMapper();
-            var _tourTypeWrapper = iMapper.Map<TourTypeWrapper, TourTypeWrapper>(tourTypeWrapper);
-            return _tourTypeWrapper;
-        }
-
-        public static TourTypeWrapper CreateTourTypeWrapper(TourType tourType)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<TourType, TourTypeWrapper>()
-                .ForMember(t => t.AdultPrices, o => o.NullSubstitute(string.Empty))
-                .ForMember(t => t.ChildPrices, o => o.NullSubstitute(string.Empty));
-            });
-            IMapper iMapper = config.CreateMapper();
-            var _tourTypeWrapper = iMapper.Map<TourType, TourTypeWrapper>(tourType);
-            return _tourTypeWrapper;
-        }*/
     }
 }

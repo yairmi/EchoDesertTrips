@@ -7,19 +7,19 @@
              xmlns:vm="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
              xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
              xmlns:rv="clr-namespace:Microsoft.Reporting.WinForms;assembly=Microsoft.ReportViewer.WinForms"
+             xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="900">
+    <core:UserControlViewBase.Resources>
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
+    </core:UserControlViewBase.Resources>
     <Grid>
-        <!--<Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Label Grid.Row="0" Content="This is DashboardView"/>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBlock Text="Jordan ID"/>
-            <TextBox x:Name="tbJordanId" Width="60" Text="{Binding GroupId, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Content="Show" Margin="10,0,0,0" Command="{Binding PrintCommand}" />
-        </StackPanel>-->
+        <DockPanel>
+            <WindowsFormsHost Grid.Column="1" x:Name="wfhReport" Margin="10,100,100,0" Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='290'}">
+            <rv:ReportViewer x:Name="_reportViewer"/>
+        </WindowsFormsHost>
+        </DockPanel>
+        <TextBox x:Name="tbGroupID" HorizontalAlignment="Left" Height="23" Margin="64,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btnSelect" Content="Generate Report" HorizontalAlignment="Left" Margin="215,56,0,0" VerticalAlignment="Top" Width="125" Click="btnSelect_Click"/>
     </Grid>
 </core:UserControlViewBase>

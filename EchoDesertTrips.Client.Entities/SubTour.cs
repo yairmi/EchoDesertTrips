@@ -28,22 +28,5 @@ namespace EchoDesertTrips.Client.Entities
                 }
             }
         }
-
-        //private bool _private;
-
-        //public bool Private
-        //{
-        //    get
-        //    {
-        //        return _private;
-        //    }
-        //    set
-        //    {
-        //        _private = value;
-        //        OnPropertyChanged(() => Private);
-        //    }
-        //}
-
-        //public DateTime StartDate { get; set; }
     }
 }

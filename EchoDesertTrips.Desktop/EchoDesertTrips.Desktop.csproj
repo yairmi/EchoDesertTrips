@@ -81,6 +81,10 @@
       <HintPath>..\packages\AutoMapper.6.2.2\lib\net45\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net45\CommonServiceLocator.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -97,10 +101,6 @@
       <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism.Composition, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Composition.5.0.0\lib\NET45\Microsoft.Practices.Prism.Composition.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.Practices.Prism.Interactivity, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Interactivity.5.0.0\lib\NET45\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -113,45 +113,13 @@
       <HintPath>..\packages\Prism.Mvvm.1.0.0\lib\net45\Microsoft.Practices.Prism.Mvvm.Desktop.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism.PubSubEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.PubSubEvents.1.0.0\lib\portable-sl4+wp7+windows8+net40\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Prism.SharedInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Mvvm.1.0.0\lib\net45\Microsoft.Practices.Prism.SharedInterfaces.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="MigraDoc.DocumentObjectModel-WPF, Version=1.32.3885.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-WPF.1.32.2608.0\lib\net20\MigraDoc.DocumentObjectModel-WPF.dll</HintPath>
+    <Reference Include="Prism, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Core.7.1.0.431\lib\net45\Prism.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MigraDoc.Rendering-WPF, Version=1.32.3885.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-WPF.1.32.2608.0\lib\net20\MigraDoc.Rendering-WPF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MigraDoc.RtfRendering-WPF, Version=1.32.3885.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-WPF.1.32.2608.0\lib\net20\MigraDoc.RtfRendering-WPF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PdfSharp-WPF, Version=1.32.2608.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-WPF.1.32.2608.0\lib\net20\PdfSharp-WPF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PdfSharp.Charting-WPF, Version=1.32.2608.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp-MigraDoc-WPF.1.32.2608.0\lib\net20\PdfSharp.Charting-WPF.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="PdfSharp.Xps, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfSharp.Xps.SimpleWPFReporting.1.0.0\lib\net45\PdfSharp.Xps.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SimpleWPFReporting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimpleWPFReporting.1.1.0\lib\net45\SimpleWPFReporting.dll</HintPath>
+    <Reference Include="Prism.Wpf, Version=7.1.0.431, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\Prism.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -176,7 +144,7 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Wpf.6.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\packages\Prism.Wpf.7.1.0.431\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
@@ -224,7 +192,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CustomEventArgs\EditReservationEventArgs.cs" />
-    <Compile Include="Reports\ReportGenerator.cs" />
     <Compile Include="CustomEventArgs\AgencyEventArgs.cs" />
     <Compile Include="CustomEventArgs\AuthenticationEventArgs.cs" />
     <Compile Include="Support\BoolToOppositeConverter.cs" />
@@ -252,6 +219,7 @@
     <Compile Include="Support\ViewModelAuthenticatedToVisibilityConverter.cs" />
     <Compile Include="Support\ViewModelNullToVisibilityConverter.cs" />
     <Compile Include="Support\BoolToVisiblityConverter.cs" />
+    <Compile Include="Support\WidthConverter.cs" />
     <Compile Include="ViewModels\AdminViewModel.cs" />
     <Compile Include="ViewModels\AgencyViewModel.cs" />
     <Compile Include="ViewModels\AgentsViewModel.cs" />
@@ -475,12 +443,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="RDLC\ReservationReport.rdlc" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.AgencyWrapper.datasource" />
     <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.AgentWrapper.datasource" />
     <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.CustomerWrapper.datasource" />
     <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.LodggingPlaceWrapper.datasource" />
     <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.NationalityWrapper.datasource" />
+    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.Reservation.datasource" />
     <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.TourDestinationWrapper.datasource" />
     <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.Trip.datasource" />
     <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.TripWrapper.datasource" />
@@ -554,7 +524,9 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Reports\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
