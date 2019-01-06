@@ -132,8 +132,8 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="Auto" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
                     <DataGridTextColumn Width="Auto" Header="Price P.P." Binding="{Binding HotelRoomType.PricePerPerson}" IsReadOnly="True"/>
-                    <DataGridTextColumn Width="Auto" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGridTextColumn Width="Auto" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <DataGridTextColumn Width="Auto" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
+                    <DataGridTextColumn Width="Auto" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
                 </DataGrid.Columns>
                 <DataGrid.RowValidationRules>
                     <viewModels:TourHotelRoomsValidationRule ValidationStep="UpdatedValue"/>

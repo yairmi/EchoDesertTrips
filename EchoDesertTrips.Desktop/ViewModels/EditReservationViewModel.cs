@@ -125,7 +125,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (result == MessageDialogResult.CANCEL)
                     return;
             }
-            if (!ViewMode)
+            if (!ViewMode && Reservation.ReservationId != 0)
                 UnLock(Reservation.ReservationId);
             ReservationCancelled?.Invoke(this, new ReservationEventArgs(null, true, false));
         }

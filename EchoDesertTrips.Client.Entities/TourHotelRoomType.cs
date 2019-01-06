@@ -1,4 +1,5 @@
 ﻿using Core.Common.Core;
+using FluentValidation;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -9,8 +10,6 @@ namespace EchoDesertTrips.Client.Entities
         public int HotelRoomTypeId { get; set; }
 
         public HotelRoomType HotelRoomType { get; set; }
-
-        //public int TourId { get; set; }
 
         private int _capacity;
 
@@ -44,6 +43,20 @@ namespace EchoDesertTrips.Client.Entities
                 _persons = value;
                 OnPropertyChanged(() => Persons, true);
             }
+        }
+
+        class TourHotelRoomTypeValidator : AbstractValidator<TourHotelRoomType>
+        {
+            public TourHotelRoomTypeValidator()
+            {
+                RuleFor(obj => obj.Capacity).GreaterThanOrEqualTo(0).WithMessage("Room capacity must be greater then 0");
+                RuleFor(obj => obj.Persons).GreaterThanOrEqualTo(0).WithMessage("Number of pax must be greater then 0");
+            }
+        }
+
+        protected override IValidator GetValidator()
+        {
+            return new TourHotelRoomTypeValidator();
         }
     }
 }

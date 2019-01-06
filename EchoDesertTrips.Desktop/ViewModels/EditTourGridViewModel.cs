@@ -58,21 +58,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnSaveCommand(object obj)
         {
+            int removedItems = RemoveUnselectedHotelsAndOptionals();
             if (IsTourDirty())
             {
                 ValidateModel(true);
             }
-            if (Tour.IsValid)
+            if (IsTourValid())
             {
-                int removedItems = 0;
-                //Remove Unselected Hotels
-                Tour.TourHotels.ToList().ForEach((tourHotel) =>
-                {
-                    removedItems += tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
-                });
-                removedItems += Tour.TourHotels.RemoveItems(t => !t.TourHotelRoomTypes.Any());
-                //Remove Unselected Optionals
-                removedItems += Tour.TourOptionals.RemoveItems(t => t.Selected == false);
                 if (Tour.TourId == 0)
                 {
                     TourUpdated?.Invoke(this, new TourEventArgs(Tour, removedItems, Tour.bInEdit == false));
@@ -83,6 +75,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 CreateTour();
             }
+        }
+
+        private int RemoveUnselectedHotelsAndOptionals()
+        {
+            int removedItems = 0;
+            //Remove Unselected Hotels
+            Tour.TourHotels.ToList().ForEach((tourHotel) =>
+            {
+                removedItems += tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
+            });
+            removedItems += Tour.TourHotels.RemoveItems(t => !t.TourHotelRoomTypes.Any());
+            //Remove Unselected Optionals
+            removedItems += Tour.TourOptionals.RemoveItems(t => t.Selected == false);
+            return removedItems;
         }
 
         private void OnClearCommand(object obj)
@@ -111,9 +117,30 @@ namespace EchoDesertTrips.Desktop.ViewModels
             return bDirty;
         }
 
+        private bool IsTourValid()
+        {
+            foreach (var tourHotel in Tour.TourHotels)
+            {
+                foreach(var tourHotelRoomType in tourHotel.TourHotelRoomTypes)
+                {
+                    if (!tourHotelRoomType.IsValid)
+                        return false;
+                }
+            }
+            return Tour.IsValid;
+        }
+
         protected override void AddModels(List<ObjectBase> models)
         {
             models.Add(Tour);
+            Tour.TourHotels.ToList().ForEach((tourHotel) =>
+            {
+                tourHotel.TourHotelRoomTypes.ToList().ForEach(tourHotelRoomType =>
+                {
+                    models.Add(tourHotelRoomType);
+                });
+            });
+
         }
 
         protected override void OnViewLoaded()

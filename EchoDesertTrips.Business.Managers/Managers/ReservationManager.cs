@@ -155,9 +155,12 @@ namespace EchoDesertTrips.Business.Managers.Managers
             {
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
                 var reservation = reservationRepository.Get(ReservationID);
-                reservation.Lock = false;
-                reservation.LockedById = -1;
-                reservationRepository.Update(reservation);
+                if (reservation != null)
+                {
+                    reservation.Lock = false;
+                    reservation.LockedById = -1;
+                    reservationRepository.Update(reservation);
+                }
             });
         }
 
