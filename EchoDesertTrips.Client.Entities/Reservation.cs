@@ -106,25 +106,6 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        /*private int _tourId;
-
-        public int TourId
-        {
-            get
-            {
-                return _tourId;
-            }
-
-            set
-            {
-                if (_tourId != value)
-                {
-                    _tourId = value;
-                    OnPropertyChanged(() => TourId, true);
-                }
-            }
-        }*/
-
         private Agency _agency;
 
         public Agency Agency
@@ -309,17 +290,6 @@ namespace EchoDesertTrips.Client.Entities
 
         public DateTime UpdateTime { get; set; }
 
-        //private int _numberOfCustomers;
-
-        //public int NumberOfCustomers
-        //{
-        //    get { return _numberOfCustomers; }
-        //    set
-        //    {
-        //        _numberOfCustomers = value;
-        //        OnPropertyChanged(() => NumberOfCustomers, true);
-        //    }
-        //}
         private int _adults;
         public int Adults
         {

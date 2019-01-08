@@ -7,8 +7,12 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              x:Class="EchoDesertTrips.Desktop.Views.HotelView"
              xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
+             xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded">
+    <core:UserControlViewBase.Resources>
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
+    </core:UserControlViewBase.Resources>    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -30,7 +34,8 @@
                   HorizontalAlignment="Left"
                   CanUserAddRows="False"   
                   IsReadOnly="True"
-                  Width="600">
+                  Width="600"
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="RowEditEnding">
                         <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>

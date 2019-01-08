@@ -7,8 +7,12 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
              xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
+             xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <core:UserControlViewBase.Resources>
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
+    </core:UserControlViewBase.Resources>    
     <Grid>
         <DataGrid x:Name="operatorDataGrid" 
                   AutoGenerateColumns="False" 
@@ -18,7 +22,8 @@
                   ItemsSource="{Binding Operators}" 
                   Margin="0,0,400,90" 
                   RowDetailsVisibilityMode="VisibleWhenSelected"
-                  CellStyle="{StaticResource DataGridBorder}">
+                  CellStyle="{StaticResource DataGridBorder}"
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
             <DataGrid.Resources>
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                     <Setter Property="Padding" Value="-2"/>

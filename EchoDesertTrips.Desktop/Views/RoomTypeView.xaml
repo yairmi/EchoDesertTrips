@@ -7,10 +7,14 @@
              xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
+             xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <core:UserControlViewBase.Resources>
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
+    </core:UserControlViewBase.Resources>
     <Grid DataContext="{Binding RoomTypes}">
-        <DataGrid x:Name="roomTypeWrapperDataGrid"
+        <DataGrid x:Name="DgRoomTypes"
                   HeadersVisibility="All"
                   RowHeaderWidth="40"
                   AutoGenerateColumns="False" 
@@ -18,7 +22,8 @@
                   ItemsSource="{Binding}" 
                   Margin="0,0,1000,91" 
                   RowDetailsVisibilityMode="VisibleWhenSelected"
-                  CellStyle="{StaticResource DataGridBorder}">
+                  CellStyle="{StaticResource DataGridBorder}"
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
             <DataGrid.Resources>
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                     <Setter Property="Padding" Value="-2"/>

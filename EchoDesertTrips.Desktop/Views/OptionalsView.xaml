@@ -6,9 +6,13 @@
              xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
              xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels"                          
+             xmlns:viewModels="clr-namespace:EchoDesertTrips.Desktop.ViewModels" 
+             xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"                          
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <core:UserControlViewBase.Resources>
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
+    </core:UserControlViewBase.Resources>    
     <Grid DataContext="{Binding Optionals}">
         <DataGrid x:Name="optionalDataGrid" 
                   HeadersVisibility="All"
@@ -17,7 +21,8 @@
                   Margin="0,0,600,91" ItemsSource="{Binding}" 
                   EnableRowVirtualization="True" 
                   AutoGenerateColumns="False"
-                  CellStyle="{StaticResource DataGridBorder}">
+                  CellStyle="{StaticResource DataGridBorder}"
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
             <DataGrid.Resources>
                 <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                     <Setter Property="Padding" Value="-2"/>
@@ -36,24 +41,6 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <DataGrid.Columns>
-                <!--<DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Command="{Binding Path=DataContext.DeleteOptionalCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                    Content="Delete"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-                <!--<DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Command="{Binding Path=DataContext.SaveOptionalCommand, 
-                                    RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}"
-                                    CommandParameter="{Binding}"
-                                    Content="Save"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
                 <DataGridTextColumn x:Name="OptionalDescription" Width="*" Header="Description" Binding="{Binding OptionalDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn x:Name="PricePerPerson" Width="*" Header="Price Per Person" Binding="{Binding PricePerPerson, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn x:Name="PriceInclusive" Width="*" Header="Price Inclusive" Binding="{Binding PriceInclusive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
