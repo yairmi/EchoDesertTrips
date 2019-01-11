@@ -164,7 +164,7 @@
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
-                            <DataGridTextColumn x:Name="TotlPrice" Header="Total Price" Binding="{Binding Converter={StaticResource totalPriceConverter}}" Width="70"/>
+                            <DataGridTextColumn x:Name="TotlPrice" Header="Total Price" Binding="{Binding TotalPrice}" Width="70"/>
                             <DataGridTextColumn Header="Deposit" Binding="{Binding AdvancePayment}" Width="60"/>
                             <DataGridTextColumn Header="Balance" Binding="{Binding Converter={StaticResource balanceConverter}}" Width="60"/>
                                     <DataGridTextColumn Header="Comments" Binding="{Binding Comments}" Width="100">

@@ -31,6 +31,7 @@
             </Style.Triggers>
         </Style>
         <support:BoolToOppositeConverter x:Key="boolToOppositeConverter" />
+        <support:MaxHeightConverter x:Key="maxHeightConverter"/>
         <viewModels:TourTypeControlConverter x:Key="tourTypeControlConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -108,7 +109,7 @@
                 HorizontalAlignment="Left"
                 CellStyle="{StaticResource DataGridBorder}"
                 Margin="3"
-                Height="185"
+                Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='545'}"
                 Width="Auto">
                 <DataGrid.Resources>
                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
@@ -172,7 +173,7 @@
                     HorizontalAlignment="Left"
                     CellStyle="{StaticResource DataGridBorder}"
                     Margin="0"
-                    Height="350"
+                    Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='390'}"
                     Width="Auto">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn>

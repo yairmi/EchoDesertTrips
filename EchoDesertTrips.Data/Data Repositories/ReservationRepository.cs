@@ -8,6 +8,7 @@ using System.Linq;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Configuration;
+using Z.EntityFramework.Plus;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -98,15 +99,17 @@ namespace EchoDesertTrips.Data.Data_Repositories
             using (var entityContext = new EchoDesertTripsContext())
             {
                 return (from e in entityContext.ReservationSet where e.Tours.Any(t => t.StartDate >= dayFrom && t.StartDate <= dayTo) select e)
-                            .Include(a => a.Agency.Agents)
-                            .Include(o => o.Customers)
-                            .Include(o => o.Group)
-                            .Include(o => o.Tours.Select(t => t.TourType))
-                            .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
-                            .Include(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
-                            .Include(o => o.Tours.Select(th => th.TourHotels
-                            .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType)))).ToArray();
+                            .IncludeOptimized(a => a.Agency.Agents)
+                            .IncludeOptimized(o => o.Customers)
+                            .IncludeOptimized(o => o.Group)
+                            .IncludeOptimized(o => o.Tours)
+                            .IncludeOptimized(o => o.Tours.Select(t => t.TourType))
+                            .IncludeOptimized(o => o.Tours.Select(t => t.TourHotels))
+                            .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
+                            .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel))).ToArray();
+                //.IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(throomTypes => throomTypes.TourHotelRoomTypes)))
+                //.IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(throomTypes => throomTypes.TourHotelRoomTypes.Select(hotelRoomType => hotelRoomType.HotelRoomType))))
+                //.IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(throomTypes => throomTypes.TourHotelRoomTypes.Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType)))).ToArray();
             }
         }
 

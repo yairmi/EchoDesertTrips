@@ -262,7 +262,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public async void LoadReservationsForDayRangeAsync(DateTime date)
         {
             log.Debug("LoadReservationsForDayRangeAsync start");
-            if (date >= _selectedDate.AddDays(_daysRange * (-1)) && date <= _selectedDate.AddDays(_daysRange))
+            if (IsInDayRange(date))
             {
                 log.Debug("LoadReservationsForDayRangeAsync execution started");
                 var orderClient = _serviceFactory.CreateClient<IOrderService>();
@@ -306,8 +306,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public async void LoadReservationsForDayRangeAsync2()
         {
             log.Debug("LoadReservationsForDayRangeAsync2 start");
-            if (_selectedDate < _lastSelectedDate.AddDays(_daysRange * (-1)) ||
-                 _selectedDate > _lastSelectedDate.AddDays(_daysRange))
+
+            if (!IsInDayRange(_selectedDate))     
             {
                 IsEnabled = false;
                 LoadingVisible = true;
@@ -356,11 +356,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         log.Error(string.Format("Exception in LoadReservationsForDayRangeAsync2. exception: {0}", ex.Message));
                     }
                 }
+                log.Debug("LoadReservationsForDayRangeAsync2 execution End");
                 var disposableClient = orderClient as IDisposable;
                 disposableClient?.Dispose();
                 IsEnabled = true;
                 LoadingVisible = false;
             }
+        }
+
+        private bool IsInDayRange(DateTime day)
+        {
+            return (day >= _lastSelectedDate.AddDays(_daysRange * (-1)) &&
+                    day <= _lastSelectedDate.AddDays(_daysRange));
         }
 
         private DateTime _lastSelectedDate;
@@ -425,8 +432,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 else
                 {
-                    SelectedDate = e.Reservation.Tours.OrderBy(t => t.StartDate).FirstOrDefault().StartDate;
-                    if (_reservations.FirstOrDefault(r => r.ReservationId == e.Reservation.ReservationId) == null)
+                    SelectedDate = e.Reservation.Tours.OrderBy(t => t.StartDate).FirstOrDefault().StartDate; ;
+                    //if the first day in the new reservation is in current range then load was not called in SelectedDate 'Set' so we must add it to _reservations
+                    if (IsDayInRange(_selectedDate))
                     {
                         exceptionPosition = 5;
                         _reservations.Add(e.Reservation);
@@ -560,12 +568,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var reservation = (Reservation)value;
-            var totalPrice = Support.ReservationHelper.CalculateReservationTotalPrice(reservation);
             if (reservation != null)
             {
-                return totalPrice - reservation.AdvancePayment;
+                return reservation.TotalPrice - reservation.AdvancePayment;
             }
-            return totalPrice;
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

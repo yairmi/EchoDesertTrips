@@ -199,6 +199,21 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
+        private double _totalPrice;
+
+        public double TotalPrice
+        {
+            get
+            {
+                return _totalPrice;
+            }
+            set
+            {
+                _totalPrice = value;
+                OnPropertyChanged(() => TotalPrice, true);
+            }
+        }
+
         private DateTime _pickupTime;
 
         public DateTime PickUpTime

@@ -66,6 +66,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.Operator = Operator;
                 Reservation.OperatorId = Operator.OperatorId;
                 ReservationHelper.CreateExternalId(Reservation);
+                Reservation.TotalPrice = ReservationHelper.CalculateReservationTotalPrice(Reservation);
                 Reservation.Lock = false;
                 int exceptionPosition = 0;
 

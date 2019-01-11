@@ -124,6 +124,10 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Z.EntityFramework.Plus.EF6, Version=1.8.21.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Z.EntityFramework.Plus.EF6.1.8.21\lib\net45\Z.EntityFramework.Plus.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data Repositories\AgencyRepository.cs" />
@@ -144,6 +148,10 @@
     <Compile Include="Migrations\201901022007359_init.cs" />
     <Compile Include="Migrations\201901022007359_init.Designer.cs">
       <DependentUpon>201901022007359_init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901111247427_newfieldtotalprice.cs" />
+    <Compile Include="Migrations\201901111247427_newfieldtotalprice.Designer.cs">
+      <DependentUpon>201901111247427_newfieldtotalprice.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -183,6 +191,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201901022007359_init.resx">
       <DependentUpon>201901022007359_init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901111247427_newfieldtotalprice.resx">
+      <DependentUpon>201901111247427_newfieldtotalprice.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
