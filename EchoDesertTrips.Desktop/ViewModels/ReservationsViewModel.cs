@@ -242,13 +242,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             get
             {
-                FilterByDate();
                 return _selectedDate;
             }
             set
             {
                 _selectedDate = value;
-                log.Debug("SelectedDate : " + _selectedDate);
+                FilterByDate();
                 LoadReservationsForDayRangeAsync2();
                 OnPropertyChanged(() => SelectedDate, false);
             }
@@ -312,7 +311,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 IsEnabled = false;
                 LoadingVisible = true;
                 _lastSelectedDate = _selectedDate;
-                log.Debug("LoadReservationsForDayRangeAsync2 execution started");
                 var orderClient = _serviceFactory.CreateClient<IOrderService>();
                 {
                     try
@@ -375,7 +373,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             log.Debug("ReservationViewModel OnViewLoaded Start");
-            LoadReservationsForDayRangeAsync2();
+            
             if (ReservationsView == null)
             {
                 ReservationsView = CollectionViewSource.GetDefaultView(_reservations);
@@ -386,6 +384,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 ContinualReservationsView = CollectionViewSource.GetDefaultView(_continualReservations);
                 ContinualReservationsView.GroupDescriptions.Add(new PropertyGroupDescription(".",new  GroupContinualReservationsConverter()));
             }
+            FilterByDate();
+            LoadReservationsForDayRangeAsync2();
         }
 
         private void FilterByDate()
