@@ -109,7 +109,7 @@
                 HorizontalAlignment="Left"
                 CellStyle="{StaticResource DataGridBorder}"
                 Margin="3"
-                Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='545'}"
+                Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='560'}"
                 Width="Auto">
                 <DataGrid.Resources>
                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
@@ -173,7 +173,7 @@
                     HorizontalAlignment="Left"
                     CellStyle="{StaticResource DataGridBorder}"
                     Margin="0"
-                    Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='390'}"
+                    Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='405'}"
                     Width="Auto">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn>

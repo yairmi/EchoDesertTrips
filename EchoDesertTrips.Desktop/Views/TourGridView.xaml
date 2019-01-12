@@ -9,7 +9,7 @@
              xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support" 
              FocusManager.FocusedElement="{Binding ElementName=firstNameColumn}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="600" d:DesignWidth="800">
     <core:UserControlViewBase.Resources>
         <Style x:Key="DatePickerEnter" TargetType="{x:Type TextBlock}">
             <Setter Property="support:EnterKeyTraversal.IsEnabled" Value="True"/>
@@ -72,7 +72,7 @@
                   HorizontalAlignment="Right"
                   VerticalAlignment="Top"
                   CanUserAddRows="False"
-                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='338'}">
+                  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='365'}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="RowEditEnding">
                             <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
@@ -99,9 +99,9 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn x:Name="tourTypeNameColumn" Width="100" Header="Tour Type" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="tourTypeNameColumn" Width="90" Header="Tour Type" IsReadOnly="True"
                                     Binding="{Binding TourType.TourTypeName, Mode=TwoWay}"/>
-                        <DataGridTextColumn x:Name="collectionAddressColumn" Width="120" Header="Pickup Address" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="pickupAddressColumn" Width="120" Header="Pickup Address" IsReadOnly="True"
                                     Binding="{Binding PickupAddress}"/>
                         <DataGridTextColumn x:Name="startDateColumn" Width="100" Header="Start Date" IsReadOnly="True"
                                     Binding="{Binding StartDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
