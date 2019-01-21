@@ -66,27 +66,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public override string ViewTitle => "Hotels";
 
-        protected override void OnViewLoaded()
-        {
-            try
-            {
-                WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-                {
-                    //Hotels.Clear();
-                    RoomTypes.Clear();
-                    InventoryData inventoryData = inventoryClient.GetHotelsData();
-                    //foreach (var hotel in inventoryData.Hotels)
-                    //    Hotels.Add(hotel);
-                    foreach (var roomType in inventoryData.RoomTypes)
-                        RoomTypes.Add(roomType);
-                });
-            }
-            catch(Exception ex)
-            {
-                log.Error("Exception load hotels: " + ex.Message);
-            }
-        }
-
         private void CurrentHotelViewModel_HotelUpdated(object sender, HotelEventArgs e)
         {
             var mappedHotel = AutoMapperUtil.Map<Hotel, Hotel>(e.Hotel);

@@ -53,6 +53,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     if (bIsNew)
                         Operators[Operators.Count - 1].OperatorId = savedOperator.OperatorId;
                 });
+                NotifyServer("OperatorViewModel OnSaveCommand", 2);
             }
         }
 
@@ -65,39 +66,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         public override string ViewTitle => "Operators";
-
-        private ObservableCollection<Operator> _operators;
-
-        public ObservableCollection<Operator> Operators
-        {
-            get
-            {
-                return _operators;
-            }
-
-            set
-            {
-                _operators = value;
-                OnPropertyChanged(() => Operators, false);
-            }
-        }
-
-        protected override void OnViewLoaded()
-        {
-            try
-            {
-                WithClient<IOperatorService>(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
-                {
-                    var operators = operatorClient.GetAllOperators();
-                    Operators = new ObservableCollection<Operator>(operators);
-                });
-            }
-            catch (Exception ex)
-            {
-                log.Error("Exception load operators: " + ex.Message);
-            }
-        }
     }
+
     public class OperatorValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value,

@@ -54,26 +54,6 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <!--<DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                -->
-                    <!--<Button Command="{Binding Path=DataContext.UpdateHotelCommand, 
-                                    RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}"
-                                    CommandParameter="{Binding}"
-                                    Margin="2,2,2,2"
-                                    Content="+"/>-->
-                    <!--<Button Command="{Binding Path=DataContext.SaveHotelCommand, 
-                                    RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}"
-                                    CommandParameter="{Binding}"
-                                    Margin="2,2,2,2"
-                                    Content="+"/>-->
-                    <!--
-                             </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
                     <DataGridTextColumn x:Name="HotelNameColumn" Width="200" Header="Hotel Name" Binding="{Binding HotelName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <DataGridTextColumn x:Name="HotelAddressColumn" Width="200" Header="Hotel Address" Binding="{Binding HotelAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <DataGridCheckBoxColumn x:Name="HotelVisibility" Width="80" Binding="{Binding Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Visibility"/>
@@ -116,16 +96,7 @@
                                       CanUserAddRows="False"
                                       CellStyle="{StaticResource DataGridBorder}"
                                       IsReadOnly="True">
-                                        <!--<i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="RowEditEnding">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, 
-                                                RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                                CommandParameter="{Binding ElementName=dataGridRoomTypes, Path=DataContext}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>-->
                                         <DataGrid.Columns>
-                                            <!--<DataGridTemplateColumn>
-                                            </DataGridTemplateColumn>-->
                                             <DataGridTemplateColumn x:Name="roomTypeColumn" Width="Auto" Header="Room Type">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>

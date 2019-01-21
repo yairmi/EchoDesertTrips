@@ -13,14 +13,18 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         [Key]
         public int HotelRoomTypeId { get; set; }
-        //[DataMember]
-        //public Hotel Hotel { get; set; }
         [DataMember]
         public int HotelId { get; set; }
         [DataMember]
         public int RoomTypeId { get; set; }
         [DataMember]
-        virtual public RoomType RoomType { get; set; }
+        public RoomType RoomType { get; set; }
+        [DataMember]
+        //[Key]
+        public DateTime StartDaysRange { get; set; }
+        [DataMember]
+        //[Key]
+        public DateTime EndDaysRange { get; set; }
         [DataMember]
         public float PricePerPerson { get; set; }
         [DataMember]

@@ -47,53 +47,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
         [Import]
         public IBusinessEngineFactory _BusinessEngineFactory;
 
-        public InventoryData GetHotelsData()
-        {
-            return ExecuteFaultHandledOperation(() =>
-            {
-                IHotelRepository HotelRepository =
-                    _DataRepositoryFactory.GetDataRepository<IHotelRepository>();
-
-                IRoomTypeRepository RoomTypeRepository =
-                                    _DataRepositoryFactory.GetDataRepository<IRoomTypeRepository>();
-
-                var hotels = HotelRepository.Get();
-                var roomTypes = RoomTypeRepository.Get();
-
-                var inventoryData = new InventoryData()
-                {
-                    Hotels = hotels.ToList().ToArray(),
-                    RoomTypes = roomTypes.ToList().ToArray()
-                };
-                return inventoryData;
-
-            });
-        }
-
-        [OperationBehavior(TransactionScopeRequired = true)]
-        public void UpdateHotelAndRoomTypes(List<HotelRoomType> hotelRoomTypes)
-        {
-            ExecuteFaultHandledOperation(() =>
-            {
-                IHotelRoomTypeRepository hotelRepository =
-                    _DataRepositoryFactory.GetDataRepository<IHotelRoomTypeRepository>();
-                hotelRoomTypes.ForEach((hotelRoomType) =>
-                {
-                    HotelRoomType updateEntity = hotelRepository.GetEntity(hotelRoomType.HotelId, hotelRoomType.RoomTypeId);
-                    var roomType = hotelRoomType.RoomType;
-                    hotelRoomType.RoomType = null;
-                    if (updateEntity == null)
-                    {
-                        updateEntity = hotelRepository.Add(hotelRoomType);
-                    }
-                    else
-                    {
-                        updateEntity = hotelRepository.Update(hotelRoomType);
-                    }
-                    hotelRoomType.RoomType = roomType;
-                });
-            });
-        }
         [OperationBehavior(TransactionScopeRequired = true)]
         public Hotel UpdateHotel(Hotel hotel)
         {
@@ -106,7 +59,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
                 if (hotel.HotelId == 0)
                 {
-                    updateEntity = hotelRepository.Add(hotel);
+                    updateEntity = hotelRepository.AddHotel(hotel);
                 }
                 else
                 {
@@ -115,29 +68,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 return updateEntity;
             });
         }
-
-        //[OperationBehavior(TransactionScopeRequired = true)]
-        //public Nationality UpdateNationality(Nationality nationality)
-        //{
-        //    return ExecuteFaultHandledOperation(() =>
-        //    {
-        //        INationalityRepository nationalityRepository =
-        //            _DataRepositoryFactory.GetDataRepository<INationalityRepository>();
-
-        //        Nationality updateEntity = null;
-
-        //        if (nationality.NationalityId == 0)
-        //        {
-        //            updateEntity = nationalityRepository.Add(nationality);
-        //        }
-        //        else
-        //        {
-        //            updateEntity = nationalityRepository.Update(nationality);
-        //        }
-
-        //        return updateEntity;
-        //    });
-        //}
 
         [OperationBehavior(TransactionScopeRequired = true)]
         public TourType UpdateTourType(TourType tourType)
@@ -222,6 +152,17 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
+        public Hotel[] GetAllHotels()
+        {
+            return ExecuteFaultHandledOperation(() =>
+            {
+                IHotelRepository hotelRepository =
+                     _DataRepositoryFactory.GetDataRepository<IHotelRepository>();
+
+                return hotelRepository.Get().ToArray();
+            });
+        }
+
         public Agency[] GetAllAgencies()
         {
             return ExecuteFaultHandledOperation(() =>
@@ -229,8 +170,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 IAgencyRepository agencyRepository =
                      _DataRepositoryFactory.GetDataRepository<IAgencyRepository>();
 
-                IEnumerable<Agency> agencies = agencyRepository.Get();
-                return agencies.ToArray();
+                return agencyRepository.Get().ToArray();
             });
         }
 
@@ -278,20 +218,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        //public Nationality[] GetAllNationalities()
-        //{
-        //    return ExecuteFaultHandledOperation(() =>
-        //    {
-        //        INationalityRepository nationalityRepository =
-        //              _DataRepositoryFactory.GetDataRepository<INationalityRepository>();
-
-        //        IEnumerable<Nationality> Nationalities = nationalityRepository.Get();
-        //        return Nationalities.ToArray();
-        //    });
-
-
-        //}
-
         public TourType[] GetAllTourTypes()
         {
             return ExecuteFaultHandledOperation(() =>
@@ -299,8 +225,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 ITourTypeRepository tripTypeRepository =
                     _DataRepositoryFactory.GetDataRepository<ITourTypeRepository>();
 
-                IEnumerable<TourType> TourTypes = tripTypeRepository.Get();
-                return TourTypes.ToArray();
+                return tripTypeRepository.Get().ToArray();
             });
         }
 
@@ -311,44 +236,9 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 IOptionalRepository optionalRepository =
                     _DataRepositoryFactory.GetDataRepository<IOptionalRepository>();
 
-                IEnumerable<Optional> Optionals = optionalRepository.Get();
-                return Optionals.ToArray();
+                return optionalRepository.Get().ToArray();
             });
         }
-
-        //public TourDestination[] GetAllTourDestinations()
-        //{
-        //    return ExecuteFaultHandledOperation(() =>
-        //    {
-        //        ITourDestinationRepository tourDestinationRepository =
-        //            _DataRepositoryFactory.GetDataRepository<ITourDestinationRepository>();
-
-        //        IEnumerable<TourDestination> TourDestinations = tourDestinationRepository.Get();
-        //        return TourDestinations.ToArray();
-        //    });
-        //}
-
-        //public TourDestination UpdateTourDestination(TourDestination tourDestination)
-        //{
-        //    return ExecuteFaultHandledOperation(() =>
-        //    {
-        //        ITourDestinationRepository tourDestinationRepository =
-        //            _DataRepositoryFactory.GetDataRepository<ITourDestinationRepository>();
-
-        //        TourDestination updateEntity = null;
-
-        //        if (tourDestination.TourDestinationId == 0)
-        //        {
-        //            updateEntity = tourDestinationRepository.Add(tourDestination);
-        //        }
-        //        else
-        //        {
-        //            updateEntity = tourDestinationRepository.Update(tourDestination);
-        //        }
-
-        //        return updateEntity;
-        //    });
-        //}
 
         public RoomType[] GetAllRoomTypes()
         {
@@ -357,8 +247,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 IRoomTypeRepository roomTypeRepository =
                     _DataRepositoryFactory.GetDataRepository<IRoomTypeRepository>();
 
-                IEnumerable<RoomType> roomTypes = roomTypeRepository.Get();
-                return roomTypes.ToArray();
+                return roomTypeRepository.Get().ToArray();
             });
         }
 
@@ -395,17 +284,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        //public void DeleteTourDestination(TourDestination tourDestination)
-        //{
-        //    ExecuteFaultHandledOperation(() =>
-        //    {
-        //        ITourDestinationRepository tourDestinationRepository =
-        //            _DataRepositoryFactory.GetDataRepository<ITourDestinationRepository>();
-
-        //        tourDestinationRepository.Remove(tourDestination.TourDestinationId);
-        //    });
-        //}
-
         public void DeleteRoomType(RoomType roomType)
         {
             ExecuteFaultHandledOperation(() =>
@@ -427,17 +305,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 tourTypeRepository.Remove(tourType.TourTypeId);
             });
         }
-
-        //public void DeleteNationality(Nationality nationality)
-        //{
-        //    ExecuteFaultHandledOperation(() =>
-        //    {
-        //        INationalityRepository nationalityRepository =
-        //            _DataRepositoryFactory.GetDataRepository<INationalityRepository>();
-
-        //        nationalityRepository.Remove(nationality.NationalityId);
-        //    });
-        //}
 
         public void DeleteAgency(Agency agency)
         {
@@ -503,7 +370,8 @@ namespace EchoDesertTrips.Business.Managers.Managers
                             TourTypes = tourTypeRepository.Get().ToArray(),
                             Agencies = agencyRepository.Get().ToArray(),
                             Optionals = optionalRepository.Get().ToArray(),
-                            RoomTypes = roomTypeRepository.Get().ToArray()
+                            RoomTypes = roomTypeRepository.Get().ToArray(),
+                            Operators = operatorRepository.Get().ToArray()
                         };
                     return inventoryData;
                 });

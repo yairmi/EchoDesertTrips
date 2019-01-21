@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,9 +15,14 @@ namespace EchoDesertTrips.Data.Data_Repositories
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class HotelRoomTypeRepository : DataRepositoryBase<HotelRoomType>, IHotelRoomTypeRepository
     {
-        protected override HotelRoomType AddEntity(EchoDesertTripsContext entityContext, HotelRoomType entity)
+        protected override DbSet<HotelRoomType> DbSet(EchoDesertTripsContext entityContext)
         {
-            return entityContext.HotelRoomTypeSet.Add(entity);
+            return entityContext.HotelRoomTypeSet;
+        }
+
+        protected override Expression<Func<HotelRoomType, bool>> IdentifierPredicate(EchoDesertTripsContext entityContext, int id)
+        {
+            return (e => e.HotelRoomTypeId == id);
         }
 
         protected override HotelRoomType UpdateEntity(EchoDesertTripsContext entityContext, HotelRoomType entity)
@@ -27,12 +33,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
 
         protected override IEnumerable<HotelRoomType> GetEntities(EchoDesertTripsContext entityContext)
         {
-            var query = (from e in entityContext.HotelRoomTypeSet select e)
-                /*.Include(h => h.Hotel)*/
-                .Include(h => h.RoomType)
-                .ToList();
-                
-            return query;
+            return (from e in entityContext.HotelRoomTypeSet select e).Include(h => h.RoomType);
         }
 
         protected override IEnumerable<HotelRoomType> GetEntities(EchoDesertTripsContext entityContext, int id)

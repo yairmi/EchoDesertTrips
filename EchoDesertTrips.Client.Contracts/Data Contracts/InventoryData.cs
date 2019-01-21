@@ -16,17 +16,15 @@ namespace EchoDesertTrips.Client.Contracts
         public TourType[] TourTypes { get; set; }
         [DataMember]
         public Hotel[] Hotels { get; set; }
-        //[DataMember]
-        //public Nationality[] Nationalities { get; set; }
         [DataMember]
         public Agency[] Agencies { get; set; }
-        //[DataMember]
-        //public TourDestination[] TourDestinations { get; set; }
         [DataMember]
         public Optional[] Optionals { get; set; }
         [DataMember]
         public RoomType[] RoomTypes { get; set; }
         [DataMember]
         public HotelRoomType[] HotelRoomTypes { get; set; }
+        [DataMember]
+        public Operator[] Operators { get; set; }
     }
 }

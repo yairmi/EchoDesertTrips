@@ -13,10 +13,6 @@ namespace EchoDesertTrips.Desktop.Support
     {
         public static double CalculateReservationTotalPrice(Reservation reservation)
         {
-            //var adultPersons = reservation.Customers.ToList()
-            //    .Where((customer) => reservation.CreationTime.Subtract(customer.DateOfBirdth).TotalDays > 4380);
-            //var adults = adultPersons.Count();
-            //var childrens = reservation.Customers.Count - adults;
             double totalPrice = 0;
             var adultPrices = new Dictionary<int,double>();
             var childPrices = new Dictionary<int,double>();
@@ -98,10 +94,6 @@ namespace EchoDesertTrips.Desktop.Support
                         tourOptional.Optional.PricePerPerson * reservation.Customers.Count;
                 }
 
-                //foreach (var tourHotelRoomType in tour.TourHotelRoomTypes)
-                //{
-                //    totalPrice += tourHotelRoomType.Capacity * tourHotelRoomType.Persons * tourHotelRoomType.HotelRoomType.PricePerPerson;
-                //}
                 tour.TourHotels.ToList().ForEach((tourHotel) =>
                 {
                     tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>

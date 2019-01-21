@@ -71,17 +71,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public override string ViewTitle => "Agencies & Agents";
 
-        //protected override void OnViewLoaded()
-        //{
-        //    WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-        //    {
-        //        Agencies.Clear();
-        //        var agencies = inventoryClient.GetAllAgencies();
-        //        foreach (var agency in agencies)
-        //            Agencies.Add(agency);
-        //    });
-        //}
-
         private void CurrentAgentsViewModel_AgencyUpdated(object sender, AgencyEventArgs e)
         {
             var mappedAgency = AutoMapperUtil.Map<Agency, Agency>(e.Agency);

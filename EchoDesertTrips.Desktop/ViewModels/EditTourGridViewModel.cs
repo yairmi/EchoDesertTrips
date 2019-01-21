@@ -269,6 +269,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
+        private bool IsHotelRoomTypeInTourDaysRange(HotelRoomType hotelRoomType)
+        {
+            
+        }
+
         public void InitTourOptionals()
         {
             var tourOptionals = new ObservableCollection<TourOptional>();

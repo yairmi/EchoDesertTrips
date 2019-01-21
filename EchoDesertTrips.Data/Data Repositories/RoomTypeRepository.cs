@@ -1,8 +1,11 @@
 ﻿using EchoDesertTrips.Business.Entities;
 using EchoDesertTrips.Data.Contracts.Repository_Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -10,33 +13,19 @@ namespace EchoDesertTrips.Data.Data_Repositories
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class RoomTypeRepository : DataRepositoryBase<RoomType>, IRoomTypeRepository
     {
-        protected override RoomType AddEntity(EchoDesertTripsContext entityContext, RoomType entity)
+        protected override DbSet<RoomType> DbSet(EchoDesertTripsContext entityContext)
         {
-            return entityContext.RoomTypeSet.Add(entity);
+            return entityContext.RoomTypeSet;
         }
 
-        protected override RoomType UpdateEntity(EchoDesertTripsContext entityContext, RoomType entity)
+        protected override Expression<Func<RoomType, bool>> IdentifierPredicate(EchoDesertTripsContext entityContext, int id)
         {
-            return (from e in entityContext.RoomTypeSet where e.RoomTypeId == entity.RoomTypeId select e).FirstOrDefault();
-        }
-
-        protected override IEnumerable<RoomType> GetEntities(EchoDesertTripsContext entityContext)
-        {
-            return (from e in entityContext.RoomTypeSet select e);
+            return (e => e.RoomTypeId == id);
         }
 
         protected override IEnumerable<RoomType> GetEntities(EchoDesertTripsContext entityContext, int id)
         {
             return null;
-        }
-
-        protected override RoomType GetEntity(EchoDesertTripsContext entityContext, int id)
-        {
-            var query = (from e in entityContext.RoomTypeSet where e.RoomTypeId == id select e);
-            var results = query.FirstOrDefault();
-
-            return results;
-
         }
     }
 }

@@ -8,10 +8,6 @@ namespace EchoDesertTrips.Business.Entities
     [DataContract]
     public class TourType : EntityBase, IIdentifiableEntity
     {
-        /*public TripType()
-        {
-            Trips = new List<Trip>();
-        }*/
         [DataMember]
         public int TourTypeId { get; set; }
         [DataMember]

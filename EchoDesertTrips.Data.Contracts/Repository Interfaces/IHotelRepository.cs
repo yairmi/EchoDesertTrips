@@ -7,8 +7,7 @@ namespace EchoDesertTrips.Data.Contracts.Repository_Interfaces
 {
     public interface IHotelRepository : IDataRepository<Hotel>
     {
-        IEnumerable<DTOHotelRoomTypesInfo> GetHotelsAndRoomTypes();
-        IEnumerable<HotelRoomType> GetHotelRoomTypes();
+        Hotel AddHotel(Hotel hotel);
         Hotel UpdateHotel(Hotel hotel);
     }
 }

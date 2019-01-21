@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Data.Entity;
+using System.Linq.Expressions;
+using System;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -11,9 +13,14 @@ namespace EchoDesertTrips.Data.Data_Repositories
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class AgencyRepository : DataRepositoryBase<Agency>, IAgencyRepository
     {
-        protected override Agency AddEntity(EchoDesertTripsContext entityContext, Agency entity)
+        protected override DbSet<Agency> DbSet(EchoDesertTripsContext entityContext)
         {
-            return entityContext.AgencySet.Add(entity);
+            return entityContext.AgencySet;
+        }
+
+        protected override Expression<Func<Agency, bool>> IdentifierPredicate(EchoDesertTripsContext entityContext, int id)
+        {
+            return (e => e.AgencyId == id);
         }
 
         public Agency UpdateAgency(Agency agency)
@@ -46,31 +53,14 @@ namespace EchoDesertTrips.Data.Data_Repositories
             }
         }
 
-        protected override Agency UpdateEntity(EchoDesertTripsContext entityContext, Agency entity)
-        {
-            //return (from e in entityContext.AgencySet where e.AgencyId == entity.AgencyId select e).FirstOrDefault();
-            return (from e in entityContext.AgencySet where e.AgencyId == entity.AgencyId select e).FirstOrDefault();
-
-
-        }
-
         protected override IEnumerable<Agency> GetEntities(EchoDesertTripsContext entityContext)
         {
-            return entityContext.AgencySet.Include(a => a.Agents).ToList();
+            return entityContext.AgencySet.Include(a => a.Agents);
         }
 
         protected override IEnumerable<Agency> GetEntities(EchoDesertTripsContext entityContext, int id)
         {
             return null;
-        }
-
-        protected override Agency GetEntity(EchoDesertTripsContext entityContext, int id)
-        {
-            var query = (from e in entityContext.AgencySet where e.AgencyId == id select e);
-            var results = query.FirstOrDefault();
-
-            return results;
-
         }
    }
 }

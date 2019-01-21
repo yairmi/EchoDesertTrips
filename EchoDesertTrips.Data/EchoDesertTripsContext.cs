@@ -71,7 +71,9 @@ namespace EchoDesertTrips.Data
             modelBuilder.Entity<HotelRoomType>().HasKey(q =>
             new
             {
-                q.HotelRoomTypeId
+                q.HotelRoomTypeId,
+                //q.StartDaysRange,
+                //q.EndDaysRange
             }).Ignore(e => e.EntityId);
         }
     }

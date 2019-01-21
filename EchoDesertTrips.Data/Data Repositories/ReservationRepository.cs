@@ -9,6 +9,7 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Configuration;
 using Z.EntityFramework.Plus;
+using System.Linq.Expressions;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -16,6 +17,16 @@ namespace EchoDesertTrips.Data.Data_Repositories
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class ReservationRepository : DataRepositoryBase<Reservation>, IReservationRepository
     {
+        protected override DbSet<Reservation> DbSet(EchoDesertTripsContext entityContext)
+        {
+            return entityContext.ReservationSet;
+        }
+
+        protected override Expression<Func<Reservation, bool>> IdentifierPredicate(EchoDesertTripsContext entityContext, int id)
+        {
+            return (e => e.ReservationId == id);
+        }
+
         protected override Reservation AddEntity(EchoDesertTripsContext entityContext, Reservation entity)
         {
             return null;
@@ -177,15 +188,23 @@ namespace EchoDesertTrips.Data.Data_Repositories
                         //Handle Tours
                         foreach (var tour in reservation.Tours)
                         {
-                            var exsitingTour = (from e in exsitingReservation.Tours where e.TourId == tour.TourId select e).FirstOrDefault();
-                            if (exsitingTour != null)
-                            {
-                                entityContext.Entry(exsitingTour).CurrentValues.SetValues(tour);
-                            }
-                            else //new Tour
+                            Tour exsitingTour = null;
+                            if (tour.TourId == 0)//new tour
                             {
                                 exsitingReservation.Tours.Add(tour);
                                 continue;
+                            }
+                            else
+                            {
+                                exsitingTour = (from e in exsitingReservation.Tours where e.TourId == tour.TourId select e).FirstOrDefault();
+                                if (exsitingTour != null)
+                                {
+                                    entityContext.Entry(exsitingTour).CurrentValues.SetValues(tour);
+                                }
+                                else
+                                {
+                                    log.Error("Fail to locate tour.TourId: " + tour.TourId);
+                                }
                             }
 
                             //Sub Tours
@@ -236,28 +255,43 @@ namespace EchoDesertTrips.Data.Data_Repositories
                             {
                                 tour.TourHotels.ForEach((tourHotel) =>
                                 {
-                                    var existingTourHotel = (from e in exsitingTour.TourHotels where e.TourHotelId == tourHotel.TourHotelId select e).FirstOrDefault();
-                                    if (existingTourHotel == null)
+                                    if (tourHotel.TourHotelId == 0)
                                     {
                                         exsitingTour.TourHotels.Add(tourHotel);
                                     }
                                     else
-                                        //Tour Hotel Room Types
-                                    if (tourHotel.TourHotelRoomTypes != null)
                                     {
-                                        tourHotel.TourHotelRoomTypes.ForEach((tourHotelRoomType) =>
+                                        //Tour Hotel Room Types
+                                        var existingTourHotel = (from e in exsitingTour.TourHotels where e.TourHotelId == tourHotel.TourHotelId select e).FirstOrDefault();
+                                        if (existingTourHotel != null)
+                                        { 
+                                            if (tourHotel.TourHotelRoomTypes != null)
+                                            {
+                                                tourHotel.TourHotelRoomTypes.ForEach((tourHotelRoomType) =>
+                                                {
+                                                    if (tourHotelRoomType.TourHotelRoomTypeId == 0)
+                                                    {
+                                                        existingTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
+                                                    }
+                                                    else
+                                                    {
+                                                        var existingTourHotelRoomType = (from e in existingTourHotel.TourHotelRoomTypes where e.TourHotelRoomTypeId == tourHotelRoomType.TourHotelRoomTypeId select e).FirstOrDefault();
+                                                        if (existingTourHotelRoomType != null)
+                                                        {
+                                                            entityContext.Entry(existingTourHotelRoomType).CurrentValues.SetValues(tourHotelRoomType);
+                                                        }
+                                                        else
+                                                        {
+                                                            log.Error("Fail to locate tourHotelRoomType.TourHotelRoomTypeId: " + tourHotelRoomType.TourHotelRoomTypeId);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                        else
                                         {
-                                            var existingTourHotelRoomType = (from e in existingTourHotel.TourHotelRoomTypes where e.TourHotelRoomTypeId == tourHotelRoomType.TourHotelRoomTypeId select e).FirstOrDefault();
-                                            if (existingTourHotelRoomType == null) //new tourHotelRoomType
-                                            {
-                                                existingTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
-                                            }
-                                            else
-                                            {
-                                                entityContext.Entry(existingTourHotelRoomType).CurrentValues
-                                                    .SetValues(tourHotelRoomType);
-                                            }
-                                        });
+                                            log.Error("Fail to locate tourHotel.TourHotelId: " + tourHotel.TourHotelId);
+                                        }
                                     }
                                 });
                             }
@@ -309,14 +343,17 @@ namespace EchoDesertTrips.Data.Data_Repositories
                         //Handle Customers
                         foreach (var customer in reservation.Customers)
                         {
-                            var exsitingCustomer = (from e in exsitingReservation.Customers where e.CustomerId == customer.CustomerId select e).FirstOrDefault();
-                            if (exsitingCustomer != null)
-                            {
-                                entityContext.Entry(exsitingCustomer).CurrentValues.SetValues(customer);
-                            }
-                            else //new customer
+                            if (customer.CustomerId == 0)
                             {
                                 exsitingReservation.Customers.Add(customer);
+                            }
+                            else
+                            {
+                                var exsitingCustomer = (from e in exsitingReservation.Customers where e.CustomerId == customer.CustomerId select e).FirstOrDefault();
+                                if (exsitingCustomer != null)
+                                {
+                                    entityContext.Entry(exsitingCustomer).CurrentValues.SetValues(customer);
+                                }
                             }
                         }
 

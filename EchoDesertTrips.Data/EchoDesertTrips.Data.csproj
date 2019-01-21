@@ -153,6 +153,22 @@
     <Compile Include="Migrations\201901111247427_newfieldtotalprice.Designer.cs">
       <DependentUpon>201901111247427_newfieldtotalprice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901181329296_daysrange_new_fields.cs" />
+    <Compile Include="Migrations\201901181329296_daysrange_new_fields.Designer.cs">
+      <DependentUpon>201901181329296_daysrange_new_fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901190913110_makestartandenddateskeys.cs" />
+    <Compile Include="Migrations\201901190913110_makestartandenddateskeys.Designer.cs">
+      <DependentUpon>201901190913110_makestartandenddateskeys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901190922015_makestartandenddateskeys1.cs" />
+    <Compile Include="Migrations\201901190922015_makestartandenddateskeys1.Designer.cs">
+      <DependentUpon>201901190922015_makestartandenddateskeys1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901190939553_makestartandenddateskeys2.cs" />
+    <Compile Include="Migrations\201901190939553_makestartandenddateskeys2.Designer.cs">
+      <DependentUpon>201901190939553_makestartandenddateskeys2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -194,6 +210,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901111247427_newfieldtotalprice.resx">
       <DependentUpon>201901111247427_newfieldtotalprice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901181329296_daysrange_new_fields.resx">
+      <DependentUpon>201901181329296_daysrange_new_fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901190913110_makestartandenddateskeys.resx">
+      <DependentUpon>201901190913110_makestartandenddateskeys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901190922015_makestartandenddateskeys1.resx">
+      <DependentUpon>201901190922015_makestartandenddateskeys1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901190939553_makestartandenddateskeys2.resx">
+      <DependentUpon>201901190939553_makestartandenddateskeys2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

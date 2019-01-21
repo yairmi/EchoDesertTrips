@@ -53,8 +53,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     bool bIsNew = TourType.TourTypeId == 0;
 
                     TourType.Destinations = string.Empty;
+                    byte days = 0;
                     foreach (var destination in Destinations)
+                    {
+                        if (days >= TourType.Days)
+                            break;
                         TourType.Destinations += destination.Serialize();
+                        days++;
+                    }
 
                     TourType.AdultPrices = string.Empty;
                     foreach (var adultPrice in AdultPrices)

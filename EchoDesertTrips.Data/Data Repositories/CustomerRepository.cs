@@ -5,6 +5,8 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Data.Entity;
 using System.Runtime.InteropServices;
+using System.Linq.Expressions;
+using System;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -12,36 +14,19 @@ namespace EchoDesertTrips.Data.Data_Repositories
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class CustomerRepository : DataRepositoryBase<Customer>, ICustomerRepository
     {
-        protected override Customer AddEntity(EchoDesertTripsContext entityContext, Customer entity)
+        protected override DbSet<Customer> DbSet(EchoDesertTripsContext entityContext)
         {
-            return entityContext.CustomerSet.Add(entity);
+            return entityContext.CustomerSet;
         }
 
-        protected override Customer UpdateEntity(EchoDesertTripsContext entityContext, Customer entity)
+        protected override Expression<Func<Customer, bool>> IdentifierPredicate(EchoDesertTripsContext entityContext, int id)
         {
-            return (from e in entityContext.CustomerSet where e.CustomerId == entity.CustomerId select e).FirstOrDefault();
-        }
-
-        protected override IEnumerable<Customer> GetEntities(EchoDesertTripsContext entityContext)
-        {
-            var query = (from e in entityContext.CustomerSet select e);//.Include(n => n.Nationality);
-                //.Include(c => c.Reservations.Select(t => t.Tours));
-
-            return query;
+            return (e => e.CustomerId == id);
         }
 
         protected override IEnumerable<Customer> GetEntities(EchoDesertTripsContext entityContext, int id)
         {
             return null;
-        }
-
-        protected override Customer GetEntity(EchoDesertTripsContext entityContext, int id)
-        {
-            var query = (from e in entityContext.CustomerSet where e.CustomerId == id select e);
-            var results = query.FirstOrDefault();
-
-            return results;
-
         }
     }
 }

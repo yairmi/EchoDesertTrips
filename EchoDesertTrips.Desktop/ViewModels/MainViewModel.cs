@@ -224,10 +224,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 Hotels.Clear();
                                 Optionals.Clear();
                                 Agencies.Clear();
+                                Operators.Clear();
                                 foreach (var tourType in inventoryData.Result.TourTypes)
                                 {
                                     if (tourType.Visible)
-                                        //TourTypes.Add(TourTypeHelper.CreateTourTypeWrapper(tourType));
                                         TourTypes.Add(tourType);
                                 }
                                 foreach (var hotel in inventoryData.Result.Hotels)
@@ -235,16 +235,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                     if (hotel.Visible)
                                         Hotels.Add(hotel);
                                 }
+
                                 foreach (var optional in inventoryData.Result.Optionals)
                                 {
                                     if (optional.Visible)
                                         Optionals.Add(optional);
                                 }
 
-                                foreach (var agency in inventoryData.Result.Agencies)
-                                {
-                                    Agencies.Add(agency);
-                                }
+                                Agencies.AddRange(inventoryData.Result.Agencies);
+                                Operators.AddRange(inventoryData.Result.Operators);
 
                                 _mainTabViewModel.ReservationsViewModel.TourTypes = TourTypes;
                                 _mainTabViewModel.ReservationsViewModel.Hotels = Hotels;
@@ -255,6 +254,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 _mainTabViewModel.AdminViewModel.Hotels = Hotels;
                                 _mainTabViewModel.AdminViewModel.Optionals = Optionals;
                                 _mainTabViewModel.AdminViewModel.Agencies = Agencies;
+                                _mainTabViewModel.AdminViewModel.Operators = Operators;
                             }
                             catch(Exception ex)
                             {

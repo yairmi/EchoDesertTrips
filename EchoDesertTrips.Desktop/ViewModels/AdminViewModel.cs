@@ -23,16 +23,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
         public override string ViewTitle => "Administrator";
 
-        //[Import]
-        //public NationalityViewModel NationalityViewModel { get; private set; }
         [Import]
         public TourTypeViewModel TourTypeViewModel { get; set; }
         [Import]
         public HotelViewModel HotelViewModel { get; set; }
         [Import]
         public AgentsViewModel AgentsViewModel { get; set; }
-        //[Import]
-        //public TourDestinationViewModel TourDestinationViewModel { get; set; }
         [Import]
         public OptionalsViewModel OptionalsViewModel { get; set; }
         [Import]
@@ -57,6 +53,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             HotelViewModel.Hotels = Hotels;
             OptionalsViewModel.Optionals = Optionals;
             AgentsViewModel.Agencies = Agencies;
+            OperatorViewModel.Operators = Operators;
 
         }
     }

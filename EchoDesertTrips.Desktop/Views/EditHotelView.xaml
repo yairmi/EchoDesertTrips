@@ -51,7 +51,7 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="140" />
-                    <ColumnDefinition Width="340" />
+                    <ColumnDefinition Width="600" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Hotel Name:" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Hotel Address:" />
@@ -66,13 +66,6 @@
                                       AutoGenerateColumns="False"
                                       CanUserAddRows="True"
                                       CellStyle="{StaticResource DataGridBorder}">
-                    <!--<i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="RowEditEnding">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, 
-                                                RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                                CommandParameter="{Binding ElementName=dataGridRoomTypes, Path=DataContext}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>-->
                     <DataGrid.Columns>
                         <DataGridTemplateColumn>
                         </DataGridTemplateColumn>
@@ -94,6 +87,30 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Start Days Range"  >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StartDaysRange, StringFormat=dd-MM-yyyy}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <DatePicker x:Name="StartDay" Width="Auto" SelectedDate="{Binding StartDaysRange, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="End Days Range"  >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding EndDaysRange, StringFormat=dd-MM-yyyy}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <DatePicker x:Name="EndDay" Width="Auto" SelectedDate="{Binding EndDaysRange, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>                        
                         <DataGridTextColumn x:Name="pricePerPersonColumn" Width="Auto" Header="Price Per Person" Binding="{Binding PricePerPerson, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <DataGridCheckBoxColumn x:Name="RoomTypeVisibility" Width="Auto" Binding="{Binding Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Visibility"/>
                     </DataGrid.Columns>

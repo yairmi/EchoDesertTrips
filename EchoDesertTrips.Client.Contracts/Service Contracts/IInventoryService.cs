@@ -12,13 +12,7 @@ namespace EchoDesertTrips.Client.Contracts
     public interface IInventoryService : IServiceContract
     {
         [OperationContract]
-        InventoryData GetHotelsData();
-
-        [OperationContract]
         InventoryData GetInventoryData();
-
-        [OperationContract]
-        void UpdateHotelAndRoomTypes(List<HotelRoomType> hotelRoomTypes);
 
         [OperationContract]
         Hotel UpdateHotel(Hotel hotel);
@@ -31,6 +25,9 @@ namespace EchoDesertTrips.Client.Contracts
 
         [OperationContract]
         Optional UpdateOptional(Optional optional);
+
+        [OperationContract]
+        Hotel[] GetAllHotels();
 
         [OperationContract]
         Agency[] GetAllAgencies();

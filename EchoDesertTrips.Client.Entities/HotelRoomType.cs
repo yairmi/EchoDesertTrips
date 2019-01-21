@@ -1,9 +1,15 @@
 ﻿using Core.Common.Core;
+using System;
 
 namespace EchoDesertTrips.Client.Entities
 {
     public class HotelRoomType : ObjectBase
     {
+        public HotelRoomType()
+        {
+            StartDaysRange = DateTime.Today;
+            EndDaysRange = DateTime.Today;
+        }
         private int _hotelRoomTypeId;
 
         public int HotelRoomTypeId
@@ -56,6 +62,33 @@ namespace EchoDesertTrips.Client.Entities
                     _roomType = value;
                     OnPropertyChanged(() => RoomType);
                 }
+            }
+        }
+        private DateTime _startDaysRange;
+        public DateTime StartDaysRange
+        {
+            get
+            {
+                return _startDaysRange;
+            }
+            set
+            {
+                _startDaysRange = value;
+                OnPropertyChanged(() => StartDaysRange);
+            }
+        }
+
+        public DateTime _endDaysRange;
+        public DateTime EndDaysRange
+        {
+            get
+            {
+                return _endDaysRange;
+            }
+            set
+            {
+                _endDaysRange = value;
+                OnPropertyChanged(() => EndDaysRange);
             }
         }
 

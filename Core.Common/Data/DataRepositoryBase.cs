@@ -2,7 +2,8 @@
 using System.Data.Entity;
 using System.Linq;
 using Core.Common.Contracts;
-using Core.Common.Utils;
+using System.Linq.Expressions;
+using System;
 
 namespace Core.Common.Data
 {
@@ -10,6 +11,9 @@ namespace Core.Common.Data
         where T : class, IIdentifiableEntity, new()
         where U : DbContext, new()
     {
+        protected abstract DbSet<T> DbSet(U entityContext);
+        protected abstract Expression<Func<T, bool>> IdentifierPredicate(U entityContext, int id);
+
         protected abstract T AddEntity(U entityContext, T entity);
 
         protected abstract T UpdateEntity(U entityContext, T entity);
@@ -65,7 +69,7 @@ namespace Core.Common.Data
         {
             using (U entityContext = new U())
             {
-                IEnumerable<T> entities = GetEntities(entityContext, id);
+                var entities = GetEntities(entityContext, id);
                 foreach(var entity in entities)
                 {
                     entityContext.Entry<T>(entity).State = EntityState.Deleted;

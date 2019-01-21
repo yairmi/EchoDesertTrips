@@ -10,25 +10,19 @@ namespace EchoDesertTrips.Business.Contracts
     public interface IInventoryService
     {
         [OperationContract]
-        InventoryData GetHotelsData();
-
-        [OperationContract]
         InventoryData GetInventoryData();
 
         [OperationContract]
-        void UpdateHotelAndRoomTypes(List<HotelRoomType> hotelRoomTypes);
-
-        [OperationContract]
         Hotel UpdateHotel(Hotel hotel);
-
-        //[OperationContract]
-        //Nationality UpdateNationality(Nationality nationality);
 
         [OperationContract]
         TourType UpdateTourType(TourType tourType);
 
         [OperationContract]
         Optional UpdateOptional(Optional optional);
+
+        [OperationContract]
+        Hotel[] GetAllHotels();
 
         [OperationContract]
         Agency[] GetAllAgencies();
@@ -39,20 +33,11 @@ namespace EchoDesertTrips.Business.Contracts
         [OperationContract]
         Agent UpdateAgent(Agent agent);
 
-        //[OperationContract]
-        //Nationality[] GetAllNationalities();
-
         [OperationContract]
         TourType[] GetAllTourTypes();
 
         [OperationContract]
         Optional[] GetAllOptionals();
-
-        //[OperationContract]
-        //TourDestination[] GetAllTourDestinations();
-
-        //[OperationContract]
-        //TourDestination UpdateTourDestination(TourDestination tourDestination);
 
         [OperationContract]
         RoomType[] GetAllRoomTypes();
@@ -63,17 +48,11 @@ namespace EchoDesertTrips.Business.Contracts
         [OperationContract]
         void DeleteOptional(Optional optional);
 
-        //[OperationContract]
-        //void DeleteTourDestination(TourDestination tourDestination);
-
         [OperationContract]
         void DeleteRoomType(RoomType roomType);
 
         [OperationContract]
         void DeleteTourType(TourType tourType);
-
-        //[OperationContract]
-        //void DeleteNationality(Nationality nationality);
 
         [OperationContract]
         void DeleteAgency(Agency agency);

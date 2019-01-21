@@ -154,9 +154,15 @@ namespace EchoDesertTrips.Business.Business_Engines
                     reservation.Customers.Add(customer);
                 foreach (var tour in reservation.Tours)
                 {
-                    tour.TourOptionals.ForEach((tourOptional) =>
+                    tour.TourOptionals.Clear();
+                    //tour.TourOptionals.ForEach((tourOptional) =>
+                    //{
+                    //    tourOptional.Optional.OptionalDescription = string.Empty;
+                    //});
+                    tour.TourHotels.ForEach((tourHotel) =>
                     {
-                        tourOptional.Optional.OptionalDescription = string.Empty;
+                        if (tourHotel.TourHotelRoomTypes != null)
+                            tourHotel.TourHotelRoomTypes.Clear();
                     });
                 }
             });

@@ -18,8 +18,9 @@ namespace Core.Common.UI.Core
             _optionals = new ObservableCollection<Optional>();
             _tourTypes = new ObservableCollection<TourType>();
             _hotels = new ObservableCollection<Hotel>();
-            _agencies = new ObservableCollection<Agency>();
+            _agencies = new RangeObservableCollection<Agency>();
             _roomTypes = new ObservableCollection<RoomType>();
+            _operators = new RangeObservableCollection<Operator>();
         }
 
         bool _ErrorsVisible = false;
@@ -202,9 +203,9 @@ namespace Core.Common.UI.Core
             }
         }
 
-        private ObservableCollection<Agency> _agencies;
+        private RangeObservableCollection<Agency> _agencies;
 
-        public ObservableCollection<Agency> Agencies
+        public RangeObservableCollection<Agency> Agencies
         {
             get
             {
@@ -215,6 +216,22 @@ namespace Core.Common.UI.Core
             {
                 _agencies = value;
                 OnPropertyChanged(() => Agencies, false);
+            }
+        }
+
+        private RangeObservableCollection<Operator> _operators;
+
+        public RangeObservableCollection<Operator> Operators
+        {
+            get
+            {
+                return _operators;
+            }
+
+            set
+            {
+                _operators = value;
+                OnPropertyChanged(() => Operators, false);
             }
         }
 

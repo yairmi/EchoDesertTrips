@@ -12,19 +12,14 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class InventoryClient : UserClientBase<IInventoryService>, IInventoryService
     {
+        public Hotel[] GetAllHotels()
+        {
+            return Channel.GetAllHotels();
+        }
+
         public Agency[] GetAllAgencies()
         {
             return Channel.GetAllAgencies();
-        }
-
-        public InventoryData GetHotelsData()
-        {
-            return Channel.GetHotelsData();
-        }
-
-        public void UpdateHotelAndRoomTypes(List<HotelRoomType> hotelRoomTypes)
-        {
-            Channel.UpdateHotelAndRoomTypes(hotelRoomTypes);
         }
 
         public Hotel UpdateHotel(Hotel hotel)
