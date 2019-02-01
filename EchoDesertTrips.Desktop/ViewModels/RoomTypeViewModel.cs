@@ -73,57 +73,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             models.Add(LastUpdatedRoomType);
         }
+    }
 
-        //private ObservableCollection<RoomType> _roomTypes;
-
-        //public ObservableCollection<RoomType> RoomTypes
-        //{
-        //    get
-        //    {
-        //        return _roomTypes;
-        //    }
-
-        //    set
-        //    {
-        //        _roomTypes = value;
-        //        OnPropertyChanged(() => RoomTypes, false);
-        //    }
-        //}
-
-        protected override void OnViewLoaded()
+        public class RoomTypeValidationRule : ValidationRule
         {
-            try
+            public override ValidationResult Validate(object value,
+                System.Globalization.CultureInfo cultureInfo)
             {
-                WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                RoomType roomType = (value as BindingGroup).Items[0] as RoomType;
+                if (roomType.RoomTypeName == string.Empty)
                 {
-                    RoomType[] roomTypes = inventoryClient.GetAllRoomTypes();
-                    RoomTypes = new ObservableCollection<RoomType>(roomTypes);
-                });
-            }
-            catch (Exception ex)
-            {
-                log.Error("Exception load roomTypes: " + ex.Message);
+                    return new ValidationResult(false,
+                        "Room Type name should not be empty");
+                }
+                else
+                {
+                    var validationResult = ValidationResult.ValidResult;
+                    return validationResult;
+                }
             }
         }
     }
 
-    public class RoomTypeValidationRule : ValidationRule
-    {
-        public override ValidationResult Validate(object value,
-            System.Globalization.CultureInfo cultureInfo)
-        {
-            RoomType roomType = (value as BindingGroup).Items[0] as RoomType;
-            if (roomType.RoomTypeName == string.Empty)
-            {
-                return new ValidationResult(false,
-                    "Room Type name should not be empty");
-            }
-            else
-            {
-                var validationResult = ValidationResult.ValidResult;
-                return validationResult;
-            }
-        }
-    }
-}
 

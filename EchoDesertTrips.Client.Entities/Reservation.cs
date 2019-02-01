@@ -2,6 +2,7 @@
 using Core.Common.Core;
 using FluentValidation;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -354,7 +355,47 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
+        private string _car;
+        public string Car
+        {
+            get
+            {
+                return _car;
+            }
+            set
+            {
+                _car = value;
+                OnPropertyChanged(() => Car, true);
+            }
+        }
 
+        private string _guide;
+        public string Guide
+        {
+            get
+            {
+                return _guide;
+            }
+            set
+            {
+                _guide = value;
+                OnPropertyChanged(() => Guide, true);
+            }
+        }
+
+        private string _endIn;
+        public string EndIn
+        {
+            get
+            {
+                return _endIn;
+            }
+            set
+            {
+                _endIn = value;
+                OnPropertyChanged(() => EndIn, true);
+            }
+        }
 
         public byte[] RowVersion { get; set; }
 

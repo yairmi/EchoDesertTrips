@@ -95,7 +95,7 @@
                         EnableColumnVirtualization="true"
                         EnableRowVirtualization="True"
                         Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}"
-                        CellStyle="{StaticResource DataGridBorder}">
+                        CellStyle="{StaticResource DataGridBorder}" IsReadOnly="true">
                         <DataGrid.ColumnHeaderStyle>
                             <Style TargetType="DataGridColumnHeader">
                                 <Setter Property="RenderTransform">
@@ -255,7 +255,7 @@
                             EnableColumnVirtualization="true"
                             EnableRowVirtualization="True"                                      
                             Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='308'}"
-                            CellStyle="{StaticResource DataGridBorder}">
+                            CellStyle="{StaticResource DataGridBorder}" IsReadOnly="False">
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="RenderTransform">
@@ -269,6 +269,15 @@
                                         <Setter Property="BorderThickness" Value="1,0,1,0"/>
                                     </Style>
                                 </DataGrid.ColumnHeaderStyle>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Beginning​Edit">
+                                        <!--Occurs before a row or cell enters edit mode-->
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.Beginning​EditCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="Row​Edit​Ending">
+                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <DataGrid.Columns>
                                     <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
@@ -283,17 +292,13 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <!--<DataGridTemplateColumn Header="Reservation ID" Width="100">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding ReservationId}" HorizontalAlignment="Center"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>-->
-                                    <DataGridTextColumn Header="Reservation ID" Width="100" Binding="{Binding ReservationId}"/>
-                                    <DataGridTextColumn Header="Jordan ID" Width="100" Binding="{Binding Group.GroupId}"/>
-                                    <DataGridTextColumn Header="PAX" Width="70" Binding="{Binding Customers.Count}"/>
-                                    <DataGridTextColumn Header="Comments" Binding="{Binding Comments}" Width="400"/>
+                                    <DataGridTextColumn Header="Reservation ID" Width="100" Binding="{Binding ReservationId}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Jordan ID" Width="100" Binding="{Binding Group.GroupId}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="PAX" Width="70" Binding="{Binding Customers.Count}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Car" Width="100" Binding="{Binding Car}" IsReadOnly="False"/>
+                                    <DataGridTextColumn Header="Guide/Driver" Width="100" Binding="{Binding Guide}" IsReadOnly="False"/>
+                                    <DataGridTextColumn Header="End In" Width="100" Binding="{Binding EndIn}" IsReadOnly="False"/>
+                                    <DataGridTextColumn Header="Comments" Binding="{Binding Comments}" Width="400" IsReadOnly="True"/>
                                 </DataGrid.Columns>
                                 <DataGrid.GroupStyle>
                                     <!-- Style for groups at top level. -->

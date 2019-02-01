@@ -55,6 +55,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             AgentsViewModel.Agencies = Agencies;
             OperatorViewModel.Operators = Operators;
 
+            RoomTypeViewModel.RoomTypes = RoomTypes;
+            HotelViewModel.RoomTypes = RoomTypes;
         }
     }
 }

@@ -63,7 +63,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                             }
                             else
                             {
-                                log.Error("Fail to add tourTypeDescription.TourTypeDescriptionId: " + tourTypeDescription.TourTypeDescriptionId);
+                                log.Error("Fail to update tourTypeDescription.TourTypeDescriptionId: " + tourTypeDescription.TourTypeDescriptionId);
                             }
                         }
                     }

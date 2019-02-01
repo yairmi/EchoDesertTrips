@@ -61,8 +61,11 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
                 .Include(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
                 .Include(o => o.Tours.Select(th => th.TourHotels
-                .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType))))
+                .Select(aa => aa.TourHotelRoomTypes
+                .Select(bb => bb.HotelRoomType.RoomType))))
+                .Include(o => o.Tours.Select(th => th.TourHotels
+                .Select(aa => aa.TourHotelRoomTypes
+                .Select(bb => bb.HotelRoomType).Select(cc => cc.HotelRoomTypeDaysRanges))))
                 .FirstOrDefault();
         }
 
@@ -118,9 +121,6 @@ namespace EchoDesertTrips.Data.Data_Repositories
                             .IncludeOptimized(o => o.Tours.Select(t => t.TourHotels))
                             .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
                             .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel))).ToArray();
-                //.IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(throomTypes => throomTypes.TourHotelRoomTypes)))
-                //.IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(throomTypes => throomTypes.TourHotelRoomTypes.Select(hotelRoomType => hotelRoomType.HotelRoomType))))
-                //.IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(throomTypes => throomTypes.TourHotelRoomTypes.Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType)))).ToArray();
             }
         }
 

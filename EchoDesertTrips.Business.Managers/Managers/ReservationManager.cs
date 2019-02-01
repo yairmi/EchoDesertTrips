@@ -180,46 +180,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        public void DeleteTour(Tour tour)
-        {
-            ExecuteFaultHandledOperation(() =>
-            {
-                ITourRepository tourRepository =
-                    _DataRepositoryFactory.GetDataRepository<ITourRepository>();
-
-                Tour tmpTour = tourRepository.Get(tour.TourId);
-
-                if (tmpTour == null)
-                {
-                    NotFoundException ex = new NotFoundException(string.Format("No Tour found for ID '{0}'", tour.TourId));
-
-                    throw new FaultException<NotFoundException>(ex, ex.Message);
-                }
-
-                tourRepository.RemoveTour(tour.TourId);
-            });
-        }
-
-        public void DeleteCustomer(Customer customer)
-        {
-            ExecuteFaultHandledOperation(() =>
-            {
-                ICustomerRepository customerRepository =
-                    _DataRepositoryFactory.GetDataRepository<ICustomerRepository>();
-
-                Customer tmpCustomer = customerRepository.Get(customer.CustomerId);
-
-                if (tmpCustomer == null)
-                {
-                    NotFoundException ex = new NotFoundException(string.Format("No customer found for ID '{0}'", customer.CustomerId));
-
-                    throw new FaultException<NotFoundException>(ex, ex.Message);
-                }
-
-                customerRepository.Remove(customer.CustomerId);
-            });
-        }
-
         public async Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
         {
             return await ExecuteFaultHandledOperation(async () =>
@@ -288,27 +248,5 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 return await task.ConfigureAwait(false);
             });
         }
-
-
-        //public ReservationData EditReservation(int ReservationId)
-        //{
-        //    return ExecuteFaultHandledOperation(() =>
-        //    {
-        //        IReservationRepository reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-        //        ReservationData reservationData = new ReservationData();
-
-        //        var reservation = reservationRepository.EditReservation(ReservationId);
-
-        //        if (reservation == null)
-        //        {
-        //            NotFoundException ex = new NotFoundException(string.Format("No reservation found for ID '{0}'", ReservationId));
-
-        //            throw new FaultException<NotFoundException>(ex, ex.Message);
-        //        }
-
-        //        reservationData.DbReservation = reservation;
-        //        return (reservationData);
-        //    });
-        //}
     }
 }

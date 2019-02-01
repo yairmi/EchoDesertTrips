@@ -22,7 +22,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-       
+
         [ImportingConstructor]
         public EditTourGridViewModel(IServiceFactory serviceFactory,
                 IMessageDialogService messageBoxDialogService)
@@ -165,7 +165,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 null;
             InitTourOptionals();
             Tour.CleanAll();
-        }    
+        }
 
         private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
 
@@ -225,14 +225,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
             //Init all rooms(tourhotelroomtype) for selected hotel
             hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
             {
-                var tourHotelRoomType = new TourHotelRoomType()
+                if (IsHotelRoomTypeInTourDaysRange(hotelRoomType))
                 {
-                    HotelRoomType = hotelRoomType,
-                    HotelRoomTypeId = hotelRoomType.HotelRoomTypeId,
-                    Capacity = 0,
-                    Persons = 0
-                };
-                TourHotelRoomTypes.Add(tourHotelRoomType);
+                    var tourHotelRoomType = new TourHotelRoomType()
+                    {
+                        HotelRoomType = hotelRoomType,
+                        HotelRoomTypeId = hotelRoomType.HotelRoomTypeId,
+                        Capacity = 0,
+                        Persons = 0
+                    };
+                    TourHotelRoomTypes.Add(tourHotelRoomType);
+                }
             });
             //update with actual persons+capacity
             var tempTourHotel = Tour.TourHotels.FirstOrDefault(t => t.Hotel.HotelId == hotel.HotelId);
@@ -271,7 +274,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool IsHotelRoomTypeInTourDaysRange(HotelRoomType hotelRoomType)
         {
-            
+            bool bInRange = false;
+            foreach (var dayRange in hotelRoomType.HotelRoomTypeDaysRanges)
+            {
+                if (Tour.StartDate >= dayRange.StartDaysRange && Tour.StartDate <= dayRange.EndDaysRange)
+                {
+                    bInRange = true;
+                    break;
+                }
+            }
+            return bInRange;
         }
 
         public void InitTourOptionals()

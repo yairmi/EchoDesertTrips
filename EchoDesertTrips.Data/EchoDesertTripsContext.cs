@@ -61,6 +61,7 @@ namespace EchoDesertTrips.Data
             modelBuilder.Entity<Group>().HasKey<int>(e => e.GroupId).Ignore(e => e.EntityId);
             modelBuilder.Entity<TourHotel>().HasKey<int>(e => e.TourHotelId).Ignore(e => e.EntityId);
             modelBuilder.Entity<TourHotelRoomType>().HasKey<int>(e => e.TourHotelRoomTypeId).Ignore(e => e.EntityId);
+            modelBuilder.Entity<HotelRoomTypeDaysRange>().HasKey<int>(e => e.HotelRoomTypeDaysRangeId).Ignore(e => e.EntityId);
             modelBuilder.Entity<TourOptional>().HasKey(q =>
             new
             {

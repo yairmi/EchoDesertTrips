@@ -48,6 +48,10 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="140" />
@@ -60,12 +64,14 @@
                 <TextBox Grid.Row="0" Grid.Column="1" Margin="3" Width="160" Text="{Binding Hotel.HotelName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
                 <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Width="160" Text="{Binding Hotel.HotelAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
                 <CheckBox Grid.Row="2" Grid.Column="1" Margin="3" Width="160" IsChecked="{Binding Hotel.Visible}" HorizontalAlignment="Left" />
-                <DataGrid Grid.Row="3" Grid.Column="1" x:Name="dataGridRoomTypes" 
-                                      ItemsSource="{Binding Hotel.HotelRoomTypes, Mode=TwoWay}"
-                                      RowDetailsVisibilityMode="Visible"
-                                      AutoGenerateColumns="False"
-                                      CanUserAddRows="True"
-                                      CellStyle="{StaticResource DataGridBorder}">
+                <DataGrid 
+                    Grid.Row="3" Grid.Column="1" x:Name="dataGridRoomTypes" 
+                    ItemsSource="{Binding hotelRoomTypeWithDaysRanges.hotelRoomTypeWithDaysRanges, Mode=TwoWay}"
+                    RowDetailsVisibilityMode="Visible"
+                    AutoGenerateColumns="False"
+                    VerticalScrollBarVisibility="Visible"
+                    Height="300"
+                    CellStyle="{StaticResource DataGridBorder}">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn>
                         </DataGridTemplateColumn>
@@ -78,12 +84,11 @@
                             <DataGridTemplateColumn.CellEditingTemplate>
                                 <DataTemplate>
                                     <ComboBox x:Name="cbRoomTypeName" SelectedItem="{Binding RoomType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        SelectedValue="{Binding RoomTypeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
-                                                        ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
-                                                        SelectedValuePath="RoomTypeId"
-                                                        DisplayMemberPath="RoomTypeName"
-                                                        ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.RoomTypes}">
-                                    </ComboBox>
+                                    SelectedValue="{Binding RoomTypeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                    ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                                    SelectedValuePath="RoomTypeId"
+                                    DisplayMemberPath="RoomTypeName"
+                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.RoomTypes}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
@@ -110,14 +115,14 @@
                                     <DatePicker x:Name="EndDay" Width="Auto" SelectedDate="{Binding EndDaysRange, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellEditingTemplate>
-                        </DataGridTemplateColumn>                        
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn x:Name="pricePerPersonColumn" Width="Auto" Header="Price Per Person" Binding="{Binding PricePerPerson, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <DataGridCheckBoxColumn x:Name="RoomTypeVisibility" Width="Auto" Binding="{Binding Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Visibility"/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal">
-                    <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" />
-                    <Button Content="Cancel" Margin="5" Command="{Binding CancelCommand}" />
+                    <Button Content="Save All" Margin="5" Command="{Binding SaveCommand}" />
+                    <Button Content="Cancel All" Margin="5" Command="{Binding CancelCommand}" />
                 </StackPanel>
             </Grid>
         </Grid>

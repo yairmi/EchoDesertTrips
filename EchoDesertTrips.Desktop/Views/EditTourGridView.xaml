@@ -32,6 +32,7 @@
         </Style>
         <support:BoolToOppositeConverter x:Key="boolToOppositeConverter" />
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
+        <support:BoolToVisiblityConverter x:Key="boolToVisiblityConverter" />
         <viewModels:TourTypeControlConverter x:Key="tourTypeControlConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -132,7 +133,6 @@
                 </i:Interaction.Triggers>
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="Auto" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
-                    <DataGridTextColumn Width="Auto" Header="Price P.P." Binding="{Binding HotelRoomType.PricePerPerson}" IsReadOnly="True"/>
                     <DataGridTextColumn Width="Auto" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
                     <DataGridTextColumn Width="Auto" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
                 </DataGrid.Columns>

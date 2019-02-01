@@ -19,7 +19,7 @@ namespace Core.Common.UI.Core
             _tourTypes = new ObservableCollection<TourType>();
             _hotels = new ObservableCollection<Hotel>();
             _agencies = new RangeObservableCollection<Agency>();
-            _roomTypes = new ObservableCollection<RoomType>();
+            _roomTypes = new RangeObservableCollection<RoomType>();
             _operators = new RangeObservableCollection<Operator>();
         }
 
@@ -188,9 +188,9 @@ namespace Core.Common.UI.Core
             }
         }
 
-        private ObservableCollection<RoomType> _roomTypes;
+        private RangeObservableCollection<RoomType> _roomTypes;
 
-        public ObservableCollection<RoomType> RoomTypes
+        public RangeObservableCollection<RoomType> RoomTypes
         {
             get
             {

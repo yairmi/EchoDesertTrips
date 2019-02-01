@@ -42,14 +42,6 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <DataGrid.Columns>
-                <!--<DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Command="{Binding Path=DataContext.DeleteTourDestinationCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                    Content="Delete"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
                 <DataGridTextColumn x:Name="roomTypeNameColumn" Binding="{Binding RoomTypeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Room Type Name" Width="*"/>
                 <DataGridCheckBoxColumn x:Name="RoomTypeVisibility" Binding="{Binding Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Visibility" Width="*"/>
             </DataGrid.Columns>

@@ -36,11 +36,6 @@
                   IsReadOnly="True"
                   Width="600"
                   Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="RowEditEnding">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>

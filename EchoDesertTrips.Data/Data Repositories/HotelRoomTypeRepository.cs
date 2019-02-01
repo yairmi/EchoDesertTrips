@@ -41,10 +41,10 @@ namespace EchoDesertTrips.Data.Data_Repositories
             return null;
         }
 
-        protected override HotelRoomType GetEntity(EchoDesertTripsContext entityContext, int id)
-        {
-            return null;
-        }
+        //protected override HotelRoomType GetEntity(EchoDesertTripsContext entityContext, int id)
+        //{
+        //    return null;
+        //}
 
         public HotelRoomType GetEntity(int hotelId, int RoomTypeId)
         {

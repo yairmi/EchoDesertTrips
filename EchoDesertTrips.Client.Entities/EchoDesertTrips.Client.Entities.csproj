@@ -78,6 +78,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -94,6 +95,7 @@
     <Compile Include="Group.cs" />
     <Compile Include="Hotel.cs" />
     <Compile Include="HotelRoomType.cs" />
+    <Compile Include="HotelRoomTypeDaysRange.cs" />
     <Compile Include="HotelRoomTypesData.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="OperatorCustomer.cs" />

@@ -35,26 +35,8 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
 
         public Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo)
         {
-            log.Debug("OrderClient: GetReservationsForDayRange Start");
-            var reservations = Channel.GetReservationsForDayRange(DayFrom, DayTo);
-            log.Debug("OrderClient: GetReservationsForDayRange End");
-            return reservations;
+            return Channel.GetReservationsForDayRange(DayFrom, DayTo);
         }
-
-        public void DeleteTour(Tour Tour)
-        {
-            Channel.DeleteTour(Tour);
-        }
-
-        public void DeleteCustomer(Customer customer)
-        {
-            Channel.DeleteCustomer(customer);
-        }
-
-        //public Reservation GetReservation(int ReservationId)
-        //{
-        //    return Channel.GetReservation(ReservationId);
-        //}
 
         public Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
         {

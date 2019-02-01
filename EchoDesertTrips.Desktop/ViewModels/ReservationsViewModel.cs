@@ -41,10 +41,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
             DecreaseOneDayCommand = new DelegateCommand<object>(OnDecreaseOneDayCommand);
             IncreaseOneDayCommand = new DelegateCommand<object>(OnIncreaseOneDayCommand);
             ShowCustomersCommand = new DelegateCommand<object>(ShowCustomers, ShowCustomersCanExecute);
+            RowEditEndingCommand = new DelegateCommand<Reservation>(OnRowEditEndingCommand);
+            Beginning​EditCommand = new DelegateCommand<Reservation>(OnBeginning​EditCommand);
             _reservations = new RangeObservableCollection<Reservation>();
             _continualReservations = new RangeObservableCollection<Reservation>();
             _selectedDate = DateTime.Today;
             _lastSelectedDate = _selectedDate.AddDays(_daysRange + 1);
+        }
+
+        private void OnBeginning​EditCommand(Reservation obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnRowEditEndingCommand(Reservation obj)
+        {
+            throw new NotImplementedException();
         }
 
         public ReservationsViewModel()
@@ -77,6 +89,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<object> IncreaseOneDayCommand { get; }
         
         public DelegateCommand<object> ShowCustomersCommand { get; private set; }
+
+        public DelegateCommand<Reservation> RowEditEndingCommand { get; set; }
+        public DelegateCommand<Reservation> Beginning​EditCommand { get; set; }
 
         public async void ShowCustomers(object obj)
         {
@@ -500,6 +515,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
+
+        private Reservation editedReservation;
     }
 
     public class GroupsToTotalConverter : IValueConverter

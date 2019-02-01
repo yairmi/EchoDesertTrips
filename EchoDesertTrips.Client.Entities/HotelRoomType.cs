@@ -1,5 +1,6 @@
 ﻿using Core.Common.Core;
 using System;
+using System.Collections.Generic;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -7,8 +8,6 @@ namespace EchoDesertTrips.Client.Entities
     {
         public HotelRoomType()
         {
-            StartDaysRange = DateTime.Today;
-            EndDaysRange = DateTime.Today;
         }
         private int _hotelRoomTypeId;
 
@@ -64,49 +63,18 @@ namespace EchoDesertTrips.Client.Entities
                 }
             }
         }
-        private DateTime _startDaysRange;
-        public DateTime StartDaysRange
+
+        private List<HotelRoomTypeDaysRange> _hotelRoomTypeDaysRanges;
+        public List<HotelRoomTypeDaysRange> HotelRoomTypeDaysRanges
         {
             get
             {
-                return _startDaysRange;
+                return _hotelRoomTypeDaysRanges;
             }
             set
             {
-                _startDaysRange = value;
-                OnPropertyChanged(() => StartDaysRange);
-            }
-        }
-
-        public DateTime _endDaysRange;
-        public DateTime EndDaysRange
-        {
-            get
-            {
-                return _endDaysRange;
-            }
-            set
-            {
-                _endDaysRange = value;
-                OnPropertyChanged(() => EndDaysRange);
-            }
-        }
-
-        private float _pricePerPerson;
-
-        public float PricePerPerson
-        {
-            get
-            {
-                return _pricePerPerson;
-            }
-            set
-            {
-                if (_pricePerPerson != value)
-                {
-                    _pricePerPerson = value;
-                    OnPropertyChanged(() => PricePerPerson);
-                }
+                _hotelRoomTypeDaysRanges = value;
+                OnPropertyChanged(() => HotelRoomTypeDaysRanges, true);
             }
         }
     }

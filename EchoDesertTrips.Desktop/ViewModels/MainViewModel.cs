@@ -31,6 +31,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _loginControlViewModel.Authenticated -= LoginControlViewModel_Authenticated;
             _loginControlViewModel.Authenticated += LoginControlViewModel_Authenticated;
+
+            _editReservationViewModel.ReservationUpdated -= _editReservationViewModel_ReservationUpdated;
+            _editReservationViewModel.ReservationUpdated += _editReservationViewModel_ReservationUpdated;
+            _editReservationViewModel.ReservationCancelled -= _editReservationViewModel_ReservationCancelled;
+            _editReservationViewModel.ReservationCancelled += _editReservationViewModel_ReservationCancelled;
+
             CurrentViewModel = _loginControlViewModel;
         }
 
@@ -96,29 +102,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void MainTabViewModel_ReservationEdited(object sender, EditReservationEventArgs e)
         {
-            _editReservationViewModel.Operator = Operator;
-            _editReservationViewModel.Hotels = Hotels;
-            _editReservationViewModel.TourTypes = TourTypes;
-            _editReservationViewModel.Optionals = Optionals;
-            _editReservationViewModel.Agencies = Agencies;
             _editReservationViewModel.SetReservation(e.Reservation);
             _editReservationViewModel.ViewMode = e.ViewMode;
-            _editReservationViewModel.ReservationUpdated -= _editReservationViewModel_ReservationUpdated;
-            _editReservationViewModel.ReservationUpdated += _editReservationViewModel_ReservationUpdated;
-            _editReservationViewModel.ReservationCancelled -= _editReservationViewModel_ReservationCancelled;
-            _editReservationViewModel.ReservationCancelled += _editReservationViewModel_ReservationCancelled;
             CurrentViewModel = _editReservationViewModel;
         }
 
         private void _editReservationViewModel_ReservationCancelled(object sender, ReservationEventArgs e)
         {
-            //_editReservationViewModel = null;
             CurrentViewModel = _mainTabViewModel;
         }
 
         private void _editReservationViewModel_ReservationUpdated(object sender, ReservationEventArgs e)
         {
-            //_editReservationViewModel = null;
             _mainTabViewModel.ReservationsViewModel.UpdateReservations(e);
             CurrentViewModel = _mainTabViewModel;
         }
@@ -193,8 +188,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             //Reservations message
             if (strings[0] == "1")
             {
-                //var isDayInRange = _mainTabViewModel.ReservationsViewModel.IsDayInRange(Convert.ToDateTime(strings[1]));
-                //if (isDayInRange == true)
                 _mainTabViewModel.ReservationsViewModel.LoadReservationsForDayRangeAsync(Convert.ToDateTime(strings[1]));
             }
             //Inventory message
@@ -244,6 +237,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
                                 Agencies.AddRange(inventoryData.Result.Agencies);
                                 Operators.AddRange(inventoryData.Result.Operators);
+                                RoomTypes.AddRange(inventoryData.Result.RoomTypes);
 
                                 _mainTabViewModel.ReservationsViewModel.TourTypes = TourTypes;
                                 _mainTabViewModel.ReservationsViewModel.Hotels = Hotels;
@@ -255,6 +249,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 _mainTabViewModel.AdminViewModel.Optionals = Optionals;
                                 _mainTabViewModel.AdminViewModel.Agencies = Agencies;
                                 _mainTabViewModel.AdminViewModel.Operators = Operators;
+                                _mainTabViewModel.AdminViewModel.RoomTypes = RoomTypes;
+
+                                _editReservationViewModel.Operator = Operator;
+                                _editReservationViewModel.Hotels = Hotels;
+                                _editReservationViewModel.TourTypes = TourTypes;
+                                _editReservationViewModel.Optionals = Optionals;
+                                _editReservationViewModel.Agencies = Agencies;
                             }
                             catch(Exception ex)
                             {

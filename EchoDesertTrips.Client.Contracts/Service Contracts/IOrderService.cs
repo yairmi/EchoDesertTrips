@@ -32,20 +32,15 @@ namespace EchoDesertTrips.Client.Contracts
         [FaultContract(typeof(NotFoundException))]
         Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
 
-        [OperationContract]
-        [FaultContract(typeof(NotFoundException))]
-        [TransactionFlow(TransactionFlowOption.Allowed)]
-        void DeleteTour(Tour Tour);
-
-        [OperationContract]
-        [FaultContract(typeof(NotFoundException))]
-        [TransactionFlow(TransactionFlowOption.Allowed)]
-        void DeleteCustomer(Customer customer);
+        //[OperationContract]
+        //[FaultContract(typeof(NotFoundException))]
+        //[TransactionFlow(TransactionFlowOption.Allowed)]
+        //void DeleteTour(Tour Tour);
 
         //[OperationContract]
         //[FaultContract(typeof(NotFoundException))]
         //[TransactionFlow(TransactionFlowOption.Allowed)]
-        //Reservation GetReservation(int ReservationId);
+        //void DeleteCustomer(Customer customer);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]

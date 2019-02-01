@@ -169,6 +169,18 @@
     <Compile Include="Migrations\201901190939553_makestartandenddateskeys2.Designer.cs">
       <DependentUpon>201901190939553_makestartandenddateskeys2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901221954299_newfieldsforcontinualreservation.cs" />
+    <Compile Include="Migrations\201901221954299_newfieldsforcontinualreservation.Designer.cs">
+      <DependentUpon>201901221954299_newfieldsforcontinualreservation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901251754505_newtableHotelRoomTypeDaysRange.cs" />
+    <Compile Include="Migrations\201901251754505_newtableHotelRoomTypeDaysRange.Designer.cs">
+      <DependentUpon>201901251754505_newtableHotelRoomTypeDaysRange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201901291814214_listtopublic.cs" />
+    <Compile Include="Migrations\201901291814214_listtopublic.Designer.cs">
+      <DependentUpon>201901291814214_listtopublic.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -222,6 +234,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901190939553_makestartandenddateskeys2.resx">
       <DependentUpon>201901190939553_makestartandenddateskeys2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901221954299_newfieldsforcontinualreservation.resx">
+      <DependentUpon>201901221954299_newfieldsforcontinualreservation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901251754505_newtableHotelRoomTypeDaysRange.resx">
+      <DependentUpon>201901251754505_newtableHotelRoomTypeDaysRange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901291814214_listtopublic.resx">
+      <DependentUpon>201901291814214_listtopublic.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

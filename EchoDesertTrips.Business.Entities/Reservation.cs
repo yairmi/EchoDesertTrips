@@ -54,6 +54,12 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int Infants { get; set; }
         [DataMember]
+        public string Car { get; set; }
+        [DataMember]
+        public string Guide { get; set; }
+        [DataMember]
+        public string EndIn { get; set; }
+        [DataMember]
         [Timestamp]
         public byte[] RowVersion { get; set; }
         [DataMember]

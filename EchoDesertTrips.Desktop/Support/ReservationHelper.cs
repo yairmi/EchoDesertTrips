@@ -93,16 +93,34 @@ namespace EchoDesertTrips.Desktop.Support
                     totalPrice += tourOptional.PriceInclusive == true? tourOptional.Optional.PriceInclusive:
                         tourOptional.Optional.PricePerPerson * reservation.Customers.Count;
                 }
-
                 tour.TourHotels.ToList().ForEach((tourHotel) =>
                 {
                     tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
                     {
-                        totalPrice += tourHotelRoomType.Persons * tourHotelRoomType.HotelRoomType.PricePerPerson;
+
+                        foreach(var daysRange in tourHotelRoomType.HotelRoomType.HotelRoomTypeDaysRanges)
+                        {
+                            int days = GetDaysInRange(tour, daysRange);
+                            totalPrice += tourHotelRoomType.Persons * daysRange.PricePerPerson * days;
+                        }
                     });
                 });
             }
             return totalPrice;
+        }
+
+        private static int GetDaysInRange(Tour tour, HotelRoomTypeDaysRange hotelRoomTypeDaysRange)
+        {
+            int result = 0;
+            for (int i = 0; i < tour.TourType.Days; i++)
+            {
+                var date = tour.StartDate.AddDays(i);
+                if (date >= hotelRoomTypeDaysRange.StartDaysRange && date <= hotelRoomTypeDaysRange.EndDaysRange)
+                {
+                    result++;
+                }
+            }
+            return result;
         }
 
         public static int GetCustomerLeft(Reservation reservation)

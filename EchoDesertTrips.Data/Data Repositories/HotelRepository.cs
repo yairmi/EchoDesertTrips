@@ -56,6 +56,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
             {
                 var exsitingHotel = (from e in entityContext.HotelSet where e.HotelId == hotel.HotelId select e)
                              .Include(h => h.HotelRoomTypes.Select(r => r.RoomType))
+                             .Include(h => h.HotelRoomTypes.Select(d => d.HotelRoomTypeDaysRanges))
                              .FirstOrDefault();
                 entityContext.Entry(exsitingHotel).CurrentValues.SetValues(hotel);
                 //Hotel Room Types
@@ -70,10 +71,34 @@ namespace EchoDesertTrips.Data.Data_Repositories
                         }
                         else
                         {
-                            var existingHotelRoomType = (from e in exsitingHotel.HotelRoomTypes where e.HotelRoomTypeId == hotelRoomType.HotelRoomTypeId select e).FirstOrDefault();
+                            var existingHotelRoomType = (from e in exsitingHotel.HotelRoomTypes where e.HotelRoomTypeId == hotelRoomType.HotelRoomTypeId select e)
+                                .FirstOrDefault();
                             if (existingHotelRoomType != null)
                             {
+                                foreach (var dayRange in hotelRoomType.HotelRoomTypeDaysRanges)
+                                {
+                                    if (dayRange.HotelRoomTypeDaysRangeId == 0)
+                                    {
+                                        existingHotelRoomType.HotelRoomTypeDaysRanges.Add(dayRange);
+                                    }
+                                    else
+                                    {
+                                        var existingDayRange = (from e in existingHotelRoomType.HotelRoomTypeDaysRanges where e.HotelRoomTypeDaysRangeId == dayRange.HotelRoomTypeDaysRangeId select e).FirstOrDefault();
+                                        if (existingDayRange != null)
+                                        {
+                                            entityContext.Entry(existingDayRange).CurrentValues.SetValues(dayRange);
+                                        }
+                                        else
+                                        {
+                                            log.Error("Fail to update Day Range.");
+                                        }
+                                    }
+                                }
                                 entityContext.Entry(existingHotelRoomType).CurrentValues.SetValues(hotelRoomType);
+                            }
+                            else
+                            {
+                                exsitingHotel.HotelRoomTypes.Add(hotelRoomType);
                             }
                         }
                     }
@@ -90,14 +115,16 @@ namespace EchoDesertTrips.Data.Data_Repositories
         protected override IEnumerable<Hotel> GetEntities(EchoDesertTripsContext entityContext)
         {
             return (from e in entityContext.HotelSet select e)
-                .Include(h => h.HotelRoomTypes.Select(r => r.RoomType));
+                .Include(h => h.HotelRoomTypes.Select(r => r.RoomType))
+                .Include(h => h.HotelRoomTypes.Select(d => d.HotelRoomTypeDaysRanges));
         }
 
         protected override IEnumerable<Hotel> GetEntities(EchoDesertTripsContext entityContext, int id)
         {
             return (from e in entityContext.HotelSet select e)
                 .Where(h => h.HotelId == id)
-                .Include(h => h.HotelRoomTypes.Select(r => r.RoomType));
+                .Include(h => h.HotelRoomTypes.Select(r => r.RoomType))
+                .Include(h => h.HotelRoomTypes.Select(d => d.HotelRoomTypeDaysRanges));
         }
     }
 }

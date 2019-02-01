@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace EchoDesertTrips.Business.Entities
 {
@@ -20,13 +21,7 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public RoomType RoomType { get; set; }
         [DataMember]
-        //[Key]
-        public DateTime StartDaysRange { get; set; }
-        [DataMember]
-        //[Key]
-        public DateTime EndDaysRange { get; set; }
-        [DataMember]
-        public float PricePerPerson { get; set; }
+        public List<HotelRoomTypeDaysRange> HotelRoomTypeDaysRanges { get; set; }
         [DataMember]
         [NotMapped]
         public string HotelName { get; set; }

@@ -114,7 +114,7 @@ namespace EchoDesertTrips.Business.Business_Engines
                 {
                     tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
                     {
-                        totalPrice += tourHotelRoomType.Persons * tourHotelRoomType.HotelRoomType.PricePerPerson;
+                        //totalPrice += tourHotelRoomType.Persons * tourHotelRoomType.HotelRoomType.PricePerPerson;
                     });
                 });
             }
@@ -152,19 +152,15 @@ namespace EchoDesertTrips.Business.Business_Engines
                 reservation.Customers.Clear();
                 if (customer != null)
                     reservation.Customers.Add(customer);
-                foreach (var tour in reservation.Tours)
-                {
-                    tour.TourOptionals.Clear();
-                    //tour.TourOptionals.ForEach((tourOptional) =>
-                    //{
-                    //    tourOptional.Optional.OptionalDescription = string.Empty;
-                    //});
-                    tour.TourHotels.ForEach((tourHotel) =>
-                    {
-                        if (tourHotel.TourHotelRoomTypes != null)
-                            tourHotel.TourHotelRoomTypes.Clear();
-                    });
-                }
+                //foreach (var tour in reservation.Tours)
+                //{
+                //    tour.TourOptionals.Clear();
+                //    tour.TourHotels.ForEach((tourHotel) =>
+                //    {
+                //        if (tourHotel.TourHotelRoomTypes != null)
+                //            tourHotel.TourHotelRoomTypes.Clear();
+                //    });
+                //}
             });
         }
     }

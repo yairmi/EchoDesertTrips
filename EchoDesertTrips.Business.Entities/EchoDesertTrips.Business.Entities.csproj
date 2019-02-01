@@ -85,6 +85,7 @@
     <Compile Include="Group.cs" />
     <Compile Include="Hotel.cs" />
     <Compile Include="HotelRoomType.cs" />
+    <Compile Include="HotelRoomTypeDaysRange.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="Optional.cs" />
     <Compile Include="Reservation.cs" />

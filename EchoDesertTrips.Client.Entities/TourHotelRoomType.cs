@@ -1,5 +1,6 @@
 ﻿using Core.Common.Core;
 using FluentValidation;
+using System.Windows;
 
 namespace EchoDesertTrips.Client.Entities
 {
