@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 using System.Threading;
 using EchoDesertTrips.Desktop.CustomEventArgs;
 using System.Configuration;
+using System.Collections.Generic;
+using EchoDesertTrips.Common;
+using Core.Common.Core;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -35,29 +39,28 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (bResult == false)
                 _daysRange = _defaultDayReange;
             EditReservationCommand = new DelegateCommand<Reservation>(OnEditReservationCommand);
+            EditContinualReservationCommand = new DelegateCommand<Reservation>(OnEditContinualReservationCommand);
             AddReservationCommand = new DelegateCommand<object>(OnAddReservationCommand);
             SelectedDateChangedCommand = new DelegateCommand<object>(OnSelectedDateChangedCommand);
             DeleteReservationCommand = new DelegateCommand<Reservation>(OnDeleteReservationCommand);
             DecreaseOneDayCommand = new DelegateCommand<object>(OnDecreaseOneDayCommand);
             IncreaseOneDayCommand = new DelegateCommand<object>(OnIncreaseOneDayCommand);
             ShowCustomersCommand = new DelegateCommand<object>(ShowCustomers, ShowCustomersCanExecute);
-            RowEditEndingCommand = new DelegateCommand<Reservation>(OnRowEditEndingCommand);
-            Beginning​EditCommand = new DelegateCommand<Reservation>(OnBeginning​EditCommand);
+            //RowEditEndingCommand = new DelegateCommand<Reservation>(OnRowEditEndingCommand);
+            //Beginning​EditCommand = new DelegateCommand<Reservation>(OnBeginning​EditCommand);
+            //LostFocusCommand = new DelegateCommand<Reservation>(OnLostFocusCommand);
             _reservations = new RangeObservableCollection<Reservation>();
             _continualReservations = new RangeObservableCollection<Reservation>();
             _selectedDate = DateTime.Today;
             _lastSelectedDate = _selectedDate.AddDays(_daysRange + 1);
         }
 
-        private void OnBeginning​EditCommand(Reservation obj)
+        private void OnLostFocusCommand(Reservation reservation)
         {
-            throw new NotImplementedException();
+            log.Debug("OnLostFocusCommand start");
         }
 
-        private void OnRowEditEndingCommand(Reservation obj)
-        {
-            throw new NotImplementedException();
-        }
+        //private int _reservationEditedId;
 
         public ReservationsViewModel()
         {
@@ -81,6 +84,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<Reservation> DeleteReservationCommand { get; set; }
 
         public DelegateCommand<Reservation> EditReservationCommand { get; private set; }
+        public DelegateCommand<Reservation> EditContinualReservationCommand { get; private set; }
         public DelegateCommand<object> AddReservationCommand { get; private set; }
         public DelegateCommand<object> SelectedDateChangedCommand { get; private set; }
         public DelegateCommand<Group> GenerateReportCommand { get; private set; }
@@ -90,8 +94,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         
         public DelegateCommand<object> ShowCustomersCommand { get; private set; }
 
-        public DelegateCommand<Reservation> RowEditEndingCommand { get; set; }
-        public DelegateCommand<Reservation> Beginning​EditCommand { get; set; }
+        // DelegateCommand<Reservation> RowEditEndingCommand { get; set; }
+        //public DelegateCommand<Reservation> Beginning​EditCommand { get; set; }
+        //public DelegateCommand<Reservation> LostFocusCommand { get; set; }
 
         public async void ShowCustomers(object obj)
         {
@@ -191,8 +196,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnAddReservationCommand(object arg)
         {
             log.Debug("ReservationViewModel:OnAddCommand start");
-            ReservationEdited?.Invoke(this, new EditReservationEventArgs(null, false));
+            ReservationEdited?.Invoke(this, new EditReservationEventArgs(null, false, false));
             log.Debug("ReservationViewModel:OnAddCommand end");
+        }
+        private bool _bIsContinual = false;
+        private void OnEditContinualReservationCommand(Reservation reservation)
+        {
+            _bIsContinual = true;
+            OnEditReservationCommand(reservation);
+            _bIsContinual = false;
         }
 
         private void OnEditReservationCommand(Reservation reservation)
@@ -223,7 +235,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     return;
                 bViewMode = true;
             }
-            ReservationEdited?.Invoke(this, new EditReservationEventArgs(dbReservation, bViewMode));
+            ReservationEdited?.Invoke(this, new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
             log.Debug("ReservationViewModel:OnEditReservationCommand end");
         }
 
@@ -272,32 +284,49 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             return (date > _selectedDate.AddDays(_daysRange * (-1)) && date < _selectedDate.AddDays(_daysRange));
         }
-
-        public async void LoadReservationsForDayRangeAsync(DateTime date)
+        //This methos is called when other cilent update/add reservation
+        /*public async void GetReservationsByIds(List<ReservationMessage> ReservationMessages)
         {
             log.Debug("LoadReservationsForDayRangeAsync start");
-            if (IsInDayRange(date))
+
+            var Ids = new List<int>();
+            foreach(var reservationMessage in ReservationMessages)
+            {
+                if (IsInDayRange(reservationMessage.StartDay))
+                    Ids.Add(reservationMessage.ReservationID);
+            }
+
+            if (Ids.Capacity > 0)
             {
                 log.Debug("LoadReservationsForDayRangeAsync execution started");
                 var orderClient = _serviceFactory.CreateClient<IOrderService>();
                 {
                     try
                     {
+                        //Main thread
                         var uiContext = SynchronizationContext.Current;
-                        var task = Task.Factory.StartNew(() => orderClient.GetReservationsForDayRangeAsynchronous(_selectedDate.AddDays(_daysRange * (-1)), _selectedDate.AddDays(_daysRange)));
+                        var task = Task.Factory.StartNew(() => orderClient.GetReservationsByIdsAsynchronous(Ids));
                         var reservations = await task;
                         await reservations.ContinueWith((Task<Reservation[]> e) =>
                         {
+                            //Worker thread
                             if (e.IsCompleted)
                             {
                                 uiContext.Send((x) =>
                                 {
+                                    //Main thread
                                     if (reservations.Result != null)
                                     {
-                                        _reservations.Clear();
-                                        _reservations.AddRange(reservations.Result);
-                                        _continualReservations.Clear();
-                                        _continualReservations.AddRange(_reservations);
+                                        foreach(var reservation in reservations.Result)
+                                        {
+                                            var res = _reservations.FirstOrDefault(item => item.ReservationId == reservation.ReservationId);
+                                            if (res != null)
+                                            {
+                                                var index = _reservations.IndexOf(res);
+                                                _reservations[index] = res;
+                                                _continualReservations[index] = res;
+                                            }
+                                        }
                                     }
                                     else
                                     {
@@ -315,7 +344,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 var disposableClient = orderClient as IDisposable;
                 disposableClient?.Dispose();
             }
-        }
+        }*/
 
         public async void LoadReservationsForDayRangeAsync2()
         {
@@ -426,6 +455,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public void UpdateReservations(ReservationEventArgs e)
         {
+            if (!IsDayInRange(e.Reservation.Tours[0].StartDate))
+                return;
             int exceptionPosition = 0;
             try
             {
@@ -466,10 +497,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 try
                 {
+                    var reservationsMessage = new ReservationsMessage()
+                    {
+                        ReservationsIds = new List<int>()
+                    };
+                    reservationsMessage.ReservationsIds.Add(e.Reservation.ReservationId);
+                    Serializer ser = new Serializer();
+                    var message = ser.Serialize(reservationsMessage);
                     Client.NotifyServer(new EventDataType()
                     {
                         ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-                        EventMessage = "1;" + e.Reservation.Tours[0].StartDate.ToString()
+                        EventMessage = message,
+                        MessageType = eMsgTypes.E_RESERVATION
                     });
                 }
                 catch (Exception ex)
@@ -516,7 +555,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private Reservation editedReservation;
+        //private List<Reservation> _pendingReservations;
+
+        //private Reservation editedReservation;
     }
 
     public class GroupsToTotalConverter : IValueConverter
@@ -546,7 +587,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var reservation = (Reservation)value;
-            return Support.ReservationHelper.CalculateReservationTotalPrice(reservation);
+            var dTotalPrice = Support.ReservationHelper.CalculateReservationTotalPrice(reservation);
+            var dBalance = dTotalPrice - reservation.AdvancePayment;
+            return string.Format("{0}/{1}", dTotalPrice, dBalance);
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -559,18 +602,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //var items = ((CollectionViewGroup)(value))?.Items;
-            //var customers = new ObservableCollection<Customer>();
-            //if (items == null) return customers;
-            //foreach (var reservation in items.Cast<Reservation>())
-            //{
-            //    foreach (var customer in reservation.Customers)
-            //    {
-            //        customers.Add(customer);
-            //    }
-            //}
-
-            //return customers;
             return null;
         }
 
@@ -584,11 +615,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var reservation = (Reservation)value;
-            if (reservation != null)
-            {
-                return reservation.TotalPrice - reservation.AdvancePayment;
-            }
+            //var reservation = (Reservation)value;
+            //if (reservation != null)
+            //{
+            //    return reservation.TotalPrice - reservation.AdvancePayment;
+            //}
             return 0;
         }
 

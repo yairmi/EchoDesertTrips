@@ -31,8 +31,8 @@ namespace EchoDesertTrips.Business.Entities
         public int? AgentId { get; set; }
         [DataMember]
         public double AdvancePayment { get; set; }
-        [DataMember]
-        public double TotalPrice { get; set; }
+        //[DataMember]
+        //public double TotalPrice { get; set; }
         [DataMember]
         public DateTime PickUpTime { get; set; }
         [DataMember]

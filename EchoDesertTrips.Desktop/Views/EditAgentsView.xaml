@@ -62,7 +62,7 @@
                 <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Width="160" Text="{Binding Agency.AgencyAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" HorizontalAlignment="Left" />
                 <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Width="160" Text="{Binding Agency.Phone1}" HorizontalAlignment="Left" />
                 <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Width="160" Text="{Binding Agency.Phone2}" HorizontalAlignment="Left" />
-                <DataGrid Grid.Row="4" Grid.Column="1" x:Name="dataGridAgents" 
+                <DataGrid Grid.Row="4" Grid.Column="1" x:Name="dgAgents" 
                                       ItemsSource="{Binding Agency.Agents, Mode=TwoWay}"
                                       RowDetailsVisibilityMode="Visible"
                                       AutoGenerateColumns="False"

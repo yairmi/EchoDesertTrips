@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows.Data;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -64,8 +65,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     var savedRoomType = inventoryClient.UpdateRoomType(roomType);
                     if (bIsNew)
                         RoomTypes[RoomTypes.Count - 1].RoomTypeId = savedRoomType.RoomTypeId;
+                    NotifyServer("RoomTypeViewModel OnSaveCommand", eInventoryTypes.E_ROOM_TYPE, savedRoomType.RoomTypeId);
                 });
-                NotifyServer("RoomTypeViewModel OnSaveCommand", 2);
             }
         }
 

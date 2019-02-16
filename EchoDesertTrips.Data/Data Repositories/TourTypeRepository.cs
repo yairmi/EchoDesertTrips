@@ -6,6 +6,7 @@ using System.Linq;
 using System.Data.Entity;
 using System.Linq.Expressions;
 using System;
+using Z.EntityFramework.Plus;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -21,11 +22,6 @@ namespace EchoDesertTrips.Data.Data_Repositories
         protected override Expression<Func<TourType, bool>> IdentifierPredicate(EchoDesertTripsContext entityContext, int id)
         {
             return (e => e.TourTypeId == id);
-        }
-
-        protected override IEnumerable<TourType> GetEntities(EchoDesertTripsContext entityContext)
-        {
-            return (from e in entityContext.TourTypeSet select e).Include(t => t.TourTypeDescriptions);
         }
 
         protected override IEnumerable<TourType> GetEntities(EchoDesertTripsContext entityContext, int id)
@@ -72,6 +68,12 @@ namespace EchoDesertTrips.Data.Data_Repositories
 
                 return exsitingTourType;
             }
+        }
+
+        protected override IQueryable<TourType> IncludeNavigationProperties(IQueryable<TourType> query)
+        {
+            return query
+                .IncludeOptimized(t => t.TourTypeDescriptions);
         }
     }
 }

@@ -101,7 +101,8 @@
                 HorizontalAlignment="Left"
                 Width="150"
                 Margin="3"/>
-                <DataGrid Grid.Row="5" Grid.Column="1" x:Name="dgRoomTypes"
+                <DataGrid x:Name="dgRoomTypes"
+                Grid.Row="5" Grid.Column="1" 
                 HeadersVisibility="All"
                 RowHeaderWidth="40"
                 FontSize="12"
@@ -132,9 +133,9 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="Auto" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
-                    <DataGridTextColumn Width="Auto" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
-                    <DataGridTextColumn Width="Auto" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
+                    <DataGridTextColumn Width="120" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
+                    <DataGridTextColumn Width="80" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
+                    <DataGridTextColumn Width="50" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
                 </DataGrid.Columns>
                 <DataGrid.RowValidationRules>
                     <viewModels:TourHotelRoomsValidationRule ValidationStep="UpdatedValue"/>
@@ -166,7 +167,8 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Margin="10,0,5,0" Text="Optionals:" />
-                <DataGrid Grid.Row="0" x:Name="dgOptionals" Grid.Column="1" 
+                <DataGrid x:Name="dgOptionals" 
+                    Grid.Row="0"  Grid.Column="1" 
                     FontSize="12"
                     ItemsSource="{Binding Tour.TourOptionals, Mode=TwoWay}"
                     AutoGenerateColumns="False" 
@@ -185,10 +187,8 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn x:Name="optionalDescription" Width="Auto" IsReadOnly="True" Header="Optional" Binding="{Binding Optional.OptionalDescription}"/>
-                        <!--<DataGridTextColumn x:Name="optionalPricePerPerson" Width="Auto" IsReadOnly="True" Header="Price P.P." Binding="{Binding Optional.PricePerPerson}"/>
-                        <DataGridTextColumn x:Name="optionalPriceInclusive" Width="Auto" IsReadOnly="True" Header="Price Inclusive" Binding="{Binding Optional.PriceInclusive}"/>-->
-                        <DataGridTemplateColumn Header="Price P.P.">
+                        <DataGridTextColumn x:Name="optionalDescription" Width="100" IsReadOnly="True" Header="Optional" Binding="{Binding Optional.OptionalDescription}"/>
+                        <DataGridTemplateColumn Header="Price P.P." Width="80">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Viewbox Height="14">
@@ -200,7 +200,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Price Inclusive">
+                        <DataGridTemplateColumn Header="Price Inc." Width="80">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Viewbox Height="14">

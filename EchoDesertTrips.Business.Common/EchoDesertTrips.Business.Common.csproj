@@ -77,11 +77,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICustomerEngine.cs" />
-    <Compile Include="IHotelEngine.cs" />
+    <Compile Include="IInventoryEngine.cs" />
     <Compile Include="IReservationEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ITourEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.Common.Contracts\Core.Common.Contracts.csproj">

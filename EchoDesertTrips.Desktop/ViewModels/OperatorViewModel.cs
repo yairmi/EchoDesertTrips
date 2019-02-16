@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows.Data;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -52,8 +53,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     var savedOperator = operatorClient.UpdateOperator(op);
                     if (bIsNew)
                         Operators[Operators.Count - 1].OperatorId = savedOperator.OperatorId;
+                    NotifyServer("OperatorViewModel OnSaveCommand", eInventoryTypes.E_OPERATOR, savedOperator.OperatorId);
                 });
-                NotifyServer("OperatorViewModel OnSaveCommand", 2);
             }
         }
 

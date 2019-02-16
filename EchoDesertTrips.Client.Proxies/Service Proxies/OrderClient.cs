@@ -58,6 +58,11 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
             return Channel.GetCustomersByReservationGroupIdAsynchronous(GroupID);
         }
 
+        public Task<Reservation[]> GetReservationsByIdsAsynchronous(List<int> idList)
+        {
+            return Channel.GetReservationsByIdsAsynchronous(idList);
+        }
+
         public Reservation EditReservation(int ReservationID, Operator o)
         {
             return Channel.EditReservation(ReservationID, o);

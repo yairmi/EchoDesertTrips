@@ -29,6 +29,9 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>                        
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Style="{StaticResource ColumnWidth1}"/>
@@ -42,6 +45,12 @@
                     <TextBlock Text="Message:" Grid.Row="2" Grid.Column="1" Margin="3,0,0,0"/>
                     <TextBox x:Name="tbComment" MaxLength="140" Grid.Row="3" Grid.Column="0" Margin="3" Height="100" Text="{Binding Reservation.Comments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" Width="200" Style="{StaticResource MultiLineTextBox}"/>
                     <TextBox x:Name="tbMessages" MaxLength="140" Grid.Row="3" Grid.Column="1" Margin="3,0,0,0" Height="100" Text="{Binding Reservation.Messages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" Width="200" Style="{StaticResource MultiLineTextBox}" HorizontalAlignment="Left"/>
+                    <TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Car:"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Width="220" Text="{Binding Reservation.Car, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="5" Grid.Column="0" Margin="3" Text="Guide/Driver:"/>
+                    <TextBox Grid.Row="5" Grid.Column="1" Margin="3" Width="220" Text="{Binding Reservation.Guide, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="6" Grid.Column="0" Margin="3" Text="End In:"/>
+                    <TextBox Grid.Row="6" Grid.Column="1" Margin="3" Width="220" Text="{Binding Reservation.EndIn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </StackPanel>
     </Grid>

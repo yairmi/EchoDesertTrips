@@ -89,9 +89,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
         public Tour[] GetOrderedTours()
         {
-            //Get a specific engine
-            ITourEngine tripOrderedEngine = _BusinessEngineFactory.GetBusinessEngine<ITourEngine>();
-            return null; //TODO : change to Trip[] return type
+            return null; 
         }
 
         //[PrincipalPermission(SecurityAction.Demand, Role = Security.EchoDesertTripsAdminRole)]

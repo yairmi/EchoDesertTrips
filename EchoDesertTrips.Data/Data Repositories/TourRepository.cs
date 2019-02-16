@@ -6,6 +6,7 @@ using System.Linq;
 using System.Data.Entity;
 using System.Linq.Expressions;
 using System;
+using Z.EntityFramework.Plus;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -30,25 +31,9 @@ namespace EchoDesertTrips.Data.Data_Repositories
             return entity;
         }
 
-        protected override IEnumerable<Tour> GetEntities(EchoDesertTripsContext entityContext)
-        {
-            return entityContext.TourSet
-                .Include(t => t.TourType)
-                .Include(t => t.TourOptionals);
-        }
-
         protected override IEnumerable<Tour> GetEntities(EchoDesertTripsContext entityContext, int id)
         {
             return null;
-        }
-
-        protected override Tour GetEntity(EchoDesertTripsContext entityContext, int id)
-        {
-            var query = (from e in entityContext.TourSet where e.TourId == id select e);
-            var results = query.FirstOrDefault();
-
-            return results;
-
         }
 
         public void RemoveTour(int tourId)
@@ -87,6 +72,13 @@ namespace EchoDesertTrips.Data.Data_Repositories
                 entityContext.Entry(tour).State = EntityState.Deleted;
                 entityContext.SaveChanges();
             }
+        }
+
+        protected override IQueryable<Tour> IncludeNavigationProperties(IQueryable<Tour> query)
+        {
+            return query
+                .IncludeOptimized(t => t.TourType)
+                .IncludeOptimized(t => t.TourOptionals);
         }
     }
 }

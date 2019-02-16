@@ -87,11 +87,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data Contracts\CustomerOrderData.cs" />
     <Compile Include="Data Contracts\EventDataType.cs" />
-    <Compile Include="Data Contracts\GetMessageCompletedEventArgs.cs" />
     <Compile Include="Data Contracts\InventoryData.cs" />
-    <Compile Include="Data Contracts\ReservationData.cs" />
+    <Compile Include="Data Contracts\BroadcastMessage.cs" />
     <Compile Include="Service Contracts\IBroadcastorService.cs" />
     <Compile Include="Service Contracts\ICustomerService.cs" />
     <Compile Include="Service Contracts\IInventoryService.cs" />

@@ -49,7 +49,7 @@
             </TextBlock.Triggers>
         </TextBlock>
         </StackPanel>
-        <DataGrid Grid.Row="1" x:Name="dataGridCustomers"
+        <DataGrid Grid.Row="1" x:Name="dgCustomers"
             DataContext="{Binding}"
             CellStyle="{StaticResource DataGridBorder}"                  
             ItemsSource="{Binding CustomersForGroup}"

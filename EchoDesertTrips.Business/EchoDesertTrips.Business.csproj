@@ -87,9 +87,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business Engines\CustomerEngine.cs" />
+    <Compile Include="Business Engines\InventoryEngine.cs" />
     <Compile Include="Business Engines\ReservationEngine.cs" />
-    <Compile Include="Business Engines\TourEngine.cs" />
     <Compile Include="BusinessEngineFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

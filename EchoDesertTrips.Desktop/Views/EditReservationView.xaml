@@ -27,8 +27,9 @@
             <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
             <TabControl x:Name="EditReservationTab" Grid.Row="1" BorderThickness="4" BorderBrush="LightSkyBlue" 
                         Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={StaticResource toFixSizeConverter}, ConverterParameter='206'}"
-                        Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={StaticResource toFixSizeConverter}, ConverterParameter='20'}">
-                <TabControl.Resources>
+                        Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={StaticResource toFixSizeConverter}, ConverterParameter='20'}"
+                        SelectedIndex="{Binding SelectedTabIndex}">
+            <TabControl.Resources>
                     <Style TargetType="TabItem">
                         <Setter Property="Template">
                             <Setter.Value>

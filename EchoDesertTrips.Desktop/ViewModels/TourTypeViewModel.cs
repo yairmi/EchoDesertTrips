@@ -9,6 +9,7 @@ using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
 using Core.Common.Utils;
 using EchoDesertTrips.Desktop.CustomEventArgs;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -81,8 +82,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentTourTypeViewModel_TourTypeUpdated(object sender, TourTypeEventArgs e)
         {
-            //var mappedTourType = AutoMapperUtil.Map<TourTypeWrapper, TourTypeWrapper>(e.TourType);
-            var tourType_e = e.TourType;
+            //var tourType_e = e.TourType;
             if (!e.IsNew)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
@@ -91,7 +91,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (tourType != null)
                 {
                     var index = TourTypes.IndexOf(tourType);
-                    TourTypes[index] = tourType_e;
+                    TourTypes[index] = e.TourType;// tourType_e;
                 }
             }
             else
@@ -99,7 +99,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 TourTypes.Add(e.TourType);
             }
 
-            NotifyServer("CurrentTourTypeViewModel_TourTypeUpdated", 2);
+            NotifyServer("CurrentTourTypeViewModel_TourTypeUpdated", eInventoryTypes.E_TOUR_TYPE, e.TourType.TourTypeId);
             CurrentTourTypeViewModel = null;
         }
 

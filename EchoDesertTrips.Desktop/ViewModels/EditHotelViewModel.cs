@@ -5,12 +5,9 @@ using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.CustomEventArgs;
-using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
-using System.Windows.Data;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -92,7 +89,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<object> SaveRoomDataCommand { get; private set; }
         public DelegateCommand<object> CancelRoomDataCommand { get; private set; }
 
-        //public DelegateCommand<HotelRoomTypeWithDaysRange> RowEditEndingCommand { get; set; }
         //After pressing the 'Save' button
         private bool OnSaveCommandCanExecute(object obj)
         {
@@ -189,19 +185,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        //private RangeObservableCollection<HotelRoomTypeWithDaysRange> _hotelRoomTypeWithDaysRanges;
-        //public RangeObservableCollection<HotelRoomTypeWithDaysRange> hotelRoomTypeWithDaysRanges
-        //{
-        //    get
-        //    {
-        //        return _hotelRoomTypeWithDaysRanges;
-        //    }
-        //    set
-        //    {
-        //        _hotelRoomTypeWithDaysRanges = value;
-        //        OnPropertyChanged(() => hotelRoomTypeWithDaysRanges, true);
-        //    }
-        //}
         private HotelRoomTypeWithDaysRanges _hotelRoomTypeWithDaysRanges;
         public HotelRoomTypeWithDaysRanges hotelRoomTypeWithDaysRanges
         {

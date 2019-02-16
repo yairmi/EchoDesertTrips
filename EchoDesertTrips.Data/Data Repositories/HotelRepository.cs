@@ -8,6 +8,7 @@ using System.ComponentModel.Composition;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using Z.EntityFramework.Plus;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -23,12 +24,6 @@ namespace EchoDesertTrips.Data.Data_Repositories
         protected override Expression<Func<Hotel, bool>> IdentifierPredicate(EchoDesertTripsContext entityContext, int id)
         {
             return (e => e.HotelId == id);
-        }
-
-        protected override Hotel GetEntity(EchoDesertTripsContext entityContext, int id)
-        {
-            return (from e in entityContext.HotelSet where e.HotelId == id select e)
-                .Include(a => a.HotelRoomTypes.Select(r => r.RoomType)).FirstOrDefault();
         }
 
         public Hotel AddHotel(Hotel entity)
@@ -112,19 +107,20 @@ namespace EchoDesertTrips.Data.Data_Repositories
             }
         }
 
-        protected override IEnumerable<Hotel> GetEntities(EchoDesertTripsContext entityContext)
-        {
-            return (from e in entityContext.HotelSet select e)
-                .Include(h => h.HotelRoomTypes.Select(r => r.RoomType))
-                .Include(h => h.HotelRoomTypes.Select(d => d.HotelRoomTypeDaysRanges));
-        }
-
         protected override IEnumerable<Hotel> GetEntities(EchoDesertTripsContext entityContext, int id)
         {
             return (from e in entityContext.HotelSet select e)
                 .Where(h => h.HotelId == id)
                 .Include(h => h.HotelRoomTypes.Select(r => r.RoomType))
                 .Include(h => h.HotelRoomTypes.Select(d => d.HotelRoomTypeDaysRanges));
+        }
+
+        protected override IQueryable<Hotel> IncludeNavigationProperties(IQueryable<Hotel> query)
+        {
+            return query
+                .IncludeOptimized(a => a.HotelRoomTypes)
+                .IncludeOptimized(a => a.HotelRoomTypes.Select(r => r.RoomType))
+                .IncludeOptimized(a => a.HotelRoomTypes.Select(r => r.HotelRoomTypeDaysRanges));
         }
     }
 }

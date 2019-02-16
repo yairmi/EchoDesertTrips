@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows.Data;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -54,9 +55,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     var savedOptional = inventoryClient.UpdateOptional(optional);
                     if (bIsNew)
                         Optionals[Optionals.Count - 1].OptionalId = savedOptional.OptionalId;
+                    NotifyServer("OptionalsViewModel OnSaveCommand", eInventoryTypes.E_OPTIONAL, savedOptional.OptionalId);
                 });
 
-                NotifyServer("OptionalsViewModel OnSaveCommand", 2);
+                
             }
         }
 

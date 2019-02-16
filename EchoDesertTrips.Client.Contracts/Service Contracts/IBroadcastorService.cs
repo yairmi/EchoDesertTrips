@@ -24,6 +24,6 @@ namespace EchoDesertTrips.Client.Contracts
     public interface IBroadcastorCallBack
     {
         [OperationContract(IsOneWay = true)]
-        void BroadcastToClient(EventDataType eventData);
+        void BroadcastToClient(BroadcastMessage Message);
     }
 }

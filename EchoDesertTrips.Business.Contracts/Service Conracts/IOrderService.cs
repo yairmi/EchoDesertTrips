@@ -1,9 +1,7 @@
 ﻿using Core.Common.Exceptions;
-using EchoDesertTrips.Business.Contracts.Data_Contracts;
 using EchoDesertTrips.Business.Entities;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.ServiceModel;
 using System.Threading.Tasks;
 
@@ -26,7 +24,6 @@ namespace EchoDesertTrips.Business.Contracts
         Reservation[] GetAllReservations();
 
         [OperationContract]
-        //[FaultContract(typeof(NotFoundException))]
         [FaultContract(typeof(UpdateConcurrencyException))]
         [TransactionFlow(TransactionFlowOption.Allowed)]
         Reservation UpdateReservation(Reservation reservation);
@@ -34,11 +31,6 @@ namespace EchoDesertTrips.Business.Contracts
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
-
-        //[OperationContract]
-        //[FaultContract(typeof(NotFoundException))]
-        //[TransactionFlow(TransactionFlowOption.Allowed)]
-        //void DeleteTour(Tour Tour);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
@@ -55,6 +47,10 @@ namespace EchoDesertTrips.Business.Contracts
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         Task<Reservation[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId);
+
+        [OperationContract]
+        [FaultContract(typeof(NotFoundException))]
+        Task<Reservation[]> GetReservationsByIdsAsynchronous(List<int> idList);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]

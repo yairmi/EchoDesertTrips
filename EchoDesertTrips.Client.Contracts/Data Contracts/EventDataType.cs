@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Client.Contracts
 {
@@ -7,7 +8,8 @@ namespace EchoDesertTrips.Client.Contracts
     {
         [DataMember]
         public string ClientName { get; set; }
-
+        [DataMember]
+        public eMsgTypes MessageType;
         [DataMember]
         public string EventMessage { get; set; }
     }

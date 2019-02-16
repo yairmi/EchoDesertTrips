@@ -138,12 +138,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\CollectionBase.cs" />
+    <Compile Include="Core\Const.cs" />
     <Compile Include="Core\EntityBase.cs" />
+    <Compile Include="Core\InventoryMessage.cs" />
     <Compile Include="Core\ItemPropertyChangedEventArgs.cs" />
     <Compile Include="Core\ItemPropertyChangedEventHandler.cs" />
     <Compile Include="Core\NotificationObject.cs" />
     <Compile Include="Core\NotNavigableAttribute.cs" />
     <Compile Include="Core\ObjectBase.cs" />
+    <Compile Include="Core\ReservationsMessage.cs" />
     <Compile Include="Data\DataRepositoryBase.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Exceptions\UpdateConcurrencyException.cs" />
@@ -156,6 +159,7 @@
     <Compile Include="Utils\AutoMapperUtil.cs" />
     <Compile Include="Utils\HashCodeUtil.cs" />
     <Compile Include="Utils\PropertySupport.cs" />
+    <Compile Include="Utils\Serializer.cs" />
     <Compile Include="Utils\SimpleMapper.cs" />
     <Compile Include="Utils\SimpleSplitter.cs" />
   </ItemGroup>

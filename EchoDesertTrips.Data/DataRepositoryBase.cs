@@ -28,7 +28,8 @@ namespace EchoDesertTrips.Data
 
         protected override IEnumerable<T> GetEntities(EchoDesertTripsContext entityContext)
         {
-            return (from e in DbSet(entityContext) select e);
+            var query = (from e in DbSet(entityContext) select e);
+            return IncludeNavigationProperties(query);
         }
 
         protected override IEnumerable<T> GetEntities(EchoDesertTripsContext entityContext, int id)
@@ -38,14 +39,19 @@ namespace EchoDesertTrips.Data
 
         protected override T GetEntity(EchoDesertTripsContext entityContext, int id)
         {
-            //return (from e in DbSet(entityContext) where e.EntityId == id select e).FirstOrDefault();
-            return DbSet(entityContext).Where(IdentifierPredicate(entityContext, id)).FirstOrDefault();
+            var query = DbSet(entityContext).Where(IdentifierPredicate(entityContext, id));
+            return IncludeNavigationProperties(query).FirstOrDefault();
         }
 
         protected override T UpdateEntity(EchoDesertTripsContext entityContext, T entity)
         {
             var q = DbSet(entityContext).Where(IdentifierPredicate(entityContext, entity.EntityId));
             return q.FirstOrDefault();
+        }
+
+        protected override IQueryable<T> IncludeNavigationProperties(IQueryable<T> query)
+        {
+            return query;
         }
 
         protected readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

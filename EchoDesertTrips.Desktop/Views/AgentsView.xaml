@@ -24,7 +24,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Button Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddAgencyCommand}" />
-        <DataGrid x:Name="agencyDataGrid"
+        <DataGrid x:Name="dgAgency"
                   Grid.Row="1"
                   Margin="0" 
                   ItemsSource="{Binding Agencies}" 
@@ -34,7 +34,6 @@
                   IsReadOnly="True"
                   CellStyle="{StaticResource DataGridBorder}"
                   HorizontalAlignment="Left"
-                  Width="700"
                   Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="RowEditEnding">
@@ -94,7 +93,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DataGrid x:Name="dataGridAgents" 
+                                <DataGrid x:Name="dgAgents" 
                                       ItemsSource="{Binding Path=Agents}"
                                       RowDetailsVisibilityMode="Visible"
                                       AutoGenerateColumns="False"

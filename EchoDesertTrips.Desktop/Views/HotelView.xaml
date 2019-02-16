@@ -34,7 +34,6 @@
                   HorizontalAlignment="Left"
                   CanUserAddRows="False"   
                   IsReadOnly="True"
-                  Width="600"
                   Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn>
@@ -84,7 +83,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <DataGrid x:Name="dataGridRoomTypes" 
+                                    <DataGrid x:Name="dgRoomTypes" 
                                       ItemsSource="{Binding HotelRoomTypes, Mode=TwoWay}"
                                       RowDetailsVisibilityMode="Visible"
                                       AutoGenerateColumns="False"

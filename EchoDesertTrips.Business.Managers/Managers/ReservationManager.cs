@@ -248,5 +248,21 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 return await task.ConfigureAwait(false);
             });
         }
+
+        public async Task<Reservation[]> GetReservationsByIdsAsynchronous(List<int> idList)
+        {
+            return await ExecuteFaultHandledOperation(async () =>
+            {
+                var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
+                var task = Task<Reservation[]>.Factory.StartNew(() =>
+                {
+                    IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
+                    var reservations = reservationEngine.GetReservationsByIds(idList);
+                    reservationEngine.PrepareReservationsForTransmition(reservations);
+                    return reservations;
+                });
+                return await task.ConfigureAwait(false);
+            });
+        }
     }
 }

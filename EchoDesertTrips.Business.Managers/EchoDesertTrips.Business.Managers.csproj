@@ -99,7 +99,6 @@
     <Compile Include="ManagerBase.cs" />
     <Compile Include="Managers\CustomerManager.cs" />
     <Compile Include="Managers\InventoryManager.cs" />
-    <Compile Include="Managers\OperationManager.cs" />
     <Compile Include="Managers\OperatorManager.cs" />
     <Compile Include="Managers\ReservationManager.cs" />
     <Compile Include="Managers\TourManager.cs" />

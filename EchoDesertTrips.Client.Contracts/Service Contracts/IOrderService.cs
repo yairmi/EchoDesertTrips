@@ -32,16 +32,6 @@ namespace EchoDesertTrips.Client.Contracts
         [FaultContract(typeof(NotFoundException))]
         Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
 
-        //[OperationContract]
-        //[FaultContract(typeof(NotFoundException))]
-        //[TransactionFlow(TransactionFlowOption.Allowed)]
-        //void DeleteTour(Tour Tour);
-
-        //[OperationContract]
-        //[FaultContract(typeof(NotFoundException))]
-        //[TransactionFlow(TransactionFlowOption.Allowed)]
-        //void DeleteCustomer(Customer customer);
-
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo);
@@ -57,6 +47,10 @@ namespace EchoDesertTrips.Client.Contracts
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         Task<Reservation[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId);
+
+        [OperationContract]
+        [FaultContract(typeof(NotFoundException))]
+        Task<Reservation[]> GetReservationsByIdsAsynchronous(List<int> idList);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]

@@ -13,7 +13,7 @@ namespace Bootstrapper
                 
             //Add Items to catalog here
             catalog.Catalogs.Add(new AssemblyCatalog(typeof(CustomerRepository).Assembly));
-            catalog.Catalogs.Add(new AssemblyCatalog(typeof(TourEngine).Assembly));
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(InventoryEngine).Assembly));
 
             CompositionContainer container = new CompositionContainer(catalog);
 

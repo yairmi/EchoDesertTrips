@@ -13,21 +13,21 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
         private System.Threading.SynchronizationContext syncContext =
             AsyncOperationManager.SynchronizationContext;
 
-        private EventHandler<EventDataType> _broadcastorCallBackHandler;
-        public void SetHandler(EventHandler<EventDataType> handler)
+        private EventHandler<BroadcastMessage> _broadcastorCallBackHandler;
+        public void SetHandler(EventHandler<BroadcastMessage> handler)
         {
             this._broadcastorCallBackHandler = handler;
         }
 
-        public void BroadcastToClient(EventDataType eventData)
+        public void BroadcastToClient(BroadcastMessage Message)
         {
             syncContext.Post(new System.Threading.SendOrPostCallback(OnBroadcast),
-                  eventData);
+                  Message);
         }
 
-        private void OnBroadcast(object eventData)
+        private void OnBroadcast(object Message)
         {
-            this._broadcastorCallBackHandler.Invoke(eventData, (EventDataType)eventData);
+            this._broadcastorCallBackHandler.Invoke(Message, (BroadcastMessage)Message);
         }
     }
 }

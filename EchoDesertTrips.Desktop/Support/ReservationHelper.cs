@@ -91,7 +91,7 @@ namespace EchoDesertTrips.Desktop.Support
                 foreach (var tourOptional in tour.TourOptionals)
                 {
                     totalPrice += tourOptional.PriceInclusive == true? tourOptional.Optional.PriceInclusive:
-                        tourOptional.Optional.PricePerPerson * reservation.Customers.Count;
+                        tourOptional.Optional.PricePerPerson * reservation.ActualNumberOfCustomers;
                 }
                 tour.TourHotels.ToList().ForEach((tourHotel) =>
                 {

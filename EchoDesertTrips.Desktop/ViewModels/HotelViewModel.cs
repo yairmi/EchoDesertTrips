@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows.Data;
 using Core.Common.Utils;
 using EchoDesertTrips.Desktop.CustomEventArgs;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -68,24 +69,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentHotelViewModel_HotelUpdated(object sender, HotelEventArgs e)
         {
-            var mappedHotel = AutoMapperUtil.Map<Hotel, Hotel>(e.Hotel);
+            //var mappedHotel = AutoMapperUtil.Map<Hotel, Hotel>(e.Hotel);
             if (!e.IsNew)
             {
-                //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
-                //Is a temporary object and it is not part of the Grid collection trips.
                 var hotel = Hotels.FirstOrDefault(item => item.HotelId == e.Hotel.HotelId);
                 if (hotel != null)
                 {
                     var index = Hotels.IndexOf(hotel);
-                    Hotels[index] = mappedHotel;
+                    Hotels[index] = e.Hotel;//mappedHotel;
                 }
             }
             else
             {
-                Hotels.Add(mappedHotel);
+                Hotels.Add(/*mappedHotel*/e.Hotel);
             }
 
-            NotifyServer("CurrentHotelViewModel_HotelUpdated", 2);
+            NotifyServer("CurrentHotelViewModel_HotelUpdated", eInventoryTypes.E_HOTEL, /*mappedHotel.HotelId*/e.Hotel.HotelId);
             CurrentHotelViewModel = null;
         }
 

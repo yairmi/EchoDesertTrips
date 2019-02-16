@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
 using Core.Common.Contracts;
 using Core.Common.Extensions;
 using Core.Common.Utils;
@@ -16,7 +14,7 @@ using FluentValidation.Results;
 
 namespace Core.Common.Core
 {
-    public abstract class ObjectBase : NotificationObject, IDirtyCapable, IExtensibleDataObject/*, IDataErrorInfo*/
+    public abstract class ObjectBase : NotificationObject, IDirtyCapable, IExtensibleDataObject
     {
         public ObjectBase()
         {

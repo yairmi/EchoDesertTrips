@@ -66,7 +66,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.Operator = Operator;
                 Reservation.OperatorId = Operator.OperatorId;
                 ReservationHelper.CreateExternalId(Reservation);
-                Reservation.TotalPrice = ReservationHelper.CalculateReservationTotalPrice(Reservation);
                 Reservation.Lock = false;
                 int exceptionPosition = 0;
 
@@ -154,6 +153,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             TourGridViewModel.PropertyRemovedFromTour -= EditReservationViewModel_SomethingRemoved;
             TourGridViewModel.PropertyRemovedFromTour += EditReservationViewModel_SomethingRemoved;
 
+
+
             log.Debug("EditOrderViewModel OnViewLoaded end");
         }
 
@@ -169,5 +170,19 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         public bool SomethingDeleted;
+
+        private int _selectedTabIndex;
+        public int SelectedTabIndex
+        {
+            get
+            {
+                return _selectedTabIndex;
+            }
+            set
+            {
+                _selectedTabIndex = value;
+                OnPropertyChanged(() => SelectedTabIndex);
+            }
+        }
     }
 }

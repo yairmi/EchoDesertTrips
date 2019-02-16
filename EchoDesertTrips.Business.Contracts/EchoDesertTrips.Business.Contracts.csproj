@@ -88,18 +88,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data Contracts\CustomerOrderData.cs" />
     <Compile Include="Data Contracts\EventDataType.cs" />
-    <Compile Include="Data Contracts\HotelRoomTypesData.cs" />
     <Compile Include="Data Contracts\InventoryData.cs" />
-    <Compile Include="Data Contracts\ReservationData.cs" />
-    <Compile Include="Data Contracts\RoomTypeData.cs" />
-    <Compile Include="Data Contracts\TourInfo.cs" />
+    <Compile Include="Data Contracts\BroadcastMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service Conracts\IBroadcastorService.cs" />
     <Compile Include="Service Conracts\ICustomerService.cs" />
     <Compile Include="Service Conracts\IInventoryService.cs" />
-    <Compile Include="Service Conracts\IOperationService.cs" />
     <Compile Include="Service Conracts\IOperatorService.cs" />
     <Compile Include="Service Conracts\IOrderService.cs" />
     <Compile Include="Service Conracts\ITourService.cs" />

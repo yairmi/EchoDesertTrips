@@ -14,13 +14,13 @@
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
     </core:UserControlViewBase.Resources>    
     <Grid>
-        <DataGrid x:Name="operatorDataGrid" 
+        <DataGrid x:Name="dgOperator" 
                   AutoGenerateColumns="False" 
                   HeadersVisibility="All"
-                  RowHeaderWidth="40"                  
+                  RowHeaderWidth="40" 
+                  HorizontalAlignment="Left"
                   EnableRowVirtualization="True" 
                   ItemsSource="{Binding Operators}" 
-                  Margin="0,0,400,90" 
                   RowDetailsVisibilityMode="VisibleWhenSelected"
                   CellStyle="{StaticResource DataGridBorder}"
                   Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
@@ -42,17 +42,9 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <DataGrid.Columns>
-                <!--<DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Command="{Binding Path=DataContext.DeleteOperatorCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                    Content="Delete"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-                <DataGridTextColumn x:Name="operatorNameColumn" Binding="{Binding OperatorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Name" Width="Auto"/>
-                <DataGridTextColumn x:Name="operatorPasswordColumn" Binding="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Password" Width="Auto"/>
-                <DataGridCheckBoxColumn x:Name="admin" Header="Administrator" Binding="{Binding Admin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
+                <DataGridTextColumn x:Name="operatorNameColumn" Binding="{Binding OperatorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Name" Width="120"/>
+                <DataGridTextColumn x:Name="operatorPasswordColumn" Binding="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Password" Width="120"/>
+                <DataGridCheckBoxColumn x:Name="admin" Header="Administrator" Binding="{Binding Admin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
             </DataGrid.Columns>
             <DataGrid.RowValidationRules>
                 <viewModels:OperatorValidationRule ValidationStep="UpdatedValue"/>

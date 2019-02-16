@@ -7,6 +7,8 @@ using EchoDesertTrips.Client.Entities;
 using System.Collections.ObjectModel;
 using EchoDesertTrips.Client.Proxies.Service_Proxies;
 using EchoDesertTrips.Client.Contracts;
+using static Core.Common.Core.Const;
+using EchoDesertTrips.Common;
 
 namespace Core.Common.UI.Core
 {
@@ -261,14 +263,18 @@ namespace Core.Common.UI.Core
 
         public BroadcastorServiceClient Client;
 
-        protected void NotifyServer(string calledFrom, int messageId)
+        protected void NotifyServer(string calledFrom, eInventoryTypes inventoryType, int EntityId)
         {
+            InventoryMessage invMsg = new InventoryMessage(inventoryType, EntityId);
+            var ser = new Serializer();
+            var message = ser.Serialize<InventoryMessage>(invMsg);
             try
             {
                 Client.NotifyServer(new EventDataType()
                 {
                     ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-                    EventMessage = messageId.ToString()
+                    MessageType = eMsgTypes.E_INVENTORY,
+                    EventMessage = message
                 });
             }
             catch (Exception ex)

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -31,20 +32,10 @@ namespace EchoDesertTrips.Data.Data_Repositories
                     && e.RoomTypeId == entity.RoomTypeId select e).FirstOrDefault();
         }
 
-        protected override IEnumerable<HotelRoomType> GetEntities(EchoDesertTripsContext entityContext)
-        {
-            return (from e in entityContext.HotelRoomTypeSet select e).Include(h => h.RoomType);
-        }
-
         protected override IEnumerable<HotelRoomType> GetEntities(EchoDesertTripsContext entityContext, int id)
         {
             return null;
         }
-
-        //protected override HotelRoomType GetEntity(EchoDesertTripsContext entityContext, int id)
-        //{
-        //    return null;
-        //}
 
         public HotelRoomType GetEntity(int hotelId, int RoomTypeId)
         {
@@ -55,6 +46,12 @@ namespace EchoDesertTrips.Data.Data_Repositories
                         && e.RoomTypeId == RoomTypeId
                         select e).FirstOrDefault();
             }
+        }
+
+        protected override IQueryable<HotelRoomType> IncludeNavigationProperties(IQueryable<HotelRoomType> query)
+        {
+            return query
+                .IncludeOptimized(a => a.RoomType);
         }
     }
 }

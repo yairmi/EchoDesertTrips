@@ -7,6 +7,7 @@ using EchoDesertTrips.Client.Entities;
 using System.Linq;
 using Core.Common.Utils;
 using EchoDesertTrips.Desktop.CustomEventArgs;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -73,7 +74,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentAgentsViewModel_AgencyUpdated(object sender, AgencyEventArgs e)
         {
-            var mappedAgency = AutoMapperUtil.Map<Agency, Agency>(e.Agency);
+            //var mappedAgency = AutoMapperUtil.Map<Agency, Agency>(e.Agency);
             if (!e.IsNew)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
@@ -82,15 +83,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (agency != null)
                 {
                     var index = Agencies.IndexOf(agency);
-                    Agencies[index] = mappedAgency;
+                    Agencies[index] = e.Agency;//mappedAgency;
                 }
             }
             else
             {
-                Agencies.Add(mappedAgency);
+                Agencies.Add(/*mappedAgency*/e.Agency);
             }
 
-            NotifyServer("CurrentAgentsViewModel_AgencyUpdated", 2);
+            NotifyServer("CurrentAgentsViewModel_AgencyUpdated", eInventoryTypes.E_AGENCY, /*mappedAgency.AgencyId*/e.Agency.AgencyId);
             CurrentAgentsViewModel = null;
         }
 

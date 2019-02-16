@@ -6,6 +6,7 @@ using System.Linq;
 using System.Data.Entity;
 using System.Linq.Expressions;
 using System;
+using Z.EntityFramework.Plus;
 
 namespace EchoDesertTrips.Data.Data_Repositories
 {
@@ -28,7 +29,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
                 var exsitingAgency = (from e in entityContext.AgencySet where e.AgencyId == agency.AgencyId select e)
-                             .Include(a => a.Agents)
+                             .IncludeOptimized(a => a.Agents)
                              .FirstOrDefault();
                 entityContext.Entry(exsitingAgency).CurrentValues.SetValues(agency);
                 //Agents
@@ -60,14 +61,14 @@ namespace EchoDesertTrips.Data.Data_Repositories
             }
         }
 
-        protected override IEnumerable<Agency> GetEntities(EchoDesertTripsContext entityContext)
-        {
-            return entityContext.AgencySet.Include(a => a.Agents);
-        }
-
         protected override IEnumerable<Agency> GetEntities(EchoDesertTripsContext entityContext, int id)
         {
             return null;
         }
-   }
+
+        protected override IQueryable<Agency> IncludeNavigationProperties(IQueryable<Agency> query)
+        {
+            return query.IncludeOptimized(a => a.Agents);
+        }
+    }
 }

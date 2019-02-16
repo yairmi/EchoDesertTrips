@@ -48,41 +48,30 @@ namespace EchoDesertTrips.Data.Data_Repositories
 
         }
 
-        protected override Reservation GetEntity(EchoDesertTripsContext entityContext, int id)
+        public Reservation[] GetReservationsByIds(List<int> idList)
         {
-            return (from e in entityContext.ReservationSet where e.ReservationId == id select e)
-                .Include(a => a.Agency.Agents)
-                .Include(a => a.Agent)
-                .Include(o => o.Customers)
-                .Include(o => o.Operator)
-                .Include(o => o.Group)
-                .Include(o => o.Tours.Select(t => t.TourType))
-                .Include(o => o.Tours.Select(t => t.SubTours))
-                .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
-                .Include(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
-                .Include(o => o.Tours.Select(th => th.TourHotels
-                .Select(aa => aa.TourHotelRoomTypes
-                .Select(bb => bb.HotelRoomType.RoomType))))
-                .Include(o => o.Tours.Select(th => th.TourHotels
-                .Select(aa => aa.TourHotelRoomTypes
-                .Select(bb => bb.HotelRoomType).Select(cc => cc.HotelRoomTypeDaysRanges))))
-                .FirstOrDefault();
+            using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
+            {
+                var query = (from e in entityContext.ReservationSet.Where(t => idList.Contains(t.ReservationId)) select e);
+                return IncludeNavigationPropertiesForGettingReservations(query).ToArray();
+            }
         }
 
         public Reservation[] GetReservationsByGroupId(int groupId)
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
-                return (from e in entityContext.ReservationSet where e.GroupID == groupId select e)
-                            .Include(a => a.Agency.Agents)
-                            .Include(o => o.Customers)
-                            .Include(o => o.Group)
-                            .Include(o => o.Tours.Select(t => t.TourType))
-                            .Include(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
-                            .Include(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
-                            .Include(o => o.Tours.Select(th => th.TourHotels
-                            .Select(throomTypes => throomTypes.TourHotelRoomTypes
-                            .Select(hotelRoomType => hotelRoomType.HotelRoomType.RoomType)))).ToArray();
+                var query = (from e in entityContext.ReservationSet where e.GroupID == groupId select e);
+                return IncludeNavigationPropertiesForGettingReservations(query).ToArray();
+            }
+        }
+
+        public Reservation[] GetReservationsForDayRange(DateTime dayFrom, DateTime dayTo)
+        {
+            using (var entityContext = new EchoDesertTripsContext())
+            {
+                var query = (from e in entityContext.ReservationSet where e.Tours.Any(t => t.StartDate >= dayFrom && t.StartDate <= dayTo) select e);
+                return IncludeNavigationPropertiesForGettingReservations(query).ToArray();
             }
         }
 
@@ -98,30 +87,6 @@ namespace EchoDesertTrips.Data.Data_Repositories
         public Reservation[] GetReservationByEndDate(DateTime date)
         {
             return null;
-        }
-
-        public IEnumerable<CustomerOrderInfo> GetCustomerOrderInfo()
-        {
-            using (var entityContext = new EchoDesertTripsContext())
-            {
-                return null;
-            }
-        }
-
-        public Reservation[] GetReservationsForDayRange(DateTime dayFrom, DateTime dayTo)
-        {
-            using (var entityContext = new EchoDesertTripsContext())
-            {
-                return (from e in entityContext.ReservationSet where e.Tours.Any(t => t.StartDate >= dayFrom && t.StartDate <= dayTo) select e)
-                            .IncludeOptimized(a => a.Agency.Agents)
-                            .IncludeOptimized(o => o.Customers)
-                            .IncludeOptimized(o => o.Group)
-                            .IncludeOptimized(o => o.Tours)
-                            .IncludeOptimized(o => o.Tours.Select(t => t.TourType))
-                            .IncludeOptimized(o => o.Tours.Select(t => t.TourHotels))
-                            .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
-                            .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel))).ToArray();
-            }
         }
 
         public void RemoveReservation(int reservationId)
@@ -410,6 +375,40 @@ namespace EchoDesertTrips.Data.Data_Repositories
             }
             var existingReservation = Get(reservation.ReservationId);
             return existingReservation;
+        }
+
+        protected override IQueryable<Reservation> IncludeNavigationProperties(IQueryable<Reservation> query)
+        {
+            return query
+                    .IncludeOptimized(a => a.Agency.Agents)
+                    .IncludeOptimized(o => o.Customers)
+                    .IncludeOptimized(o => o.Group)
+                    .IncludeOptimized(o => o.Tours)
+                    .IncludeOptimized(o => o.Tours.Select(t => t.TourType))
+                    .IncludeOptimized(o => o.Tours.Select(t => t.TourHotels))
+                    .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals))
+                    .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes)))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes.Select(bb => bb.HotelRoomType))))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes.Select(bb => bb.HotelRoomType).Select(cc => cc.RoomType))))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes.Select(bb => bb.HotelRoomType).Select(cc => cc.HotelRoomTypeDaysRanges))));
+        }
+
+        private IQueryable<Reservation> IncludeNavigationPropertiesForGettingReservations(IQueryable<Reservation> query)
+        {
+            return query
+                    .IncludeOptimized(a => a.Agency.Agents)
+                    .IncludeOptimized(o => o.Customers)
+                    .IncludeOptimized(o => o.Group)
+                    .IncludeOptimized(o => o.Tours)
+                    .IncludeOptimized(o => o.Tours.Select(t => t.TourType))
+                    .IncludeOptimized(o => o.Tours.Select(t => t.TourHotels))
+                    .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes)))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes.Select(bb => bb.HotelRoomType))))
+                    .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes.Select(bb => bb.HotelRoomType).Select(cc => cc.HotelRoomTypeDaysRanges))));
         }
 
         private void ResetNavProperties(Reservation reservation)

@@ -83,7 +83,7 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
                         <TextBlock Margin="3" Text="Descriptions:"/>
-                        <DataGrid Margin="3" x:Name="dgTourDescriptions"
+                        <DataGrid x:Name="dgTourDescriptions" Margin="3"
                           ItemsSource="{Binding TourType.TourTypeDescriptions, Mode=TwoWay}" 
                           AutoGenerateColumns="False"
                           HorizontalAlignment="Left"
@@ -111,7 +111,7 @@
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
                         <TextBlock Margin="3" Text="Destinations:"/>
-                        <DataGrid  Width="160" Margin="3" x:Name="dgDestinations" 
+                        <DataGrid   x:Name="dgDestinations" Width="160" Margin="3"
                                     ItemsSource="{Binding Destinations, Mode=TwoWay}"
                                     RowDetailsVisibilityMode="Visible"
                                     AutoGenerateColumns="False"
@@ -125,7 +125,7 @@
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Vertical">
                         <TextBlock Grid.Column="4" Margin="3" Text="Adult Prices:"/>
-                        <DataGrid  Width="Auto" Margin="3" x:Name="dgAdultPrices" 
+                        <DataGrid   x:Name="dgAdultPrices" Width="Auto" Margin="3"
                                     ItemsSource="{Binding AdultPrices, Mode=TwoWay}"
                                     RowDetailsVisibilityMode="Visible"
                                     AutoGenerateColumns="False"
@@ -140,7 +140,7 @@
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="3">
                         <TextBlock Margin="3" Text="Child Prices:"/>
-                        <DataGrid  Width="Auto" Margin="3" x:Name="dgChildPrices" 
+                        <DataGrid   x:Name="dgChildPrices" Width="Auto" Margin="3"
                                         ItemsSource="{Binding ChildPrices, Mode=TwoWay}"
                                         RowDetailsVisibilityMode="Visible"
                                         AutoGenerateColumns="False"
@@ -155,7 +155,7 @@
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="4">
                         <TextBlock Margin="3" Text="Infant Prices:"/>
-                        <DataGrid  Width="Auto" Margin="3" x:Name="dgInfantPrices" 
+                        <DataGrid   x:Name="dgInfantPrices" Width="Auto" Margin="3"
                                         ItemsSource="{Binding InfantPrices, Mode=TwoWay}"
                                         RowDetailsVisibilityMode="Visible"
                                         AutoGenerateColumns="False"

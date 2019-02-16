@@ -20,7 +20,7 @@
                   AutoGenerateColumns="False" 
                   EnableRowVirtualization="True" 
                   ItemsSource="{Binding}" 
-                  Margin="0,0,1000,91" 
+                  HorizontalAlignment="Left"
                   RowDetailsVisibilityMode="VisibleWhenSelected"
                   CellStyle="{StaticResource DataGridBorder}"
                   Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">
@@ -42,8 +42,8 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="roomTypeNameColumn" Binding="{Binding RoomTypeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Room Type Name" Width="*"/>
-                <DataGridCheckBoxColumn x:Name="RoomTypeVisibility" Binding="{Binding Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Visibility" Width="*"/>
+                <DataGridTextColumn x:Name="roomTypeNameColumn" Width="200" Binding="{Binding RoomTypeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Room Type Name"/>
+                <DataGridCheckBoxColumn x:Name="RoomTypeVisibility" Width="80" Binding="{Binding Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Visibility"/>
             </DataGrid.Columns>
             <DataGrid.RowValidationRules>
                 <viewModels:RoomTypeValidationRule ValidationStep="UpdatedValue"/>

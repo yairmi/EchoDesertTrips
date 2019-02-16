@@ -3,6 +3,7 @@ using Core.Common.Core;
 using FluentValidation;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -197,21 +198,6 @@ namespace EchoDesertTrips.Client.Entities
                     _advancePayment = value;
                     OnPropertyChanged(() => AdvancePayment, true);
                 }
-            }
-        }
-
-        private double _totalPrice;
-
-        public double TotalPrice
-        {
-            get
-            {
-                return _totalPrice;
-            }
-            set
-            {
-                _totalPrice = value;
-                OnPropertyChanged(() => TotalPrice, true);
             }
         }
 

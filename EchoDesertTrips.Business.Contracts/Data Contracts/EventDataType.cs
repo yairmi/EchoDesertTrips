@@ -1,9 +1,7 @@
-﻿using System;
+﻿using EchoDesertTrips.Business.Entities;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using static Core.Common.Core.Const;
 
 namespace EchoDesertTrips.Business.Contracts
 {
@@ -12,9 +10,9 @@ namespace EchoDesertTrips.Business.Contracts
     {
         [DataMember]
         public string ClientName { get; set; }
-
+        [DataMember]
+        public eMsgTypes MessageType;
         [DataMember]
         public string EventMessage { get; set; }
-
     }
 }

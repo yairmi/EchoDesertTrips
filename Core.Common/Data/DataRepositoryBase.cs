@@ -24,6 +24,8 @@ namespace Core.Common.Data
 
         protected abstract T GetEntity(U entityContext, int id);
 
+        protected abstract IQueryable<T> IncludeNavigationProperties(IQueryable<T> query);
+
         public T Add(T entity)
         {
             using (U entityContext = new U())   
