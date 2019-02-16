@@ -69,22 +69,23 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentHotelViewModel_HotelUpdated(object sender, HotelEventArgs e)
         {
-            //var mappedHotel = AutoMapperUtil.Map<Hotel, Hotel>(e.Hotel);
             if (!e.IsNew)
             {
                 var hotel = Hotels.FirstOrDefault(item => item.HotelId == e.Hotel.HotelId);
                 if (hotel != null)
                 {
                     var index = Hotels.IndexOf(hotel);
-                    Hotels[index] = e.Hotel;//mappedHotel;
+                    Hotels[index] = e.Hotel;
                 }
             }
             else
             {
-                Hotels.Add(/*mappedHotel*/e.Hotel);
+                Hotels.Add(e.Hotel);
             }
 
-            NotifyServer("CurrentHotelViewModel_HotelUpdated", eInventoryTypes.E_HOTEL, /*mappedHotel.HotelId*/e.Hotel.HotelId);
+            NotifyServer("CurrentHotelViewModel_HotelUpdated",
+                SerializeInventoryMessage(eInventoryTypes.E_HOTEL, e.Hotel.HotelId), eMsgTypes.E_INVENTORY);
+
             CurrentHotelViewModel = null;
         }
 

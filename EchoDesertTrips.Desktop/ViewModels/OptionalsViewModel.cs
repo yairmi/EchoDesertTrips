@@ -55,7 +55,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     var savedOptional = inventoryClient.UpdateOptional(optional);
                     if (bIsNew)
                         Optionals[Optionals.Count - 1].OptionalId = savedOptional.OptionalId;
-                    NotifyServer("OptionalsViewModel OnSaveCommand", eInventoryTypes.E_OPTIONAL, savedOptional.OptionalId);
+
+                    NotifyServer("OptionalsViewModel OnSaveCommand",
+                        SerializeInventoryMessage(eInventoryTypes.E_OPTIONAL, savedOptional.OptionalId), eMsgTypes.E_INVENTORY);
                 });
 
                 

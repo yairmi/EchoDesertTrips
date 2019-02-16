@@ -263,18 +263,36 @@ namespace Core.Common.UI.Core
 
         public BroadcastorServiceClient Client;
 
-        protected void NotifyServer(string calledFrom, eInventoryTypes inventoryType, int EntityId)
+        protected string SerializeInventoryMessage(eInventoryTypes inventoryType, int EntityId)
         {
             InventoryMessage invMsg = new InventoryMessage(inventoryType, EntityId);
             var ser = new Serializer();
-            var message = ser.Serialize<InventoryMessage>(invMsg);
+            return ser.Serialize<InventoryMessage>(invMsg);
+        }
+
+        protected string SerializeReservationMessage(int EntityId)
+        {
+            var reservationsMessage = new ReservationsMessage()
+            {
+                ReservationsIds = new List<int>()
+            };
+            reservationsMessage.ReservationsIds.Add(EntityId);
+            Serializer ser = new Serializer();
+            return ser.Serialize(reservationsMessage);
+        }
+
+        protected void NotifyServer(string calledFrom, string message, eMsgTypes msgType)
+        {
+            //InventoryMessage invMsg = new InventoryMessage(inventoryType, EntityId);
+            //var ser = new Serializer();
+            //var message = ser.Serialize<InventoryMessage>(invMsg);
             try
             {
                 Client.NotifyServer(new EventDataType()
                 {
                     ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-                    MessageType = eMsgTypes.E_INVENTORY,
-                    EventMessage = message
+                    EventMessage = message,
+                    MessageType = msgType
                 });
             }
             catch (Exception ex)

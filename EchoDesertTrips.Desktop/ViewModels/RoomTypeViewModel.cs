@@ -65,7 +65,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     var savedRoomType = inventoryClient.UpdateRoomType(roomType);
                     if (bIsNew)
                         RoomTypes[RoomTypes.Count - 1].RoomTypeId = savedRoomType.RoomTypeId;
-                    NotifyServer("RoomTypeViewModel OnSaveCommand", eInventoryTypes.E_ROOM_TYPE, savedRoomType.RoomTypeId);
+
+                    NotifyServer("RoomTypeViewModel OnSaveCommand",
+                        SerializeInventoryMessage(eInventoryTypes.E_ROOM_TYPE, savedRoomType.RoomTypeId), eMsgTypes.E_INVENTORY);
                 });
             }
         }

@@ -497,19 +497,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 try
                 {
-                    var reservationsMessage = new ReservationsMessage()
-                    {
-                        ReservationsIds = new List<int>()
-                    };
-                    reservationsMessage.ReservationsIds.Add(e.Reservation.ReservationId);
-                    Serializer ser = new Serializer();
-                    var message = ser.Serialize(reservationsMessage);
-                    Client.NotifyServer(new EventDataType()
-                    {
-                        ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-                        EventMessage = message,
-                        MessageType = eMsgTypes.E_RESERVATION
-                    });
+                    NotifyServer("CurrentTourTypeViewModel_TourTypeUpdated",
+                        SerializeReservationMessage(e.Reservation.ReservationId), eMsgTypes.E_RESERVATION);
                 }
                 catch (Exception ex)
                 {

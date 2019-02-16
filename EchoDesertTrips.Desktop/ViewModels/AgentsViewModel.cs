@@ -91,7 +91,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Agencies.Add(/*mappedAgency*/e.Agency);
             }
 
-            NotifyServer("CurrentAgentsViewModel_AgencyUpdated", eInventoryTypes.E_AGENCY, /*mappedAgency.AgencyId*/e.Agency.AgencyId);
+            NotifyServer("CurrentAgentsViewModel_AgencyUpdated", 
+                SerializeInventoryMessage(eInventoryTypes.E_AGENCY, e.Agency.AgencyId), eMsgTypes.E_INVENTORY);
             CurrentAgentsViewModel = null;
         }
 
