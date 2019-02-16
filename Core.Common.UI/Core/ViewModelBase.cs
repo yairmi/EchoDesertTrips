@@ -263,20 +263,20 @@ namespace Core.Common.UI.Core
 
         public BroadcastorServiceClient Client;
 
-        protected string SerializeInventoryMessage(eInventoryTypes inventoryType, int EntityId)
+        protected string SerializeInventoryMessage(eInventoryTypes inventoryType, eOperation operation, int EntityId)
         {
-            InventoryMessage invMsg = new InventoryMessage(inventoryType, EntityId);
+            InventoryMessage invMsg = new InventoryMessage(inventoryType, operation, EntityId);
             var ser = new Serializer();
             return ser.Serialize<InventoryMessage>(invMsg);
         }
 
-        protected string SerializeReservationMessage(int EntityId)
+        protected string SerializeReservationMessage(int EntityId, eOperation operation)
         {
             var reservationsMessage = new ReservationsMessage()
             {
-                ReservationsIds = new List<int>()
+                ReservationsIds = new List<ReservationMessage>()
             };
-            reservationsMessage.ReservationsIds.Add(EntityId);
+            reservationsMessage.ReservationsIds.Add(new ReservationMessage(EntityId, operation));
             Serializer ser = new Serializer();
             return ser.Serialize(reservationsMessage);
         }

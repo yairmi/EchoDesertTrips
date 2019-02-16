@@ -20,6 +20,8 @@ namespace EchoDesertTrips.Business.Contracts
         [DataMember]
         public List<Reservation> ReservationsResult { get; set; }
         [DataMember]
+        public List<int> ReservationsIdsToDelete { get; set; }
+        [DataMember]
         public InventoryData Inventories { get; set; }
     }
 

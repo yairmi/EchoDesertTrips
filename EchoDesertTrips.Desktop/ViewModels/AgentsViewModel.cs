@@ -92,7 +92,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
 
             NotifyServer("CurrentAgentsViewModel_AgencyUpdated", 
-                SerializeInventoryMessage(eInventoryTypes.E_AGENCY, e.Agency.AgencyId), eMsgTypes.E_INVENTORY);
+                SerializeInventoryMessage(eInventoryTypes.E_AGENCY, eOperation.E_UPDATED ,e.Agency.AgencyId), eMsgTypes.E_INVENTORY);
             CurrentAgentsViewModel = null;
         }
 

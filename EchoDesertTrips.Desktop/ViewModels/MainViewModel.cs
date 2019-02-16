@@ -191,6 +191,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 foreach (var reservation in Message.ReservationsResult)
                     _mainTabViewModel.ReservationsViewModel.UpdateReservations(new ReservationEventArgs(reservation, false, true));
+                foreach (var reservationId in Message.ReservationsIdsToDelete)
+                    _mainTabViewModel.ReservationsViewModel.RemoveReservationFromGUI(reservationId);
             }
             else if (Message.MessageType == eMsgTypes.E_INVENTORY)
                 UpdateInventory(Message.Inventories);

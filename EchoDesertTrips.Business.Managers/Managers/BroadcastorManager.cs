@@ -71,12 +71,10 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
                     if (eventData.MessageType == eMsgTypes.E_RESERVATION) //If reservations request
                     {
-
                         var des = ser.Deserialize<ReservationsMessage>(eventData.EventMessage);
-                        var reservations = GetReservationsByIds(des.ReservationsIds);
+                        broadcastMsg.ReservationsResult = GetUpdatedReservationsByIds(des.ReservationsIds);
+                        broadcastMsg.ReservationsIdsToDelete = GetDeletedReservationsByIds(des.ReservationsIds);
                         broadcastMsg.MessageType = eMsgTypes.E_RESERVATION;
-                        broadcastMsg.ReservationsResult = reservations.ToList();
-
                     }
                     else if (eventData.MessageType == eMsgTypes.E_INVENTORY)
                     {
@@ -142,15 +140,32 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        private Reservation[] GetReservationsByIds(List<int> idList)
+        private List<Reservation> GetUpdatedReservationsByIds(List<ReservationMessage> reservationMessages)
         {
             return ExecuteFaultHandledOperation(() =>
             {
+                List<int> idList = new List<int>();
+                foreach (var reservationMessage in reservationMessages)
+                {
+                    if (reservationMessage.Operation == eOperation.E_UPDATED)
+                        idList.Add(reservationMessage.ReservationId);
+                }
                 IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
                 var reservations = reservationEngine.GetReservationsByIds(idList);
                 reservationEngine.PrepareReservationsForTransmition(reservations);
-                return reservations;
+                return reservations.ToList();
             });
+        }
+
+        private List<int> GetDeletedReservationsByIds(List<ReservationMessage> reservationMessages)
+        {
+            List<int> idList = new List<int>();
+            foreach (var reservationMessage in reservationMessages)
+            {
+                if (reservationMessage.Operation == eOperation.E_DELETED)
+                    idList.Add(reservationMessage.ReservationId);
+            }
+            return idList;
         }
 
         private Hotel GetHotelById(int id)

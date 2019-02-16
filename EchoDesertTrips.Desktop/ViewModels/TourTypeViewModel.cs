@@ -100,7 +100,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
 
             NotifyServer("CurrentTourTypeViewModel_TourTypeUpdated",
-                SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY);
+                SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, eOperation.E_UPDATED, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY);
         }
 
         private void CurrentTourTypeViewModel_TourTypeCancelled(object sender, TourTypeEventArgs e)

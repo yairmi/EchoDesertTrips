@@ -55,7 +55,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         Operators[Operators.Count - 1].OperatorId = savedOperator.OperatorId;
 
                     NotifyServer("OperatorViewModel OnSaveCommand",
-                        SerializeInventoryMessage(eInventoryTypes.E_OPERATOR, savedOperator.OperatorId), eMsgTypes.E_INVENTORY);
+                        SerializeInventoryMessage(eInventoryTypes.E_OPERATOR, eOperation.E_UPDATED, savedOperator.OperatorId), eMsgTypes.E_INVENTORY);
                 });
             }
         }

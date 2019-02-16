@@ -84,7 +84,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
 
             NotifyServer("CurrentHotelViewModel_HotelUpdated",
-                SerializeInventoryMessage(eInventoryTypes.E_HOTEL, e.Hotel.HotelId), eMsgTypes.E_INVENTORY);
+                SerializeInventoryMessage(eInventoryTypes.E_HOTEL, eOperation.E_UPDATED, e.Hotel.HotelId), eMsgTypes.E_INVENTORY);
 
             CurrentHotelViewModel = null;
         }

@@ -10,6 +10,7 @@ namespace Core.Common.Core
     {
         public enum eMsgTypes { E_RESERVATION, E_INVENTORY }
         public enum eInventoryTypes { E_TOUR_TYPE, E_ROOM_TYPE, E_HOTEL, E_OPTIONAL, E_OPERATOR, E_AGENCY};
+        public enum eOperation { E_UPDATED, E_DELETED};
         
         //public static int MSG_TYPE_RESERVATION => 1;
         //public static int MSG_TYPE_INVENTORY => 2;

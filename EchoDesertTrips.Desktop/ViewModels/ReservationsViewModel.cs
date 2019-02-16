@@ -185,12 +185,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
              {
                 _reservations.Remove(obj);
                 _continualReservations.Remove(obj);
-                Client.NotifyServer(new EventDataType()
-                {
-                    ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-                    EventMessage = "1;" + obj.Tours[0].StartDate.ToString()
-                });
-             }
+                NotifyServer("OnDeleteReservationCommand",
+                    SerializeReservationMessage(obj.ReservationId, eOperation.E_DELETED), eMsgTypes.E_RESERVATION);
+            }
         }
 
         private void OnAddReservationCommand(object arg)
@@ -284,67 +281,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             return (date > _selectedDate.AddDays(_daysRange * (-1)) && date < _selectedDate.AddDays(_daysRange));
         }
-        //This methos is called when other cilent update/add reservation
-        /*public async void GetReservationsByIds(List<ReservationMessage> ReservationMessages)
-        {
-            log.Debug("LoadReservationsForDayRangeAsync start");
-
-            var Ids = new List<int>();
-            foreach(var reservationMessage in ReservationMessages)
-            {
-                if (IsInDayRange(reservationMessage.StartDay))
-                    Ids.Add(reservationMessage.ReservationID);
-            }
-
-            if (Ids.Capacity > 0)
-            {
-                log.Debug("LoadReservationsForDayRangeAsync execution started");
-                var orderClient = _serviceFactory.CreateClient<IOrderService>();
-                {
-                    try
-                    {
-                        //Main thread
-                        var uiContext = SynchronizationContext.Current;
-                        var task = Task.Factory.StartNew(() => orderClient.GetReservationsByIdsAsynchronous(Ids));
-                        var reservations = await task;
-                        await reservations.ContinueWith((Task<Reservation[]> e) =>
-                        {
-                            //Worker thread
-                            if (e.IsCompleted)
-                            {
-                                uiContext.Send((x) =>
-                                {
-                                    //Main thread
-                                    if (reservations.Result != null)
-                                    {
-                                        foreach(var reservation in reservations.Result)
-                                        {
-                                            var res = _reservations.FirstOrDefault(item => item.ReservationId == reservation.ReservationId);
-                                            if (res != null)
-                                            {
-                                                var index = _reservations.IndexOf(res);
-                                                _reservations[index] = res;
-                                                _continualReservations[index] = res;
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        log.Error("LoadReservationsForDayRangeAsync returns null");
-                                    }
-                                }, null);
-                            }
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        log.Error(string.Format("Exception in LoadReservationsForDayRangeAsync. exception: {0}", ex.Message));
-                    }
-                }
-                var disposableClient = orderClient as IDisposable;
-                disposableClient?.Dispose();
-            }
-        }*/
 
         public async void LoadReservationsForDayRangeAsync2()
         {
@@ -498,12 +434,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 try
                 {
                     NotifyServer("CurrentTourTypeViewModel_TourTypeUpdated",
-                        SerializeReservationMessage(e.Reservation.ReservationId), eMsgTypes.E_RESERVATION);
+                        SerializeReservationMessage(e.Reservation.ReservationId, eOperation.E_UPDATED), eMsgTypes.E_RESERVATION);
                 }
                 catch (Exception ex)
                 {
                     log.Error("CurrentReservationViewModel_ReservationUpdated: Failed to notify server: " + ex.Message);
                 }
+            }
+        }
+
+        public void RemoveReservationFromGUI(int reservationId)
+        {
+            var reservation = _reservations.FirstOrDefault(item => item.ReservationId == reservationId);
+            if (reservation != null)
+            {
+                _reservations.Remove(reservation);
             }
         }
 
