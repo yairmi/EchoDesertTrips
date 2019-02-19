@@ -68,8 +68,8 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Pickup Address:" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Start Date:" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="End Date:" />
-                <TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Hotels:" />
-                <TextBlock Grid.Row="5" Grid.Column="0" Margin="3" Text="Rooms:" />
+                <!--<TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Hotels:" />-->
+                <!--<TextBlock Grid.Row="5" Grid.Column="0" Margin="3" Text="Rooms:" />-->
                 <ComboBox x:Name="cbTourType" Grid.Row="0" Grid.Column="1" 
                 SelectedItem="{Binding DataContext.Tour.TourType,  
                 RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}},
@@ -87,7 +87,64 @@
                 <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="150" Text="{Binding Tour.PickupAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
                 <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpStartDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
                 <DatePicker Grid.Row="3" Grid.Column="1" x:Name="dpEndDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}" />
-                <ComboBox Grid.Row="4" Grid.Column="1" x:Name="cbHotels"
+            <!--<StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">-->
+                <DataGrid x:Name="dgTourHotels"
+                Grid.Row="4" Grid.Column="0"
+                HeadersVisibility="All"
+                RowHeaderWidth="25"
+                FontSize="12"
+                ItemsSource="{Binding Tour.TourHotels, Mode=TwoWay}"
+                AutoGenerateColumns="False"
+                HorizontalAlignment="Left"
+                CellStyle="{StaticResource DataGridBorder}"
+                Margin="3"
+                Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='530'}"
+                Width="Auto">
+                    <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="5,0,5,0">
+                                <Hyperlink Command="{Binding DataContext.EditTourHotelCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
+                                           CommandParameter="{Binding}">
+                                    <TextBlock Text="Edit" FontSize="14" FontWeight="Bold"/>
+                                </Hyperlink>
+                            </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn x:Name="hotelColumn" Header="Hotel" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Hotel.HotelName}" Width="Auto"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <ComboBox x:Name="cbHotel" SelectedItem="{Binding Hotel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    SelectedValue="{Binding HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                    ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
+                                    SelectedValuePath="HotelId"
+                                    DisplayMemberPath="HotelName"
+                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Hotels}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn x:Name="hotelStartDayColumn" Header="Start Day" Width="85" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                <TextBlock Text="{Binding HotelStartDay, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <DatePicker x:Name="StartDay" Width="Auto" SelectedDate="{Binding HotelStartDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <!--<ComboBox x:Name="cbHotels"
                 SelectedItem="{Binding DataContext.SelectedHotel, 
                 RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -100,19 +157,19 @@
                 AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Hotels}"
                 HorizontalAlignment="Left"
                 Width="150"
-                Margin="3"/>
-                <DataGrid x:Name="dgRoomTypes"
-                Grid.Row="5" Grid.Column="1" 
+                Margin="3"/>-->
+            <!--</StackPanel>-->
+            <DataGrid x:Name="dgRoomTypes"
+                Grid.Row="4" Grid.Column="1" 
                 HeadersVisibility="All"
-                RowHeaderWidth="40"
+                RowHeaderWidth="25"
                 FontSize="12"
                 ItemsSource="{Binding TourHotelRoomTypes, Mode=TwoWay}"
                 AutoGenerateColumns="False"
                 HorizontalAlignment="Left"
                 CellStyle="{StaticResource DataGridBorder}"
                 Margin="3"
-                Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='560'}"
-                Width="Auto">
+                Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='530'}">
                 <DataGrid.Resources>
                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                         <Setter Property="Padding" Value="-2"/>
@@ -133,9 +190,9 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="120" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
+                    <DataGridTextColumn Width="100" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
                     <DataGridTextColumn Width="80" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
-                    <DataGridTextColumn Width="50" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
+                    <DataGridTextColumn Width="45" Header="PAX" Binding="{Binding Persons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>
                 </DataGrid.Columns>
                 <DataGrid.RowValidationRules>
                     <viewModels:TourHotelRoomsValidationRule ValidationStep="UpdatedValue"/>
@@ -163,20 +220,19 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <!--<ColumnDefinition Width="Auto"/>-->
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Margin="10,0,5,0" Text="Optionals:" />
-                <DataGrid x:Name="dgOptionals" 
+                <!--<TextBlock Grid.Row="0" Grid.Column="0" Margin="10,0,5,0" Text="Optionals:" />-->
+            <DataGrid x:Name="dgOptionals" 
                     Grid.Row="0"  Grid.Column="1" 
                     FontSize="12"
                     ItemsSource="{Binding Tour.TourOptionals, Mode=TwoWay}"
                     AutoGenerateColumns="False" 
                     HorizontalAlignment="Left"
                     CellStyle="{StaticResource DataGridBorder}"
-                    Margin="0"
-                    Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='405'}"
-                    Width="Auto">
+                    Margin="8"
+                    Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='412'}">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>

@@ -103,9 +103,9 @@
                                     Binding="{Binding TourType.TourTypeName, Mode=TwoWay}"/>
                         <DataGridTextColumn x:Name="pickupAddressColumn" Width="120" Header="Pickup Address" IsReadOnly="True"
                                     Binding="{Binding PickupAddress}"/>
-                        <DataGridTextColumn x:Name="startDateColumn" Width="100" Header="Start Date" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="startDateColumn" Width="85" Header="Start Day" IsReadOnly="True"
                                     Binding="{Binding StartDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
-                        <DataGridTextColumn x:Name="endDateColumn" Width="100" Header="End Date" IsReadOnly="True"
+                        <DataGridTextColumn x:Name="endDateColumn" Width="80" Header="End Day" IsReadOnly="True"
                                     Binding="{Binding EndDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
                     </DataGrid.Columns>
                 </DataGrid>

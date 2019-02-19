@@ -229,7 +229,8 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                         //Tour Hotel Room Types
                                         var existingTourHotel = (from e in exsitingTour.TourHotels where e.TourHotelId == tourHotel.TourHotelId select e).FirstOrDefault();
                                         if (existingTourHotel != null)
-                                        { 
+                                        {
+                                            entityContext.Entry(existingTourHotel).CurrentValues.SetValues(tourHotel);
                                             if (tourHotel.TourHotelRoomTypes != null)
                                             {
                                                 tourHotel.TourHotelRoomTypes.ForEach((tourHotelRoomType) =>

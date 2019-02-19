@@ -43,8 +43,8 @@
             </i:Interaction.Triggers>
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="OptionalDescription" Width="200" Header="Description" Binding="{Binding OptionalDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn x:Name="PricePerPerson" Width="80" Header="Price Per Person" Binding="{Binding PricePerPerson, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn x:Name="PriceInclusive" Width="80" Header="Price Inclusive" Binding="{Binding PriceInclusive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="PricePerPerson" Width="130" Header="Price Per Person" Binding="{Binding PricePerPerson, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn x:Name="PriceInclusive" Width="130" Header="Price Inclusive" Binding="{Binding PriceInclusive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridCheckBoxColumn x:Name="OptionalVisibility" Width="80" Header="Visibility" Binding="{Binding Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
             <DataGrid.RowValidationRules>

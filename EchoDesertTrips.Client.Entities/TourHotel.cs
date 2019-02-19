@@ -1,4 +1,5 @@
 ﻿using Core.Common.Core;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -8,7 +9,8 @@ namespace EchoDesertTrips.Client.Entities
     {
         public TourHotel()
         {
-            _tourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>(); 
+            _tourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
+            HotelStartDay = DateTime.Today;
         }
 
         private int _tourHotelId;
@@ -77,6 +79,21 @@ namespace EchoDesertTrips.Client.Entities
             {
                 _tourHotelRoomTypes = value;
                 OnPropertyChanged(() => TourHotelRoomTypes, true);
+            }
+        }
+
+        private DateTime _hotelStartDay;
+
+        public DateTime HotelStartDay
+        {
+            get
+            {
+                return _hotelStartDay;
+            }
+            set
+            {
+                _hotelStartDay = value;
+                OnPropertyChanged(() => HotelStartDay, true);
             }
         }
     }

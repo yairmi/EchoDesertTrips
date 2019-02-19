@@ -181,6 +181,14 @@
     <Compile Include="Migrations\201901291814214_listtopublic.Designer.cs">
       <DependentUpon>201901291814214_listtopublic.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902182026480_HotelStartDay.cs" />
+    <Compile Include="Migrations\201902182026480_HotelStartDay.Designer.cs">
+      <DependentUpon>201902182026480_HotelStartDay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902182029029_HotelStartDay1.cs" />
+    <Compile Include="Migrations\201902182029029_HotelStartDay1.Designer.cs">
+      <DependentUpon>201902182029029_HotelStartDay1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -243,6 +251,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901291814214_listtopublic.resx">
       <DependentUpon>201901291814214_listtopublic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902182026480_HotelStartDay.resx">
+      <DependentUpon>201902182026480_HotelStartDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902182029029_HotelStartDay1.resx">
+      <DependentUpon>201902182029029_HotelStartDay1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
