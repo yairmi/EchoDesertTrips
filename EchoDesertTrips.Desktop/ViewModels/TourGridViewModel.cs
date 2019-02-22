@@ -281,22 +281,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CurrentTourViewModel_TourUpdated(object sender, TourEventArgs e)
         {
-            var tour_e = e.Tour;
+            //var tour_e = e.Tour;
             if (!e.IsNew)
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
-                tour_e.bInEdit = false;
+                e.Tour.bInEdit = false;
                 var tour = Tours.FirstOrDefault(item => item.bInEdit == true);
                 if (tour != null)
                 {
                     var index = Tours.IndexOf(tour);
-                    Tours[index] = tour_e;
+                    Tours[index] = e.Tour;
                 }
             }
             else
             {
-                Tours.Add(tour_e);
+                Tours.Add(e.Tour);
             }
             Tours.OrderBy(tour => tour.StartDate);
             OnPropertyChanged(() => TotalPrice);
