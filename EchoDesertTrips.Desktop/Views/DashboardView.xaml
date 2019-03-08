@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
-             xmlns:vm="clr-namespace:EchoDesertTrips.Desktop.ViewModels"
              xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
              xmlns:rv="clr-namespace:Microsoft.Reporting.WinForms;assembly=Microsoft.ReportViewer.WinForms"
              xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
@@ -14,12 +13,29 @@
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
     </core:UserControlViewBase.Resources>
     <Grid>
-        <DockPanel>
-            <WindowsFormsHost Grid.Column="1" x:Name="wfhReport" Margin="10,100,100,0" Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='290'}">
-            <rv:ReportViewer x:Name="_reportViewer"/>
-        </WindowsFormsHost>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Border Name="Border" Grid.Row="0" BorderThickness="2,2,2,2" BorderBrush="Gainsboro" CornerRadius="4,4,4,4" Width="620" Margin="10,0,0,2" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBox x:Name="tbOperator" Text="{Binding Operator.OperatorFullName}" Width="0" Height="0"/>
+                    <TextBlock Text="Hello" Width="80"/>
+                    <TextBox x:Name="tbHiValue" Width="140" Margin="10,0,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <TextBlock x:Name="tblGroupID" Text="Group ID" Width="80" />
+                <TextBox x:Name="tbGroupID" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140"/>
+                <Button x:Name="btnSelect" Content="Reservations Report" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Width="150" Click="btnSelect_Click"/>
+                <Button x:Name="btnCustomerReport" Content="Customers Report" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Width="150" Click="btnCustomerReport_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <DockPanel Grid.Row="1" Margin="10,10,100,0">
+            <WindowsFormsHost x:Name="wfhReport"  Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='290'}">
+                <rv:ReportViewer x:Name="_reportViewer"/>
+            </WindowsFormsHost>
         </DockPanel>
-        <TextBox x:Name="tbGroupID" HorizontalAlignment="Left" Height="23" Margin="64,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btnSelect" Content="Generate Report" HorizontalAlignment="Left" Margin="215,56,0,0" VerticalAlignment="Top" Width="125" Click="btnSelect_Click"/>
     </Grid>
 </core:UserControlViewBase>

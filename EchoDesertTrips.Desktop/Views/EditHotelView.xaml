@@ -121,8 +121,8 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal">
-                    <Button Content="Save All" Margin="5" Command="{Binding SaveCommand}" />
-                    <Button Content="Cancel All" Margin="5" Command="{Binding CancelCommand}" />
+                    <Button Content="Save" Margin="5" Command="{Binding SaveCommand}" />
+                    <Button Content="Cancel" Margin="5" Command="{Binding CancelCommand}" />
                 </StackPanel>
             </Grid>
         </Grid>

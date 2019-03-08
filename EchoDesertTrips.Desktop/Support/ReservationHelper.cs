@@ -100,7 +100,7 @@ namespace EchoDesertTrips.Desktop.Support
 
                         foreach(var daysRange in tourHotelRoomType.HotelRoomType.HotelRoomTypeDaysRanges)
                         {
-                            int days = GetDaysInRange(tour, daysRange);
+                            int days = GetDaysInRange(tourHotel, daysRange);
                             totalPrice += tourHotelRoomType.Persons * daysRange.PricePerPerson * days;
                         }
                     });
@@ -109,23 +109,23 @@ namespace EchoDesertTrips.Desktop.Support
             return totalPrice;
         }
 
-        private static int GetDaysInRange(Tour tour, HotelRoomTypeDaysRange hotelRoomTypeDaysRange)
+        private static int GetDaysInRange(TourHotel tourHotel, HotelRoomTypeDaysRange hotelRoomTypeDaysRange)
         {
             int result = 0;
-            for (int i = 0; i < tour.TourType.Days; i++)
+            for (int i = 0; i < (int)(tourHotel.HotelEndDay - tourHotel.HotelStartDay).TotalDays + 1; i++)
             {
-                var date = tour.StartDate.AddDays(i);
+                var date = tourHotel.HotelStartDay.AddDays(i);
                 if (date >= hotelRoomTypeDaysRange.StartDaysRange && date <= hotelRoomTypeDaysRange.EndDaysRange)
                 {
                     result++;
                 }
             }
-            return result;
+            return result = result > 0 ? result - 1 : 0;//The last day is not count
         }
 
         public static int GetCustomerLeft(Reservation reservation)
         {
-            var customersInHotels = 0;
+            /*var customersInHotels = 0;
             reservation.Tours?.ToList().ForEach((tour) =>
             {
                 tour.TourHotels?.ToList().ForEach((tourHotel) =>
@@ -137,7 +137,8 @@ namespace EchoDesertTrips.Desktop.Support
                 });
             });
 
-            return Math.Max(reservation.Adults + reservation.Childs + reservation.Infants, customersInHotels) - reservation.Customers.Count;
+            return Math.Max(reservation.Adults + reservation.Childs + reservation.Infants, customersInHotels) - reservation.Customers.Count;*/
+            return (reservation.Adults + reservation.Childs + reservation.Infants) - reservation.Customers.Count;
         }
 
         public static void CreateExternalId(Reservation reservation)

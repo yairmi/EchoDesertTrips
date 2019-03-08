@@ -44,6 +44,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="operatorNameColumn" Binding="{Binding OperatorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Name" Width="120"/>
                 <DataGridTextColumn x:Name="operatorPasswordColumn" Binding="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Password" Width="120"/>
+                <DataGridTextColumn x:Name="operatorFullNameColumn" Binding="{Binding OperatorFullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Full Name" Width="220"/>
                 <DataGridCheckBoxColumn x:Name="admin" Header="Administrator" Binding="{Binding Admin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
             </DataGrid.Columns>
             <DataGrid.RowValidationRules>

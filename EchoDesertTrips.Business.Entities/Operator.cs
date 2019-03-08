@@ -15,6 +15,8 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public string Password { get; set; }
         [DataMember]
+        public string OperatorFullName { get; set; }
+        [DataMember]
         public bool Admin { get; set; }
 
         public int EntityId

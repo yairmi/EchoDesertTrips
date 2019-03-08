@@ -198,20 +198,16 @@
     <Compile Include="Support\BoolToYesNoConverter.cs" />
     <Compile Include="CustomEventArgs\CustomerEventArgs.cs" />
     <Compile Include="CustomEventArgs\CustomerOrderEventArgs.cs" />
-    <Compile Include="Support\DateToColorConverter.cs" />
     <Compile Include="Support\Destination.cs" />
     <Compile Include="Support\EnterKeyTraversal.cs" />
     <Compile Include="Support\ExpanderToBooleanConverter.cs" />
-    <Compile Include="Support\GroupWidthCoverter.cs" />
     <Compile Include="CustomEventArgs\HotelEventArgs.cs" />
-    <Compile Include="Support\Mapper.cs" />
     <Compile Include="Support\MaxHeightConverter.cs" />
     <Compile Include="Support\MessageDialogService.cs" />
     <Compile Include="Support\PercentageConverter.cs" />
     <Compile Include="Support\PhoneNumberValidation.cs" />
     <Compile Include="Support\Prices.cs" />
     <Compile Include="CustomEventArgs\ReservationEventArgs.cs" />
-    <Compile Include="Support\ReservationTotalCustomers.cs" />
     <Compile Include="Support\ReservationHelper.cs" />
     <Compile Include="Support\ToFixSizeConverter.cs" />
     <Compile Include="Support\TourEventArgs.cs" />
@@ -443,17 +439,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="RDLC\ReservationReport.rdlc" />
+    <EmbeddedResource Include="RDLC\CustomersReport.rdlc" />
+    <EmbeddedResource Include="RDLC\GroupReport.rdlc" />
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.AgencyWrapper.datasource" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.AgentWrapper.datasource" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.CustomerWrapper.datasource" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.LodggingPlaceWrapper.datasource" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.NationalityWrapper.datasource" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.Reservation.datasource" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.TourDestinationWrapper.datasource" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.Trip.datasource" />
-    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.TripWrapper.datasource" />
+    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.Customer.datasource" />
+    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.CustomersForReport.datasource" />
+    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.DescriptionsDataForReport.datasource" />
+    <None Include="Properties\DataSources\EchoDesertTrips.Client.Entities.ReservationGeneralData1ForReport.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

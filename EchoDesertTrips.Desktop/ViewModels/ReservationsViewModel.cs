@@ -433,7 +433,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 try
                 {
-                    NotifyServer("CurrentTourTypeViewModel_TourTypeUpdated",
+                    NotifyServer("CurrentReservationViewModel_ReservationUpdated",
                         SerializeReservationMessage(e.Reservation.ReservationId, eOperation.E_UPDATED), eMsgTypes.E_RESERVATION);
                 }
                 catch (Exception ex)

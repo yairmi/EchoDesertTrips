@@ -66,8 +66,8 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Tour Type:" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Pickup Address:" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Start Date:" />
-                <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="End Date:" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Start Day:" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="End Day:" />
                 <!--<TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Hotels:" />-->
                 <!--<TextBlock Grid.Row="5" Grid.Column="0" Margin="3" Text="Rooms:" />-->
                 <ComboBox x:Name="cbTourType" Grid.Row="0" Grid.Column="1" 
@@ -88,7 +88,7 @@
                 <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpStartDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
                 <DatePicker Grid.Row="3" Grid.Column="1" x:Name="dpEndDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}" />
             <!--<StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">-->
-                <DataGrid x:Name="dgTourHotels"
+            <DataGrid x:Name="dgTourHotels"
                 Grid.Row="4" Grid.Column="0"
                 HeadersVisibility="All"
                 RowHeaderWidth="25"
@@ -100,7 +100,7 @@
                 Margin="3"
                 Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='530'}"
                 Width="Auto">
-                    <DataGrid.Columns>
+                <DataGrid.Columns>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -143,7 +143,7 @@
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
-                </DataGrid>
+            </DataGrid>
                 <!--<ComboBox x:Name="cbHotels"
                 SelectedItem="{Binding DataContext.SelectedHotel, 
                 RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 

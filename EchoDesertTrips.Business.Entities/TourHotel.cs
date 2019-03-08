@@ -22,6 +22,8 @@ namespace EchoDesertTrips.Business.Entities
         virtual public List<TourHotelRoomType> TourHotelRoomTypes { get; set; }
         [DataMember]
         public DateTime HotelStartDay { get; set; }
+        [DataMember]
+        public DateTime HotelEndDay { get; set; }
         public int EntityId
         {
             get

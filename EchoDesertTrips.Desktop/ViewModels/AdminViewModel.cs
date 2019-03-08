@@ -44,12 +44,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
             OptionalsViewModel.Client = Client;
             AgentsViewModel.Client = Client;
             OperatorViewModel.Client = Client;
+            RoomTypeViewModel.Client = Client;
 
             TourTypeViewModel.Operator = Operator;
             HotelViewModel.Operator = Operator;
             OptionalsViewModel.Operator = Operator;
             AgentsViewModel.Operator = Operator;
             OperatorViewModel.Operator = Operator;
+            RoomTypeViewModel.Operator = Operator;
 
             TourTypeViewModel.TourTypes = TourTypes;
             HotelViewModel.Hotels = Hotels;

@@ -3,10 +3,12 @@ using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Client.Proxies;
+using EchoDesertTrips.Desktop.ViewModels;
 using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace EchoDesertTrips.Desktop.Views
@@ -17,7 +19,6 @@ namespace EchoDesertTrips.Desktop.Views
     public partial class DashboardView : UserControlViewBase
     {
         private IEnumerable<Reservation> Reservations;
-        private List<Customer> Customers;
         private IServiceFactory _serviceFactory;
 
         public DashboardView()
@@ -26,78 +27,166 @@ namespace EchoDesertTrips.Desktop.Views
             InitializeComponent();
         }
 
-        private void _selectedDate_SelectedDateChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void btnCustomerReport_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _serviceFactory = new ServiceFactory();
-            var orderClient = _serviceFactory.CreateClient<IOrderService>();
-            Reservations = orderClient.GetReservationsByGroupId(3);
-            var reservationsSource = new ReportDataSource { Name = "Reservations", Value = Reservations };
-            _reportViewer.LocalReport.DataSources.Add(reservationsSource);
-            _reportViewer.LocalReport.ReportEmbeddedResource = "My.Assembly.ReportName.rdlc";
-            /*var report = new LocalReport();
-            report.DataSources.Add(reservationsSource);
-            report.ReportEmbeddedResource = "My.Assembly.ReportName.rdlc";
-            const string DeviceInfo = "<DeviceInfo>" +
-                          "  <OutputFormat>EMF</OutputFormat>" +
-                          "  <PageWidth>210mm</PageWidth>" +
-                          "  <PageHeight>297mm</PageHeight>" +
-                          "  <MarginTop>10mm</MarginTop>" +
-                          "  <MarginLeft>10mm</MarginLeft>" +
-                          "  <MarginRight>10mm</MarginRight>" +
-                          "  <MarginBottom>10mm</MarginBottom>" +
-                          "</DeviceInfo>";
-            string mimeType;
-            string encoding;
-            string fileNameExt;
-            string[] outStreams;
-            Warning[] warinngs;
+            if (Reservations == null)
+            {
+                Reservations = GetReservations();
+                if (Reservations.Count() == 0)
+                    return;
+            }
+            List<CustomerForReport> Customers = new List<CustomerForReport>();
+            foreach(var reservation in Reservations)
+            {
+                foreach (var customer in reservation.Customers)
+                {
+                    var customerForReport = new CustomerForReport
+                    {
+                        LastName = customer.LastName,
+                        FirstName = customer.FirstName,
+                        DateOfBirdth = customer.DateOfBirdth.ToShortDateString(),
+                        Passport = customer.PassportNumber,
+                        IssueDate = customer.IssueData.ToShortDateString(),
+                        Expiry = customer.ExpireyDate.ToShortDateString(),
+                        Nationality = customer.Nationality,
+                        HasVisa = (customer.HasVisa == true ? "Free" : "No"),
+                        AgeInDays = (reservation.Tours[0].StartDate - customer.DateOfBirdth).TotalDays
+                    };
+                    Customers.Add(customerForReport);
+                }
+            }
+            var customersSource = new ReportDataSource { Name = "dsCustomerForReport", Value = Customers };
 
-            //report.Render returns a byte array of the PDF document
-            report.Render("PDF", DeviceInfo, out mimeType, out encoding, out fileNameExt, out outStreams, out warinngs);*/
-
-
-
-
+            _reportViewer.LocalReport.ReportPath = "..\\..\\RDLC\\CustomersReport.rdlc";
+            _reportViewer.LocalReport.DataSources.Add(customersSource);
+            _reportViewer.RefreshReport();
         }
 
         private void btnSelect_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _serviceFactory = new ServiceFactory();
-            Customers = new List<Customer>();
-            var orderClient = _serviceFactory.CreateClient<IOrderService>();
-            Reservations = orderClient.GetReservationsByGroupId(Int32.Parse(tbGroupID.Text));
-            var reservationsSource = new ReportDataSource { Name = "Reservation", Value = Reservations };
-            _reportViewer.LocalReport.DataSources.Add(reservationsSource);
-            Reservations.ToList().ForEach(reservation =>
+            //int nGroupID;
+            //int.TryParse(tbGroupID.Text, out nGroupID);
+            //if (nGroupID == 0)
+            //    return;
+            //_serviceFactory = new ServiceFactory();
+            //var orderClient = _serviceFactory.CreateClient<IOrderService>();
+            //Reservations = orderClient.GetReservationsByGroupId(nGroupID);
+            if (Reservations == null)
             {
-                Customers.AddRange(reservation.Customers);
-            });
-            var customerSource = new ReportDataSource { Name = "Customers", Value = Customers };
-            _reportViewer.LocalReport.DataSources.Add(customerSource);
-            _reportViewer.LocalReport.ReportPath = "..\\..\\RDLC\\ReservationReport.rdlc";
+                Reservations = GetReservations();
+                if (Reservations.Count() == 0)
+                    return;
+            }
+            var reservationArray = Reservations.ToArray();
+            string days = string.Format("{0}", reservationArray[0].Tours[0].TourType.Days);
+            string privateOrRegular = reservationArray[0].Tours[0].TourType.Private == true ? "Private" : "Regular";
+            string tourDestination = reservationArray[0].Tours[0].TourType.TourTypeName;
+            //Customers = new List<Customer>();//It includes the first customer of each reservation in the group
+            var reservationsDataForReport = new List<ReservationGeneralData1ForReport>();
+            foreach (var reservation in reservationArray)
+            {
+                var reservationForDataReport = new ReservationGeneralData1ForReport();
+                reservationForDataReport.FirstCustomerInReservation = reservation.Customers[0].FullName;
+                reservationForDataReport.Pax = reservation.ActualNumberOfCustomers;
+                string resultStartDays, resultHotels, resultsRoomTypes;
+                GetHotelsData(reservation, out resultStartDays, out resultHotels, out resultsRoomTypes);
+                reservationForDataReport.HotelsStartDay = resultStartDays;
+                reservationForDataReport.Hotels = resultHotels;
+                reservationForDataReport.RoomTypes = resultsRoomTypes;
+                reservationForDataReport.OperatorName = reservation.Operator.OperatorName;
+                reservationsDataForReport.Add(reservationForDataReport);
+                //using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(new Bitmap(1, 1)))
+                //{
+                //    SizeF size = graphics.MeasureString("Hello there", new Font("Arial", 10, System.Drawing.FontStyle.Regular, GraphicsUnit.Point));
+                //}
+            }
+
+
+
+            var reservationsSource = new ReportDataSource { Name = "dsReservationGeneralData1ForReport", Value = reservationsDataForReport };
+            _reportViewer.LocalReport.ReportPath = "..\\..\\RDLC\\GroupReport.rdlc";
+            _reportViewer.LocalReport.DataSources.Add(reservationsSource);
+
+            string stOptionals;
+            GetOptionals(reservationArray, out stOptionals);
+
+            ReportParameter[] p = new ReportParameter[]
+            {
+                new ReportParameter("pGroupID", "Reservation: " + reservationArray[0].GroupID.ToString()),
+                new ReportParameter("pHiValue", "Hi: " + tbHiValue.Text),
+                new ReportParameter("pStartDay", reservationArray[0].Tours[0].StartDate.ToShortDateString().ToString()),
+                new ReportParameter("pText1", "Pls. provide " + days + " Days " + privateOrRegular + " tour to " + tourDestination),
+                new ReportParameter("pPickupTimeValue", reservationArray[0].PickUpTime.ToString()),
+                new ReportParameter("pOperatorName", tbOperator.Text),
+                new ReportParameter("pOptionals", stOptionals)
+            };
+            _reportViewer.LocalReport.SetParameters(p);
             _reportViewer.RefreshReport();
-            //_reportViewer.LocalReport.ReportEmbeddedResource = "Report.rdlc";
-            /*var report = new LocalReport();
-            report.DataSources.Add(reservationsSource);
-            report.ReportEmbeddedResource = "My.Assembly.ReportName.rdlc";
-            const string DeviceInfo = "<DeviceInfo>" +
-                          "  <OutputFormat>EMF</OutputFormat>" +
-                          "  <PageWidth>210mm</PageWidth>" +
-                          "  <PageHeight>297mm</PageHeight>" +
-                          "  <MarginTop>10mm</MarginTop>" +
-                          "  <MarginLeft>10mm</MarginLeft>" +
-                          "  <MarginRight>10mm</MarginRight>" +
-                          "  <MarginBottom>10mm</MarginBottom>" +
-                          "</DeviceInfo>";
-            string mimeType;
-            string encoding;
-            string fileNameExt;
-            string[] outStreams;
-            Warning[] warinngs;
+        }
 
-            //report.Render returns a byte array of the PDF document
-            report.Render("PDF", DeviceInfo, out mimeType, out encoding, out fileNameExt, out outStreams, out warinngs);*/
+        private Reservation[] GetReservations()
+        {
+            int nGroupID;
+            int.TryParse(tbGroupID.Text, out nGroupID);
+            if (nGroupID == 0)
+                return null;
+            _serviceFactory = new ServiceFactory();
+            var orderClient = _serviceFactory.CreateClient<IOrderService>();
+            return orderClient.GetReservationsByGroupId(nGroupID);
+        }
 
+        private void GetHotelsData(Reservation reservation, 
+            out string resultStartDays, 
+            out string resultHotels,
+            out string resultsRoomTypes)
+        {
+            resultStartDays = string.Empty;
+            resultHotels = string.Empty;
+            resultsRoomTypes = string.Empty;
+
+            foreach (var tour in reservation.Tours)
+            {
+                foreach (var tourHotel in tour.TourHotels)
+                {
+                    if (resultStartDays.Length > 0)
+                    {
+                        resultStartDays += "\n\n";
+                    }
+                    if (resultHotels.Length > 0)
+                    {
+                        resultHotels += "\n\n";
+                    }
+                    resultStartDays += tourHotel.HotelStartDay.ToShortDateString();
+                    resultHotels += tourHotel.Hotel.HotelName;
+                    foreach(var tourHotelRoomTypes in tourHotel.TourHotelRoomTypes)
+                    {
+                        if (resultsRoomTypes.Length > 0)
+                        {
+                            resultsRoomTypes += "\n\n";
+                        }
+                        resultsRoomTypes += tourHotelRoomTypes.HotelRoomType.RoomType.RoomTypeName + ", ";
+                    }
+                }
+            }
+        }
+
+        private void GetOptionals(Reservation[] reservationArray, out string stOptionals)
+        {
+            var IDs = new List<int>();
+            stOptionals = string.Empty;
+            foreach (var reservation in reservationArray)
+            {
+                foreach(var tour in reservation.Tours)
+                {
+                    foreach(var tourOptional in tour.TourOptionals)
+                    {
+                        if (IDs.Exists(o => o.Equals(tourOptional.OptionalId)))
+                            continue;
+                        IDs.Add(tourOptional.OptionalId);
+                        stOptionals += tourOptional.Optional.OptionalDescription += ", ";
+                    }
+                }
+            }
         }
     }
 

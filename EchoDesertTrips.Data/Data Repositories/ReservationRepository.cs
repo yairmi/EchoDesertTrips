@@ -62,7 +62,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
                 var query = (from e in entityContext.ReservationSet where e.GroupID == groupId select e);
-                return IncludeNavigationPropertiesForGettingReservations(query).ToArray();
+                return IncludeNavigationProperties(query).ToArray();
             }
         }
 
@@ -385,9 +385,11 @@ namespace EchoDesertTrips.Data.Data_Repositories
                     .IncludeOptimized(o => o.Customers)
                     .IncludeOptimized(o => o.Group)
                     .IncludeOptimized(o => o.Tours)
+                    .IncludeOptimized(o => o.Operator)
                     .IncludeOptimized(o => o.Tours.Select(t => t.TourType))
                     .IncludeOptimized(o => o.Tours.Select(t => t.TourHotels))
                     .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals))
+                    .IncludeOptimized(o => o.Tours.Select(t => t.SubTours))
                     .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
                     .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
                     .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes)))
@@ -405,6 +407,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                     .IncludeOptimized(o => o.Tours)
                     .IncludeOptimized(o => o.Tours.Select(t => t.TourType))
                     .IncludeOptimized(o => o.Tours.Select(t => t.TourHotels))
+                    .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals))
                     .IncludeOptimized(o => o.Tours.Select(t => t.TourOptionals.Select(k => k.Optional)))
                     .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(h => h.Hotel)))
                     .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes)))

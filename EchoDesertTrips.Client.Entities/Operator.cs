@@ -64,6 +64,20 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
+        private string _operatorFullName;
+        public string OperatorFullName
+        {
+            get
+            {
+                return _operatorFullName;
+            }
+            set
+            {
+                _operatorFullName = value;
+                OnPropertyChanged(() => OperatorFullName, true);
+            }
+        }
+
         private bool _admin;
 
         public bool Admin

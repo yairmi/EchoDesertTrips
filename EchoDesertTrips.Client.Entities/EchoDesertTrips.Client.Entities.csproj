@@ -92,6 +92,7 @@
     <Compile Include="Agency.cs" />
     <Compile Include="Agent.cs" />
     <Compile Include="Customer.cs" />
+    <Compile Include="CustomerForReport.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Hotel.cs" />
     <Compile Include="HotelRoomType.cs" />
@@ -100,6 +101,8 @@
     <Compile Include="Operator.cs" />
     <Compile Include="OperatorCustomer.cs" />
     <Compile Include="Optional.cs" />
+    <Compile Include="DescriptionsDataForReport.cs" />
+    <Compile Include="ReservationGeneralData1ForReport.cs" />
     <Compile Include="Reservation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoomType.cs" />
@@ -121,11 +124,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\NationalityWrapper.datasource" />
-    <None Include="Properties\DataSources\TourDestinationWrapper.datasource" />
-    <None Include="Properties\DataSources\TripTypeWrapper.datasource" />
-    <None Include="Properties\DataSources\TripWrapper.datasource" />
+    <None Include="Properties\DataSources\CustomerForReport.datasource" />
+    <None Include="Properties\DataSources\CustomersForReport.datasource" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

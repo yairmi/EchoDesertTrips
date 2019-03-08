@@ -96,5 +96,7 @@ namespace EchoDesertTrips.Client.Entities
                 OnPropertyChanged(() => HotelStartDay, true);
             }
         }
+
+        public DateTime HotelEndDay { get; set; }   
     }
 }

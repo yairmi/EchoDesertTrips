@@ -21,8 +21,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        //private ReservationWrapper _currentReservation;
-        //private bool _editZeroTourId = false;
         [ImportingConstructor]
         public TourGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageBoxDialogService)
@@ -32,7 +30,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowExpanded = new DelegateCommand<Tour>(OnRowExpanded);
             DeleteTourCommand = new DelegateCommand<Tour>(OnDeleteTourCommand);
             EditTourCommand = new DelegateCommand<Tour>(OnEditTourCommand);
-            AddTourCommand = new DelegateCommand<object>(OnAddTourCommand, CanAddTourCommand);
             _addNewEnabled = true;
             //_currentReservation = currentReservation;
         }
@@ -56,25 +53,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         //public ICollectionView ItemsView { get; set; }
         public DelegateCommand<Tour> RowExpanded { get; set; }
-        private bool CanAddTourCommand(object obj)
-        {
-            return Reservation.ReservationId == 0 && _addNewEnabled == true;
-        }
-
-
-
-        private void OnAddTourCommand(object obj)
-        {
-            CurrentTourViewModel = null;
-            _editTourViewModel.CreateTour(null);
-            _editTourViewModel.TourTypes = TourTypes;
-            _editTourViewModel.Hotels = Hotels;
-            _editTourViewModel.Optionals = Optionals;
-            //_editTourViewModel.EnableCBTourType = true; //TODO: try to remove this property
-            CurrentTourViewModel = _editTourGridViewModel;
-            _addNewEnabled = false;
-            RegisterEvents();
-        }
 
         [Import]
         private EditTourGridViewModel _editTourGridViewModel { get; set; }
@@ -90,7 +68,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         public DelegateCommand<Tour> EditTourCommand { get; private set; }
-        public DelegateCommand<object> AddTourCommand { get; private set; }
+
         [Import]
         private EditTourGridViewModel _editTourViewModel;
 

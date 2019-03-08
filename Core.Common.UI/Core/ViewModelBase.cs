@@ -283,9 +283,6 @@ namespace Core.Common.UI.Core
 
         protected void NotifyServer(string calledFrom, string message, eMsgTypes msgType)
         {
-            //InventoryMessage invMsg = new InventoryMessage(inventoryType, EntityId);
-            //var ser = new Serializer();
-            //var message = ser.Serialize<InventoryMessage>(invMsg);
             try
             {
                 Client.NotifyServer(new EventDataType()

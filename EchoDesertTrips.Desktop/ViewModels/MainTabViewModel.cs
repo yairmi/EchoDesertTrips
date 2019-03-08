@@ -26,6 +26,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             ReservationsViewModel.Operator = Operator;
             AdminViewModel.Operator = Operator;
+            DashboardViewModel.Operator = Operator;
             ReservationsViewModel.Client = Client;
             AdminViewModel.Client = Client;
         }

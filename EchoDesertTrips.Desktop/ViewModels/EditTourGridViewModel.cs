@@ -27,13 +27,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public EditTourGridViewModel(IServiceFactory serviceFactory,
                 IMessageDialogService messageBoxDialogService)
         {
-            log.Debug("EditTourGridViewModel ctor start");
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, /*OnClearCanExecute*/OnClearCommandCanExecute);
             CellEditEndingRoomTypeCommand = new DelegateCommand<TourHotelRoomType>(OnCellEditEndingRoomTypeCommand);
-            EditTourHotelCommand = new DelegateCommand<TourHotel>(OnEditTourHotelCommand);
+            EditTourHotelCommand = new DelegateCommand<object>(OnEditTourHotelCommand);
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
             log.Debug("EditTourGridViewModel ctor end");
         }
@@ -41,19 +40,29 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<object> SaveCommand { get; private set; }
         public DelegateCommand<object> ClearCommand { get; private set; }
         public DelegateCommand<TourHotelRoomType> CellEditEndingRoomTypeCommand { get; set; }
-        public DelegateCommand<TourHotel> EditTourHotelCommand { get; private set; }
+        public DelegateCommand<object> EditTourHotelCommand { get; private set; }
 
-        private void OnEditTourHotelCommand(TourHotel tourHotel)
+        private void OnEditTourHotelCommand(object tourHotel)
         {
-            _currentTourHotel = tourHotel;
-            UpdateTourHotelRoomTypes(tourHotel);
+            if (tourHotel is TourHotel)
+            {
+                _currentTourHotel = (TourHotel)tourHotel;
+                UpdateTourHotelRoomTypes(_currentTourHotel);
+            }
         }
 
         private void OnCellEditEndingRoomTypeCommand(TourHotelRoomType tourHotelRoomType)
         {
             if (_currentTourHotel == null)
                 return;
-            _currentTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
+            var existingTourHotelRoomType = _currentTourHotel.TourHotelRoomTypes.FirstOrDefault(a => a.HotelRoomType.RoomTypeId == tourHotelRoomType.HotelRoomType.RoomTypeId);
+            if (existingTourHotelRoomType != null)
+            {
+                existingTourHotelRoomType.Capacity = tourHotelRoomType.Capacity;
+                existingTourHotelRoomType.Persons = tourHotelRoomType.Persons;
+            }
+            else
+                _currentTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
         }
 
         private bool OnSaveCommandCanExecute(object obj)
@@ -75,6 +84,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (IsTourValid())
             {
+                SetHotelEndDayForEachTourHotel();
                 if (Tour.TourId == 0)
                 {
                     TourUpdated?.Invoke(this, new TourEventArgs(Tour, removedItems, Tour.bInEdit == false));
@@ -84,6 +94,19 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     TourUpdated?.Invoke(this, new TourEventArgs(Tour, removedItems, false));
                 }
                 CreateTour();
+            }
+        }
+
+        private void SetHotelEndDayForEachTourHotel()
+        {
+            Tour.TourHotels.OrderBy(t => t.HotelStartDay);
+            int count = Tour.TourHotels.Count();
+            for (int i = count - 1; i >= 0; i--)
+            {
+                if (i == count - 1)
+                    Tour.TourHotels[i].HotelEndDay = Tour.StartDate.AddDays(Tour.TourType.Days - 1);
+                else
+                    Tour.TourHotels[i].HotelEndDay = Tour.TourHotels[i+1].HotelStartDay;
             }
         }
 

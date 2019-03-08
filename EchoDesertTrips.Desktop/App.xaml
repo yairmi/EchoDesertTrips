@@ -95,9 +95,6 @@
         <DataTemplate DataType="{x:Type vm:OptionalsViewModel}">
             <v:OptionalsView />
         </DataTemplate>
-        <!--<DataTemplate DataType="{x:Type vm:TourDestinationViewModel}">
-            <v:TourDestinationView />
-        </DataTemplate>-->
         <DataTemplate DataType="{x:Type vm:RoomTypeViewModel}">
             <v:RoomTypeView />
         </DataTemplate>
