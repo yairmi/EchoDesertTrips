@@ -131,6 +131,9 @@
         <DataTemplate DataType="{x:Type vm:CustomersGroupViewModel}">
             <v:CustomersGroupView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ReservationNavigationViewModel}">
+            <v:ReservationNavigationView/>
+        </DataTemplate>        
         <sys:String x:Key="ZeroToursMessage" xml:space="preserve">Could not save reservation. The reservation must contain&#13;at least one tour.</sys:String>
         <sys:String x:Key="ReservationDeletedMessage" xml:space="preserve">The Reservation has been deleted by another user.</sys:String>
         <sys:String x:Key="AreYouSureMessage" xml:space="preserve">Are you sure ?&#13;Any Changes made will be lost.</sys:String>

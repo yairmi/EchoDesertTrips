@@ -79,20 +79,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
-                var agency = Agencies.FirstOrDefault(item => item.AgencyId == e.Agency.AgencyId);
+                var agency = Inventories.Agencies.FirstOrDefault(item => item.AgencyId == e.Agency.AgencyId);
                 if (agency != null)
                 {
-                    var index = Agencies.IndexOf(agency);
-                    Agencies[index] = e.Agency;//mappedAgency;
+                    var index = Inventories.Agencies.IndexOf(agency);
+                    Inventories.Agencies[index] = e.Agency;//mappedAgency;
                 }
             }
             else
             {
-                Agencies.Add(/*mappedAgency*/e.Agency);
+                Inventories.Agencies.Add(/*mappedAgency*/e.Agency);
             }
-
-            NotifyServer("CurrentAgentsViewModel_AgencyUpdated", 
-                SerializeInventoryMessage(eInventoryTypes.E_AGENCY, eOperation.E_UPDATED ,e.Agency.AgencyId), eMsgTypes.E_INVENTORY);
+            try
+            {
+                Client.NotifyServer(
+                    SerializeInventoryMessage(eInventoryTypes.E_AGENCY, eOperation.E_UPDATED, e.Agency.AgencyId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
+            }
+            catch(Exception ex)
+            {
+                log.Error("Notify Server Error: " + ex.Message);
+            }
             CurrentAgentsViewModel = null;
         }
 

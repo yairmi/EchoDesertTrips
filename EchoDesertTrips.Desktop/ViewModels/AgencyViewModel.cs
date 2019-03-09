@@ -21,7 +21,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             bLoaded = false;
-            SelectedAgency = Reservation.Agency != null ? Agencies.FirstOrDefault(n => n.AgencyId == Reservation.Agency.AgencyId) : null;
+            SelectedAgency = Reservation.Agency != null ? Inventories.Agencies.FirstOrDefault(n => n.AgencyId == Reservation.Agency.AgencyId) : null;
             if (SelectedAgency != null)
                 SelectedAgent = Reservation.Agent != null ? SelectedAgency.Agents.FirstOrDefault(n => n.AgentId == Reservation.Agent.AgentId) : null;
             _isChecked = false;

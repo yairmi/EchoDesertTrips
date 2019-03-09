@@ -33,17 +33,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
             WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
             {
                 operatorClient.DeleteOperator(obj);
-                Operators.Remove(obj);
+                Inventories.Operators.Remove(obj);
             });
         }
 
         public DelegateCommand<Operator> SaveOperatorCommand { get; set; }
 
-        private Operator LastUpdatedOperator;
-
         private void OnSaveCommand(Operator op)
         {
-            LastUpdatedOperator = op;
             ValidateModel();
             if (op.IsValid)
             {
@@ -52,10 +49,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     bool bIsNew = op.OperatorId == 0;
                     var savedOperator = operatorClient.UpdateOperator(op);
                     if (bIsNew)
-                        Operators[Operators.Count - 1].OperatorId = savedOperator.OperatorId;
-
-                    NotifyServer("OperatorViewModel OnSaveCommand",
-                        SerializeInventoryMessage(eInventoryTypes.E_OPERATOR, eOperation.E_UPDATED, savedOperator.OperatorId), eMsgTypes.E_INVENTORY);
+                        Inventories.Operators[Inventories.Operators.Count - 1].OperatorId = savedOperator.OperatorId;
+                    else
+                    {
+                        CurrentOperator.UpdateOperator(savedOperator);
+                    }
+                    try
+                    {
+                        Client.NotifyServer(
+                            SerializeInventoryMessage(eInventoryTypes.E_OPERATOR, eOperation.E_UPDATED, savedOperator.OperatorId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
+                    }
+                    catch(Exception ex)
+                    {
+                        log.Error("Notify Server Error: " + ex.Message);
+                    }
                 });
             }
         }

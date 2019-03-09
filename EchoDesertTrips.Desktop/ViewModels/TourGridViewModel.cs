@@ -61,9 +61,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             tour.bInEdit = true;
             _editTourViewModel.CreateTour(tour);
-            _editTourViewModel.TourTypes = TourTypes;
-            _editTourViewModel.Hotels = Hotels;
-            _editTourViewModel.Optionals = Optionals;
             RegisterEvents();
         }
 
@@ -231,9 +228,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            _editTourViewModel.TourTypes = TourTypes;
-            _editTourViewModel.Hotels = Hotels;
-            _editTourViewModel.Optionals = Optionals;
             _editTourViewModel.ViewMode = ViewMode;
             if (TourHotelRoomTypes != null)
                 TourHotelRoomTypes = null;

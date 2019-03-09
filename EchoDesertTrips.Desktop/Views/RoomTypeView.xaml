@@ -13,7 +13,7 @@
     <core:UserControlViewBase.Resources>
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
     </core:UserControlViewBase.Resources>
-    <Grid DataContext="{Binding RoomTypes}">
+    <Grid DataContext="{Binding Inventories.RoomTypes}">
         <DataGrid x:Name="DgRoomTypes"
                   HeadersVisibility="All"
                   RowHeaderWidth="40"

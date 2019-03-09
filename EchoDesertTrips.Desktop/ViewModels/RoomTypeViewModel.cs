@@ -45,7 +45,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
             {
                 inventoryClient.DeleteRoomType(obj);
-                RoomTypes.Remove(obj);
+                Inventories.RoomTypes.Remove(obj);
             });
         }
 
@@ -64,10 +64,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     bool bIsNew = roomType.RoomTypeId == 0;
                     var savedRoomType = inventoryClient.UpdateRoomType(roomType);
                     if (bIsNew)
-                        RoomTypes[RoomTypes.Count - 1].RoomTypeId = savedRoomType.RoomTypeId;
-
-                    NotifyServer("RoomTypeViewModel OnSaveCommand",
-                        SerializeInventoryMessage(eInventoryTypes.E_ROOM_TYPE, eOperation.E_UPDATED, savedRoomType.RoomTypeId), eMsgTypes.E_INVENTORY);
+                        Inventories.RoomTypes[Inventories.RoomTypes.Count - 1].RoomTypeId = savedRoomType.RoomTypeId;
+                    else
+                    {
+                        Inventories.UpdateHotels(roomType);
+                    }
+                    try
+                    {
+                        Client.NotifyServer(
+                            SerializeInventoryMessage(eInventoryTypes.E_ROOM_TYPE, eOperation.E_UPDATED, savedRoomType.RoomTypeId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
+                    }
+                    catch(Exception ex)
+                    {
+                        log.Error("Notify Server Error: " + ex.Message);
+                    }
                 });
             }
         }

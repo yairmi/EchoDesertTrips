@@ -30,7 +30,7 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Log in" Grid.ColumnSpan="2" FontWeight="Bold" HorizontalAlignment="Center" Margin="10" FontSize="20"/>
             <TextBlock Text="Name" Grid.Row="1" Margin="10"/>
-            <TextBox x:Name="txtName" Text="{Binding CurrentOperator.OperatorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="10" MinWidth="150" HorizontalAlignment="Left">
+            <TextBox x:Name="txtName" Text="{Binding Operator.OperatorName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="10" MinWidth="150" HorizontalAlignment="Left">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="TextChanged">
                         <i:InvokeCommandAction Command="{Binding ResetCommand}" />
@@ -48,7 +48,7 @@
                     </i:EventTrigger>                    
                 </i:Interaction.Triggers>
             </PasswordBox>
-            <Button Command="{Binding LoginCommand}" CommandParameter="{Binding CurrentOperator}" Content="Log in" Grid.Row="3" Grid.Column="1" Margin="10" HorizontalAlignment="Left" Width="120" IsDefault="True"/>
+            <Button Command="{Binding LoginCommand}" CommandParameter="{Binding Operator}" Content="Log in" Grid.Row="3" Grid.Column="1" Margin="10" HorizontalAlignment="Left" Width="120" IsDefault="True"/>
             <TextBlock Text="Incorrect User Name Or Password" 
                        Foreground="Red" 
                        FontWeight="Bold" 

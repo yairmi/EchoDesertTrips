@@ -12,8 +12,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <core:UserControlViewBase.Resources>
         <support:MaxHeightConverter x:Key="maxHeightConverter"/>
-    </core:UserControlViewBase.Resources>    
-    <Grid DataContext="{Binding Optionals}">
+    </core:UserControlViewBase.Resources>
+    <Grid DataContext="{Binding Inventories.Optionals}">
         <DataGrid x:Name="dgOptional" 
                   HeadersVisibility="All"
                   RowHeaderWidth="40"                  

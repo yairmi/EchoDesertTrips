@@ -27,7 +27,7 @@
         <DataGrid x:Name="dgAgency"
                   Grid.Row="1"
                   Margin="0" 
-                  ItemsSource="{Binding Agencies}" 
+                  ItemsSource="{Binding Inventories.Agencies}" 
                   EnableRowVirtualization="True"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"

@@ -235,6 +235,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\OperatorViewModel.cs" />
     <Compile Include="ViewModels\OptionalsViewModel.cs" />
+    <Compile Include="ViewModels\ReservationNavigationViewModel.cs" />
     <Compile Include="ViewModels\ReservationsViewModel.cs" />
     <Compile Include="ViewModels\RoomTypeViewModel.cs" />
     <Compile Include="ViewModels\TourGridViewModel.cs" />
@@ -296,6 +297,9 @@
     </Compile>
     <Compile Include="Views\OptionalsView.xaml.cs">
       <DependentUpon>OptionalsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReservationNavigationView.xaml.cs">
+      <DependentUpon>ReservationNavigationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReservationsView.xaml.cs">
       <DependentUpon>ReservationsView.xaml</DependentUpon>
@@ -397,6 +401,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\OptionalsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReservationNavigationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

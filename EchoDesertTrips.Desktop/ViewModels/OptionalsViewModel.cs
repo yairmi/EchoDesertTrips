@@ -35,7 +35,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
             {
                 inventoryClient.DeleteOptional(obj);
-                Optionals.Remove(obj);
+                Inventories.Optionals.Remove(obj);
             });
         }
 
@@ -54,10 +54,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     bool bIsNew = optional.OptionalId == 0;
                     var savedOptional = inventoryClient.UpdateOptional(optional);
                     if (bIsNew)
-                        Optionals[Optionals.Count - 1].OptionalId = savedOptional.OptionalId;
-
-                    NotifyServer("OptionalsViewModel OnSaveCommand",
-                        SerializeInventoryMessage(eInventoryTypes.E_OPTIONAL, eOperation.E_UPDATED, savedOptional.OptionalId), eMsgTypes.E_INVENTORY);
+                        Inventories.Optionals[Inventories.Optionals.Count - 1].OptionalId = savedOptional.OptionalId;
+                    try
+                    {
+                        Client.NotifyServer(
+                            SerializeInventoryMessage(eInventoryTypes.E_OPTIONAL, eOperation.E_UPDATED, savedOptional.OptionalId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
+                    }
+                    catch(Exception ex)
+                    {
+                        log.Error("Notify Server Error: " + ex.Message);
+                    }
                 });
 
                 

@@ -87,20 +87,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                 //Is a temporary object and it is not part of the Grid collection trips.
-                var tourType = TourTypes.FirstOrDefault(item => item.TourTypeId == e.TourType.TourTypeId);
+                var tourType = Inventories.TourTypes.FirstOrDefault(item => item.TourTypeId == e.TourType.TourTypeId);
                 if (tourType != null)
                 {
-                    var index = TourTypes.IndexOf(tourType);
-                    TourTypes[index] = e.TourType;// tourType_e;
+                    var index = Inventories.TourTypes.IndexOf(tourType);
+                    Inventories.TourTypes[index] = e.TourType;// tourType_e;
                 }
             }
             else
             {
-                TourTypes.Add(e.TourType);
+                Inventories.TourTypes.Add(e.TourType);
             }
-
-            NotifyServer("CurrentTourTypeViewModel_TourTypeUpdated",
-                SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, eOperation.E_UPDATED, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY);
+            try
+            {
+                Client.NotifyServer(
+                    SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, eOperation.E_UPDATED, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
+            }
+            catch(Exception ex)
+            {
+                log.Error("Notify Server Error: " + ex.Message);
+            }
+            CurrentTourTypeViewModel = null;
         }
 
         private void CurrentTourTypeViewModel_TourTypeCancelled(object sender, TourTypeEventArgs e)

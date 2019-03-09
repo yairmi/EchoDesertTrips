@@ -237,7 +237,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (tourHotel == null)
                 return;
 
-            var hotel = Hotels.FirstOrDefault(h => h.HotelId == tourHotel.HotelId);
+            var hotel = Inventories.Hotels.FirstOrDefault(h => h.HotelId == tourHotel.HotelId);
 
             //Init all rooms(tourhotelroomtype) for selected hotel
             hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
@@ -280,7 +280,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public void InitTourOptionals()
         {
             var tourOptionals = new ObservableCollection<TourOptional>();
-            foreach (var optional in Optionals)
+            foreach (var optional in Inventories.Optionals)
             {
                 var tourOptional = Tour.TourOptionals.FirstOrDefault(o => o.OptionalId == optional.OptionalId);
                 if (tourOptional == null)

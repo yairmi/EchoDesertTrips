@@ -63,8 +63,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ValidateModel();
             if (Reservation.IsValid)
             {
-                Reservation.Operator = Operator;
-                Reservation.OperatorId = Operator.OperatorId;
+                Reservation.Operator = CurrentOperator.Operator;
+                Reservation.OperatorId = CurrentOperator.Operator.OperatorId;
                 ReservationHelper.CreateExternalId(Reservation);
                 Reservation.Lock = false;
                 int exceptionPosition = 0;
@@ -133,9 +133,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             log.Debug("EditOrderViewModel OnViewLoaded start");
-            TourGridViewModel.TourTypes = TourTypes;
-            TourGridViewModel.Hotels = Hotels;
-            TourGridViewModel.Optionals = Optionals;
             TourGridViewModel.Reservation = Reservation;
             TourGridViewModel.ViewMode = ViewMode;
 
@@ -143,7 +140,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CustomerGridViewModel.ViewMode = ViewMode;
 
             GeneralReservationViewModel.Reservation = Reservation;
-            GeneralReservationViewModel.Agencies = Agencies;
 
             SomethingDeleted = false;
 

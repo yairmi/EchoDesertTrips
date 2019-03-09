@@ -185,8 +185,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
              {
                 _reservations.Remove(obj);
                 _continualReservations.Remove(obj);
-                NotifyServer("OnDeleteReservationCommand",
-                    SerializeReservationMessage(obj.ReservationId, eOperation.E_DELETED), eMsgTypes.E_RESERVATION);
+                try
+                {
+                    Client.NotifyServer(
+                        SerializeReservationMessage(obj.ReservationId, eOperation.E_DELETED), eMsgTypes.E_RESERVATION, CurrentOperator.Operator);
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Notify Server Error: " + ex.Message);
+                }
             }
         }
 
@@ -210,7 +217,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Reservation dbReservation = null;
             WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
-                dbReservation = reservationClient.EditReservation(reservation.ReservationId, Operator);
+                dbReservation = reservationClient.EditReservation(reservation.ReservationId, CurrentOperator.Operator);
             });
             if (dbReservation == null)
             {
@@ -433,12 +440,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 try
                 {
-                    NotifyServer("CurrentReservationViewModel_ReservationUpdated",
-                        SerializeReservationMessage(e.Reservation.ReservationId, eOperation.E_UPDATED), eMsgTypes.E_RESERVATION);
+                    Client.NotifyServer(
+                        SerializeReservationMessage(e.Reservation.ReservationId, eOperation.E_UPDATED), eMsgTypes.E_RESERVATION, CurrentOperator.Operator);
                 }
                 catch (Exception ex)
                 {
-                    log.Error("CurrentReservationViewModel_ReservationUpdated: Failed to notify server: " + ex.Message);
+                    log.Error("Notify Server Error: " + ex.Message);
                 }
             }
         }

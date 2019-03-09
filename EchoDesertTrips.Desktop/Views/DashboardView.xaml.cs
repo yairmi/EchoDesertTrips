@@ -117,7 +117,7 @@ namespace EchoDesertTrips.Desktop.Views
                 new ReportParameter("pStartDay", reservationArray[0].Tours[0].StartDate.ToShortDateString().ToString()),
                 new ReportParameter("pText1", "Pls. provide " + days + " Days " + privateOrRegular + " tour to " + tourDestination),
                 new ReportParameter("pPickupTimeValue", reservationArray[0].PickUpTime.ToString()),
-                new ReportParameter("pOperatorName", tbOperator.Text),
+                new ReportParameter("pOperatorName", OperatorSingle.Instance.Operator.OperatorFullName),
                 new ReportParameter("pOptionals", stOptionals)
             };
             _reportViewer.LocalReport.SetParameters(p);

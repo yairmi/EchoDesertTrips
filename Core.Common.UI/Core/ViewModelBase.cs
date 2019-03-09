@@ -4,9 +4,6 @@ using System.Linq;
 using Core.Common.Core;
 using FluentValidation.Results;
 using EchoDesertTrips.Client.Entities;
-using System.Collections.ObjectModel;
-using EchoDesertTrips.Client.Proxies.Service_Proxies;
-using EchoDesertTrips.Client.Contracts;
 using static Core.Common.Core.Const;
 using EchoDesertTrips.Common;
 
@@ -17,13 +14,25 @@ namespace Core.Common.UI.Core
         public ViewModelBase()
         {
             ToggleErrorsCommand = new DelegateCommand<object>(OnToggleErrorsCommandExecute, OnToggleErrorsCommandCanExecute);
-            _optionals = new ObservableCollection<Optional>();
-            _tourTypes = new ObservableCollection<TourType>();
-            _hotels = new ObservableCollection<Hotel>();
-            _agencies = new RangeObservableCollection<Agency>();
-            _roomTypes = new RangeObservableCollection<RoomType>();
-            _operators = new RangeObservableCollection<Operator>();
         }
+
+        public InventoriesSingle Inventories
+        {
+            get
+            {
+                return InventoriesSingle.Instance;
+            }
+        }
+
+        public OperatorSingle CurrentOperator
+        {
+            get
+            {
+                return OperatorSingle.Instance;
+            }
+        }
+
+        public ClientSingle Client = ClientSingle.Instance;
 
         bool _ErrorsVisible = false;
 
@@ -127,116 +136,6 @@ namespace Core.Common.UI.Core
             }
         }
 
-        private Operator _operator;
-
-        public Operator Operator
-        {
-            get
-            {
-                return _operator;
-            }
-            set
-            {
-                _operator = value;
-                OnPropertyChanged(() => Operator);
-            }
-        }
-
-        private ObservableCollection<Hotel> _hotels;
-
-        public ObservableCollection<Hotel> Hotels
-        {
-            get
-            {
-                return _hotels;
-            }
-
-            set
-            {
-                _hotels = value;
-                OnPropertyChanged(() => Hotels, false);
-            }
-        }
-
-        private ObservableCollection<TourType> _tourTypes;
-
-        public ObservableCollection<TourType> TourTypes
-        {
-            get
-            {
-                return _tourTypes;
-            }
-
-            set
-            {
-                _tourTypes = value;
-                OnPropertyChanged(() => TourTypes, false);
-            }
-        }
-
-        private ObservableCollection<Optional> _optionals;
-
-        public ObservableCollection<Optional> Optionals
-        {
-            get
-            {
-                return _optionals;
-            }
-
-            set
-            {
-                _optionals = value;
-                OnPropertyChanged(() => Optionals, false);
-            }
-        }
-
-        private RangeObservableCollection<RoomType> _roomTypes;
-
-        public RangeObservableCollection<RoomType> RoomTypes
-        {
-            get
-            {
-                return _roomTypes;
-            }
-            set
-            {
-                _roomTypes = value;
-                OnPropertyChanged(() => RoomTypes);
-            }
-        }
-
-        private RangeObservableCollection<Agency> _agencies;
-
-        public RangeObservableCollection<Agency> Agencies
-        {
-            get
-            {
-                return _agencies;
-            }
-
-            set
-            {
-                _agencies = value;
-                OnPropertyChanged(() => Agencies, false);
-            }
-        }
-
-        private RangeObservableCollection<Operator> _operators;
-
-        public RangeObservableCollection<Operator> Operators
-        {
-            get
-            {
-                return _operators;
-            }
-
-            set
-            {
-                _operators = value;
-                OnPropertyChanged(() => Operators, false);
-            }
-        }
-
         private Reservation _reservation;
 
         public Reservation Reservation
@@ -261,8 +160,6 @@ namespace Core.Common.UI.Core
             return !IsValid;
         }
 
-        public BroadcastorServiceClient Client;
-
         protected string SerializeInventoryMessage(eInventoryTypes inventoryType, eOperation operation, int EntityId)
         {
             InventoryMessage invMsg = new InventoryMessage(inventoryType, operation, EntityId);
@@ -279,24 +176,6 @@ namespace Core.Common.UI.Core
             reservationsMessage.ReservationsIds.Add(new ReservationMessage(EntityId, operation));
             Serializer ser = new Serializer();
             return ser.Serialize(reservationsMessage);
-        }
-
-        protected void NotifyServer(string calledFrom, string message, eMsgTypes msgType)
-        {
-            try
-            {
-                Client.NotifyServer(new EventDataType()
-                {
-                    ClientName = Operator.OperatorName + "-" + Operator.OperatorId,
-                    EventMessage = message,
-                    MessageType = msgType
-                });
-            }
-            catch (Exception ex)
-            {
-                log.Error(calledFrom + ": Failed to notify server" + ex.Message);
-            }
-
         }
 
         protected static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

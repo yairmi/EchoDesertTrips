@@ -25,7 +25,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             log.Debug("GeneralReservationViewModel OnViewLoaded start");
-            AgencyViewModel.Agencies = Agencies;
             AgencyViewModel.Reservation = Reservation;
             log.Debug("GeneralReservationViewModel OnViewLoaded end");
         }

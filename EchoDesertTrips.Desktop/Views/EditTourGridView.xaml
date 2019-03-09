@@ -68,8 +68,6 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Pickup Address:" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Start Day:" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="End Day:" />
-                <!--<TextBlock Grid.Row="4" Grid.Column="0" Margin="3" Text="Hotels:" />-->
-                <!--<TextBlock Grid.Row="5" Grid.Column="0" Margin="3" Text="Rooms:" />-->
                 <ComboBox x:Name="cbTourType" Grid.Row="0" Grid.Column="1" 
                 SelectedItem="{Binding DataContext.Tour.TourType,  
                 RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}},
@@ -81,7 +79,7 @@
                 Margin="3"
                 Width="150"
                 HorizontalAlignment="Left"
-                ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.TourTypes}"
+                ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Inventories.TourTypes}"
                 IsEnabled="{Binding Converter={StaticResource tourTypeControlConverter}, Path=Tour}">
                 </ComboBox>
                 <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="150" Text="{Binding Tour.PickupAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
@@ -126,7 +124,7 @@
                                     ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
                                     SelectedValuePath="HotelId"
                                     DisplayMemberPath="HotelName"
-                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Hotels}"/>
+                                    ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Inventories.Hotels}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
@@ -144,21 +142,6 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
             </DataGrid>
-                <!--<ComboBox x:Name="cbHotels"
-                SelectedItem="{Binding DataContext.SelectedHotel, 
-                RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}}, 
-                Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectedValue="{Binding SelectedHotel.HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
-                SelectedValuePath="HotelId"
-                DisplayMemberPath="HotelName"
-                IsReadOnly="True"
-                ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, 
-                AncestorType={x:Type core:UserControlViewBase}}, Path=DataContext.Hotels}"
-                HorizontalAlignment="Left"
-                Width="150"
-                Margin="3"/>-->
-            <!--</StackPanel>-->
             <DataGrid x:Name="dgRoomTypes"
                 Grid.Row="4" Grid.Column="1" 
                 HeadersVisibility="All"

@@ -20,7 +20,7 @@
                   RowHeaderWidth="40" 
                   HorizontalAlignment="Left"
                   EnableRowVirtualization="True" 
-                  ItemsSource="{Binding Operators}" 
+                  ItemsSource="{Binding Inventories.Operators}" 
                   RowDetailsVisibilityMode="VisibleWhenSelected"
                   CellStyle="{StaticResource DataGridBorder}"
                   Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='260'}">

@@ -25,12 +25,8 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Enable Agency:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <CheckBox x:Name="checkBoxAgree" Grid.Row="0" Margin="3" Grid.Column="1" IsChecked="{Binding IsChecked}"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Agency:" HorizontalAlignment="Left" VerticalAlignment="Center" />
-        <!--<ComboBox x:Name="AgenciesCombo" Grid.Row="1" Grid.Column="1" Margin="3" Width="160" 
-                  ItemsSource="{Binding Agencies, Mode=TwoWay}" 
-                  SelectedItem="{Binding SelectedAgency, Mode=TwoWay}"
-                  IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">-->
         <ComboBox x:Name="AgenciesCombo" Grid.Row="1" Grid.Column="1" Margin="3" Width="160" 
-                  ItemsSource="{Binding Agencies, Mode=TwoWay}" 
+                  ItemsSource="{Binding Inventories.Agencies, Mode=TwoWay}" 
                   SelectedItem="{Binding SelectedAgency, Mode=TwoWay}"
                   IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">        
             <ComboBox.ItemTemplate>

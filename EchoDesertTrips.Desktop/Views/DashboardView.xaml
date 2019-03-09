@@ -20,7 +20,6 @@
         <Border Name="Border" Grid.Row="0" BorderThickness="2,2,2,2" BorderBrush="Gainsboro" CornerRadius="4,4,4,4" Width="620" Margin="10,0,0,2" HorizontalAlignment="Left" VerticalAlignment="Top">
             <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Margin="5">
-                    <TextBox x:Name="tbOperator" Text="{Binding Operator.OperatorFullName}" Width="0" Height="0"/>
                     <TextBlock Text="Hello" Width="80"/>
                     <TextBox x:Name="tbHiValue" Width="140" Margin="10,0,0,0"/>
             </StackPanel>

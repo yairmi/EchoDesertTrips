@@ -39,28 +39,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            TourTypeViewModel.Client = Client;
-            HotelViewModel.Client = Client;
-            OptionalsViewModel.Client = Client;
-            AgentsViewModel.Client = Client;
-            OperatorViewModel.Client = Client;
-            RoomTypeViewModel.Client = Client;
-
-            TourTypeViewModel.Operator = Operator;
-            HotelViewModel.Operator = Operator;
-            OptionalsViewModel.Operator = Operator;
-            AgentsViewModel.Operator = Operator;
-            OperatorViewModel.Operator = Operator;
-            RoomTypeViewModel.Operator = Operator;
-
-            TourTypeViewModel.TourTypes = TourTypes;
-            HotelViewModel.Hotels = Hotels;
-            OptionalsViewModel.Optionals = Optionals;
-            AgentsViewModel.Agencies = Agencies;
-            OperatorViewModel.Operators = Operators;
-
-            RoomTypeViewModel.RoomTypes = RoomTypes;
-            HotelViewModel.RoomTypes = RoomTypes;
         }
     }
 }

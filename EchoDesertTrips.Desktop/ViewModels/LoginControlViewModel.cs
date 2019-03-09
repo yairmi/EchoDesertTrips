@@ -54,7 +54,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            CurrentOperator = new Operator();
+            Operator = new Operator();
             AuthenticationFailed = false;
             CommunicationFailed = false;
         }
@@ -93,20 +93,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private Operator _currentOperator;
+        private Operator _operator;
 
-        public Operator CurrentOperator
+        public Operator Operator
         {
             get
             {
-                return _currentOperator;
+                return _operator;
             }
             set
             {
-                if (_currentOperator != value)
+                if (_operator != value)
                 {
-                    _currentOperator = value;
-                    OnPropertyChanged(() => CurrentOperator);
+                    _operator = value;
+                    OnPropertyChanged(() => Operator);
                 }
             }
         }
@@ -114,7 +114,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnPasswordChangedCommand(PasswordBox obj)
         {
             if (obj != null)
-                _currentOperator.Password = obj.Password;
+                _operator.Password = obj.Password;
         }
     }
 }

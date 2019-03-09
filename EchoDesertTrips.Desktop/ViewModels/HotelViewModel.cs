@@ -33,14 +33,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnAddHotelCommand(object obj)
         {
             CurrentHotelViewModel =
-                new EditHotelViewModel(_serviceFactory, _messageDialogService, null) {RoomTypes = RoomTypes};
+                new EditHotelViewModel(_serviceFactory, _messageDialogService, null);
             RegisterEvents();
         }
 
         private void OnEditHotelCommand(Hotel obj)
         {
             CurrentHotelViewModel =
-                new EditHotelViewModel(_serviceFactory, _messageDialogService, obj) {RoomTypes = RoomTypes};
+                new EditHotelViewModel(_serviceFactory, _messageDialogService, obj);
             RegisterEvents();
         }
 
@@ -71,20 +71,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (!e.IsNew)
             {
-                var hotel = Hotels.FirstOrDefault(item => item.HotelId == e.Hotel.HotelId);
+                var hotel = Inventories.Hotels.FirstOrDefault(item => item.HotelId == e.Hotel.HotelId);
                 if (hotel != null)
                 {
-                    var index = Hotels.IndexOf(hotel);
-                    Hotels[index] = e.Hotel;
+                    var index = Inventories.Hotels.IndexOf(hotel);
+                    Inventories.Hotels[index] = e.Hotel;
                 }
             }
             else
             {
-                Hotels.Add(e.Hotel);
+                Inventories.Hotels.Add(e.Hotel);
             }
-
-            NotifyServer("CurrentHotelViewModel_HotelUpdated",
-                SerializeInventoryMessage(eInventoryTypes.E_HOTEL, eOperation.E_UPDATED, e.Hotel.HotelId), eMsgTypes.E_INVENTORY);
+            try
+            {
+                Client.NotifyServer(
+                    SerializeInventoryMessage(eInventoryTypes.E_HOTEL, eOperation.E_UPDATED, e.Hotel.HotelId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
+            }
+            catch(Exception ex)
+            {
+                log.Error("Notify Server Error: " + ex.Message);
+            }
 
             CurrentHotelViewModel = null;
         }

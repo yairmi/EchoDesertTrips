@@ -1,15 +1,12 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.UI.Core;
-using Core.Common.Utils;
 using EchoDesertTrips.Client.Contracts;
-using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Client.Proxies.Service_Proxies;
 using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using System.Threading;
 using EchoDesertTrips.Desktop.CustomEventArgs;
-using EchoDesertTrips.Common;
 using static Core.Common.Core.Const;
 using System.Linq;
 
@@ -74,15 +71,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnLogOutCommand(object obj)
         {
             UnRegisterClient();
-            Operator = null;
+            CurrentOperator.Operator = null;
             CurrentViewModel = _loginControlViewModel;
         }
 
         private void LoginControlViewModel_Authenticated(object sender, AuthenticationEventArgs e)
         {
             log.Info("Loggin Successfully. Operator Name: = " + e.Operator.OperatorName + ". Operator ID: =" + e.Operator.OperatorId);
-            Operator = e.Operator;
-            _mainTabViewModel.Operator = e.Operator;
+            CurrentOperator.Operator = e.Operator;
             _mainTabViewModel.ReservationsViewModel.ReservationEdited -= MainTabViewModel_ReservationEdited;
             _mainTabViewModel.ReservationsViewModel.ReservationEdited += MainTabViewModel_ReservationEdited;
             CurrentViewModel = _mainTabViewModel;
@@ -91,7 +87,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             try
             {
                 RegisterClient();
-                _mainTabViewModel.Client = Client;
             }
             catch (Exception ex)
             {
@@ -124,10 +119,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public void RegisterClient()
         {
-            if (Client != null)
+            if (Client.client != null)
             {
-                Client.Abort();
-                Client = null;
+                Client.client.Abort();
+                Client.client = null;
             }
 
             var cb = new BroadcastorCallback();
@@ -135,20 +130,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             System.ServiceModel.InstanceContext context =
                 new System.ServiceModel.InstanceContext(cb);
-            Client =
+            Client.client =
                 new BroadcastorServiceClient(context);
 
-            var operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
+            var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
 
-            this.Client.RegisterClient(operatorNameId);
+            this.Client.client.RegisterClient(operatorNameId);
         }
 
         public void UnRegisterClient()
         {
-            if (Operator == null)
+            if (CurrentOperator.Operator == null)
                 return;
-            log.Debug("UnRegisterClient Client Started: " + Operator.OperatorName);
-            var operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
+            log.Debug("UnRegisterClient Client Started: " + CurrentOperator.Operator.OperatorName);
+            var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
             try
             {
                 if (Client == null)
@@ -157,14 +152,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     log.Debug("UnRegisterClient. Client was NULL. After Client Creation");
                 }
                 else
-                if (Client != null && Client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
+                if (Client != null && Client.client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
                 {
-                    Client.Abort();
+                    Client.client.Abort();
                     Client = null;
                     CreateClient();
                     log.Debug("UnRegisterClient. Client was NOT NULL. After Client Creation");
                 }
-                Client.UnRegisterClient(operatorNameId);
+                Client.client.UnRegisterClient(operatorNameId);
                 log.Debug("UnRegisterClient. After UnRegister Client");
             }
             catch (Exception ex)
@@ -180,7 +175,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             var context =
                 new System.ServiceModel.InstanceContext(new BroadcastorCallback());
-            Client =
+            Client.client =
                 new BroadcastorServiceClient(context);
         }
 
@@ -202,99 +197,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (inventories.Hotels != null)
             {
-                var hotel = Hotels.FirstOrDefault(item => item.HotelId == inventories.Hotels[0].HotelId);
-                if (hotel != null)
-                {
-                    var index = Hotels.IndexOf(hotel);
-                    Hotels[index] = inventories.Hotels[0];
-                }
-                else
-                {
-                    Hotels.Add(inventories.Hotels[0]);
-                }
-                _mainTabViewModel.ReservationsViewModel.Hotels = Hotels;
-                _mainTabViewModel.AdminViewModel.Hotels = Hotels;
-                _editReservationViewModel.Hotels = Hotels;
+                Inventories.Update(inventories.Hotels[0]);
             }
             else if (inventories.Operators != null)
             {
-                var _operator = Operators.FirstOrDefault(item => item.OperatorId == inventories.Operators[0].OperatorId);
-                if (_operator != null)
-                {
-                    var index = Operators.IndexOf(_operator);
-                    Operators[index] = inventories.Operators[0];
-                }
-                else
-                {
-                    Operators.Add(inventories.Operators[0]);
-                }
-                _mainTabViewModel.ReservationsViewModel.Operators = Operators;
-                _mainTabViewModel.AdminViewModel.Operators = Operators;
-                _editReservationViewModel.Operators = Operators;
+                Inventories.Update(inventories.Operators[0]);
             }
             else if (inventories.Optionals != null)
             {
-                var optional = Optionals.FirstOrDefault(item => item.OptionalId == inventories.Optionals[0].OptionalId);
-                if (optional != null)
-                {
-                    var index = Optionals.IndexOf(optional);
-                    Optionals[index] = inventories.Optionals[0];
-                }
-                else
-                {
-                    Optionals.Add(inventories.Optionals[0]);
-                }
-                _mainTabViewModel.ReservationsViewModel.Optionals = Optionals;
-                _mainTabViewModel.AdminViewModel.Optionals = Optionals;
-                _editReservationViewModel.Optionals = Optionals;
+                Inventories.Update(inventories.Optionals[0]);
             }
             else if (inventories.RoomTypes != null)
             {
-                var roomType = RoomTypes.FirstOrDefault(item => item.RoomTypeId == inventories.RoomTypes[0].RoomTypeId);
-                if (roomType != null)
-                {
-                    var index = RoomTypes.IndexOf(roomType);
-                    RoomTypes[index] = inventories.RoomTypes[0];
-                }
-                else
-                {
-                    RoomTypes.Add(inventories.RoomTypes[0]);
-                }
-                _mainTabViewModel.ReservationsViewModel.RoomTypes = RoomTypes;
-                _mainTabViewModel.AdminViewModel.RoomTypes = RoomTypes;
-                _editReservationViewModel.RoomTypes = RoomTypes;
+                Inventories.Update(inventories.RoomTypes[0]);
             }
             else if (inventories.TourTypes != null)
             {
-                var tourType = TourTypes.FirstOrDefault(item => item.TourTypeId == inventories.TourTypes[0].TourTypeId);
-                if (tourType != null)
-                {
-                    var index = TourTypes.IndexOf(tourType);
-                    TourTypes[index] = inventories.TourTypes[0];
-                }
-                else
-                {
-                    TourTypes.Add(inventories.TourTypes[0]);
-                }
-                _mainTabViewModel.ReservationsViewModel.TourTypes = TourTypes;
-                _mainTabViewModel.AdminViewModel.TourTypes = TourTypes;
-                _editReservationViewModel.TourTypes = TourTypes;
+                Inventories.Update(inventories.TourTypes[0]);
             }
             else if (inventories.Agencies != null)
             {
-                var agency = Agencies.FirstOrDefault(item => item.AgencyId == inventories.Agencies[0].AgencyId);
-                if (agency != null)
-                {
-                    var index = Agencies.IndexOf(agency);
-                    Agencies[index] = inventories.Agencies[0];
-                }
-                else
-                {
-                    Agencies.Add(inventories.Agencies[0]);
-                }
-                _mainTabViewModel.ReservationsViewModel.Agencies = Agencies;
-                _mainTabViewModel.AdminViewModel.Agencies = Agencies;
-                _editReservationViewModel.Agencies = Agencies;
+                Inventories.Update(inventories.Agencies[0]);
             }
         }
 
@@ -314,49 +237,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
                             try
                             {
                                 log.Debug("Inventory Loading");
-                                TourTypes.Clear();
-                                Hotels.Clear();
-                                Optionals.Clear();
-                                Agencies.Clear();
-                                Operators.Clear();
-                                foreach (var tourType in inventoryData.Result.TourTypes)
-                                {
-                                    if (tourType.Visible)
-                                        TourTypes.Add(tourType);
-                                }
-                                foreach (var hotel in inventoryData.Result.Hotels)
-                                {
-                                    if (hotel.Visible)
-                                        Hotels.Add(hotel);
-                                }
-
-                                foreach (var optional in inventoryData.Result.Optionals)
-                                {
-                                    if (optional.Visible)
-                                        Optionals.Add(optional);
-                                }
-
-                                Agencies.AddRange(inventoryData.Result.Agencies);
-                                Operators.AddRange(inventoryData.Result.Operators);
-                                RoomTypes.AddRange(inventoryData.Result.RoomTypes);
-
-                                _mainTabViewModel.ReservationsViewModel.TourTypes = TourTypes;
-                                _mainTabViewModel.ReservationsViewModel.Hotels = Hotels;
-                                _mainTabViewModel.ReservationsViewModel.Optionals = Optionals;
-                                _mainTabViewModel.ReservationsViewModel.Agencies = Agencies;
-
-                                _mainTabViewModel.AdminViewModel.TourTypes = TourTypes;
-                                _mainTabViewModel.AdminViewModel.Hotels = Hotels;
-                                _mainTabViewModel.AdminViewModel.Optionals = Optionals;
-                                _mainTabViewModel.AdminViewModel.Agencies = Agencies;
-                                _mainTabViewModel.AdminViewModel.Operators = Operators;
-                                _mainTabViewModel.AdminViewModel.RoomTypes = RoomTypes;
-
-                                _editReservationViewModel.Operator = Operator;
-                                _editReservationViewModel.Hotels = Hotels;
-                                _editReservationViewModel.TourTypes = TourTypes;
-                                _editReservationViewModel.Optionals = Optionals;
-                                _editReservationViewModel.Agencies = Agencies;
+                                Inventories.TourTypes.Clear();
+                                Inventories.Hotels.Clear();
+                                Inventories.Optionals.Clear();
+                                Inventories.Agencies.Clear();
+                                Inventories.Operators.Clear();
+                                Inventories.TourTypes.AddRange(inventoryData.Result.TourTypes);
+                                Inventories.Hotels.AddRange(inventoryData.Result.Hotels);
+                                Inventories.Optionals.AddRange(inventoryData.Result.Optionals);
+                                Inventories.Agencies.AddRange(inventoryData.Result.Agencies);
+                                Inventories.Operators.AddRange(inventoryData.Result.Operators);
+                                Inventories.RoomTypes.AddRange(inventoryData.Result.RoomTypes);
                             }
                             catch(Exception ex)
                             {
