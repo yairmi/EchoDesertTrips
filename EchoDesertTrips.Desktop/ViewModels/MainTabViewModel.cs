@@ -1,7 +1,4 @@
-﻿using Core.Common.Contracts;
-using Core.Common.UI.Core;
-using EchoDesertTrips.Desktop.CustomEventArgs;
-using System;
+﻿using Core.Common.UI.Core;
 using System.ComponentModel.Composition;
 
 namespace EchoDesertTrips.Desktop.ViewModels

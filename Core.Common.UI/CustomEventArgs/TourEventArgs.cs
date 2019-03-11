@@ -1,7 +1,7 @@
 using System;
 using EchoDesertTrips.Client.Entities;
 
-namespace EchoDesertTrips.Desktop.Support
+namespace Core.Common.UI.CustomEventArgs
 {
     public class TourEventArgs : EventArgs
     {

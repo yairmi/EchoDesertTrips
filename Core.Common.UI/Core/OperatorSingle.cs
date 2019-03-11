@@ -1,8 +1,12 @@
-﻿using EchoDesertTrips.Client.Entities;
+﻿using System;
+using Core.Common.Core;
+using Core.Common.UI.PubSubEvent;
+using EchoDesertTrips.Client.Entities;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Core.Common.UI.Core
 {
-    public class OperatorSingle : ViewModelBase
+    public class OperatorSingle : ObjectBase
     {
         private static readonly OperatorSingle INSTANCE = new OperatorSingle()
         {

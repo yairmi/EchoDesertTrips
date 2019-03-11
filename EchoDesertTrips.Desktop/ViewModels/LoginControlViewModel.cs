@@ -1,12 +1,11 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.UI.Core;
-using System;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
-using EchoDesertTrips.Desktop.Support;
 using System.Windows.Controls;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using System.ComponentModel.Composition;
+using Core.Common.UI.PubSubEvent;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -24,7 +23,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ResetCommand = new DelegateCommand<object>(OnResetCommand);
         }
 
-        public event EventHandler<AuthenticationEventArgs> Authenticated;
         public DelegateCommand<Operator> LoginCommand { get; set; }
         public DelegateCommand<PasswordBox> PasswordChangedCommand { get; set; }
 
@@ -45,7 +43,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 var oper = operatorClient.GetOperator(op.OperatorName, op.Password);
                 if (oper != null)
                 {
-                    Authenticated?.Invoke(this, new AuthenticationEventArgs(oper));
+                    _eventAggregator.GetEvent<AuthenticatedEvent>().Publish(new AuthenticationEventArgs(oper));
                 }
                 else
                     AuthenticationFailed = true;

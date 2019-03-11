@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using Core.Common.Contracts;
 using Core.Common.UI.Core;
-using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using System.Linq;
-using System.Windows.Data;
-using Core.Common.Utils;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using static Core.Common.Core.Const;
+using Core.Common.UI.PubSubEvent;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -26,6 +23,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
+            _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
+            _eventAggregator.GetEvent<HotelCancelledEvent>().Subscribe(HotelCancelled);
             EditHotelCommand = new DelegateCommand<Hotel>(OnEditHotelCommand);
             AddHotelCommand = new DelegateCommand<object>(OnAddHotelCommand);
         }
@@ -34,14 +33,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             CurrentHotelViewModel =
                 new EditHotelViewModel(_serviceFactory, _messageDialogService, null);
-            RegisterEvents();
         }
 
         private void OnEditHotelCommand(Hotel obj)
         {
             CurrentHotelViewModel =
                 new EditHotelViewModel(_serviceFactory, _messageDialogService, obj);
-            RegisterEvents();
         }
 
         public DelegateCommand<Hotel> EditHotelCommand { get; private set; }
@@ -67,27 +64,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public override string ViewTitle => "Hotels";
 
-        private void CurrentHotelViewModel_HotelUpdated(object sender, HotelEventArgs e)
+        private void HotelUpdated(HotelEventArgs e)
         {
-            if (!e.IsNew)
-            {
-                var hotel = Inventories.Hotels.FirstOrDefault(item => item.HotelId == e.Hotel.HotelId);
-                if (hotel != null)
-                {
-                    var index = Inventories.Hotels.IndexOf(hotel);
-                    Inventories.Hotels[index] = e.Hotel;
-                }
-            }
-            else
-            {
-                Inventories.Hotels.Add(e.Hotel);
-            }
+            Inventories.Update(e.Hotel);
+
             try
             {
                 Client.NotifyServer(
                     SerializeInventoryMessage(eInventoryTypes.E_HOTEL, eOperation.E_UPDATED, e.Hotel.HotelId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 log.Error("Notify Server Error: " + ex.Message);
             }
@@ -95,17 +81,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentHotelViewModel = null;
         }
 
-        private void CurrentHotelViewModel_HotelCancelled(object sender, HotelEventArgs e)
+        private void HotelCancelled(HotelEventArgs obj)
         {
             CurrentHotelViewModel = null;
-        }
-
-        private void RegisterEvents()
-        {
-            CurrentHotelViewModel.HotelUpdated -= CurrentHotelViewModel_HotelUpdated;
-            CurrentHotelViewModel.HotelUpdated += CurrentHotelViewModel_HotelUpdated;
-            CurrentHotelViewModel.HotelCancelled -= CurrentHotelViewModel_HotelCancelled;
-            CurrentHotelViewModel.HotelCancelled += CurrentHotelViewModel_HotelCancelled;
         }
     }
 }

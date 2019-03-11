@@ -12,7 +12,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <!--RowDefinition Height="Auto"/-->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Style="{StaticResource ColumnWidth1}" />
@@ -36,10 +35,6 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <TextBlock Grid.Row="1" Grid.Column="2" Margin="3" Text="Agent:" HorizontalAlignment="Left" VerticalAlignment="Center" />
-        <!--<ComboBox x:Name="AgentsCombo" Grid.Row="1" Grid.Column="3" Margin="3" Width="160" 
-                  ItemsSource="{Binding SelectedAgency.Agents, Mode=TwoWay}" 
-                  SelectedItem="{Binding SelectedAgent, Mode=TwoWay}"
-                  IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">-->
         <ComboBox x:Name="AgentsCombo" Grid.Row="1" Grid.Column="3" Margin="3" Width="160" 
                   ItemsSource="{Binding SelectedItem.Agents, ElementName=AgenciesCombo}"
                   SelectedItem="{Binding SelectedAgent, Mode=TwoWay}"

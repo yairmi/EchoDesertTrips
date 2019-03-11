@@ -1,15 +1,15 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
 using Core.Common.UI.Core;
+using Core.Common.UI.CustomEventArgs;
+using Core.Common.UI.PubSubEvent;
 using Core.Common.Utils;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.Serialization;
 using System.Windows;
 
 namespace EchoDesertTrips.Desktop.ViewModels
@@ -80,14 +80,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         TourType.InfantPrices += infantPrice.Serialize();
                     }
 
-                    //var tourType = AutoMapperUtil.Map<TourTypeWrapper, TourType>(TourType);
-                    //var savedTourType = AutoMapperUtil.Map<TourType, TourTypeWrapper>(inventoryClient.UpdateTourType(tourType));
-                    //TourTypeUpdated?.Invoke(this, new TourTypeEventArgs(savedTourType, bIsNew));
-
-                    //var tourType = AutoMapperUtil.Map<TourTypeWrapper, TourType>(TourType);
                     var savedTourType = inventoryClient.UpdateTourType(TourType);
-                    TourTypeUpdated?.Invoke(this, new TourTypeEventArgs(savedTourType, bIsNew));
-
+                    _eventAggregator.GetEvent<TourTypeUpdatedEvent>().Publish(new TourTypeEventArgs(savedTourType, bIsNew));
                 });
             }
         }
@@ -101,7 +95,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (Result == MessageDialogResult.CANCEL)
                     return;
             }
-            TourTypeCancelled?.Invoke(this, new TourTypeEventArgs(null, true));
+            _eventAggregator.GetEvent<TourTypeCancelledEvent>().Publish(new TourTypeEventArgs(null, true));
         }
 
         private bool IsTourTypeDirty()
@@ -293,8 +287,5 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-
-        public event EventHandler<TourTypeEventArgs> TourTypeUpdated;
-        public event EventHandler<TourTypeEventArgs> TourTypeCancelled;
     }
 }

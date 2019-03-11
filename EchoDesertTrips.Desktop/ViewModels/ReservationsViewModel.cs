@@ -11,12 +11,10 @@ using System.Windows.Data;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Threading;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using System.Configuration;
-using System.Collections.Generic;
-using EchoDesertTrips.Common;
-using Core.Common.Core;
 using static Core.Common.Core.Const;
+using Core.Common.UI.PubSubEvent;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -46,21 +44,102 @@ namespace EchoDesertTrips.Desktop.ViewModels
             DecreaseOneDayCommand = new DelegateCommand<object>(OnDecreaseOneDayCommand);
             IncreaseOneDayCommand = new DelegateCommand<object>(OnIncreaseOneDayCommand);
             ShowCustomersCommand = new DelegateCommand<object>(ShowCustomers, ShowCustomersCanExecute);
-            //RowEditEndingCommand = new DelegateCommand<Reservation>(OnRowEditEndingCommand);
-            //Beginning​EditCommand = new DelegateCommand<Reservation>(OnBeginning​EditCommand);
-            //LostFocusCommand = new DelegateCommand<Reservation>(OnLostFocusCommand);
             _reservations = new RangeObservableCollection<Reservation>();
             _continualReservations = new RangeObservableCollection<Reservation>();
             _selectedDate = DateTime.Today;
             _lastSelectedDate = _selectedDate.AddDays(_daysRange + 1);
+            _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
+            _eventAggregator.GetEvent<ReservationUpdatedEvent>().Subscribe(ReservationUpdated);
+            _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Subscribe(ReservationUpdatedAndNotify);
+            _eventAggregator.GetEvent<CustomerGroupClosedEvent>().Subscribe(CustomerGroupClosed);
+        }
+
+        private void ReservationUpdatedAndNotify(ReservationEventArgs e)
+        {
+            int exceptionPosition = 0;
+            try
+            {
+                if (!e.IsNew)
+                {
+                    exceptionPosition = 1;
+                    //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
+                    //Is a temporary object and it is not part of the Grid collection trips.
+                    var reservation = _reservations.FirstOrDefault(item => item.ReservationId == e.Reservation.ReservationId);
+                    exceptionPosition = 2;
+                    if (reservation != null)
+                    {
+                        var index = _reservations.IndexOf(reservation);
+                        _reservations[index] = e.Reservation;
+                        exceptionPosition = 3;
+                        _continualReservations[index] = e.Reservation;
+                        exceptionPosition = 4;
+                    }
+                }
+                else
+                {
+                    if (IsDayInRange(e.Reservation.Tours[0].StartDate))
+                    {
+                        exceptionPosition = 5;
+                        _reservations.Add(e.Reservation);
+                        exceptionPosition = 6;
+                        _continualReservations.Add(e.Reservation);
+                    }
+                    else
+                        SelectedDate = e.Reservation.Tours[0].StartDate;
+
+                }
+                if (!e.IsDbWon)
+                {
+                    exceptionPosition = 7;
+                    Client.NotifyServer(SerializeReservationMessage(e.Reservation.ReservationId, eOperation.E_UPDATED),
+                        eMsgTypes.E_RESERVATION, CurrentOperator.Operator);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("CurrentReservationViewModel_ReservationUpdated failed. Position: " + exceptionPosition + ". error: " + ex.Message);
+            }
+
+            _eventAggregator.GetEvent<ReservationUpdatedFinishedEvent>().Publish(null);
+        }
+
+        private void ReservationUpdated(Reservation reservation)
+        {
+            if (!IsDayInRange(reservation.Tours[0].StartDate))
+                return;
+            var existingReservation = _reservations.FirstOrDefault(item => item.ReservationId == reservation.ReservationId);
+            if (existingReservation != null)
+            {
+                var index = _reservations.IndexOf(existingReservation);
+                _reservations[index] = reservation;
+                _continualReservations[index] = reservation;
+            }
+            else
+            {
+                _reservations.Add(reservation);
+                _continualReservations.Add(reservation);
+            }
+        }
+
+        private void HotelUpdated(HotelEventArgs e)
+        {
+            foreach(var reservation in _reservations)
+            {
+                foreach(var tour in reservation.Tours)
+                {
+                    foreach(var tourHotel in tour.TourHotels)
+                    {
+                        if (tourHotel.Hotel.HotelId == e.Hotel.HotelId)
+                            tourHotel.Hotel.HotelName = e.Hotel.HotelName;
+                    }
+                }
+            }
         }
 
         private void OnLostFocusCommand(Reservation reservation)
         {
             log.Debug("OnLostFocusCommand start");
         }
-
-        //private int _reservationEditedId;
 
         public ReservationsViewModel()
         {
@@ -82,21 +161,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         public DelegateCommand<Reservation> DeleteReservationCommand { get; set; }
-
         public DelegateCommand<Reservation> EditReservationCommand { get; private set; }
         public DelegateCommand<Reservation> EditContinualReservationCommand { get; private set; }
         public DelegateCommand<object> AddReservationCommand { get; private set; }
         public DelegateCommand<object> SelectedDateChangedCommand { get; private set; }
         public DelegateCommand<Group> GenerateReportCommand { get; private set; }
-
         public DelegateCommand<object> DecreaseOneDayCommand { get; }
         public DelegateCommand<object> IncreaseOneDayCommand { get; }
-        
         public DelegateCommand<object> ShowCustomersCommand { get; private set; }
-
-        // DelegateCommand<Reservation> RowEditEndingCommand { get; set; }
-        //public DelegateCommand<Reservation> Beginning​EditCommand { get; set; }
-        //public DelegateCommand<Reservation> LostFocusCommand { get; set; }
 
         public async void ShowCustomers(object obj)
         {
@@ -128,8 +200,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 {
                                     CustomersGroupViewModel.CustomersForGroup.AddRange(reservation.Customers);
                                 });
-
-                                RegisterEvents();
                                 CustomersGroupViewModel.LoadingVisible = false;
                             }, null);
                         }
@@ -200,7 +270,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnAddReservationCommand(object arg)
         {
             log.Debug("ReservationViewModel:OnAddCommand start");
-            ReservationEdited?.Invoke(this, new EditReservationEventArgs(null, false, false));
+            _eventAggregator.GetEvent<ReservationEditedEvent>().Publish(new EditReservationEventArgs(null, false, false));
             log.Debug("ReservationViewModel:OnAddCommand end");
         }
         private bool _bIsContinual = false;
@@ -239,13 +309,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     return;
                 bViewMode = true;
             }
-            ReservationEdited?.Invoke(this, new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
+            _eventAggregator.GetEvent<ReservationEditedEvent>().Publish(new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
             log.Debug("ReservationViewModel:OnEditReservationCommand end");
         }
 
         public override string ViewTitle => "Reservations";
 
-        //private ObservableCollection<Reservation> _reservations;
         private RangeObservableCollection<Reservation> _reservations;
         private RangeObservableCollection<Reservation> _continualReservations;
 
@@ -284,7 +353,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public bool IsDayInRange(DateTime date)
+        private bool IsDayInRange(DateTime date)
         {
             return (date > _selectedDate.AddDays(_daysRange * (-1)) && date < _selectedDate.AddDays(_daysRange));
         }
@@ -396,57 +465,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public void UpdateReservations(ReservationEventArgs e)
+        public void UpdateReservations(Reservation reservation)
         {
-            if (!IsDayInRange(e.Reservation.Tours[0].StartDate))
+            if (!IsDayInRange(reservation.Tours[0].StartDate))
                 return;
-            int exceptionPosition = 0;
-            try
+            var existingReservation = _reservations.FirstOrDefault(item => item.ReservationId == reservation.ReservationId);
+            if (existingReservation != null)
             {
-                if (!e.IsNew)
-                {
-                    exceptionPosition = 1;
-                    //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
-                    //Is a temporary object and it is not part of the Grid collection trips.
-                    var reservation = _reservations.FirstOrDefault(item => item.ReservationId == e.Reservation.ReservationId);
-                    exceptionPosition = 2;
-                    if (reservation != null)
-                    {
-                        var index = _reservations.IndexOf(reservation);
-                        _reservations[index] = e.Reservation;
-                        exceptionPosition = 3;
-                        _continualReservations[index] = e.Reservation;
-                        exceptionPosition = 4;
-                    }
-                }
-                else
-                {
-                    SelectedDate = e.Reservation.Tours.OrderBy(t => t.StartDate).FirstOrDefault().StartDate; ;
-                    //if the first day in the new reservation is in current range then load was not called in SelectedDate 'Set' so we must add it to _reservations
-                    if (IsDayInRange(_selectedDate))
-                    {
-                        exceptionPosition = 5;
-                        _reservations.Add(e.Reservation);
-                        exceptionPosition = 6;
-                        _continualReservations.Add(e.Reservation);
-                    }
-                }
+                var index = _reservations.IndexOf(existingReservation);
+                _reservations[index] = reservation;
+                _continualReservations[index] = reservation;
             }
-            catch (Exception ex)
+            else
             {
-                log.Error("CurrentReservationViewModel_ReservationUpdated failed. Position: " + exceptionPosition + ". error: " + ex.Message);
-            }
-            if (!e.IsDbWon)
-            {
-                try
-                {
-                    Client.NotifyServer(
-                        SerializeReservationMessage(e.Reservation.ReservationId, eOperation.E_UPDATED), eMsgTypes.E_RESERVATION, CurrentOperator.Operator);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Notify Server Error: " + ex.Message);
-                }
+                _reservations.Add(reservation);
+                _continualReservations.Add(reservation);
             }
         }
 
@@ -459,20 +492,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public event EventHandler<EditReservationEventArgs> ReservationEdited;
-
         private void OnSelectedDateChangedCommand(object obj)
         {
             throw new NotImplementedException();
         }
 
-        private void RegisterEvents()
-        {
-            CustomersGroupViewModel.Close -= CustomersGroupViewModel_Closed;
-            CustomersGroupViewModel.Close += CustomersGroupViewModel_Closed;
-        }
-
-        private void CustomersGroupViewModel_Closed(object sender, EventArgs e)
+        private void CustomerGroupClosed(EventArgs obj)
         {
             CustomersGroupViewModel = null;
             IsEnabled = true;
@@ -495,10 +520,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-
-        //private List<Reservation> _pendingReservations;
-
-        //private Reservation editedReservation;
     }
 
     public class GroupsToTotalConverter : IValueConverter

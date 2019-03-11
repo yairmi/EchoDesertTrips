@@ -1,9 +1,8 @@
-﻿using AutoMapper;
-using Core.Common.Contracts;
+﻿using Core.Common.Contracts;
 using Core.Common.Core;
 using Core.Common.UI.Core;
+using Core.Common.UI.CustomEventArgs;
 using EchoDesertTrips.Client.Entities;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;

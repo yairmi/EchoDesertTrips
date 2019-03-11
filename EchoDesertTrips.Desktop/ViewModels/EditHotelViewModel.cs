@@ -2,9 +2,10 @@
 using Core.Common.Contracts;
 using Core.Common.Core;
 using Core.Common.UI.Core;
+using Core.Common.UI.CustomEventArgs;
+using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -22,19 +23,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Hotel, Hotel>();
-            });
-
-            if (hotel != null)
-            {
-
-                IMapper iMapper = config.CreateMapper();
-                Hotel = iMapper.Map<Hotel, Hotel>(hotel);
-            }
-            else
-                Hotel = new Hotel();
-
+            Hotel = hotel != null ? HotelHelper.CloneHotel(hotel) : new Hotel();
             CleanAll();
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             CancelCommand = new DelegateCommand<object>(OnCancelCommand);
@@ -111,8 +100,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     {
                         hotelRoomType.HotelId = Hotel.HotelId;
                     });
-                    var savedHotel = inventoryClient.UpdateHotel(Hotel);
-                    HotelUpdated?.Invoke(this, new HotelEventArgs(savedHotel, bIsNew));
+                    var savedHotel = inventoryClient.UpdateHotel(Hotel);//Update DB
+                    _eventAggregator.GetEvent<HotelUpdatedEvent>().Publish(new HotelEventArgs(savedHotel, bIsNew));
                 });
             }
         }
@@ -126,7 +115,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (Result == MessageDialogResult.CANCEL)
                     return;
             }
-            HotelCancelled?.Invoke(this, new HotelEventArgs(null, true));
+            _eventAggregator.GetEvent<HotelCancelledEvent>().Publish(new HotelEventArgs(null, true));
         }
 
         private bool IsHotelDirty()

@@ -2,8 +2,9 @@
 using Core.Common.Core;
 using Core.Common.Extensions;
 using Core.Common.UI.Core;
+using Core.Common.UI.CustomEventArgs;
+using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Entities;
-using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -87,11 +88,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 SetHotelEndDayForEachTourHotel();
                 if (Tour.TourId == 0)
                 {
-                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, removedItems, Tour.bInEdit == false));
+                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(Tour, removedItems, Tour.bInEdit == false));
                 }
                 else
                 {
-                    TourUpdated?.Invoke(this, new TourEventArgs(Tour, removedItems, false));
+                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(Tour, removedItems, false));
                 }
                 CreateTour();
             }
@@ -305,8 +306,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Tour.TourOptionals = tourOptionals;
         }
 
-        public event EventHandler<TourEventArgs> TourUpdated;
-        public event EventHandler<TourEventArgs> TourCancelled;
+        //public event EventHandler<TourEventArgs> TourUpdated;
+        //public event EventHandler<TourEventArgs> TourCancelled;
     }
 
     public class TourTypeControlConverter : IValueConverter

@@ -2,11 +2,10 @@
 using Core.Common.Contracts;
 using Core.Common.Core;
 using Core.Common.UI.Core;
+using Core.Common.UI.CustomEventArgs;
+using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
-using EchoDesertTrips.Desktop.CustomEventArgs;
-using EchoDesertTrips.Desktop.Support;
-using System;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -23,21 +22,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Hotel, Hotel>();
-            });
-
-            if (agency != null)
-            {
-
-                IMapper iMapper = config.CreateMapper();
-                Agency = iMapper.Map<Agency, Agency>(agency);
-            }
-            else
-                Agency = new Agency();
-
+            Agency = agency != null ? AgencyHelper.CloneAgency(agency) : new Agency();
             CleanAll();
-
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             CancelCommand = new DelegateCommand<object>(OnCancelCommand);
         }
@@ -48,12 +34,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //After pressing the 'Save' button
         private bool OnSaveCommandCanExecute(object obj)
         {
-            return IsHotelDirty();
+            return IsAgencyDirty();
         }
 
         private void OnSaveCommand(object obj)
         {
-            if (IsHotelDirty())
+            if (IsAgencyDirty())
             {
                 ValidateModel();
             }
@@ -63,7 +49,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     bool bIsNew = Agency.AgencyId == 0;
                     var savedAgency = inventoryClient.UpdateAgency(Agency);
-                    AgencyUpdated?.Invoke(this, new AgencyEventArgs(savedAgency, null, bIsNew));
+                    _eventAggregator.GetEvent<AgencyUpdatedEvent>().Publish(new AgencyEventArgs(savedAgency, null, bIsNew));
                 });
             }
         }
@@ -71,16 +57,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnCancelCommand(object obj)
         {
-            if (IsHotelDirty())
+            if (IsAgencyDirty())
             {
                 var Result = _messageDialogService.ShowOkCancelDialog((string)Application.Current.FindResource("AreYouSureMessage"), "Question");
                 if (Result == MessageDialogResult.CANCEL)
                     return;
             }
-            AgencyCancelled?.Invoke(this, new AgencyEventArgs(null, null, false));
+            _eventAggregator.GetEvent<AgencyCancelledEvent>().Publish(new AgencyEventArgs(null, null, false));
         }
 
-        private bool IsHotelDirty()
+        private bool IsAgencyDirty()
         {
             return Agency.IsAnythingDirty();
         }
@@ -104,8 +90,5 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 OnPropertyChanged(() => Agency, true);
             }
         }
-
-        public event EventHandler<AgencyEventArgs> AgencyUpdated;
-        public event EventHandler<AgencyEventArgs> AgencyCancelled;
     }
 }

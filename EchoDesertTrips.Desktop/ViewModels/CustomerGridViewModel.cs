@@ -10,9 +10,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows;
 using System.Linq;
-using AutoMapper;
 using System.ComponentModel.Composition;
-using EchoDesertTrips.Desktop.CustomEventArgs;
+using Core.Common.UI.CustomEventArgs;
+using Core.Common.UI.PubSubEvent;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -33,6 +33,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowSomeEventCommand = new DelegateCommand<Customer>(OnRowSomeEventCommand);
             DeleteCustomerCommand = new DelegateCommand<Customer>(OnDeleteCustomerCommand);
             EditCustomerCommand = new DelegateCommand<Customer>(OnEditCustomerCommand);
+            _eventAggregator.GetEvent<CustomerUpdatedEvent>().Subscribe(CustomerUpdated);
         }
 
         public CustomerGridViewModel()
@@ -74,7 +75,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _editCustomerViewModel.CreateCustomer(customer);
             _editCustomerViewModel.Reservation = Reservation;
             CurrentCustomerViewModel = _editCustomerViewModel;
-            RegisterEvents();
         }
 
         public DelegateCommand<Customer> EditCustomerCommand { get; }
@@ -138,10 +138,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _editCustomerViewModel.Reservation = Reservation;
             _editCustomerViewModel.ViewMode = ViewMode;
             CurrentCustomerViewModel = _editCustomerViewModel;
-            RegisterEvents();
         }
 
-        private void CurrentCustomerViewModel_CustomerUpdated(object sender, CustomerEventArgs e)
+        private void CustomerUpdated(CustomerEventArgs e)
         {
             var customer_e = e.Customer;
             if (!e.IsNew)
@@ -160,12 +159,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 Customers.Add(customer_e);
             }
-        }
-
-        private void RegisterEvents()
-        {
-            CurrentCustomerViewModel.CustomerUpdated -= CurrentCustomerViewModel_CustomerUpdated;
-            CurrentCustomerViewModel.CustomerUpdated += CurrentCustomerViewModel_CustomerUpdated;
         }
 
         public event EventHandler CustomerDeleted;

@@ -1,4 +1,5 @@
-﻿using Core.Common.Core;
+﻿using AutoMapper;
+using Core.Common.Core;
 using FluentValidation;
 using System.Collections.Generic;
 
@@ -70,6 +71,19 @@ namespace EchoDesertTrips.Client.Entities
         protected override IValidator GetValidator()
         {
             return new HotelValidator();
+        }
+    }
+
+    public class HotelHelper
+    {
+        public static Hotel CloneHotel(Hotel hotel)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Hotel, Hotel>();
+            });
+
+            IMapper iMapper = config.CreateMapper();
+            return iMapper.Map<Hotel, Hotel>(hotel);
         }
     }
 }

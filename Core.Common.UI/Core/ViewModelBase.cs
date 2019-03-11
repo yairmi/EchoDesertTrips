@@ -6,6 +6,8 @@ using FluentValidation.Results;
 using EchoDesertTrips.Client.Entities;
 using static Core.Common.Core.Const;
 using EchoDesertTrips.Common;
+using Microsoft.Practices.Prism.PubSubEvents;
+using Core.Common.UI.PubSubEvent;
 
 namespace Core.Common.UI.Core
 {
@@ -14,7 +16,13 @@ namespace Core.Common.UI.Core
         public ViewModelBase()
         {
             ToggleErrorsCommand = new DelegateCommand<object>(OnToggleErrorsCommandExecute, OnToggleErrorsCommandCanExecute);
+            if (_eventAggregator == null)
+            {
+                _eventAggregator = new EventAggregator();
+            }
         }
+
+        static protected IEventAggregator _eventAggregator;
 
         public InventoriesSingle Inventories
         {

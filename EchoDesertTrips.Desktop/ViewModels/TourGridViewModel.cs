@@ -2,16 +2,16 @@
 using Core.Common.Contracts;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Entities;
-using System.ComponentModel;
 using System.Windows.Data;
 using System.Linq;
 using System.Windows;
-using EchoDesertTrips.Desktop.Support;
 using AutoMapper;
 using Core.Common.Utils;
 using System.ComponentModel.Composition;
 using System;
 using System.Globalization;
+using Core.Common.UI.PubSubEvent;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -30,8 +30,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowExpanded = new DelegateCommand<Tour>(OnRowExpanded);
             DeleteTourCommand = new DelegateCommand<Tour>(OnDeleteTourCommand);
             EditTourCommand = new DelegateCommand<Tour>(OnEditTourCommand);
+            _eventAggregator.GetEvent<TourUpdatedEvent>().Subscribe(TourUpdated);
+            _eventAggregator.GetEvent<TourCancelledEvent>().Subscribe(TourCancelled);
             _addNewEnabled = true;
-            //_currentReservation = currentReservation;
         }
 
         public TourGridViewModel()
@@ -61,7 +62,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             tour.bInEdit = true;
             _editTourViewModel.CreateTour(tour);
-            RegisterEvents();
         }
 
         public DelegateCommand<Tour> EditTourCommand { get; private set; }
@@ -234,7 +234,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
             Tours = Reservation.Tours;
             CurrentTourViewModel = _editTourViewModel;
-            RegisterEvents();
         }
 
         //For GUI - After selecting Hotel from Drop Down
@@ -251,7 +250,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private void CurrentTourViewModel_TourUpdated(object sender, TourEventArgs e)
+        private void TourUpdated(TourEventArgs e)
         {
             //var tour_e = e.Tour;
             if (!e.IsNew)
@@ -278,18 +277,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private void CurrentTourViewModel_TourCancelled(object sender, TourEventArgs e)
+        private void TourCancelled(TourEventArgs e)
         {
             CurrentTourViewModel = null;
             _addNewEnabled = true;
-        }
-
-        private void RegisterEvents()
-        {
-            CurrentTourViewModel.TourUpdated -= CurrentTourViewModel_TourUpdated;
-            CurrentTourViewModel.TourUpdated += CurrentTourViewModel_TourUpdated;
-            CurrentTourViewModel.TourCancelled -= CurrentTourViewModel_TourCancelled;
-            CurrentTourViewModel.TourCancelled += CurrentTourViewModel_TourCancelled;
         }
 
         public event EventHandler PropertyRemovedFromTour;

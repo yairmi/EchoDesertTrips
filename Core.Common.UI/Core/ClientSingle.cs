@@ -1,10 +1,6 @@
-﻿using Core.Common.Core;
-using EchoDesertTrips.Client.Contracts;
+﻿using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Client.Proxies.Service_Proxies;
-using EchoDesertTrips.Common;
-using System;
-using System.Collections.Generic;
 using static Core.Common.Core.Const;
 
 namespace Core.Common.UI.Core

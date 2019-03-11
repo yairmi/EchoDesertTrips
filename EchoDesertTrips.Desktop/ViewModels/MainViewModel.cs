@@ -6,9 +6,9 @@ using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using System.Threading;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using static Core.Common.Core.Const;
-using System.Linq;
+using Core.Common.UI.PubSubEvent;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -20,23 +20,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private readonly IMessageDialogService _messageBoxDialogService;
         
         [ImportingConstructor]
-        public MainViewModel(IServiceFactory serviceFactory, IMessageDialogService messageBoxDialogService)
+        public MainViewModel(IServiceFactory serviceFactory, 
+            IMessageDialogService messageBoxDialogService)
         {
             _serviceFactory = serviceFactory;
             _messageBoxDialogService = messageBoxDialogService;
-            LogOutCommand = new Core.Common.UI.Core.DelegateCommand<object>(OnLogOutCommand);
+            LogOutCommand = new DelegateCommand<object>(OnLogOutCommand);
+            _eventAggregator.GetEvent<ReservationCancelledEvent>().Subscribe(ReservationCancelled);
+            _eventAggregator.GetEvent<ReservationUpdatedFinishedEvent>().Subscribe(ReservationUpdatedFinished);
+            _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
+            _eventAggregator.GetEvent<AuthenticatedEvent>().Subscribe(Authenticated);
             log4net.Config.XmlConfigurator.Configure();
         }
+
         protected override void OnViewLoaded()
         {
-            _loginControlViewModel.Authenticated -= LoginControlViewModel_Authenticated;
-            _loginControlViewModel.Authenticated += LoginControlViewModel_Authenticated;
-
-            _editReservationViewModel.ReservationUpdated -= _editReservationViewModel_ReservationUpdated;
-            _editReservationViewModel.ReservationUpdated += _editReservationViewModel_ReservationUpdated;
-            _editReservationViewModel.ReservationCancelled -= _editReservationViewModel_ReservationCancelled;
-            _editReservationViewModel.ReservationCancelled += _editReservationViewModel_ReservationCancelled;
-
             CurrentViewModel = _loginControlViewModel;
         }
 
@@ -44,12 +42,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             UnRegisterClient();
         }
+
         [Import]
         private MainTabViewModel _mainTabViewModel { get; set; }
         [Import]
         private LoginControlViewModel _loginControlViewModel { get; set; }
         [Import]
-        private EditReservationViewModel _editReservationViewModel { get; set; }
+        private EditReservationViewModel _editReservationViewModel { get; set; }//It is here since I want that the edit reservation screen to replace the Main Tab screen after the user edit a reservation
 
         private ViewModelBase _currentViewModel;
 
@@ -66,7 +65,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public Core.Common.UI.Core.DelegateCommand<object> LogOutCommand { get; protected set; }
+        public DelegateCommand<object> LogOutCommand { get; protected set; }
 
         private void OnLogOutCommand(object obj)
         {
@@ -75,12 +74,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentViewModel = _loginControlViewModel;
         }
 
-        private void LoginControlViewModel_Authenticated(object sender, AuthenticationEventArgs e)
+        private void Authenticated(AuthenticationEventArgs e)
         {
             log.Info("Loggin Successfully. Operator Name: = " + e.Operator.OperatorName + ". Operator ID: =" + e.Operator.OperatorId);
             CurrentOperator.Operator = e.Operator;
-            _mainTabViewModel.ReservationsViewModel.ReservationEdited -= MainTabViewModel_ReservationEdited;
-            _mainTabViewModel.ReservationsViewModel.ReservationEdited += MainTabViewModel_ReservationEdited;
             CurrentViewModel = _mainTabViewModel;
 
             log.Debug("LoginControlViewModel_Authenticated: Start Register Client");
@@ -98,7 +95,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             log.Debug("OnViewLoaded: Client Registration finished");
         }
 
-        private void MainTabViewModel_ReservationEdited(object sender, EditReservationEventArgs e)
+        private void ReservationEdited(EditReservationEventArgs e)
         {
             _editReservationViewModel.SetReservation(e.Reservation);
             _editReservationViewModel.ViewMode = e.ViewMode;
@@ -106,14 +103,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentViewModel = _editReservationViewModel;
         }
 
-        private void _editReservationViewModel_ReservationCancelled(object sender, ReservationEventArgs e)
+        private void ReservationCancelled(ReservationEventArgs obj)
         {
             CurrentViewModel = _mainTabViewModel;
         }
 
-        private void _editReservationViewModel_ReservationUpdated(object sender, ReservationEventArgs e)
+        private void ReservationUpdatedFinished(object obj)
         {
-            _mainTabViewModel.ReservationsViewModel.UpdateReservations(e);
             CurrentViewModel = _mainTabViewModel;
         }
 
@@ -135,7 +131,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
             var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
 
-            this.Client.client.RegisterClient(operatorNameId);
+            Client.client.RegisterClient(operatorNameId);
         }
 
         public void UnRegisterClient()
@@ -185,9 +181,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (Message.MessageType == eMsgTypes.E_RESERVATION)
             {
                 foreach (var reservation in Message.ReservationsResult)
-                    _mainTabViewModel.ReservationsViewModel.UpdateReservations(new ReservationEventArgs(reservation, false, true));
+                    _eventAggregator.GetEvent<ReservationUpdatedEvent>().Publish(reservation);
                 foreach (var reservationId in Message.ReservationsIdsToDelete)
-                    _mainTabViewModel.ReservationsViewModel.RemoveReservationFromGUI(reservationId);
+                    _eventAggregator.GetEvent<ReservationRemovedEvent>().Publish(reservationId);
             }
             else if (Message.MessageType == eMsgTypes.E_INVENTORY)
                 UpdateInventory(Message.Inventories);

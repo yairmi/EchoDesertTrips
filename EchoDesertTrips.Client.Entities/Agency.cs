@@ -1,4 +1,5 @@
-﻿using Core.Common.Core;
+﻿using AutoMapper;
+using Core.Common.Core;
 using FluentValidation;
 using System.Collections.Generic;
 
@@ -137,6 +138,19 @@ namespace EchoDesertTrips.Client.Entities
         protected override IValidator GetValidator()
         {
             return new AgencyValidator();
+        }
+    }
+
+    public class AgencyHelper
+    {
+        public static Agency CloneAgency(Agency agency)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Agency, Agency>();
+            });
+
+            IMapper iMapper = config.CreateMapper();
+            return iMapper.Map<Agency, Agency>(agency);
         }
     }
 }

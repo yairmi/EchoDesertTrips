@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using Core.Common.Contracts;
 using Core.Common.UI.Core;
-using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
-using EchoDesertTrips.Desktop.Support;
-using Core.Common.Utils;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using static Core.Common.Core.Const;
+using Core.Common.UI.PubSubEvent;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -28,18 +25,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _messageDialogService = messageDialogService;
             EditTourTypeCommand = new DelegateCommand<TourType>(OnEditTourTypeCommand);
             AddTourTypeCommand = new DelegateCommand<object>(OnAddTourTypeCommand);
+            _eventAggregator.GetEvent<TourTypeUpdatedEvent>().Subscribe(TourTypeUpdated);
+            _eventAggregator.GetEvent<TourTypeCancelledEvent>().Subscribe(TourTypeCancelled);
         }
 
         private void OnAddTourTypeCommand(object obj)
         {
             CurrentTourTypeViewModel = new EditTourTypeViewModel(_serviceFactory, _messageDialogService, null);
-            RegisterEvents();
         }
 
         private void OnEditTourTypeCommand(TourType obj)
         {
             CurrentTourTypeViewModel = new EditTourTypeViewModel(_serviceFactory, _messageDialogService, obj);
-            RegisterEvents();
         }
 
         public DelegateCommand<TourType> EditTourTypeCommand { get; private set; }
@@ -62,65 +59,24 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public override string ViewTitle => "Tour-Types";
 
-        //protected override void OnViewLoaded()
-        //{
-        //    try
-        //    {
-        //        WithClient<IInventoryService>(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
-        //        {
-        //            TourTypes.Clear();
-        //            InventoryData inventoryData = inventoryClient.GetInventoryData();
-        //            foreach (var tourType in inventoryData.TourTypes)
-        //                TourTypes.Add(AutoMapperUtil.Map<TourType, TourTypeWrapper>(tourType));
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.Error("Exception load TourTypes/TourDestinations: " + ex.Message);
-        //    }
-        //}
-
-        private void CurrentTourTypeViewModel_TourTypeUpdated(object sender, TourTypeEventArgs e)
+        private void TourTypeUpdated(TourTypeEventArgs e)
         {
-            //var tourType_e = e.TourType;
-            if (!e.IsNew)
-            {
-                //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
-                //Is a temporary object and it is not part of the Grid collection trips.
-                var tourType = Inventories.TourTypes.FirstOrDefault(item => item.TourTypeId == e.TourType.TourTypeId);
-                if (tourType != null)
-                {
-                    var index = Inventories.TourTypes.IndexOf(tourType);
-                    Inventories.TourTypes[index] = e.TourType;// tourType_e;
-                }
-            }
-            else
-            {
-                Inventories.TourTypes.Add(e.TourType);
-            }
+            Inventories.Update(e.TourType);
             try
             {
                 Client.NotifyServer(
                     SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, eOperation.E_UPDATED, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 log.Error("Notify Server Error: " + ex.Message);
             }
             CurrentTourTypeViewModel = null;
         }
 
-        private void CurrentTourTypeViewModel_TourTypeCancelled(object sender, TourTypeEventArgs e)
+        private void TourTypeCancelled(TourTypeEventArgs obj)
         {
             CurrentTourTypeViewModel = null;
-        }
-
-        private void RegisterEvents()
-        {
-            CurrentTourTypeViewModel.TourTypeUpdated -= CurrentTourTypeViewModel_TourTypeUpdated;
-            CurrentTourTypeViewModel.TourTypeUpdated += CurrentTourTypeViewModel_TourTypeUpdated;
-            CurrentTourTypeViewModel.TourTypeCancelled -= CurrentTourTypeViewModel_TourTypeCancelled;
-            CurrentTourTypeViewModel.TourTypeCancelled += CurrentTourTypeViewModel_TourTypeCancelled;
         }
     }
 }

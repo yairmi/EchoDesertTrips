@@ -1,7 +1,7 @@
 ﻿using EchoDesertTrips.Client.Entities;
 using System;
 
-namespace EchoDesertTrips.Desktop.CustomEventArgs
+namespace Core.Common.UI.CustomEventArgs
 {
     public class AgencyEventArgs : EventArgs
     {

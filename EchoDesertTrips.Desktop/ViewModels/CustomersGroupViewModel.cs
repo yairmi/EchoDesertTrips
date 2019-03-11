@@ -1,4 +1,5 @@
 ﻿using Core.Common.UI.Core;
+using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Entities;
 using System;
 
@@ -18,7 +19,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnCloseCommand(Reservation obj)
         {
-            Close?.Invoke(this, new EventArgs());
+            _eventAggregator.GetEvent<CustomerGroupClosedEvent>().Publish(new EventArgs());
         }
 
         protected override void OnViewLoaded()
@@ -43,7 +44,5 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-
-        public event EventHandler Close;
     }   
 }

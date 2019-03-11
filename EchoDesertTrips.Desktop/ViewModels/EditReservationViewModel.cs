@@ -6,8 +6,8 @@ using EchoDesertTrips.Desktop.Support;
 using System;
 using System.Windows;
 using System.ComponentModel.Composition;
-using EchoDesertTrips.Desktop.CustomEventArgs;
-using System.Threading.Tasks;
+using Core.Common.UI.PubSubEvent;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -78,7 +78,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         exceptionPosition = 2;
                         if (reservation != null)
                         {
-                            ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservation, true, false));
+                            _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, true, false));
                         }
                     }, "OnSaveCommand", exceptionPosition);
                 }
@@ -101,7 +101,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                             }
                         }
                         exceptionPosition = 4;
-                        ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservation, false, false));
+                        _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, false, false));
+                        //ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservation, false, false));
                     }, "OnSaveCommand", exceptionPosition);
                 }
             }
@@ -115,7 +116,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }, "UnLock");
         }
 
-        public event EventHandler<ReservationEventArgs> ReservationCancelled;
+        //public event EventHandler<ReservationEventArgs> ReservationCancelled;
 
         private void OnExitWithoutSavingCommand(object obj)
         {
@@ -127,7 +128,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (!ViewMode && Reservation.ReservationId != 0)
                 UnLock(Reservation.ReservationId);
-            ReservationCancelled?.Invoke(this, new ReservationEventArgs(null, true, false));
+            _eventAggregator.GetEvent<ReservationCancelledEvent>().Publish(new ReservationEventArgs(null, true, false));
         }
 
         protected override void OnViewLoaded()

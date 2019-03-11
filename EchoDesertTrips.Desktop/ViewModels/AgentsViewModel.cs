@@ -5,9 +5,9 @@ using Core.Common.Contracts;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Entities;
 using System.Linq;
-using Core.Common.Utils;
-using EchoDesertTrips.Desktop.CustomEventArgs;
 using static Core.Common.Core.Const;
+using Core.Common.UI.PubSubEvent;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -27,20 +27,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
             EditAgencyCommand = new DelegateCommand<Agency>(OnEditAgencyCommand);
             AddAgencyCommand = new DelegateCommand<object>(OnAddAgencyCommand);
             ExpandedCommand = new DelegateCommand<object>(OnExpandedCommand);
-            //RowEditEndingAgencyCommand = new DelegateCommand<Agency>(OnRowEditEndingCommand);
-            //RowEditEndingAgentCommand = new DelegateCommand<Agency>(OnRowEditEndingCommand);
+            _eventAggregator.GetEvent<AgencyUpdatedEvent>().Subscribe(AgencyUpdated);
+            _eventAggregator.GetEvent<AgencyCancelledEvent>().Subscribe(AgencyCancelled);
         }
 
         private void OnAddAgencyCommand(object obj)
         {
             CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService,null);
-            RegisterEvents();
         }
 
-        private void OnEditAgencyCommand(Agency obj)
+        private void OnEditAgencyCommand(Agency agency)
         {
-            CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService, obj);
-            RegisterEvents();
+            CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService, agency);
         }
 
         public DelegateCommand<Agency> EditAgencyCommand { get; private set; }
@@ -72,47 +70,24 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public override string ViewTitle => "Agencies & Agents";
 
-        private void CurrentAgentsViewModel_AgencyUpdated(object sender, AgencyEventArgs e)
+        private void AgencyUpdated(AgencyEventArgs e)
         {
-            //var mappedAgency = AutoMapperUtil.Map<Agency, Agency>(e.Agency);
-            if (!e.IsNew)
-            {
-                //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
-                //Is a temporary object and it is not part of the Grid collection trips.
-                var agency = Inventories.Agencies.FirstOrDefault(item => item.AgencyId == e.Agency.AgencyId);
-                if (agency != null)
-                {
-                    var index = Inventories.Agencies.IndexOf(agency);
-                    Inventories.Agencies[index] = e.Agency;//mappedAgency;
-                }
-            }
-            else
-            {
-                Inventories.Agencies.Add(/*mappedAgency*/e.Agency);
-            }
+            Inventories.Update(e.Agency);
             try
             {
                 Client.NotifyServer(
                     SerializeInventoryMessage(eInventoryTypes.E_AGENCY, eOperation.E_UPDATED, e.Agency.AgencyId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 log.Error("Notify Server Error: " + ex.Message);
             }
             CurrentAgentsViewModel = null;
         }
 
-        private void CurrentAgentsViewModel_AgencyCancelled(object sender, AgencyEventArgs e)
+        private void AgencyCancelled(AgencyEventArgs obj)
         {
             CurrentAgentsViewModel = null;
-        }
-
-        private void RegisterEvents()
-        {
-            CurrentAgentsViewModel.AgencyUpdated -= CurrentAgentsViewModel_AgencyUpdated;
-            CurrentAgentsViewModel.AgencyUpdated += CurrentAgentsViewModel_AgencyUpdated;
-            CurrentAgentsViewModel.AgencyCancelled -= CurrentAgentsViewModel_AgencyCancelled;
-            CurrentAgentsViewModel.AgencyCancelled += CurrentAgentsViewModel_AgencyCancelled;
         }
     }
 

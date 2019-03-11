@@ -1,9 +1,14 @@
-﻿using EchoDesertTrips.Client.Entities;
+﻿using Core.Common.Core;
+using Core.Common.UI.PubSubEvent;
+using EchoDesertTrips.Client.Entities;
+using Microsoft.Practices.Prism.PubSubEvents;
 using System.Linq;
+using Core.Common.UI.CustomEventArgs;
+using System;
 
 namespace Core.Common.UI.Core
 {
-    public class InventoriesSingle : ViewModelBase
+    public class InventoriesSingle : ObjectBase
     {
         private static readonly InventoriesSingle INSTANCE = new InventoriesSingle()
         {
@@ -12,9 +17,11 @@ namespace Core.Common.UI.Core
             _optionals = new RangeObservableCollection<Optional>(),
             _roomTypes = new RangeObservableCollection<RoomType>(),
             _agencies = new RangeObservableCollection<Agency>(),
-            _operators = new RangeObservableCollection<Operator>()
+            _operators = new RangeObservableCollection<Operator>(),
         };
-        private InventoriesSingle() { }
+
+        private InventoriesSingle() {}
+
         public static InventoriesSingle Instance
         {
             get
@@ -134,85 +141,85 @@ namespace Core.Common.UI.Core
 
         public void Update(Hotel hotel)
         {
-            var existingHotel = Inventories.Hotels.FirstOrDefault(item => item.HotelId == hotel.HotelId);
+            var existingHotel = Hotels.FirstOrDefault(item => item.HotelId == hotel.HotelId);
             if (existingHotel != null)
             {
-                var index = Inventories.Hotels.IndexOf(existingHotel);
-                Inventories.Hotels[index] = hotel;
+                var index = Hotels.IndexOf(existingHotel);
+                Hotels[index] = hotel;
             }
             else
             {
-                Inventories.Hotels.Add(hotel);
+                Hotels.Add(hotel);
             }
         }
 
         public void Update(RoomType roomType)
         {
-            var existingRoomType = Inventories.RoomTypes.FirstOrDefault(item => item.RoomTypeId == roomType.RoomTypeId);
+            var existingRoomType = RoomTypes.FirstOrDefault(item => item.RoomTypeId == roomType.RoomTypeId);
             if (existingRoomType != null)
             {
-                var index = Inventories.RoomTypes.IndexOf(existingRoomType);
-                Inventories.RoomTypes[index] = roomType;
+                var index = RoomTypes.IndexOf(existingRoomType);
+                RoomTypes[index] = roomType;
             }
             else
             {
-                Inventories.RoomTypes.Add(roomType);
+                RoomTypes.Add(roomType);
             }
         }
 
         public void Update(Operator oper)
         {
-            var existingOperator = Inventories.Operators.FirstOrDefault(item => item.OperatorId == oper.OperatorId);
+            var existingOperator = Operators.FirstOrDefault(item => item.OperatorId == oper.OperatorId);
             if (existingOperator != null)
             {
-                var index = Inventories.Operators.IndexOf(existingOperator);
-                Inventories.Operators[index] = oper;
+                var index = Operators.IndexOf(existingOperator);
+                Operators[index] = oper;
             }
             else
             {
-                Inventories.Operators.Add(oper);
+                Operators.Add(oper);
             }
         }
 
         public void Update(Optional optional)
         {
-            var existingOptional = Inventories.Optionals.FirstOrDefault(item => item.OptionalId == optional.OptionalId);
+            var existingOptional = Optionals.FirstOrDefault(item => item.OptionalId == optional.OptionalId);
             if (existingOptional != null)
             {
-                var index = Inventories.Optionals.IndexOf(existingOptional);
-                Inventories.Optionals[index] = optional;
+                var index = Optionals.IndexOf(existingOptional);
+                Optionals[index] = optional;
             }
             else
             {
-                Inventories.Optionals.Add(optional);
+                Optionals.Add(optional);
             }
         }
 
         public void Update(TourType tourType)
         {
-            var existingTourType = Inventories.TourTypes.FirstOrDefault(item => item.TourTypeId == tourType.TourTypeId);
+            var existingTourType = TourTypes.FirstOrDefault(item => item.TourTypeId == tourType.TourTypeId);
             if (existingTourType != null)
             {
-                var index = Inventories.TourTypes.IndexOf(existingTourType);
-                Inventories.TourTypes[index] = tourType;
+                var index = TourTypes.IndexOf(existingTourType);
+                TourTypes[index] = tourType;
             }
             else
             {
-                Inventories.TourTypes.Add(tourType);
+                TourTypes.Add(tourType);
             }
         }
 
         public void Update(Agency agency)
         {
-            var existingAgency = Inventories.Agencies.FirstOrDefault(item => item.AgencyId == agency.AgencyId);
+            var existingAgency = Agencies.FirstOrDefault(item => item.AgencyId == agency.AgencyId);
             if (existingAgency != null)
             {
-                var index = Inventories.Agencies.IndexOf(existingAgency);
-                Inventories.Agencies[index] = agency;
+                var index = Agencies.IndexOf(existingAgency);
+                Agencies[index] = agency;
             }
             else
             {
-                Inventories.Agencies.Add(agency);
+                Agencies.Add(agency);
             }
         }
     }
