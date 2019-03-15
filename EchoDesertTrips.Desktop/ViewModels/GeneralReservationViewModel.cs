@@ -1,8 +1,11 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.UI.Core;
+using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Entities;
 using System.ComponentModel.Composition;
 using System.Linq;
+using Core.Common.UI.CustomEventArgs;
+using System;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -20,16 +23,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
+            _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
         }
 
         public override string ViewTitle => "General";
-        [Import]
-        public AgencyViewModel AgencyViewModel { get; set; }
+        //[Import]
+        //public AgencyViewModel AgencyViewModel { get; set; }
 
         protected override void OnViewLoaded()
         {
             bLoaded = false;
-            AgencyViewModel.Reservation = Reservation;
+            //AgencyViewModel.Reservation = Reservation;
             SelectedAgency = Reservation.Agency != null ? Inventories.Agencies.FirstOrDefault(n => n.AgencyId == Reservation.Agency.AgencyId) : null;
             if (SelectedAgency != null)
                 SelectedAgent = Reservation.Agent != null ? SelectedAgency.Agents.FirstOrDefault(n => n.AgentId == Reservation.Agent.AgentId) : null;
@@ -88,6 +92,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 OnPropertyChanged(() => IsChecked, false);
             }
+        }
+
+        private void ReservationEdited(EditReservationEventArgs e)
+        {
+            Reservation = e.Reservation;
         }
     }
 }

@@ -92,7 +92,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     exceptionPosition = 7;
                     Client.NotifyServer(SerializeReservationMessage(e.Reservation.ReservationId, eOperation.E_UPDATED),
-                        eMsgTypes.E_RESERVATION, CurrentOperator.Operator);
+                        eMsgTypes.E_RESERVATION);
                 }
             }
             catch (Exception ex)
@@ -258,7 +258,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 try
                 {
                     Client.NotifyServer(
-                        SerializeReservationMessage(obj.ReservationId, eOperation.E_DELETED), eMsgTypes.E_RESERVATION, CurrentOperator.Operator);
+                        SerializeReservationMessage(obj.ReservationId, eOperation.E_DELETED), eMsgTypes.E_RESERVATION);
                 }
                 catch(Exception ex)
                 {
@@ -270,7 +270,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnAddReservationCommand(object arg)
         {
             log.Debug("ReservationViewModel:OnAddCommand start");
-            _eventAggregator.GetEvent<ReservationEditedEvent>().Publish(new EditReservationEventArgs(null, false, false));
+            _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Publish(new EditReservationEventArgs(null, false, false));
             log.Debug("ReservationViewModel:OnAddCommand end");
         }
         private bool _bIsContinual = false;
@@ -309,7 +309,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     return;
                 bViewMode = true;
             }
-            _eventAggregator.GetEvent<ReservationEditedEvent>().Publish(new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
+            _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Publish(new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
             log.Debug("ReservationViewModel:OnEditReservationCommand end");
         }
 

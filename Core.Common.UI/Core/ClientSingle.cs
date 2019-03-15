@@ -18,19 +18,27 @@ namespace Core.Common.UI.Core
             }
         }
 
+        private OperatorSingle CurrentOperator
+        {
+            get
+            {
+                return OperatorSingle.Instance;
+            }
+        }
+
         public BroadcastorServiceClient client;
 
-        public void NotifyServer(string message, eMsgTypes msgType, Operator currentOperator)
+        public void NotifyServer(string message, eMsgTypes msgType)
         {
             client.NotifyServer(new EventDataType()
             {
-                ClientName = currentOperator.OperatorName + "-" + currentOperator.OperatorId,
+                ClientName = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId,
                 EventMessage = message,
                 MessageType = msgType
             });
         }
 
-        /*public void RegisterClient(string operatorNameId)
+        public void RegisterClient(EventHandler<BroadcastMessage> HandleBroadcast)
         {
             if (client != null)
             {
@@ -45,17 +53,17 @@ namespace Core.Common.UI.Core
                 new System.ServiceModel.InstanceContext(cb);
             client = new BroadcastorServiceClient(context);
 
-            //var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
+            var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
 
             client.RegisterClient(operatorNameId);
         }
 
-        public void UnRegisterClient(Operator Operator)
+        public void UnRegisterClient()
         {
-            if (Operator == null)
+            if (CurrentOperator.Operator == null)
                 return;
-            log.Debug("UnRegisterClient Client Started: " + Operator.OperatorName);
-            var operatorNameId = Operator.OperatorName + "-" + Operator.OperatorId;
+            log.Debug("UnRegisterClient Client Started: " + CurrentOperator.Operator.OperatorName);
+            var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
             try
             {
                 if (client == null)
@@ -82,26 +90,14 @@ namespace Core.Common.UI.Core
 
         private void CreateClient()
         {
-            var cb = new BroadcastorCallback();
-            cb.SetHandler(HandleBroadcast);
+            //var cb = new BroadcastorCallback();
+            //cb.SetHandler(HandleBroadcast);
 
             var context =
                 new System.ServiceModel.InstanceContext(new BroadcastorCallback());
             client = new BroadcastorServiceClient(context);
         }
 
-        public void HandleBroadcast(object sender, BroadcastMessage Message)
-        {
-            log.Debug("HandleBroadcast");
-            if (Message.MessageType == eMsgTypes.E_RESERVATION)
-            {
-                foreach (var reservation in Message.ReservationsResult)
-                    _eventAggregator.GetEvent<ReservationUpdatedEvent>().Publish(reservation);
-                foreach (var reservationId in Message.ReservationsIdsToDelete)
-                    _eventAggregator.GetEvent<ReservationRemovedEvent>().Publish(reservationId);
-            }
-            else if (Message.MessageType == eMsgTypes.E_INVENTORY)
-                UpdateInventory(Message.Inventories);
-        }*/
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
     }
 }

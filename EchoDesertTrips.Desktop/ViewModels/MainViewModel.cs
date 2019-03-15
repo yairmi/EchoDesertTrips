@@ -28,7 +28,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             LogOutCommand = new DelegateCommand<object>(OnLogOutCommand);
             _eventAggregator.GetEvent<ReservationCancelledEvent>().Subscribe(ReservationCancelled);
             _eventAggregator.GetEvent<ReservationUpdatedFinishedEvent>().Subscribe(ReservationUpdatedFinished);
-            _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
+            _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Subscribe(ReservationEditSelected);
             _eventAggregator.GetEvent<AuthenticatedEvent>().Subscribe(Authenticated);
             log4net.Config.XmlConfigurator.Configure();
         }
@@ -40,7 +40,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         ~MainViewModel()
         {
-            UnRegisterClient();
+            Client.UnRegisterClient();
         }
 
         [Import]
@@ -69,7 +69,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnLogOutCommand(object obj)
         {
-            UnRegisterClient();
+            Client.UnRegisterClient();
             CurrentOperator.Operator = null;
             CurrentViewModel = _loginControlViewModel;
         }
@@ -83,7 +83,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             log.Debug("LoginControlViewModel_Authenticated: Start Register Client");
             try
             {
-                RegisterClient();
+                Client.RegisterClient(HandleBroadcast);
             }
             catch (Exception ex)
             {
@@ -95,11 +95,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             log.Debug("OnViewLoaded: Client Registration finished");
         }
 
-        private void ReservationEdited(EditReservationEventArgs e)
+        private void ReservationEditSelected(EditReservationEventArgs e)
         {
-            _editReservationViewModel.SetReservation(e.Reservation);
-            _editReservationViewModel.ViewMode = e.ViewMode;
-            _editReservationViewModel.SelectedTabIndex = e.IsContinual == false ? 0 : 2;
+            _eventAggregator.GetEvent<ReservationEditSelectedFinishedEvent>().Publish(e);
             CurrentViewModel = _editReservationViewModel;
         }
 
@@ -111,68 +109,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void ReservationUpdatedFinished(object obj)
         {
             CurrentViewModel = _mainTabViewModel;
-        }
-
-        public void RegisterClient()
-        {
-            if (Client.client != null)
-            {
-                Client.client.Abort();
-                Client.client = null;
-            }
-
-            var cb = new BroadcastorCallback();
-            cb.SetHandler(HandleBroadcast);
-
-            System.ServiceModel.InstanceContext context =
-                new System.ServiceModel.InstanceContext(cb);
-            Client.client =
-                new BroadcastorServiceClient(context);
-
-            var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
-
-            Client.client.RegisterClient(operatorNameId);
-        }
-
-        public void UnRegisterClient()
-        {
-            if (CurrentOperator.Operator == null)
-                return;
-            log.Debug("UnRegisterClient Client Started: " + CurrentOperator.Operator.OperatorName);
-            var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
-            try
-            {
-                if (Client == null)
-                {
-                    CreateClient();
-                    log.Debug("UnRegisterClient. Client was NULL. After Client Creation");
-                }
-                else
-                if (Client != null && Client.client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
-                {
-                    Client.client.Abort();
-                    Client = null;
-                    CreateClient();
-                    log.Debug("UnRegisterClient. Client was NOT NULL. After Client Creation");
-                }
-                Client.client.UnRegisterClient(operatorNameId);
-                log.Debug("UnRegisterClient. After UnRegister Client");
-            }
-            catch (Exception ex)
-            {
-                log.Error("UnRegisterClient Exception: " + ex.Message);
-            }
-        }
-
-        private void CreateClient()
-        {
-            var cb = new BroadcastorCallback();
-            cb.SetHandler(HandleBroadcast);
-
-            var context =
-                new System.ServiceModel.InstanceContext(new BroadcastorCallback());
-            Client.client =
-                new BroadcastorServiceClient(context);
         }
 
         public void HandleBroadcast(object sender, BroadcastMessage Message)

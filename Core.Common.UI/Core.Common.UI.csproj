@@ -150,6 +150,7 @@
     <Compile Include="Core\ClientSingle.cs" />
     <Compile Include="Core\DelegateCommand.cs" />
     <Compile Include="Core\InventoriesSingle.cs" />
+    <Compile Include="Core\InventoryBase.cs" />
     <Compile Include="Core\OperatorSingle.cs" />
     <Compile Include="Core\PopupWindow.cs" />
     <Compile Include="Core\RangeObservableCollection.cs" />
@@ -161,24 +162,35 @@
     <Compile Include="CustomEventArgs\CustomerOrderEventArgs.cs" />
     <Compile Include="CustomEventArgs\EditReservationEventArgs.cs" />
     <Compile Include="CustomEventArgs\HotelEventArgs.cs" />
+    <Compile Include="CustomEventArgs\OperatorEventArgs.cs" />
+    <Compile Include="CustomEventArgs\OptionalEventArgs.cs" />
     <Compile Include="CustomEventArgs\ReservationEventArgs.cs" />
+    <Compile Include="CustomEventArgs\RoomTypeEventArgs.cs" />
     <Compile Include="CustomEventArgs\TourEventArgs.cs" />
     <Compile Include="CustomEventArgs\TourTypeEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PubSubEvent\AgencyCancelledEvent.cs" />
     <Compile Include="PubSubEvent\AgencyUpdatedEvent.cs" />
     <Compile Include="PubSubEvent\AuthenticatedEvent.cs" />
+    <Compile Include="PubSubEvent\CreateCustomerEvent.cs" />
+    <Compile Include="PubSubEvent\CreateTourEvent.cs" />
+    <Compile Include="PubSubEvent\CustomerDeletedEvent.cs" />
     <Compile Include="PubSubEvent\CustomerGroupClosedEvent.cs" />
     <Compile Include="PubSubEvent\CustomerUpdatedEvent.cs" />
     <Compile Include="PubSubEvent\HotelCancelledEvent.cs" />
     <Compile Include="PubSubEvent\HotelUpdatedEvent.cs" />
     <Compile Include="PubSubEvent\OperatorUpdatedEvent.cs" />
+    <Compile Include="PubSubEvent\OptionalUpdatedEvent.cs" />
+    <Compile Include="PubSubEvent\PropertyRemovedFromTourEvent.cs" />
     <Compile Include="PubSubEvent\ReservationCancelledEvent.cs" />
     <Compile Include="PubSubEvent\ReservationEditedEvent.cs" />
+    <Compile Include="PubSubEvent\ReservationEditSelectedEvent.cs" />
+    <Compile Include="PubSubEvent\ReservationEditSelectedFinishedEvent.cs" />
     <Compile Include="PubSubEvent\ReservationRemovedEvent.cs" />
     <Compile Include="PubSubEvent\ReservationUpdatedAndNotifyClientsEvent.cs" />
     <Compile Include="PubSubEvent\ReservationUpdatedEvent.cs" />
     <Compile Include="PubSubEvent\ReservationUpdatedFinishedEvent.cs" />
+    <Compile Include="PubSubEvent\RoomTypeUpdatedEvent.cs" />
     <Compile Include="PubSubEvent\TourCancelledEvent.cs" />
     <Compile Include="PubSubEvent\TourTypeCancelledEvent.cs" />
     <Compile Include="PubSubEvent\TourTypeUpdatedEvent.cs" />
@@ -195,6 +207,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{B279BD06-45E6-4785-B4D9-EEF8A392CF32}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core.Common\Core.Common.csproj">
       <Project>{C4635DF6-CC42-434F-ABF9-A23DCBBC9DEB}</Project>
       <Name>Core.Common</Name>

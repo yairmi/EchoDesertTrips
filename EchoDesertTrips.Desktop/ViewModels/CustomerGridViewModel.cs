@@ -33,6 +33,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowSomeEventCommand = new DelegateCommand<Customer>(OnRowSomeEventCommand);
             DeleteCustomerCommand = new DelegateCommand<Customer>(OnDeleteCustomerCommand);
             EditCustomerCommand = new DelegateCommand<Customer>(OnEditCustomerCommand);
+            _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
             _eventAggregator.GetEvent<CustomerUpdatedEvent>().Subscribe(CustomerUpdated);
         }
 
@@ -51,9 +52,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (result == MessageDialogResult.CANCEL)
                 return;
             Customers.Remove(customer);
-            _editCustomerViewModel.CustomerDeleted();
-            CustomerDeleted?.Invoke(this, null);
+            _eventAggregator.GetEvent<CustomerDeletedEvent>().Publish(null);
         }
+
         //Remove CustomerWrapper
         public DelegateCommand<Customer> RowSomeEventCommand { get; set; }
 
@@ -72,23 +73,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnEditCustomerCommand(Customer customer)
         {
             customer.bInEdit = true;
-            _editCustomerViewModel.CreateCustomer(customer);
-            _editCustomerViewModel.Reservation = Reservation;
-            CurrentCustomerViewModel = _editCustomerViewModel;
+            _eventAggregator.GetEvent<CreateCustomerEvent>().Publish(customer);
+            CurrentCustomerViewModel = _editCustomerGridViewModel;
         }
 
         public DelegateCommand<Customer> EditCustomerCommand { get; }
         [Import]
-        private EditCustomerGridViewModel _editCustomerViewModel { get;set;}
+        private EditCustomerGridViewModel _editCustomerGridViewModel { get;set;}
 
         public EditCustomerGridViewModel CurrentCustomerViewModel
         {
-            get { return _editCustomerViewModel; }
+            get { return _editCustomerGridViewModel; }
             set
             {
-                if (_editCustomerViewModel != value)
+                if (_editCustomerGridViewModel != value)
                 {
-                    _editCustomerViewModel = value;
+                    _editCustomerGridViewModel = value;
                     OnPropertyChanged(() => CurrentCustomerViewModel, false);
                 }
             }
@@ -135,9 +135,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             Customers = Reservation.Customers;
-            _editCustomerViewModel.Reservation = Reservation;
-            _editCustomerViewModel.ViewMode = ViewMode;
-            CurrentCustomerViewModel = _editCustomerViewModel;
+            CurrentCustomerViewModel = _editCustomerGridViewModel;
+        }
+
+        private void ReservationEdited(EditReservationEventArgs e)
+        {
+            Reservation = e.Reservation;
+            ViewMode = e.ViewMode;
         }
 
         private void CustomerUpdated(CustomerEventArgs e)
@@ -160,8 +164,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Customers.Add(customer_e);
             }
         }
-
-        public event EventHandler CustomerDeleted;
     }
     public class CustomerValidationRule : ValidationRule
     {

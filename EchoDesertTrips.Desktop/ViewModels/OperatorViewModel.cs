@@ -57,7 +57,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     try
                     {
                         Client.NotifyServer(
-                            SerializeInventoryMessage(eInventoryTypes.E_OPERATOR, eOperation.E_UPDATED, savedOperator.OperatorId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
+                            SerializeInventoryMessage(eInventoryTypes.E_OPERATOR, eOperation.E_UPDATED, savedOperator.OperatorId), eMsgTypes.E_INVENTORY);
                     }
                     catch(Exception ex)
                     {

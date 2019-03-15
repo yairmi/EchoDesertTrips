@@ -72,7 +72,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     try
                     {
                         Client.NotifyServer(
-                            SerializeInventoryMessage(eInventoryTypes.E_ROOM_TYPE, eOperation.E_UPDATED, savedRoomType.RoomTypeId), eMsgTypes.E_INVENTORY, CurrentOperator.Operator);
+                            SerializeInventoryMessage(eInventoryTypes.E_ROOM_TYPE, eOperation.E_UPDATED, savedRoomType.RoomTypeId), eMsgTypes.E_INVENTORY);
                     }
                     catch(Exception ex)
                     {

@@ -35,6 +35,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CellEditEndingRoomTypeCommand = new DelegateCommand<TourHotelRoomType>(OnCellEditEndingRoomTypeCommand);
             EditTourHotelCommand = new DelegateCommand<object>(OnEditTourHotelCommand);
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
+            _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
+            _eventAggregator.GetEvent<CreateTourEvent>().Subscribe(CreateTour);
             log.Debug("EditTourGridViewModel ctor end");
         }
 
@@ -200,6 +202,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Tour.CleanAll();
         }
 
+        private void ReservationEdited(EditReservationEventArgs e)
+        {
+            ViewMode = e.ViewMode;
+        }
+
         private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
 
         public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes
@@ -305,9 +312,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Tour.TourOptionals.Clear();
             Tour.TourOptionals = tourOptionals;
         }
-
-        //public event EventHandler<TourEventArgs> TourUpdated;
-        //public event EventHandler<TourEventArgs> TourCancelled;
     }
 
     public class TourTypeControlConverter : IValueConverter

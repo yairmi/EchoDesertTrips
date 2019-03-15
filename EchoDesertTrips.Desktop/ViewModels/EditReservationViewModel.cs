@@ -25,7 +25,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _messageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
+            _eventAggregator.GetEvent<ReservationEditSelectedFinishedEvent>().Subscribe(ReservationEditSelectedFinished);
+            _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
+            _eventAggregator.GetEvent<CustomerDeletedEvent>().Subscribe(CustomerDeleted);
+            _eventAggregator.GetEvent<PropertyRemovedFromTourEvent>().Subscribe(PropertyRemovedFromTour);
         }
+
         [Import]
         public TourGridViewModel TourGridViewModel { get; set; }
         [Import]
@@ -55,8 +60,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             return IsReservationDirty();
         }
-
-        public event EventHandler<ReservationEventArgs> ReservationUpdated;
 
         private void OnSaveCommand(object obj)
         {
@@ -116,8 +119,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }, "UnLock");
         }
 
-        //public event EventHandler<ReservationEventArgs> ReservationCancelled;
-
         private void OnExitWithoutSavingCommand(object obj)
         {
             if (IsReservationDirty())
@@ -133,37 +134,51 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            log.Debug("EditOrderViewModel OnViewLoaded start");
-            TourGridViewModel.Reservation = Reservation;
-            TourGridViewModel.ViewMode = ViewMode;
-
-            CustomerGridViewModel.Reservation = Reservation;
-            CustomerGridViewModel.ViewMode = ViewMode;
-
-            GeneralReservationViewModel.Reservation = Reservation;
-
             SomethingDeleted = false;
-
-            CustomerGridViewModel.CustomerDeleted -= EditReservationViewModel_SomethingRemoved;
-            CustomerGridViewModel.CustomerDeleted += EditReservationViewModel_SomethingRemoved;
-
-            TourGridViewModel.PropertyRemovedFromTour -= EditReservationViewModel_SomethingRemoved;
-            TourGridViewModel.PropertyRemovedFromTour += EditReservationViewModel_SomethingRemoved;
-
-
-
-            log.Debug("EditOrderViewModel OnViewLoaded end");
         }
 
-        private void EditReservationViewModel_SomethingRemoved(object sender, EventArgs e)
+        private void CustomerDeleted(object obj)
         {
             SomethingDeleted = true;
         }
 
-        public void SetReservation(Reservation reservation)
+
+        private void PropertyRemovedFromTour(object obj)
         {
-            Reservation = reservation == null ? new Reservation() : reservation;
+            SomethingDeleted = true;
+        }
+
+        private void ReservationEditSelectedFinished(EditReservationEventArgs e)
+        {
+            if (e.Reservation == null)
+            {
+                e.Reservation = Reservation = new Reservation();
+            }
+            else
+                Reservation = e.Reservation;
+
+            SelectedTabIndex = e.IsContinual == false ? 0 : 2;
+            e.Reservation = Reservation;
             CleanAll();
+            _eventAggregator.GetEvent<ReservationEditedEvent>().Publish(e);
+        }
+
+        private void HotelUpdated(HotelEventArgs e)
+        {
+            if (Reservation != null)
+            {
+                foreach (var tour in Reservation.Tours)
+                {
+                    foreach (var tourHotel in tour.TourHotels)
+                    {
+                        if (tourHotel.Hotel.HotelId == e.Hotel.HotelId)
+                        {
+                            tourHotel.Hotel.HotelAddress = e.Hotel.HotelAddress;
+                            tourHotel.Hotel.HotelName = e.Hotel.HotelName;
+                        }
+                    }
+                }
+            }
         }
 
         public bool SomethingDeleted;

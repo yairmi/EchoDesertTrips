@@ -30,6 +30,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             RowExpanded = new DelegateCommand<Tour>(OnRowExpanded);
             DeleteTourCommand = new DelegateCommand<Tour>(OnDeleteTourCommand);
             EditTourCommand = new DelegateCommand<Tour>(OnEditTourCommand);
+            _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
             _eventAggregator.GetEvent<TourUpdatedEvent>().Subscribe(TourUpdated);
             _eventAggregator.GetEvent<TourCancelledEvent>().Subscribe(TourCancelled);
             _addNewEnabled = true;
@@ -55,19 +56,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //public ICollectionView ItemsView { get; set; }
         public DelegateCommand<Tour> RowExpanded { get; set; }
 
-        [Import]
-        private EditTourGridViewModel _editTourGridViewModel { get; set; }
-
         private void OnEditTourCommand(Tour tour)
         {
             tour.bInEdit = true;
-            _editTourViewModel.CreateTour(tour);
+            _eventAggregator.GetEvent<CreateTourEvent>().Publish(tour);
+            //_editTourGridViewModel.CreateTour(tour);
         }
 
         public DelegateCommand<Tour> EditTourCommand { get; private set; }
 
         [Import]
-        private EditTourGridViewModel _editTourViewModel;
+        private EditTourGridViewModel _editTourGridViewModel { get; set; }
 
         public EditTourGridViewModel CurrentTourViewModel { get; set; }
 
@@ -228,12 +227,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            _editTourViewModel.ViewMode = ViewMode;
+            //_editTourGridViewModel.ViewMode = ViewMode;
             if (TourHotelRoomTypes != null)
                 TourHotelRoomTypes = null;
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
             Tours = Reservation.Tours;
-            CurrentTourViewModel = _editTourViewModel;
+            CurrentTourViewModel = _editTourGridViewModel;
         }
 
         //For GUI - After selecting Hotel from Drop Down
@@ -248,6 +247,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     TourHotelRoomTypes.Add(AutoMapperUtil.Map<TourHotelRoomType, TourHotelRoomType>(tourHotelRoomType));
                 });
             }
+        }
+
+        private void ReservationEdited(EditReservationEventArgs e)
+        {
+            Reservation = e.Reservation;
+            ViewMode = e.ViewMode;
         }
 
         private void TourUpdated(TourEventArgs e)
@@ -273,7 +278,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             OnPropertyChanged(() => TotalPrice);
             if (e.RemovedItems > 0)
             {
-                PropertyRemovedFromTour?.Invoke(this, null);
+                _eventAggregator.GetEvent<PropertyRemovedFromTourEvent>().Publish(null);
             }
         }
 
@@ -282,8 +287,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             CurrentTourViewModel = null;
             _addNewEnabled = true;
         }
-
-        public event EventHandler PropertyRemovedFromTour;
     }
 
     public class DeleteTourConverter : IValueConverter
