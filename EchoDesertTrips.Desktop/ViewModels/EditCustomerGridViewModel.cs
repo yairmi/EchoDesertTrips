@@ -2,6 +2,7 @@
 using Core.Common.Core;
 using Core.Common.UI.Core;
 using Core.Common.UI.CustomEventArgs;
+using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
 using System;
@@ -55,12 +56,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 if (Customer.CustomerId == 0)
                 {
-                    CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, Customer.bInEdit == false));
+                    _eventAggregator.GetEvent<CustomerUpdatedEvent>().Publish(new CustomerEventArgs(Customer, Customer.bInEdit == false));
                 }
                 else
                 {
-                    CustomerUpdated?.Invoke(this, new CustomerEventArgs(Customer, false));
+                    _eventAggregator.GetEvent<CustomerUpdatedEvent>().Publish(new CustomerEventArgs(Customer, false));
                 }
+
                 CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
                 if (CustomersLeft > 0)
                     CreateCustomer();
@@ -193,7 +195,5 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-
-        public event EventHandler<CustomerEventArgs> CustomerUpdated;
     }
 }

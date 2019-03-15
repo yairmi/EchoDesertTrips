@@ -40,6 +40,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     Reservation.Agency = null;
                     Reservation.Agent = null;
+                    Reservation.AgencyId = null;
+                    Reservation.AgentId = null;
                 }
                 OnPropertyChanged(() => IsChecked, false);
             }

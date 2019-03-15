@@ -381,7 +381,8 @@ namespace EchoDesertTrips.Data.Data_Repositories
         protected override IQueryable<Reservation> IncludeNavigationProperties(IQueryable<Reservation> query)
         {
             return query
-                    .IncludeOptimized(a => a.Agency.Agents)
+                    .IncludeOptimized(o => o.Agency)
+                    .IncludeOptimized(o => o.Agency.Agents)
                     .IncludeOptimized(o => o.Customers)
                     .IncludeOptimized(o => o.Group)
                     .IncludeOptimized(o => o.Tours)
@@ -401,6 +402,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
         private IQueryable<Reservation> IncludeNavigationPropertiesForGettingReservations(IQueryable<Reservation> query)
         {
             return query
+                    .IncludeOptimized(a => a.Agency)
                     .IncludeOptimized(a => a.Agency.Agents)
                     .IncludeOptimized(o => o.Customers)
                     .IncludeOptimized(o => o.Group)

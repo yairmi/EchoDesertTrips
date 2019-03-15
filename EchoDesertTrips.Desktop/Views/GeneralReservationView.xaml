@@ -22,7 +22,57 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
             <StackPanel>
-                <ContentControl Grid.Row="1" Content="{Binding AgencyViewModel}" />
+                <!--<ContentControl Grid.Row="1" Content="{Binding AgencyViewModel}" />-->
+
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Style="{StaticResource ColumnWidth1}" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Enable Agency:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="checkBoxAgree" Grid.Row="0" Margin="3" Grid.Column="1" IsChecked="{Binding IsChecked}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Agency:" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <ComboBox x:Name="AgenciesCombo" Grid.Row="1" Grid.Column="1" Margin="3" Width="160" 
+                              ItemsSource="{Binding Inventories.Agencies, Mode=TwoWay}" 
+                              SelectedItem="{Binding SelectedAgency, Mode=TwoWay}"
+                              IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding AgencyName}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Margin="3" Text="Agent:" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                    <ComboBox x:Name="AgentsCombo" Grid.Row="1" Grid.Column="3" Margin="3" Width="160" 
+                              ItemsSource="{Binding SelectedItem.Agents, ElementName=AgenciesCombo}"
+                              SelectedItem="{Binding SelectedAgent, Mode=TwoWay}"
+                              IsEnabled="{Binding ElementName=checkBoxAgree, Path=IsChecked}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} {1}">
+                                            <Binding Path="LastName"/>
+                                            <Binding Path="FirstName"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+
+
+
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
