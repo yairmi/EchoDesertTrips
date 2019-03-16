@@ -37,6 +37,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
             _eventAggregator.GetEvent<CreateTourEvent>().Subscribe(CreateTour);
+            _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
+            _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Subscribe(RoomTypeUpdated);
+            _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
             log.Debug("EditTourGridViewModel ctor end");
         }
 
@@ -311,6 +314,59 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             Tour.TourOptionals.Clear();
             Tour.TourOptionals = tourOptionals;
+        }
+
+        private void OptionalUpdated(OptionalEventArgs e)
+        {
+            try
+            {
+                var existingOptional = Tour.TourOptionals.FirstOrDefault(t => t.Optional.OptionalId == e.Optional.OptionalId);
+                if (existingOptional != null)
+                {
+                    var index = Tour.TourOptionals.IndexOf(existingOptional);
+                    Tour.TourOptionals[index].Optional = e.Optional;
+                }
+                else
+                {
+                    var newTourOptional = new TourOptional()
+                    {
+                        Selected = false,
+                        Optional = e.Optional,
+                        OptionalId = e.Optional.OptionalId,
+                        TourId = Tour.TourId,
+                        PriceInclusive = false
+                    };
+                    Tour.TourOptionals.Add(newTourOptional);
+                }
+            }
+            catch(Exception ex)
+            {
+                log.Error("Exception in OptionalUpdated: " + ex.Message);
+            }
+        }
+
+        private void RoomTypeUpdated(RoomTypeEventArgs e)
+        {
+            try
+            {
+
+            }
+            catch(Exception ex)
+            {
+                log.Error("Exception in RoomTypeUpdated: " + ex.Message);
+            }
+        }
+
+        private void HotelUpdated(HotelEventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                log.Error("Exception in HotelUpdated: " + ex.Message);
+            }
         }
     }
 

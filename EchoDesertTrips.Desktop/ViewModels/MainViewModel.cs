@@ -1,7 +1,6 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Contracts;
-using EchoDesertTrips.Client.Proxies.Service_Proxies;
 using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -129,27 +128,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (inventories.Hotels != null)
             {
-                Inventories.Update(inventories.Hotels[0]);
+                _eventAggregator.GetEvent<HotelUpdatedEvent>().Publish(new HotelEventArgs(inventories.Hotels[0], false, false));
             }
             else if (inventories.Operators != null)
             {
-                Inventories.Update(inventories.Operators[0]);
+                _eventAggregator.GetEvent<OperatorUpdatedEvent>().Publish(new OperatorEventArgs(inventories.Operators[0], false));
             }
             else if (inventories.Optionals != null)
             {
-                Inventories.Update(inventories.Optionals[0]);
+                _eventAggregator.GetEvent<OptionalUpdatedEvent>().Publish(new OptionalEventArgs(inventories.Optionals[0], false));
             }
             else if (inventories.RoomTypes != null)
             {
-                Inventories.Update(inventories.RoomTypes[0]);
+                _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Publish(new RoomTypeEventArgs(inventories.RoomTypes[0], false));
             }
             else if (inventories.TourTypes != null)
             {
-                Inventories.Update(inventories.TourTypes[0]);
+                _eventAggregator.GetEvent<TourTypeUpdatedEvent>().Publish(new TourTypeEventArgs(inventories.TourTypes[0], false, false));
             }
             else if (inventories.Agencies != null)
             {
-                Inventories.Update(inventories.Agencies[0]);
+                _eventAggregator.GetEvent<AgencyUpdatedEvent>().Publish(new AgencyEventArgs(inventories.Agencies[0], false, false));
             }
         }
 

@@ -49,7 +49,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     bool bIsNew = Agency.AgencyId == 0;
                     var savedAgency = inventoryClient.UpdateAgency(Agency);
-                    _eventAggregator.GetEvent<AgencyUpdatedEvent>().Publish(new AgencyEventArgs(savedAgency, null, bIsNew));
+                    _eventAggregator.GetEvent<AgencyUpdatedEvent>().Publish(new AgencyEventArgs(savedAgency, bIsNew));
                 });
             }
         }
@@ -63,7 +63,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (Result == MessageDialogResult.CANCEL)
                     return;
             }
-            _eventAggregator.GetEvent<AgencyCancelledEvent>().Publish(new AgencyEventArgs(null, null, false));
+            _eventAggregator.GetEvent<AgencyCancelledEvent>().Publish(new AgencyEventArgs(null, false));
         }
 
         private bool IsAgencyDirty()

@@ -5,12 +5,14 @@ namespace Core.Common.UI.CustomEventArgs
 {
     public class TourTypeEventArgs : EventArgs
     {
-        public TourTypeEventArgs(TourType tourType, bool isNew)
+        public TourTypeEventArgs(TourType tourType, bool isNew, bool sendUpdateToClients = true)
         {
             TourType = tourType;
-            IsNew = isNew;
+            bIsNew = isNew;
+            bSendUpdateToClients = sendUpdateToClients;
         }
         public TourType TourType { get; set; }
-        public bool IsNew { get; set; }
+        public bool bIsNew { get; set; }
+        public bool bSendUpdateToClients { get; set; }
     }
 }

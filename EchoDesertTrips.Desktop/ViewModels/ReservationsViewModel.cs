@@ -120,19 +120,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 _continualReservations.Add(reservation);
             }
         }
-
+ 
         private void HotelUpdated(HotelEventArgs e)
         {
-            foreach(var reservation in _reservations)
+            try
             {
-                foreach(var tour in reservation.Tours)
+                foreach (var reservation in _reservations)
                 {
-                    foreach(var tourHotel in tour.TourHotels)
+                    foreach (var tour in reservation.Tours)
                     {
-                        if (tourHotel.Hotel.HotelId == e.Hotel.HotelId)
-                            tourHotel.Hotel.HotelName = e.Hotel.HotelName;
+                        foreach (var tourHotel in tour.TourHotels)
+                        {
+                            if (tourHotel.Hotel.HotelId == e.Hotel.HotelId)
+                                tourHotel.Hotel = e.Hotel;
+                        }
                     }
                 }
+            }
+            catch(Exception ex)
+            {
+                log.Error("Exception in HotelUpdated: " + ex.Message);
             }
         }
 

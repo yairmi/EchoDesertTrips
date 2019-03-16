@@ -62,14 +62,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void TourTypeUpdated(TourTypeEventArgs e)
         {
             Inventories.Update(e.TourType);
-            try
+            if (e.bSendUpdateToClients)
             {
-                Client.NotifyServer(
-                    SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, eOperation.E_UPDATED, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY);
-            }
-            catch (Exception ex)
-            {
-                log.Error("Notify Server Error: " + ex.Message);
+                try
+                {
+                    Client.NotifyServer(
+                        SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, eOperation.E_UPDATED, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Notify Server Error: " + ex.Message);
+                }
             }
             CurrentTourTypeViewModel = null;
         }

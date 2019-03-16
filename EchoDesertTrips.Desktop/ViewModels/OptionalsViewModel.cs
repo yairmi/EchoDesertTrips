@@ -1,6 +1,7 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
 using Core.Common.UI.Core;
+using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using System;
@@ -10,6 +11,7 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows.Data;
 using static Core.Common.Core.Const;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -26,6 +28,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             DeleteOptionalCommand = new DelegateCommand<Optional>(OnDeleteCommand);
             SaveOptionalCommand = new DelegateCommand<Optional>(OnSaveCommand);
             RowEditEndingCommand = new DelegateCommand<Optional>(OnRowEditEndingCommand);
+            _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
         }
 
         public DelegateCommand<Optional> DeleteOptionalCommand { get; set; }
@@ -81,6 +84,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (optional.IsDirty)
                 OnSaveCommand(optional);
+        }
+
+        private void OptionalUpdated(OptionalEventArgs e)
+        {
+            Inventories.Update(e.Optional);
         }
 
         public override string ViewTitle => "Optionals";

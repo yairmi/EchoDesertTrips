@@ -73,14 +73,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void AgencyUpdated(AgencyEventArgs e)
         {
             Inventories.Update(e.Agency);
-            try
+
+            if (e.bSendUpdateToClients)
             {
-                Client.NotifyServer(
-                    SerializeInventoryMessage(eInventoryTypes.E_AGENCY, eOperation.E_UPDATED, e.Agency.AgencyId), eMsgTypes.E_INVENTORY);
-            }
-            catch (Exception ex)
-            {
-                log.Error("Notify Server Error: " + ex.Message);
+                try
+                {
+                    Client.NotifyServer(
+                        SerializeInventoryMessage(eInventoryTypes.E_AGENCY, eOperation.E_UPDATED, e.Agency.AgencyId), eMsgTypes.E_INVENTORY);
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Notify Server Error: " + ex.Message);
+                }
             }
             CurrentAgentsViewModel = null;
         }

@@ -24,6 +24,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
+            _eventAggregator.GetEvent<AgencyUpdatedEvent>().Subscribe(AgencyUpdated);
         }
 
         public override string ViewTitle => "General";
@@ -97,6 +98,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void ReservationEdited(EditReservationEventArgs e)
         {
             Reservation = e.Reservation;
+        }
+
+        private void AgencyUpdated(AgencyEventArgs obj)
+        {
+            throw new NotImplementedException();
         }
     }
 }

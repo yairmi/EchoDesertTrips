@@ -5,12 +5,14 @@ namespace Core.Common.UI.CustomEventArgs
 {
     public class HotelEventArgs : EventArgs
     {
-        public HotelEventArgs(Hotel hotel, bool isNew)
+        public HotelEventArgs(Hotel hotel, bool isNew, bool sendUpdateToClients = true)
         {
             Hotel = hotel;
-            IsNew = isNew;
+            bIsNew = isNew;
+            bSendUpdateToClients = sendUpdateToClients;
         }
         public Hotel Hotel { get; set; }
-        public bool IsNew { get; set; }
+        public bool bIsNew { get; set; }
+        public bool bSendUpdateToClients { get; set; }
     }
 }

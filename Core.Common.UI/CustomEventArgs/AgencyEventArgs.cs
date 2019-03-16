@@ -5,14 +5,14 @@ namespace Core.Common.UI.CustomEventArgs
 {
     public class AgencyEventArgs : EventArgs
     {
-        public AgencyEventArgs(Agency agency, Agent agent, bool bIsNew)
+        public AgencyEventArgs(Agency agency, bool IsNew, bool sendUpdateToClients = true)
         {
             Agency = agency;
-            Agent = agent;
-            IsNew = bIsNew;
+            bIsNew = IsNew;
+            bSendUpdateToClients = sendUpdateToClients;
         }
         public Agency Agency { get; set; }
-        public Agent Agent { get; set; }
-        public bool IsNew { get; set; }
+        public bool bIsNew { get; set; }
+        public bool bSendUpdateToClients { get; set; }
     }
 }

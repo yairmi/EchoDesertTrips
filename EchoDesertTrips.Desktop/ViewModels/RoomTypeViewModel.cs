@@ -1,6 +1,7 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
 using Core.Common.UI.Core;
+using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using System;
@@ -10,6 +11,7 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows.Data;
 using static Core.Common.Core.Const;
+using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -26,6 +28,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             DeleteRoomTypeCommand = new DelegateCommand<RoomType>(OnDeleteRoomTypeCommand);
             SaveRoomTypeCommand = new DelegateCommand<RoomType>(OnSaveCommand);
             RowEditEndingCommand = new DelegateCommand<RoomType>(OnRowEditEndingCommand);
+            _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Subscribe(RoomTypeUpdated);
         }
 
         public override string ViewTitle => "Room Types";
@@ -85,6 +88,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void AddModels(List<ObjectBase> models)
         {
             models.Add(LastUpdatedRoomType);
+        }
+
+        private void RoomTypeUpdated(RoomTypeEventArgs e)
+        {
+            Inventories.Update(e.RoomType);
         }
     }
 
