@@ -32,11 +32,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _messageDialogService = messageBoxDialogService;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, /*OnClearCanExecute*/OnClearCommandCanExecute);
-            CellEditEndingRoomTypeCommand = new DelegateCommand<TourHotelRoomType>(OnCellEditEndingRoomTypeCommand);
             EditTourHotelCommand = new DelegateCommand<object>(OnEditTourHotelCommand);
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
-            _eventAggregator.GetEvent<CreateTourEvent>().Subscribe(CreateTour);
+            _eventAggregator.GetEvent<TourEditedEvent>().Subscribe(TourEdited);
             _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
             _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Subscribe(RoomTypeUpdated);
             _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
@@ -45,30 +44,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public DelegateCommand<object> SaveCommand { get; private set; }
         public DelegateCommand<object> ClearCommand { get; private set; }
-        public DelegateCommand<TourHotelRoomType> CellEditEndingRoomTypeCommand { get; set; }
         public DelegateCommand<object> EditTourHotelCommand { get; private set; }
 
         private void OnEditTourHotelCommand(object tourHotel)
         {
             if (tourHotel is TourHotel)
             {
+                if (_currentTourHotel != null && _currentTourHotel.TourHotelId == ((TourHotel)tourHotel).TourHotelId)
+                    return;
                 _currentTourHotel = (TourHotel)tourHotel;
                 UpdateTourHotelRoomTypes(_currentTourHotel);
             }
-        }
-
-        private void OnCellEditEndingRoomTypeCommand(TourHotelRoomType tourHotelRoomType)
-        {
-            if (_currentTourHotel == null)
-                return;
-            var existingTourHotelRoomType = _currentTourHotel.TourHotelRoomTypes.FirstOrDefault(a => a.HotelRoomType.RoomTypeId == tourHotelRoomType.HotelRoomType.RoomTypeId);
-            if (existingTourHotelRoomType != null)
-            {
-                existingTourHotelRoomType.Capacity = tourHotelRoomType.Capacity;
-                existingTourHotelRoomType.Persons = tourHotelRoomType.Persons;
-            }
-            else
-                _currentTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
         }
 
         private bool OnSaveCommandCanExecute(object obj)
@@ -91,13 +77,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (IsTourValid())
             {
                 SetHotelEndDayForEachTourHotel();
+                var newTour = TourHelper.CloneTour(Tour);
                 if (Tour.TourId == 0)
                 {
-                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(Tour, removedItems, Tour.bInEdit == false));
+                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(newTour, removedItems, newTour.bInEdit == false));
                 }
                 else
                 {
-                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(Tour, removedItems, false));
+                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(newTour, removedItems, false));
                 }
                 CreateTour();
             }
@@ -196,13 +183,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
             else
             {
                 Tour = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
                 Tour = new Tour();
             }
-            UpdateTourHotelRoomTypes(Tour.TourHotels.Count > 0 ? Tour.TourHotels[0] : null);
+            _currentTourHotel = Tour.TourHotels.Count > 0 ? Tour.TourHotels[0] : null;
+            UpdateTourHotelRoomTypes(_currentTourHotel);
             InitTourOptionals();
             Tour.CleanAll();
+        }
+
+        private void TourEdited(Tour tour)
+        {
+            CreateTour(tour);
         }
 
         private void ReservationEdited(EditReservationEventArgs e)
@@ -255,23 +246,21 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 if (IsHotelRoomTypeInTourDaysRange(hotelRoomType))
                 {
-                    var tourHotelRoomType = new TourHotelRoomType()
+                    var exist = tourHotel.TourHotelRoomTypes.FirstOrDefault(t => t.HotelRoomType.RoomTypeId == hotelRoomType.RoomTypeId);
+                    if (exist == null)
                     {
-                        HotelRoomType = hotelRoomType,
-                        HotelRoomTypeId = hotelRoomType.HotelRoomTypeId,
-                        Capacity = 0,
-                        Persons = 0
-                    };
-                    TourHotelRoomTypes.Add(tourHotelRoomType);
+                        var tourHotelRoomType = new TourHotelRoomType()
+                        {
+                            HotelRoomType = hotelRoomType,
+                            HotelRoomTypeId = hotelRoomType.HotelRoomTypeId,
+                            Capacity = 0,
+                            Persons = 0
+                        };
+                        tourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
+                    }
                 }
             });
-            //update with actual persons+capacity
-            tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
-            {
-                var tempTourHotelRoomType = TourHotelRoomTypes.FirstOrDefault(t => t.HotelRoomType.RoomTypeId == tourHotelRoomType.HotelRoomType.RoomTypeId);
-                var index = TourHotelRoomTypes.IndexOf(tempTourHotelRoomType);
-                TourHotelRoomTypes[index] = tourHotelRoomType;
-            });
+            TourHotelRoomTypes = tourHotel.TourHotelRoomTypes;
         }
 
         private bool IsHotelRoomTypeInTourDaysRange(HotelRoomType hotelRoomType)

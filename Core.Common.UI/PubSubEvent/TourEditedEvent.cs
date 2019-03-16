@@ -3,7 +3,7 @@ using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Core.Common.UI.PubSubEvent
 {
-    public class CreateTourEvent : PubSubEvent<Tour>
+    public class TourEditedEvent : PubSubEvent<Tour>
     {
     }
 }

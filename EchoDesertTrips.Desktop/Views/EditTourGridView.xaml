@@ -165,13 +165,6 @@
                         </Style.Triggers>
                     </Style>
                 </DataGrid.Resources>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="CellEditEnding">
-                        <i:InvokeCommandAction Command="{Binding Path=DataContext.CellEditEndingRoomTypeCommand, 
-                                           RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" 
-                                           CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="100" Header="Room" Binding="{Binding HotelRoomType.RoomType.RoomTypeName}" IsReadOnly="True"/>
                     <DataGridTextColumn Width="80" Header="Capacity" Binding="{Binding Capacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"/>

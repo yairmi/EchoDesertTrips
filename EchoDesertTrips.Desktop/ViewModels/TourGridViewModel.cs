@@ -5,7 +5,6 @@ using EchoDesertTrips.Client.Entities;
 using System.Windows.Data;
 using System.Linq;
 using System.Windows;
-using AutoMapper;
 using Core.Common.Utils;
 using System.ComponentModel.Composition;
 using System;
@@ -59,8 +58,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnEditTourCommand(Tour tour)
         {
             tour.bInEdit = true;
-            _eventAggregator.GetEvent<CreateTourEvent>().Publish(tour);
-            //_editTourGridViewModel.CreateTour(tour);
+            _eventAggregator.GetEvent<TourEditedEvent>().Publish(tour);
         }
 
         public DelegateCommand<Tour> EditTourCommand { get; private set; }
@@ -227,7 +225,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            //_editTourGridViewModel.ViewMode = ViewMode;
             if (TourHotelRoomTypes != null)
                 TourHotelRoomTypes = null;
             TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
