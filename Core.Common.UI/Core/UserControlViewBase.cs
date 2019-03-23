@@ -14,7 +14,6 @@ namespace Core.Common.UI.Core
         {
             // Programmatically bind the view-model's ViewLoaded property to the view's ViewLoaded property.
             BindingOperations.SetBinding(this, ViewLoadedProperty, new Binding("ViewLoaded"));
-
             DataContextChanged += OnDataContextChanged;
         }
 
@@ -22,14 +21,10 @@ namespace Core.Common.UI.Core
             DependencyProperty.Register("ViewLoaded", typeof(object), typeof(UserControlViewBase),
             new PropertyMetadata(null));
 
-        //public static readonly DependencyProperty SelectedItemsProperty =
-        //    DependencyProperty.Register("SelectedItems",
-        //    typeof(IList),
-        //    typeof(UserControlViewBase),
-        //    new PropertyMetadata(null, OnSelectedItemListChanged));
-
-
-        protected virtual void OnUnwireViewModelEvents(ViewModelBase viewModel) { }
+        protected virtual void OnUnwireViewModelEvents(ViewModelBase viewModel)
+        {
+            viewModel.OnViewUnloaded();
+        }
 
         protected virtual void OnWireViewModelEvents(ViewModelBase viewModel) { }
         
@@ -50,23 +45,5 @@ namespace Core.Common.UI.Core
                 OnWireViewModelEvents(e.NewValue as ViewModelBase);
             }
         }
-
-        //private static void OnSelectedItemListChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    var listbox = d as ListBox;
-        //    if (listbox != null)
-        //    {
-        //        listbox.SelectedItems.Clear();
-        //        var selectedItems = e.NewValue as IList;
-        //        if (selectedItems != null)
-        //        {
-        //            foreach (var item in selectedItems)
-        //            {
-        //                listbox.SelectedItems.Add(item);
-        //            }
-        //        }
-        //    }
-        //}
-
     }
 }

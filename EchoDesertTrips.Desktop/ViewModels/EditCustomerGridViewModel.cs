@@ -30,7 +30,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCommandCanExecute);
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
-            _eventAggregator.GetEvent<CreateCustomerEvent>().Subscribe(CreateCustomer);
+            _eventAggregator.GetEvent<CustomerEditedEvent>().Subscribe(CustomerEdited);
             _eventAggregator.GetEvent<CustomerDeletedEvent>().Subscribe(CustomerDeleted);
             log.Debug("EditCustomerGridViewModel ctor end");
         }
@@ -152,6 +152,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             Reservation = e.Reservation;
             ViewMode = e.ViewMode;
+        }
+
+        private void CustomerEdited(Customer customer)
+        {
+            CreateCustomer(customer);
         }
 
         private Customer _customer;

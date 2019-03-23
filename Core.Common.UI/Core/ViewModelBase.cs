@@ -53,6 +53,8 @@ namespace Core.Common.UI.Core
             }
         }
 
+        public virtual void OnViewUnloaded() { }
+
         protected virtual void OnViewLoaded() { }
 
         protected void WithClient<T>(T proxy, Action<T> codeToExecute, string methodName = "", int position = 0)

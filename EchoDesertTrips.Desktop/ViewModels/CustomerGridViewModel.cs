@@ -73,7 +73,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnEditCustomerCommand(Customer customer)
         {
             customer.bInEdit = true;
-            _eventAggregator.GetEvent<CreateCustomerEvent>().Publish(customer);
+            _eventAggregator.GetEvent<CustomerEditedEvent>().Publish(customer);
             CurrentCustomerViewModel = _editCustomerGridViewModel;
         }
 
@@ -136,6 +136,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             Customers = Reservation.Customers;
             CurrentCustomerViewModel = _editCustomerGridViewModel;
+        }
+
+        public override void OnViewUnloaded()
+        {
+            ;
         }
 
         private void ReservationEdited(EditReservationEventArgs e)

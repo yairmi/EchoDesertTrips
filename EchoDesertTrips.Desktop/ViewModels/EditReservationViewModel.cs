@@ -26,9 +26,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ExitWithoutSavingCommand = new DelegateCommand<object>(OnExitWithoutSavingCommand);
             _eventAggregator.GetEvent<ReservationEditSelectedFinishedEvent>().Subscribe(ReservationEditSelectedFinished);
-            _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
-            _eventAggregator.GetEvent<CustomerDeletedEvent>().Subscribe(CustomerDeleted);
-            _eventAggregator.GetEvent<PropertyRemovedFromTourEvent>().Subscribe(PropertyRemovedFromTour);
         }
 
         [Import]
@@ -134,7 +131,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+            _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
+            _eventAggregator.GetEvent<CustomerDeletedEvent>().Subscribe(CustomerDeleted);
+            _eventAggregator.GetEvent<PropertyRemovedFromTourEvent>().Subscribe(PropertyRemovedFromTour);
             SomethingDeleted = false;
+        }
+
+        private void OnViewUnloaded(object obj)
+        {
+            _eventAggregator.GetEvent<HotelUpdatedEvent>().Unsubscribe(HotelUpdated);
+            _eventAggregator.GetEvent<CustomerDeletedEvent>().Unsubscribe(CustomerDeleted);
+            _eventAggregator.GetEvent<PropertyRemovedFromTourEvent>().Unsubscribe(PropertyRemovedFromTour);
         }
 
         private void CustomerDeleted(object obj)

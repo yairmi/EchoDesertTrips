@@ -36,7 +36,12 @@
         <viewModels:TourTypeControlConverter x:Key="tourTypeControlConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-        <Grid>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.Unloaded, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition Height="Auto" />

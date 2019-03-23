@@ -85,8 +85,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     log.Error("Notify Server Error: " + ex.Message);
                 }
+                CurrentAgentsViewModel = null;
             }
-            CurrentAgentsViewModel = null;
         }
 
         private void AgencyCancelled(AgencyEventArgs obj)

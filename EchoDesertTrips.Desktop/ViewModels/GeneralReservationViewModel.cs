@@ -24,22 +24,24 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
-            _eventAggregator.GetEvent<AgencyUpdatedEvent>().Subscribe(AgencyUpdated);
         }
 
         public override string ViewTitle => "General";
-        //[Import]
-        //public AgencyViewModel AgencyViewModel { get; set; }
 
         protected override void OnViewLoaded()
         {
             bLoaded = false;
-            //AgencyViewModel.Reservation = Reservation;
             SelectedAgency = Reservation.Agency != null ? Inventories.Agencies.FirstOrDefault(n => n.AgencyId == Reservation.Agency.AgencyId) : null;
             if (SelectedAgency != null)
                 SelectedAgent = Reservation.Agent != null ? SelectedAgency.Agents.FirstOrDefault(n => n.AgentId == Reservation.Agent.AgentId) : null;
             _isChecked = false;
             bLoaded = true;
+            _eventAggregator.GetEvent<AgencyUpdatedEvent>().Subscribe(AgencyUpdated);
+        }
+
+        public override void OnViewUnloaded()
+        {
+            _eventAggregator.GetEvent<AgencyUpdatedEvent>().Unsubscribe(AgencyUpdated);
         }
 
         private Agency _selectedAgency;
@@ -102,7 +104,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void AgencyUpdated(AgencyEventArgs obj)
         {
-            throw new NotImplementedException();
+            //TODO:Implement below
+            ;
         }
     }
 }

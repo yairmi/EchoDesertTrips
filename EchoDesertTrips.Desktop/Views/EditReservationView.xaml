@@ -7,12 +7,18 @@
         xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
         xmlns:control="clr-namespace:Core.Common.UI.Controls;assembly=Core.Common.UI"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls" 
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:support="clr-namespace:EchoDesertTrips.Desktop.Support"
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="400">
     <core:UserControlViewBase.Resources>
         <support:ToFixSizeConverter x:Key="toFixSizeConverter" />
     </core:UserControlViewBase.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.Unloaded, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <Grid Name="EditReservationGrid">
             <Grid.ColumnDefinitions>

@@ -1,4 +1,5 @@
-﻿using Core.Common.Core;
+﻿using AutoMapper;
+using Core.Common.Core;
 using FluentValidation;
 using System.Windows;
 
@@ -46,7 +47,20 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        class TourHotelRoomTypeValidator : AbstractValidator<TourHotelRoomType>
+        public class TourHotelRoomTypeHelper
+        {
+            public static TourHotelRoomType CloneTourHotelRoomType(TourHotelRoomType tourHotelRoomType)
+            {
+                var config = new MapperConfiguration(cfg => {
+                    cfg.CreateMap<TourHotelRoomType, TourHotelRoomType>();
+                });
+
+                IMapper iMapper = config.CreateMapper();
+                return iMapper.Map<TourHotelRoomType, TourHotelRoomType>(tourHotelRoomType);
+            }
+        }
+
+        public class TourHotelRoomTypeValidator : AbstractValidator<TourHotelRoomType>
         {
             public TourHotelRoomTypeValidator()
             {

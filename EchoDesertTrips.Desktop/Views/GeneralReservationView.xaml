@@ -6,8 +6,16 @@
         xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
         xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         d:DesignHeight="400" d:DesignWidth="400">
+    <UserControl.Resources>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="FrameworkElement.Unloaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.Unloaded, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>    
     <Border Grid.Row="0" Grid.Column="1"
              HorizontalAlignment="Left" 
              VerticalAlignment="Top"
@@ -22,9 +30,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
             <StackPanel>
-                <!--<ContentControl Grid.Row="1" Content="{Binding AgencyViewModel}" />-->
-
-
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -70,9 +75,9 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </Grid>
-
-
-
+                
+                
+                
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

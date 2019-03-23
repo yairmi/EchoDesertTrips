@@ -22,5 +22,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
         }
+
+        public bool AdminTabVisible
+        {
+            get
+            {
+                return CurrentOperator.Operator.Admin;
+            }
+        }
     }
 }

@@ -26,13 +26,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
-            RowExpanded = new DelegateCommand<Tour>(OnRowExpanded);
             DeleteTourCommand = new DelegateCommand<Tour>(OnDeleteTourCommand);
             EditTourCommand = new DelegateCommand<Tour>(OnEditTourCommand);
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
             _eventAggregator.GetEvent<TourUpdatedEvent>().Subscribe(TourUpdated);
             _eventAggregator.GetEvent<TourCancelledEvent>().Subscribe(TourCancelled);
-            _addNewEnabled = true;
         }
 
         public TourGridViewModel()
@@ -52,9 +50,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Tours.Remove(tour);
         }
 
-        //public ICollectionView ItemsView { get; set; }
-        public DelegateCommand<Tour> RowExpanded { get; set; }
-
         private void OnEditTourCommand(Tour tour)
         {
             tour.bInEdit = true;
@@ -67,16 +62,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private EditTourGridViewModel _editTourGridViewModel { get; set; }
 
         public EditTourGridViewModel CurrentTourViewModel { get; set; }
-
-        private void OnRowExpanded(Tour tour)
-        {
-            CurrentTour = tour;
-            if (_currentTour.TourHotels != null && _currentTour.TourHotels.Count > 0)
-            {
-                SelectedTourHotel = _currentTour.TourHotels[0];
-            }
-
-        }
 
         private ObservableCollection<Tour> _tours;
 
@@ -104,27 +89,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 OnPropertyChanged(() => CurrentTour);
             }
         }
-
-        private TourHotel _selectedTourHotel;
-
-        public TourHotel SelectedTourHotel
-        {
-            get
-            {
-                return _selectedTourHotel;
-            }
-            set
-            {
-                if (value != _selectedTourHotel && value != null)
-                {
-                    _selectedTourHotel = value;
-                    UpdateTourHotelRoomTypes();
-                    OnPropertyChanged(() => SelectedTourHotel);
-                }
-            }
-        }
-
-        private bool _addNewEnabled;
 
         private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
 
@@ -225,25 +189,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            if (TourHotelRoomTypes != null)
-                TourHotelRoomTypes = null;
-            TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
             Tours = Reservation.Tours;
             CurrentTourViewModel = _editTourGridViewModel;
         }
 
-        //For GUI - After selecting Hotel from Drop Down
-        private void UpdateTourHotelRoomTypes()
+        public override void OnViewUnloaded()
         {
-            TourHotelRoomTypes.Clear();
-            var temp_tourHotel = _currentTour.TourHotels.FirstOrDefault(t => t.Hotel.HotelId == _selectedTourHotel.HotelId);
-            if (temp_tourHotel != null)
-            {
-                temp_tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
-                {
-                    TourHotelRoomTypes.Add(AutoMapperUtil.Map<TourHotelRoomType, TourHotelRoomType>(tourHotelRoomType));
-                });
-            }
+            ;
         }
 
         private void ReservationEdited(EditReservationEventArgs e)
@@ -282,7 +234,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void TourCancelled(TourEventArgs e)
         {
             CurrentTourViewModel = null;
-            _addNewEnabled = true;
         }
     }
 

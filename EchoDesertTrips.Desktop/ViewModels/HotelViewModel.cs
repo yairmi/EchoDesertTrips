@@ -78,9 +78,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     log.Error("Notify Server Error: " + ex.Message);
                 }
+                CurrentHotelViewModel = null;
             }
-
-            CurrentHotelViewModel = null;
         }
 
         private void HotelCancelled(HotelEventArgs obj)

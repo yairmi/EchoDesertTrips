@@ -172,7 +172,7 @@
     <Compile Include="PubSubEvent\AgencyCancelledEvent.cs" />
     <Compile Include="PubSubEvent\AgencyUpdatedEvent.cs" />
     <Compile Include="PubSubEvent\AuthenticatedEvent.cs" />
-    <Compile Include="PubSubEvent\CreateCustomerEvent.cs" />
+    <Compile Include="PubSubEvent\CustomerEditedEvent.cs" />
     <Compile Include="PubSubEvent\TourEditedEvent.cs" />
     <Compile Include="PubSubEvent\CustomerDeletedEvent.cs" />
     <Compile Include="PubSubEvent\CustomerGroupClosedEvent.cs" />

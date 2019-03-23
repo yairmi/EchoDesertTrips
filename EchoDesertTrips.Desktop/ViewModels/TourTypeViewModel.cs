@@ -73,8 +73,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     log.Error("Notify Server Error: " + ex.Message);
                 }
+                CurrentTourTypeViewModel = null;
             }
-            CurrentTourTypeViewModel = null;
+            
         }
 
         private void TourTypeCancelled(TourTypeEventArgs obj)
