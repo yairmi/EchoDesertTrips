@@ -145,7 +145,9 @@ namespace Core.Common.UI.Core
             if (existingHotel != null)
             {
                 var index = Hotels.IndexOf(existingHotel);
-                Hotels[index] = hotel;
+                Hotels[index].HotelName = hotel.HotelName;
+                Hotels[index].HotelAddress = hotel.HotelAddress;
+                Hotels[index].HotelRoomTypes = hotel.HotelRoomTypes;
             }
             else
             {
@@ -159,7 +161,7 @@ namespace Core.Common.UI.Core
             if (existingRoomType != null)
             {
                 var index = RoomTypes.IndexOf(existingRoomType);
-                RoomTypes[index] = roomType;
+                RoomTypes[index].RoomTypeName = roomType.RoomTypeName;
             }
             else
             {
@@ -173,7 +175,9 @@ namespace Core.Common.UI.Core
             if (existingOperator != null)
             {
                 var index = Operators.IndexOf(existingOperator);
-                Operators[index] = oper;
+                Operators[index].OperatorFullName = oper.OperatorFullName;
+                Operators[index].OperatorName = oper.OperatorName;
+                Operators[index].Password = oper.Password;
             }
             else
             {
@@ -187,7 +191,9 @@ namespace Core.Common.UI.Core
             if (existingOptional != null)
             {
                 var index = Optionals.IndexOf(existingOptional);
-                Optionals[index] = optional;
+                Optionals[index].OptionalDescription = optional.OptionalDescription;
+                Optionals[index].PriceInclusive = optional.PriceInclusive;
+                Optionals[index].PricePerPerson = optional.PricePerPerson;
             }
             else
             {
@@ -201,7 +207,15 @@ namespace Core.Common.UI.Core
             if (existingTourType != null)
             {
                 var index = TourTypes.IndexOf(existingTourType);
-                TourTypes[index] = tourType;
+                TourTypes[index].TourTypeName = tourType.TourTypeName;
+                TourTypes[index].TourTypeDescriptions = tourType.TourTypeDescriptions;
+                TourTypes[index].AdultPrices = tourType.AdultPrices;
+                TourTypes[index].ChildPrices = tourType.ChildPrices;
+                TourTypes[index].InfantPrices = tourType.InfantPrices;
+                TourTypes[index].Days = tourType.Days;
+                TourTypes[index].Destinations = tourType.Destinations;
+                TourTypes[index].IncramentExternalId = tourType.IncramentExternalId;
+                TourTypes[index].Private = tourType.Private;
             }
             else
             {
@@ -215,7 +229,11 @@ namespace Core.Common.UI.Core
             if (existingAgency != null)
             {
                 var index = Agencies.IndexOf(existingAgency);
-                Agencies[index] = agency;
+                Agencies[index].AgencyName = agency.AgencyName;
+                Agencies[index].AgencyAddress = agency.AgencyAddress;
+                Agencies[index].Phone1 = agency.Phone1;
+                Agencies[index].Phone2 = agency.Phone2;
+                Agencies[index].Agents = agency.Agents;
             }
             else
             {

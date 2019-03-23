@@ -137,7 +137,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             ControllEnabled = CustomersLeft > 0;
-            if (ControllEnabled)
+            //if (ControllEnabled)
                 CreateCustomer();
         }
 
