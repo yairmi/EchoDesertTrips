@@ -4,6 +4,7 @@ using Core.Common.Extensions;
 using Core.Common.UI.Core;
 using Core.Common.UI.CustomEventArgs;
 using Core.Common.UI.PubSubEvent;
+using Core.Common.Utils;
 using EchoDesertTrips.Client.Entities;
 using System;
 using System.Collections.Generic;
@@ -357,6 +358,32 @@ namespace EchoDesertTrips.Desktop.ViewModels
             catch(Exception ex)
             {
                 log.Error("Exception in OptionalUpdated: " + ex.Message);
+            }
+        }
+
+        public TourType TourType
+        {
+            get
+            {
+                return Tour != null ? Tour.TourType : null;
+            }
+            set
+            {
+                if (Tour!= null && Tour.TourType != value)
+                {
+                    Tour.TourType = value;
+                    Tour.SubTours.Clear();
+                    string[] destinations = SimpleSplitter.Split(Tour.TourType.Destinations);
+                    destinations.ToList().ForEach((destination) =>
+                    {
+                        Tour.SubTours.Add(new SubTour()
+                        {
+                            DestinationName = destination,
+                        });
+                    });
+                    Tour.EndDate = Tour.TourType.Days == 0 ? Tour.EndDate : Tour.StartDate.AddDays(Tour.TourType.Days - 1);
+
+                }
             }
         }
 

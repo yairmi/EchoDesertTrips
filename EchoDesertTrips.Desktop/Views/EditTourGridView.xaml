@@ -74,7 +74,7 @@
                 <TextBlock Grid.Row="2" Grid.Column="0" Margin="3" Text="Start Day:" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Margin="3" Text="End Day:" />
                 <ComboBox x:Name="cbTourType" Grid.Row="0" Grid.Column="1" 
-                SelectedItem="{Binding DataContext.Tour.TourType,  
+                SelectedItem="{Binding DataContext.TourType,  
                 RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type core:UserControlViewBase}},
                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 SelectedValue="{Binding Tour.TourTypeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,

@@ -48,7 +48,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _continualReservations = new RangeObservableCollection<Reservation>();
             _selectedDate = DateTime.Today;
             _lastSelectedDate = _selectedDate.AddDays(_daysRange + 1);
-            _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
+            //_eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
             _eventAggregator.GetEvent<ReservationUpdatedEvent>().Subscribe(ReservationUpdated);
             _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Subscribe(ReservationUpdatedAndNotify);
             _eventAggregator.GetEvent<CustomerGroupClosedEvent>().Subscribe(CustomerGroupClosed);
@@ -121,27 +121,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
  
-        private void HotelUpdated(HotelEventArgs e)
-        {
-            try
-            {
-                foreach (var reservation in _reservations)
-                {
-                    foreach (var tour in reservation.Tours)
-                    {
-                        foreach (var tourHotel in tour.TourHotels)
-                        {
-                            if (tourHotel.Hotel.HotelId == e.Hotel.HotelId)
-                                tourHotel.Hotel = e.Hotel;
-                        }
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                log.Error("Exception in HotelUpdated: " + ex.Message);
-            }
-        }
+        //private void HotelUpdated(HotelEventArgs e)
+        //{
+        //    try
+        //    {
+        //        foreach (var reservation in _reservations)
+        //        {
+        //            foreach (var tour in reservation.Tours)
+        //            {
+        //                foreach (var tourHotel in tour.TourHotels)
+        //                {
+        //                    if (tourHotel.Hotel.HotelId == e.Hotel.HotelId)
+        //                        tourHotel.Hotel = e.Hotel;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        log.Error("Exception in HotelUpdated: " + ex.Message);
+        //    }
+        //}
 
         private void OnLostFocusCommand(Reservation reservation)
         {

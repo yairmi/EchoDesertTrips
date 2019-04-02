@@ -53,26 +53,9 @@ namespace EchoDesertTrips.Client.Entities
 
             set
             {
-                if ((_tourType != null && (_tourType.TourTypeId != ((TourType)value).TourTypeId) || 
-                    (_tourType == null)))
+                if (_tourType != value)
                 {
                     _tourType = value;
-                    EndDate = _tourType.Days == 0 ? EndDate : StartDate.AddDays(_tourType.Days - 1);
-                    //Currently subTours are not retrieved by GetReservationsForDayRange, so the value of _subTours will be null in that case
-                    //When the user creates a new tour the value of _subTours
-                    if (_subTours != null)
-                    {
-                        _subTours.Clear();
-                        string[] destinations = SimpleSplitter.Split(_tourType.Destinations);
-                        destinations.ToList().ForEach((destination) =>
-                        {
-                            SubTours.Add(new SubTour()
-                            {
-                                DestinationName = destination,
-                            });
-                        });
-                    }
-
                     OnPropertyChanged(() => TourType, true);
                 }
             }
