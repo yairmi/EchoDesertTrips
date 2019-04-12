@@ -7,6 +7,7 @@ using System.Linq;
 using static Core.Common.Core.Const;
 using Core.Common.UI.PubSubEvent;
 using Core.Common.UI.CustomEventArgs;
+using EchoDesertTrips.Client.Contracts;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -32,13 +33,23 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnAddHotelCommand(object obj)
         {
             CurrentHotelViewModel =
-                new EditHotelViewModel(_serviceFactory, _messageDialogService, null);
+                new EditHotelViewModel(_serviceFactory, _messageDialogService, new Hotel());
         }
 
-        private void OnEditHotelCommand(Hotel obj)
+        private void OnEditHotelCommand(Hotel hotel)
         {
+            Hotel dbHotel = null;
+            WithClient(_serviceFactory.CreateClient<IInventoryService>(), hotelClient =>
+            {
+                dbHotel = hotelClient.GetHotelById(hotel.HotelId);
+            });
+            if (dbHotel == null)
+            {
+                _messageDialogService.ShowInfoDialog("Could not load Hotel,\nHotel was not found.", "Info");
+                return;
+            }
             CurrentHotelViewModel =
-                new EditHotelViewModel(_serviceFactory, _messageDialogService, obj);
+                new EditHotelViewModel(_serviceFactory, _messageDialogService, dbHotel);
         }
 
         public DelegateCommand<Hotel> EditHotelCommand { get; private set; }

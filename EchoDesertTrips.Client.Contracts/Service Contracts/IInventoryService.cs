@@ -85,5 +85,11 @@ namespace EchoDesertTrips.Client.Contracts
 
         [OperationContract]
         Task<InventoryData> GetInventoryDataAsynchronous();
+
+        [OperationContract]
+        Hotel GetHotelById(int id);
+
+        [OperationContract]
+        TourType GetTourTypeById(int id);
     }
 }

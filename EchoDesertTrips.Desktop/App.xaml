@@ -71,9 +71,9 @@
         <DataTemplate DataType="{x:Type vm:ReservationsViewModel}">
             <v:ReservationsView />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:AgencyViewModel}">
+        <!--<DataTemplate DataType="{x:Type vm:AgencyViewModel}">
             <v:AgencyView />
-        </DataTemplate>
+        </DataTemplate>-->
         <DataTemplate DataType="{x:Type vm:HotelViewModel}">
             <v:HotelView />
         </DataTemplate>

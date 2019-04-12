@@ -23,7 +23,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            Hotel = hotel != null ? HotelHelper.CloneHotel(hotel) : new Hotel();
+            Hotel = hotel;
             CleanAll();
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             CancelCommand = new DelegateCommand<object>(OnCancelCommand);
@@ -188,8 +188,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public event EventHandler<HotelEventArgs> HotelUpdated;
-        public event EventHandler<HotelEventArgs> HotelCancelled;
+        //public event EventHandler<HotelEventArgs> HotelUpdated;
+        //public event EventHandler<HotelEventArgs> HotelCancelled;
 
         public class HotelRoomTypeWithDaysRanges : ObjectBase
         {

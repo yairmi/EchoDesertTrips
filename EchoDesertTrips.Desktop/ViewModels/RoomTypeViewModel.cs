@@ -28,7 +28,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             DeleteRoomTypeCommand = new DelegateCommand<RoomType>(OnDeleteRoomTypeCommand);
             SaveRoomTypeCommand = new DelegateCommand<RoomType>(OnSaveCommand);
             RowEditEndingCommand = new DelegateCommand<RoomType>(OnRowEditEndingCommand);
-            _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Subscribe(RoomTypeUpdated);
         }
 
         public override string ViewTitle => "Room Types";
@@ -88,11 +87,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void AddModels(List<ObjectBase> models)
         {
             models.Add(LastUpdatedRoomType);
-        }
-
-        private void RoomTypeUpdated(RoomTypeEventArgs e)
-        {
-            Inventories.Update(e.RoomType);
         }
     }
 

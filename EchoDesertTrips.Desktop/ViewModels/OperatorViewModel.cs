@@ -26,7 +26,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             DeleteOperatorCommand = new DelegateCommand<Operator>(DeleteCommand);
             SaveOperatorCommand = new DelegateCommand<Operator>(OnSaveCommand);
             RowEditEndingCommand = new DelegateCommand<Operator>(OnRowEditEndingCommand);
-            _eventAggregator.GetEvent<OperatorUpdatedEvent>().Subscribe(OperatorUpdated);
         }
 
         public DelegateCommand<Operator> DeleteOperatorCommand { get; set; }
@@ -76,11 +75,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (op.IsDirty)
                 OnSaveCommand(op);
-        }
-
-        private void OperatorUpdated(OperatorEventArgs e)
-        {
-            Inventories.Update(e.Operator);
         }
 
         public override string ViewTitle => "Operators";

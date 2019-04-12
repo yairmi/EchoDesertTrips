@@ -52,6 +52,39 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _eventAggregator.GetEvent<ReservationUpdatedEvent>().Subscribe(ReservationUpdated);
             _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Subscribe(ReservationUpdatedAndNotify);
             _eventAggregator.GetEvent<CustomerGroupClosedEvent>().Subscribe(CustomerGroupClosed);
+            _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
+        }
+
+        private void OptionalUpdated(OptionalEventArgs e)
+        {
+            int exceptionPosition = 0;
+            try
+            {
+                exceptionPosition = 1;
+                bool bChanged = false;
+                foreach (var reservation in _reservations)
+                {
+                    foreach (var tour in reservation.Tours)
+                    {
+                        exceptionPosition = 2;
+                        var tourOptional = tour.TourOptionals.FirstOrDefault(o => o.OptionalId == e.Optional.OptionalId);
+                        if (tourOptional != null &&
+                            (tourOptional.Optional.PricePerPerson != e.Optional.PricePerPerson || tourOptional.Optional.PriceInclusive != e.Optional.PriceInclusive))
+                        {
+                            exceptionPosition = 3;
+                            Support.ReservationHelper.CalculateReservationTotalPrice(reservation);
+                            bChanged = true;
+                            exceptionPosition = 4;
+                        }
+                    }
+                }
+                if (bChanged)
+                    OnPropertyChanged(() => _reservations);
+            }
+            catch(Exception ex)
+            {
+                log.Error("OptionalUpdated failed. Position: " + exceptionPosition + ". error: " + ex.Message);
+            }
         }
 
         private void ReservationUpdatedAndNotify(ReservationEventArgs e)

@@ -106,5 +106,15 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
         {
             return Channel.GetInventoryDataAsynchronous();
         }
+
+        public Hotel GetHotelById(int id)
+        {
+            return Channel.GetHotelById(id);
+        }
+
+        public TourType GetTourTypeById(int id)
+        {
+            return Channel.GetTourTypeById(id);
+        }
     }
 }

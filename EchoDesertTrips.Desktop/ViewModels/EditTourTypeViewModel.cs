@@ -18,7 +18,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageDialogService;
-        private TourType _tourType_input;
 
         public EditTourTypeViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService,
@@ -26,7 +25,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            _tourType_input = tourType;
+            TourType = tourType;
+            CleanAll();
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             CancelCommand = new DelegateCommand<object>(OnCancelCommand);
         }
@@ -114,9 +114,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             AdultPrices = new ObservableCollection<Prices>();
             ChildPrices = new ObservableCollection<Prices>();
             InfantPrices = new ObservableCollection<Prices>();
-            if (_tourType_input != null)
+            if (TourType != null && TourType.TourTypeId > 0 )
             {
-                TourType = TourTypeHelper.CloneTourType(_tourType_input);
                 string[] words = SimpleSplitter.Split(TourType.Destinations);
                 foreach (var word in words)
                 {

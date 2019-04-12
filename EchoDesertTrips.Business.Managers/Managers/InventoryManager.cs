@@ -378,5 +378,25 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 return await task.ConfigureAwait(false);
             });
         }
+
+        public Hotel GetHotelById(int id)
+        {
+            return ExecuteFaultHandledOperation(() =>
+            {
+                IInventoryEngine inventoryEngine = _BusinessEngineFactory.GetBusinessEngine<IInventoryEngine>();
+
+                return inventoryEngine.GetHotelById(id);
+            });
+        }
+
+        public TourType GetTourTypeById(int id)
+        {
+            return ExecuteFaultHandledOperation(() =>
+            {
+                IInventoryEngine inventoryEngine = _BusinessEngineFactory.GetBusinessEngine<IInventoryEngine>();
+
+                return inventoryEngine.GetTourTypeById(id);
+            });
+        }
     }
 }

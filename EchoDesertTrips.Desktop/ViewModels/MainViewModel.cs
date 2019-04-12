@@ -131,32 +131,33 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (inventories.Hotels != null)
                 {
                     log.Debug("UpdateInventory: Hotel Updated - " + inventories.Hotels[0].HotelName);
-                    _eventAggregator.GetEvent<HotelUpdatedEvent>().Publish(new HotelEventArgs(inventories.Hotels[0], false, false));
+                    Inventories.Update(inventories.Hotels[0]);
                 }
                 else if (inventories.Operators != null)
                 {
                     log.Debug("UpdateInventory: Operators - " + inventories.Operators[0].OperatorFullName);
-                    _eventAggregator.GetEvent<OperatorUpdatedEvent>().Publish(new OperatorEventArgs(inventories.Operators[0], false));
+                    Inventories.Update(inventories.Operators[0]);
                 }
                 else if (inventories.Optionals != null)
                 {
                     log.Debug("UpdateInventory: Optionals - " + inventories.Optionals[0].OptionalDescription);
+                    Inventories.Update(inventories.Optionals[0]);
                     _eventAggregator.GetEvent<OptionalUpdatedEvent>().Publish(new OptionalEventArgs(inventories.Optionals[0], false));
                 }
                 else if (inventories.RoomTypes != null)
                 {
                     log.Debug("UpdateInventory: RoomTypes - " + inventories.RoomTypes[0].RoomTypeName);
-                    _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Publish(new RoomTypeEventArgs(inventories.RoomTypes[0], false));
+                    Inventories.Update(inventories.RoomTypes[0]);
                 }
                 else if (inventories.TourTypes != null)
                 {
                     log.Debug("UpdateInventory: TourTypes - " + inventories.TourTypes[0].TourTypeName);
-                    _eventAggregator.GetEvent<TourTypeUpdatedEvent>().Publish(new TourTypeEventArgs(inventories.TourTypes[0], false, false));
+                    Inventories.Update(inventories.TourTypes[0]);
                 }
                 else if (inventories.Agencies != null)
                 {
                     log.Debug("UpdateInventory: Hotel Updated - " + inventories.Agencies[0].AgencyName);
-                    _eventAggregator.GetEvent<AgencyUpdatedEvent>().Publish(new AgencyEventArgs(inventories.Agencies[0], false, false));
+                    Inventories.Update(inventories.Agencies[0]);
                 }
             }
             catch(Exception ex)

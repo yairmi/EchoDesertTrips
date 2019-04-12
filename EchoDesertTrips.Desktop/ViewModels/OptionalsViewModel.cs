@@ -28,7 +28,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             DeleteOptionalCommand = new DelegateCommand<Optional>(OnDeleteCommand);
             SaveOptionalCommand = new DelegateCommand<Optional>(OnSaveCommand);
             RowEditEndingCommand = new DelegateCommand<Optional>(OnRowEditEndingCommand);
-            _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
         }
 
         public DelegateCommand<Optional> DeleteOptionalCommand { get; set; }
