@@ -3,12 +3,9 @@ using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Client.Proxies;
-using EchoDesertTrips.Desktop.ViewModels;
+using EchoDesertTrips.Desktop.Support;
 using Microsoft.Reporting.WinForms;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace EchoDesertTrips.Desktop.Views
@@ -20,6 +17,8 @@ namespace EchoDesertTrips.Desktop.Views
     {
         private IEnumerable<Reservation> Reservations;
         private IServiceFactory _serviceFactory;
+        private IMessageDialogService _messageDialogService;
+        private string BestRegardsFormat = "Best Regards - {0} - Desert Eco Tours";
 
         public DashboardView()
         {
@@ -33,7 +32,12 @@ namespace EchoDesertTrips.Desktop.Views
             {
                 Reservations = GetReservations();
                 if (Reservations.Count() == 0)
+                {
+                    _messageDialogService = new MessageDialogService();
+                    _messageDialogService.ShowInfoDialog("Group ID does not exist!", "Info");
+                    Reservations = null;
                     return;
+                }
             }
             List<CustomerForReport> Customers = new List<CustomerForReport>();
             foreach(var reservation in Reservations)
@@ -64,18 +68,16 @@ namespace EchoDesertTrips.Desktop.Views
 
         private void btnSelect_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            //int nGroupID;
-            //int.TryParse(tbGroupID.Text, out nGroupID);
-            //if (nGroupID == 0)
-            //    return;
-            //_serviceFactory = new ServiceFactory();
-            //var orderClient = _serviceFactory.CreateClient<IOrderService>();
-            //Reservations = orderClient.GetReservationsByGroupId(nGroupID);
             if (Reservations == null)
             {
                 Reservations = GetReservations();
                 if (Reservations.Count() == 0)
+                {
+                    _messageDialogService = new MessageDialogService();
+                    _messageDialogService.ShowInfoDialog("Group ID does not exist!", "Info");
+                    Reservations = null;
                     return;
+                }
             }
             var reservationArray = Reservations.ToArray();
             string days = string.Format("{0}", reservationArray[0].Tours[0].TourType.Days);
@@ -93,12 +95,8 @@ namespace EchoDesertTrips.Desktop.Views
                 reservationForDataReport.HotelsStartDay = resultStartDays;
                 reservationForDataReport.Hotels = resultHotels;
                 reservationForDataReport.RoomTypes = resultsRoomTypes;
-                reservationForDataReport.OperatorName = reservation.Operator.OperatorName;
+                reservationForDataReport.OperatorName = reservation.Operator.OperatorFullName;
                 reservationsDataForReport.Add(reservationForDataReport);
-                //using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(new Bitmap(1, 1)))
-                //{
-                //    SizeF size = graphics.MeasureString("Hello there", new Font("Arial", 10, System.Drawing.FontStyle.Regular, GraphicsUnit.Point));
-                //}
             }
 
 
@@ -117,7 +115,7 @@ namespace EchoDesertTrips.Desktop.Views
                 new ReportParameter("pStartDay", reservationArray[0].Tours[0].StartDate.ToShortDateString().ToString()),
                 new ReportParameter("pText1", "Pls. provide " + days + " Days " + privateOrRegular + " tour to " + tourDestination),
                 new ReportParameter("pPickupTimeValue", reservationArray[0].PickUpTime.ToString()),
-                new ReportParameter("pOperatorName", OperatorSingle.Instance.Operator.OperatorFullName),
+                new ReportParameter("pBestRegards", string.Format(BestRegardsFormat, OperatorSingle.Instance.Operator.OperatorFullName)),
                 new ReportParameter("pOptionals", stOptionals)
             };
             _reportViewer.LocalReport.SetParameters(p);

@@ -10,6 +10,7 @@ namespace EchoDesertTrips.Client.Entities
         public string HotelsStartDay { get; set; }
         public string RoomTypes { get; set; }
         public string OperatorName { get; set; }
+        public string BestRegards { get; set; }
         public string Specials { get; set; }
         public string FirstCustomerInReservation { get; set; }
         public string Hotels { get; set; }

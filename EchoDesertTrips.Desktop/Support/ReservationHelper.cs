@@ -112,10 +112,10 @@ namespace EchoDesertTrips.Desktop.Support
         private static int GetDaysInRange(TourHotel tourHotel, HotelRoomTypeDaysRange hotelRoomTypeDaysRange)
         {
             int result = 0;
-            for (int i = 0; i < (int)(tourHotel.HotelEndDay - tourHotel.HotelStartDay).TotalDays + 1; i++)
+            for (int i = 0; i < (int)(tourHotel.HotelEndDay.Date - tourHotel.HotelStartDay.Date).TotalDays + 1; i++)
             {
                 var date = tourHotel.HotelStartDay.AddDays(i);
-                if (date >= hotelRoomTypeDaysRange.StartDaysRange && date <= hotelRoomTypeDaysRange.EndDaysRange)
+                if (date >= hotelRoomTypeDaysRange.StartDaysRange.Date && date <= hotelRoomTypeDaysRange.EndDaysRange.Date)
                 {
                     result++;
                 }

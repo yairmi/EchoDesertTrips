@@ -181,7 +181,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         {
                             try
                             {
-                                log.Debug("Inventory Loading");
+                                log.Debug("Inventories Loading");
                                 Inventories.TourTypes.Clear();
                                 Inventories.Hotels.Clear();
                                 Inventories.Optionals.Clear();

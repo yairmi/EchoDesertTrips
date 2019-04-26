@@ -60,8 +60,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             int exceptionPosition = 0;
             try
             {
-                exceptionPosition = 1;
                 bool bChanged = false;
+                exceptionPosition = 1;
                 foreach (var reservation in _reservations)
                 {
                     foreach (var tour in reservation.Tours)
@@ -72,6 +72,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                             (tourOptional.Optional.PricePerPerson != e.Optional.PricePerPerson || tourOptional.Optional.PriceInclusive != e.Optional.PriceInclusive))
                         {
                             exceptionPosition = 3;
+                            tourOptional.Optional.PricePerPerson = e.Optional.PricePerPerson;
+                            tourOptional.Optional.PriceInclusive = e.Optional.PriceInclusive;
                             Support.ReservationHelper.CalculateReservationTotalPrice(reservation);
                             bChanged = true;
                             exceptionPosition = 4;
@@ -79,7 +81,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     }
                 }
                 if (bChanged)
-                    OnPropertyChanged(() => _reservations);
+                {
+                    exceptionPosition = 5;
+                    OnPropertyChanged(() => ReservationsView);
+                    exceptionPosition = 6;
+                }
             }
             catch(Exception ex)
             {

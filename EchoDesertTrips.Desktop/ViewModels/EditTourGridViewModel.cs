@@ -292,7 +292,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             bool bInRange = false;
             foreach (var dayRange in hotelRoomType.HotelRoomTypeDaysRanges)
             {
-                if (Tour.StartDate >= dayRange.StartDaysRange && Tour.StartDate <= dayRange.EndDaysRange)
+                if (Tour.StartDate.Date >= dayRange.StartDaysRange.Date && Tour.StartDate.Date <= dayRange.EndDaysRange.Date)
                 {
                     bInRange = true;
                     break;

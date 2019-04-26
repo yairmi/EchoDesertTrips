@@ -212,8 +212,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             public HotelRoomTypeWithDaysRange()
             {
-                _startDaysRange = DateTime.Now;
-                _endDaysRange = DateTime.Now;
+                _startDaysRange = DateTime.Now.Date;
+                _endDaysRange = DateTime.Now.Date;
             }
             public int HotelRoomTypeDaysRangeId { get; set; }
             public int HotelRoomTypeId { get; set; }

@@ -861,66 +861,6 @@
           <FontSize>8pt</FontSize>
         </Style>
       </Tablix>
-      <Textbox Name="Textbox2">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>Best regards -</Value>
-                <Style />
-              </TextRun>
-            </TextRuns>
-            <Style />
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox2</rd:DefaultName>
-        <Top>13.6875cm</Top>
-        <Left>0.89641cm</Left>
-        <Height>0.6cm</Height>
-        <Width>2.5cm</Width>
-        <ZIndex>12</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
-      <Textbox Name="Textbox6">
-        <CanGrow>true</CanGrow>
-        <KeepTogether>true</KeepTogether>
-        <Paragraphs>
-          <Paragraph>
-            <TextRuns>
-              <TextRun>
-                <Value>Desert Eco Tours</Value>
-                <Style />
-              </TextRun>
-            </TextRuns>
-            <Style />
-          </Paragraph>
-        </Paragraphs>
-        <rd:DefaultName>Textbox6</rd:DefaultName>
-        <Top>13.6875cm</Top>
-        <Left>7.68266cm</Left>
-        <Height>0.6cm</Height>
-        <Width>2.90067cm</Width>
-        <ZIndex>13</ZIndex>
-        <Style>
-          <Border>
-            <Style>None</Style>
-          </Border>
-          <PaddingLeft>2pt</PaddingLeft>
-          <PaddingRight>2pt</PaddingRight>
-          <PaddingTop>2pt</PaddingTop>
-          <PaddingBottom>2pt</PaddingBottom>
-        </Style>
-      </Textbox>
       <Textbox Name="pPickupTimeValue">
         <CanGrow>true</CanGrow>
         <KeepTogether>true</KeepTogether>
@@ -940,7 +880,7 @@
         <Left>3.39641cm</Left>
         <Height>0.6cm</Height>
         <Width>6.48547cm</Width>
-        <ZIndex>14</ZIndex>
+        <ZIndex>12</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -958,25 +898,21 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>=Parameters!pOperatorName.Value</Value>
-                <Style />
-              </TextRun>
-              <TextRun>
-                <Value> -</Value>
+                <Value>=Parameters!pBestRegards.Value</Value>
                 <Style />
               </TextRun>
             </TextRuns>
             <Style>
-              <TextAlign>Center</TextAlign>
+              <TextAlign>Left</TextAlign>
             </Style>
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>pOperatorName</rd:DefaultName>
         <Top>13.6875cm</Top>
-        <Left>3.50224cm</Left>
+        <Left>0.89641cm</Left>
         <Height>0.6cm</Height>
-        <Width>4.00403cm</Width>
-        <ZIndex>15</ZIndex>
+        <Width>11.24007cm</Width>
+        <ZIndex>13</ZIndex>
         <Style>
           <Border>
             <Style>None</Style>
@@ -1172,7 +1108,7 @@
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
-    <ReportParameter Name="pOperatorName">
+    <ReportParameter Name="pBestRegards">
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
