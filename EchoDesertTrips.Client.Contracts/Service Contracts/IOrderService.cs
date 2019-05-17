@@ -40,13 +40,17 @@ namespace EchoDesertTrips.Client.Contracts
         [FaultContract(typeof(NotFoundException))]
         Reservation[] GetReservationsByGroupId(int GroupId);
 
-        [OperationContract]
-        [FaultContract(typeof(NotFoundException))]
-        Reservation[] GetCustomersByReservationGroupId(int GroupId);
+        //[OperationContract]
+        //[FaultContract(typeof(NotFoundException))]
+        //Reservation[] GetCustomersByReservationGroupId(int GroupId);
+
+        //[OperationContract]
+        //[FaultContract(typeof(NotFoundException))]
+        //Task<Reservation[]> GetReservationsCustomersByReservationGroupIdAsynchronous(int GroupId);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
-        Task<Reservation[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId);
+        Task<Customer[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]

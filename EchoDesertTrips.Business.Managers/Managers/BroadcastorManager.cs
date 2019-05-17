@@ -151,8 +151,8 @@ namespace EchoDesertTrips.Business.Managers.Managers
                         idList.Add(reservationMessage.ReservationId);
                 }
                 IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
-                var reservations = reservationEngine.GetReservationsByIds(idList);
-                reservationEngine.PrepareReservationsForTransmition(reservations);
+                var reservations = reservationEngine.GetReservationsByIds(idList, 1);
+                //reservationEngine.PrepareReservationsForTransmition(reservations);
                 return reservations.ToList();
             });
         }

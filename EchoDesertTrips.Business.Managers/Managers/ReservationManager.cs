@@ -170,11 +170,11 @@ namespace EchoDesertTrips.Business.Managers.Managers
             {
                 log.Debug("ReservationManager: GetReservationsForDayRange Start");
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-                var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
+                var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo, 1);
                 log.Debug("ReservationManager: GetReservationsForDayRange End");
                 //The following is done to improve preformance
-                IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
-                reservationEngine.PrepareReservationsForTransmition(reservations);
+                //IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
+                //reservationEngine.PrepareReservationsForTransmition(reservations);
                 log.Debug("Before return");
                 return reservations;
             });
@@ -188,10 +188,10 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 var task = Task<Reservation[]>.Factory.StartNew(() =>
                 {
                     log.Debug("ReservationManager: GetReservationsForDayRangeAsynchronous DB Query Start");
-                    var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
+                    var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo, 1);
                     log.Debug("ReservationManager: GetReservationsForDayRangeAsynchronous DB Query End");
-                    IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
-                    reservationEngine.PrepareReservationsForTransmition(reservations);
+                    //IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
+                    //reservationEngine.PrepareReservationsForTransmition(reservations);
                     return reservations;
                 });
                 return await task.ConfigureAwait(false);
@@ -217,38 +217,6 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        public Reservation[] GetCustomersByReservationGroupId(int GroupId)
-        {
-            return ExecuteFaultHandledOperation(() =>
-            {
-                IReservationRepository reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-
-                var reservations = reservationRepository.GetCustomersByReservationGroupId(GroupId);
-
-                if (reservations == null)
-                {
-                    log.Error("No reservation found for GroupId: " + GroupId);
-                    NotFoundException ex = new NotFoundException(string.Format("No reservation found for GroupId '{0}'", GroupId));
-
-                    throw new FaultException<NotFoundException>(ex, ex.Message);
-                }
-                return reservations;
-            });
-        }
-
-        public async Task<Reservation[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId)
-        {
-            return await ExecuteFaultHandledOperation(async () =>
-            {
-                var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-                var task = Task<Reservation[]>.Factory.StartNew(() =>
-                {
-                    return reservationRepository.GetCustomersByReservationGroupId(GroupId);
-                });
-                return await task.ConfigureAwait(false);
-            });
-        }
-
         public async Task<Reservation[]> GetReservationsByIdsAsynchronous(List<int> idList)
         {
             return await ExecuteFaultHandledOperation(async () =>
@@ -257,9 +225,22 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 var task = Task<Reservation[]>.Factory.StartNew(() =>
                 {
                     IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
-                    var reservations = reservationEngine.GetReservationsByIds(idList);
-                    reservationEngine.PrepareReservationsForTransmition(reservations);
+                    var reservations = reservationEngine.GetReservationsByIds(idList, 1);
+                    //reservationEngine.PrepareReservationsForTransmition(reservations);
                     return reservations;
+                });
+                return await task.ConfigureAwait(false);
+            });
+        }
+
+        public async Task<Customer[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId)
+        {
+            return await ExecuteFaultHandledOperation(async () =>
+            {
+                var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
+                var task = Task<Customer[]>.Factory.StartNew(() =>
+                {
+                    return  reservationRepository.GetCustomersByReservationGroupId(GroupId);
                 });
                 return await task.ConfigureAwait(false);
             });

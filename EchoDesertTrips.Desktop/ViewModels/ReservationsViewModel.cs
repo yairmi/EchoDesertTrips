@@ -223,7 +223,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 IsEnabled = false;
                 CustomersGroupViewModel = new CustomersGroupViewModel();
-                var orderClient = _serviceFactory.CreateClient<IOrderService>();
+                var reservationClient = _serviceFactory.CreateClient<IOrderService>();
                 {
                 try
                 {
@@ -231,21 +231,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     int groupID = reservation1.GroupID;
                     var uiContext = SynchronizationContext.Current;
 
-                    var reservations = await Task.Factory.StartNew(() =>
+                    var customers = await Task.Factory.StartNew(() =>
                     {
                         CustomersGroupViewModel.LoadingVisible = true;
-                        return orderClient.GetCustomersByReservationGroupIdAsynchronous(groupID);
+                        return reservationClient.GetCustomersByReservationGroupIdAsynchronous(groupID);
                     });
-                    await reservations.ContinueWith((Task<Reservation[]> e) =>
+                    await customers.ContinueWith((Task<Customer[]> e) =>
                     {
                         if (e.IsCompleted)
                         {
                             uiContext.Send((x) =>
                             {
-                                reservations.Result.ToList().ForEach((reservation) =>
-                                {
-                                    CustomersGroupViewModel.CustomersForGroup.AddRange(reservation.Customers);
-                                });
+                                CustomersGroupViewModel.CustomersForGroup.AddRange(customers.Result);
                                 CustomersGroupViewModel.LoadingVisible = false;
                             }, null);
                         }
@@ -256,7 +253,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     log.Error(string.Format("Exception in ShowCustomers. exception: {0}", ex.Message));
                 }
                 }
-                var disposableClient = orderClient as IDisposable;
+                var disposableClient = reservationClient as IDisposable;
                 disposableClient?.Dispose();
             }
         }

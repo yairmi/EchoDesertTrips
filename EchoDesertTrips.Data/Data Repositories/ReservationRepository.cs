@@ -1,5 +1,4 @@
 ﻿using EchoDesertTrips.Business.Entities;
-using EchoDesertTrips.Data.Contracts.DTOs;
 using EchoDesertTrips.Data.Contracts.Repository_Interfaces;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.Configuration;
 using Z.EntityFramework.Plus;
 using System.Linq.Expressions;
 
@@ -48,12 +46,12 @@ namespace EchoDesertTrips.Data.Data_Repositories
 
         }
 
-        public Reservation[] GetReservationsByIds(List<int> idList)
+        public Reservation[] GetReservationsByIds(List<int> idList, int customersAmount)
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
                 var query = (from e in entityContext.ReservationSet.Where(t => idList.Contains(t.ReservationId)) select e);
-                return IncludeNavigationPropertiesForGettingReservations(query).ToArray();
+                return IncludeNavigationPropertiesForGettingReservations(query, customersAmount).ToArray();
             }
         }
 
@@ -66,21 +64,31 @@ namespace EchoDesertTrips.Data.Data_Repositories
             }
         }
 
-        public Reservation[] GetReservationsForDayRange(DateTime dayFrom, DateTime dayTo)
+        public Reservation[] GetReservationsForDayRange(DateTime dayFrom, DateTime dayTo, int customersAmount)
         {
             using (var entityContext = new EchoDesertTripsContext())
             {
                 var query = (from e in entityContext.ReservationSet where e.Tours.Any(t => t.StartDate >= dayFrom && t.StartDate <= dayTo) select e);
-                return IncludeNavigationPropertiesForGettingReservations(query).ToArray();
+                return IncludeNavigationPropertiesForGettingReservations(query, customersAmount).ToArray();
             }
         }
 
-        public Reservation[] GetCustomersByReservationGroupId(int GroupId)
+        public Reservation[] GetReservationsCustomersByReservationGroupId(int GroupId)
         {
             using (EchoDesertTripsContext entityContext = new EchoDesertTripsContext())
             {
                 return (from e in entityContext.ReservationSet where e.GroupID == GroupId select e)
                             .Include(o => o.Customers).ToArray();
+            }
+        }
+
+        public Customer[] GetCustomersByReservationGroupId(int GroupID)
+        {
+            using (var entityContext = new EchoDesertTripsContext())
+            {
+                var query = (from e in entityContext.ReservationSet where e.GroupID == GroupID select e)
+                    .SelectMany(c => c.Customers);
+                return query.ToArray();
             }
         }
 
@@ -399,12 +407,12 @@ namespace EchoDesertTrips.Data.Data_Repositories
                     .IncludeOptimized(o => o.Tours.Select(th => th.TourHotels.Select(aa => aa.TourHotelRoomTypes.Select(bb => bb.HotelRoomType).Select(cc => cc.HotelRoomTypeDaysRanges))));
         }
 
-        private IQueryable<Reservation> IncludeNavigationPropertiesForGettingReservations(IQueryable<Reservation> query)
+        private IQueryable<Reservation> IncludeNavigationPropertiesForGettingReservations(IQueryable<Reservation> query, int customersAmount = 8192)
         {
             return query
                     .IncludeOptimized(a => a.Agency)
                     .IncludeOptimized(a => a.Agency.Agents)
-                    .IncludeOptimized(o => o.Customers)
+                    .IncludeOptimized(o => o.Customers.Take(customersAmount))
                     .IncludeOptimized(o => o.Group)
                     .IncludeOptimized(o => o.Tours)
                     .IncludeOptimized(o => o.Tours.Select(t => t.TourType))

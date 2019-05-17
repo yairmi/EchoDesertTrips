@@ -197,6 +197,10 @@
     <Compile Include="Migrations\201903080817515_HotelEndDay.Designer.cs">
       <DependentUpon>201903080817515_HotelEndDay.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904261859573_AddActualNumberOfCustomers.cs" />
+    <Compile Include="Migrations\201904261859573_AddActualNumberOfCustomers.Designer.cs">
+      <DependentUpon>201904261859573_AddActualNumberOfCustomers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -271,6 +275,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903080817515_HotelEndDay.resx">
       <DependentUpon>201903080817515_HotelEndDay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904261859573_AddActualNumberOfCustomers.resx">
+      <DependentUpon>201904261859573_AddActualNumberOfCustomers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

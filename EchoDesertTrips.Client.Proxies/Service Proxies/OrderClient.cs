@@ -48,14 +48,19 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
             return Channel.GetReservationsByGroupId(GroupId);
         }
 
-        public Reservation[] GetCustomersByReservationGroupId(int GroupId)
-        {
-            return Channel.GetCustomersByReservationGroupId(GroupId);
-        }
+        //public Reservation[] GetCustomersByReservationGroupId(int GroupId)
+        //{
+        //    return Channel.GetCustomersByReservationGroupId(GroupId);
+        //}
 
-        public Task<Reservation[]> GetCustomersByReservationGroupIdAsynchronous(int GroupID)
+        //public Task<Reservation[]> GetReservationsCustomersByReservationGroupIdAsynchronous(int GroupID)
+        //{
+        //    return Channel.GetReservationsCustomersByReservationGroupIdAsynchronous(GroupID);
+        //}
+
+        public Task<Customer[]> GetCustomersByReservationGroupIdAsynchronous(int GroupId)
         {
-            return Channel.GetCustomersByReservationGroupIdAsynchronous(GroupID);
+            return Channel.GetCustomersByReservationGroupIdAsynchronous(GroupId);
         }
 
         public Task<Reservation[]> GetReservationsByIdsAsynchronous(List<int> idList)

@@ -22,23 +22,23 @@ namespace EchoDesertTrips.Business.Business_Engines
 
         IDataRepositoryFactory _DataRepositoryFactory;
 
-        public void PrepareReservationsForTransmition(Reservation[] Reservations)
-        {
-            Parallel.ForEach(Reservations, new ParallelOptions { MaxDegreeOfParallelism = 4 }, (reservation) =>
-            {
-                reservation.ActualNumberOfCustomers = reservation.Customers.Count;
-                var customer = reservation.Customers.Count > 0 ? reservation.Customers[0] : null;
-                reservation.Customers.Clear();
-                if (customer != null)
-                    reservation.Customers.Add(customer);
-            });
-        }
+        //public void PrepareReservationsForTransmition(Reservation[] Reservations)
+        //{
+        //    Parallel.ForEach(Reservations, new ParallelOptions { MaxDegreeOfParallelism = 4 }, (reservation) =>
+        //    {
+        //        reservation.ActualNumberOfCustomers = reservation.Customers.Count;
+        //        var customer = reservation.Customers.Count > 0 ? reservation.Customers[0] : null;
+        //        reservation.Customers.Clear();
+        //        if (customer != null)
+        //            reservation.Customers.Add(customer);
+        //    });
+        //}
 
-        public Reservation[] GetReservationsByIds(List<int> idList)
+        public Reservation[] GetReservationsByIds(List<int> idList, int customersAmount)
         {
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
 
-                var reservations = reservationRepository.GetReservationsByIds(idList);
+                var reservations = reservationRepository.GetReservationsByIds(idList, customersAmount);
                 if (reservations == null)
                     throw new NotFoundException(string.Format("No Reservation was found"));
                 return reservations;

@@ -69,7 +69,6 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int LockedById { get; set; }
         [DataMember]
-        [NotMapped]
         public int ActualNumberOfCustomers { get; set; }
         [DataMember]
         [NotMapped]

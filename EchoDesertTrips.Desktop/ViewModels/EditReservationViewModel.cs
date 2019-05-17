@@ -66,6 +66,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.Operator = CurrentOperator.Operator;
                 Reservation.OperatorId = CurrentOperator.Operator.OperatorId;
                 ReservationHelper.CreateExternalId(Reservation);
+                Reservation.ActualNumberOfCustomers = Reservation.Customers.Count;
                 Reservation.Lock = false;
                 int exceptionPosition = 0;
 
