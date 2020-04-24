@@ -14,7 +14,7 @@ using FluentValidation.Results;
 
 namespace Core.Common.Core
 {
-    public abstract class ObjectBase : NotificationObject, IDirtyCapable, IExtensibleDataObject
+    public abstract class ObjectBase : NotificationObject, IDirtyCapable, IExtensibleDataObject, IIdentifiableEntity
     {
         public ObjectBase()
         {
@@ -267,5 +267,18 @@ namespace Core.Common.Core
             }
         }
 
+        public bool PropertyDeleted {
+            get
+            {
+                return true;
+            }
+            set
+            {
+                if (value == true)
+                    OnPropertyChanged(() => PropertyDeleted, true);
+            }
+        }
+
+        public virtual int EntityId { get; set; }
     }
 }

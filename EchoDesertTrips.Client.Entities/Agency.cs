@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Core.Common.Contracts;
 using Core.Common.Core;
 using FluentValidation;
 using System.Collections.Generic;
+using System;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -123,6 +125,19 @@ namespace EchoDesertTrips.Client.Entities
             {
                 _agents = value;
                 OnPropertyChanged(() => Agents, false);
+            }
+        }
+
+        public override int EntityId
+        {
+            get
+            {
+                return AgencyId;
+            }
+
+            set
+            {
+                AgencyId = value;
             }
         }
 

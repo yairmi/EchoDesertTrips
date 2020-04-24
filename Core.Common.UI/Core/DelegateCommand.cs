@@ -19,6 +19,10 @@ namespace Core.Common.UI.Core
             Label = label;
         }
 
+        public DelegateCommand()
+        {
+        }
+
         readonly Action<T> _Execute = null;
         readonly Predicate<T> _CanExecute = null;
 

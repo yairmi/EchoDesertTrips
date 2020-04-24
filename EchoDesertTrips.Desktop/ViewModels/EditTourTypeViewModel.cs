@@ -26,7 +26,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
             TourType = tourType;
-            CleanAll();
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             CancelCommand = new DelegateCommand<object>(OnCancelCommand);
         }
@@ -174,65 +173,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private ObservableCollection<Destination> _Destinations;
-
-        public ObservableCollection<Destination> Destinations
-        {
-            get
-            {
-                return _Destinations;
-            }
-            set
-            {
-                _Destinations = value;
-                OnPropertyChanged(() => Destinations);
-            }
-        }
-
-        private ObservableCollection<Prices> _adultPrices;
-
-        public ObservableCollection<Prices> AdultPrices
-        {
-            get
-            {
-                return _adultPrices;
-            }
-            set
-            {
-                _adultPrices = value;
-                OnPropertyChanged(() => AdultPrices);
-            }
-        }
-
-        private ObservableCollection<Prices> _childPrices;
-
-        public ObservableCollection<Prices> ChildPrices
-        {
-            get
-            {
-                return _childPrices;
-            }
-            set
-            {
-                _childPrices = value;
-                OnPropertyChanged(() => ChildPrices);
-            }
-        }
-
-        private ObservableCollection<Prices> _infantPrices;
-
-        public ObservableCollection<Prices> InfantPrices
-        {
-            get
-            {
-                return _infantPrices;
-            }
-            set
-            {
-                _infantPrices = value;
-                OnPropertyChanged(() => InfantPrices);
-            }
-        }
+        public ObservableCollection<Destination> Destinations { get; set; }
+        public ObservableCollection<Prices> AdultPrices { get; set; }
+        public ObservableCollection<Prices> ChildPrices { get; set; }
+        public ObservableCollection<Prices> InfantPrices { get; set; }
 
         private byte _days;
 
@@ -257,10 +201,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void SetTourTypeDescriptionCount()
         {
-            ObservableCollection<TourTypeDescription> tourTypeDescriptions =
-                new ObservableCollection<TourTypeDescription>();
             int currentCount = TourType.TourTypeDescriptions.Count;
-            if (currentCount == _days && currentCount > 0)
+            if (currentCount > 0 && currentCount == _days)
             {
                 int i = 0;
                 foreach(var description in TourType.TourTypeDescriptions)

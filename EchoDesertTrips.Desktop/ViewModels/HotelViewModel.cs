@@ -77,7 +77,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void HotelUpdated(HotelEventArgs e)
         {
-            Inventories.Update(e.Hotel);
+            Inventories.Update<Hotel>(e.Hotel, Inventories.Hotels);
             if (e.bSendUpdateToClients)
             {
                 try

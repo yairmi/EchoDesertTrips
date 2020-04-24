@@ -20,7 +20,7 @@ namespace EchoDesertTrips.Client.Entities
             _childPrices = string.Empty;
             _infantPrices = string.Empty;
 
-            _tourTypeDescriptions = new ObservableCollection<TourTypeDescription>();
+            TourTypeDescriptions = new ObservableCollection<TourTypeDescription>();
             _incramentExternalId = true;
         }
 
@@ -151,20 +151,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private ObservableCollection<TourTypeDescription> _tourTypeDescriptions;
-
-        public ObservableCollection<TourTypeDescription> TourTypeDescriptions
-        {
-            get
-            {
-                return _tourTypeDescriptions;
-            }
-            set
-            {
-                _tourTypeDescriptions = value;
-                OnPropertyChanged(() => TourTypeDescriptions);
-            }
-        }
+        public ObservableCollection<TourTypeDescription> TourTypeDescriptions { get; set; }
 
         private bool _incramentExternalId;
 
@@ -178,6 +165,19 @@ namespace EchoDesertTrips.Client.Entities
             {
                 _incramentExternalId = value;
                 OnPropertyChanged(() => IncramentExternalId, true);
+            }
+        }
+
+        public override int EntityId
+        {
+            get
+            {
+                return TourTypeId;
+            }
+
+            set
+            {
+                TourTypeId = value;
             }
         }
 

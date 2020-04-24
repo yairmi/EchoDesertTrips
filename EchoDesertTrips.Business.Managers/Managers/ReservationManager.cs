@@ -9,7 +9,6 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.ServiceModel;
 using Core.Common.Core;
-using Core.Common.Utils;
 using System.Threading.Tasks;
 using EchoDesertTrips.Business.Common;
 using System.Configuration;
@@ -164,34 +163,23 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        public Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo)
+        public ReservationDTO[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo)
         {
             return ExecuteFaultHandledOperation(() =>
             {
-                log.Debug("ReservationManager: GetReservationsForDayRange Start");
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-                var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo, 1);
-                log.Debug("ReservationManager: GetReservationsForDayRange End");
-                //The following is done to improve preformance
-                //IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
-                //reservationEngine.PrepareReservationsForTransmition(reservations);
-                log.Debug("Before return");
-                return reservations;
+                return reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
             });
         }
 
-        public async Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
+        public async Task<ReservationDTO[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
         {
             return await ExecuteFaultHandledOperation(async () =>
             {
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-                var task = Task<Reservation[]>.Factory.StartNew(() =>
+                var task = Task<ReservationDTO[]>.Factory.StartNew(() =>
                 {
-                    log.Debug("ReservationManager: GetReservationsForDayRangeAsynchronous DB Query Start");
-                    var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo, 1);
-                    log.Debug("ReservationManager: GetReservationsForDayRangeAsynchronous DB Query End");
-                    //IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
-                    //reservationEngine.PrepareReservationsForTransmition(reservations);
+                    var reservations = reservationRepository.GetReservationsForDayRange(DayFrom, DayTo);
                     return reservations;
                 });
                 return await task.ConfigureAwait(false);
@@ -217,17 +205,15 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        public async Task<Reservation[]> GetReservationsByIdsAsynchronous(List<int> idList)
+        public async Task<ReservationDTO[]> GetReservationsByIdsAsynchronous(List<int> idList)
         {
             return await ExecuteFaultHandledOperation(async () =>
             {
                 var reservationRepository = _DataRepositoryFactory.GetDataRepository<IReservationRepository>();
-                var task = Task<Reservation[]>.Factory.StartNew(() =>
+                var task = Task<ReservationDTO[]>.Factory.StartNew(() =>
                 {
                     IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
-                    var reservations = reservationEngine.GetReservationsByIds(idList, 1);
-                    //reservationEngine.PrepareReservationsForTransmition(reservations);
-                    return reservations;
+                    return reservationEngine.GetReservationsByIds(idList);
                 });
                 return await task.ConfigureAwait(false);
             });

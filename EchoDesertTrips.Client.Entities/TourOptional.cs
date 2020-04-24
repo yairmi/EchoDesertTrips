@@ -1,11 +1,4 @@
 ﻿using Core.Common.Core;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -13,7 +6,6 @@ namespace EchoDesertTrips.Client.Entities
     {
         public int TourId { get; set; }
         public int OptionalId { get; set; }
-        public Optional Optional { get; set; }
 
         private bool _priceInclusive;
 
@@ -27,6 +19,38 @@ namespace EchoDesertTrips.Client.Entities
             {
                 _priceInclusive = value;
                 OnPropertyChanged(() => PriceInclusive, true);
+            }
+        }
+
+        public Optional Optional { get; set; }
+
+        private float _originalPricePerPerson;
+
+        public float OriginalPricePerPerson
+        {
+            get
+            {
+                return _originalPricePerPerson;
+            }
+            set
+            {
+                _originalPricePerPerson = value;
+                OnPropertyChanged(() => OriginalPricePerPerson, true);
+            }
+        }
+
+        private float _originalPriceInclusive;
+
+        public float OriginalPriceInclusive
+        {
+            get
+            {
+                return _originalPriceInclusive;
+            }
+            set
+            {
+                _originalPriceInclusive = value;
+                OnPropertyChanged(() => OriginalPriceInclusive, true);
             }
         }
 
@@ -48,6 +72,6 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        
+
     }
 }

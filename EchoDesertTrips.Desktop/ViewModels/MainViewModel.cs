@@ -8,6 +8,7 @@ using System.Threading;
 using static Core.Common.Core.Const;
 using Core.Common.UI.PubSubEvent;
 using Core.Common.UI.CustomEventArgs;
+using EchoDesertTrips.Client.Entities;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -131,33 +132,33 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (inventories.Hotels != null)
                 {
                     log.Debug("UpdateInventory: Hotel Updated - " + inventories.Hotels[0].HotelName);
-                    Inventories.Update(inventories.Hotels[0]);
+                    Inventories.Update<Hotel>(inventories.Hotels[0], Inventories.Hotels);
                 }
                 else if (inventories.Operators != null)
                 {
                     log.Debug("UpdateInventory: Operators - " + inventories.Operators[0].OperatorFullName);
-                    Inventories.Update(inventories.Operators[0]);
+                    Inventories.Update<Operator>(inventories.Operators[0], Inventories.Operators);
                 }
                 else if (inventories.Optionals != null)
                 {
                     log.Debug("UpdateInventory: Optionals - " + inventories.Optionals[0].OptionalDescription);
-                    Inventories.Update(inventories.Optionals[0]);
+                    Inventories.Update<Optional>(inventories.Optionals[0], Inventories.Optionals);
                     _eventAggregator.GetEvent<OptionalUpdatedEvent>().Publish(new OptionalEventArgs(inventories.Optionals[0], false));
                 }
                 else if (inventories.RoomTypes != null)
                 {
                     log.Debug("UpdateInventory: RoomTypes - " + inventories.RoomTypes[0].RoomTypeName);
-                    Inventories.Update(inventories.RoomTypes[0]);
+                    Inventories.Update<RoomType>(inventories.RoomTypes[0], Inventories.RoomTypes);
                 }
                 else if (inventories.TourTypes != null)
                 {
                     log.Debug("UpdateInventory: TourTypes - " + inventories.TourTypes[0].TourTypeName);
-                    Inventories.Update(inventories.TourTypes[0]);
+                    Inventories.Update<TourType>(inventories.TourTypes[0], Inventories.TourTypes);
                 }
                 else if (inventories.Agencies != null)
                 {
                     log.Debug("UpdateInventory: Hotel Updated - " + inventories.Agencies[0].AgencyName);
-                    Inventories.Update(inventories.Agencies[0]);
+                    Inventories.Update<Agency>(inventories.Agencies[0], Inventories.Agencies);
                 }
             }
             catch(Exception ex)

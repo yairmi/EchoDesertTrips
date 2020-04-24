@@ -79,8 +79,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DTOs\CustomerOrderInfo.cs" />
-    <Compile Include="DTOs\DTOHotelRoomTypesInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository Interfaces\IAgencyRepository.cs" />
     <Compile Include="Repository Interfaces\IAgentRepository.cs" />
@@ -106,12 +104,8 @@
       <Name>Core.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\EchoDesertTrips.Business.Contracts\EchoDesertTrips.Business.Contracts.csproj">
-      <Project>{918C91CF-4713-4620-B9C0-8EEC95E5A9B6}</Project>
+      <Project>{918c91cf-4713-4620-b9c0-8eec95e5a9b6}</Project>
       <Name>EchoDesertTrips.Business.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EchoDesertTrips.Business.DbEntities\EchoDesertTrips.Business.DbEntities.csproj">
-      <Project>{d0f2b33a-2d31-4fa5-b10b-77342317adc0}</Project>
-      <Name>EchoDesertTrips.Business.DbEntities</Name>
     </ProjectReference>
     <ProjectReference Include="..\EchoDesertTrips.Business.Entities\EchoDesertTrips.Business.Entities.csproj">
       <Project>{5a7fb8ae-c1d7-412a-8882-e9e952a9256f}</Project>

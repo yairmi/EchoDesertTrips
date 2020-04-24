@@ -201,6 +201,18 @@
     <Compile Include="Migrations\201904261859573_AddActualNumberOfCustomers.Designer.cs">
       <DependentUpon>201904261859573_AddActualNumberOfCustomers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907131035421_new_fields_tourOptionals.cs" />
+    <Compile Include="Migrations\201907131035421_new_fields_tourOptionals.Designer.cs">
+      <DependentUpon>201907131035421_new_fields_tourOptionals.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004021723380_totalPrice.cs" />
+    <Compile Include="Migrations\202004021723380_totalPrice.Designer.cs">
+      <DependentUpon>202004021723380_totalPrice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004051734492_fix_customer_migration_problem.cs" />
+    <Compile Include="Migrations\202004051734492_fix_customer_migration_problem.Designer.cs">
+      <DependentUpon>202004051734492_fix_customer_migration_problem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -278,6 +290,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904261859573_AddActualNumberOfCustomers.resx">
       <DependentUpon>201904261859573_AddActualNumberOfCustomers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907131035421_new_fields_tourOptionals.resx">
+      <DependentUpon>201907131035421_new_fields_tourOptionals.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004021723380_totalPrice.resx">
+      <DependentUpon>202004021723380_totalPrice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004051734492_fix_customer_migration_problem.resx">
+      <DependentUpon>202004051734492_fix_customer_migration_problem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

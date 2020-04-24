@@ -69,7 +69,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         Inventories.RoomTypes[Inventories.RoomTypes.Count - 1].RoomTypeId = savedRoomType.RoomTypeId;
                     else
                     {
-                        Inventories.UpdateHotels(roomType);
+                        foreach (var hotel in Inventories.Hotels)
+                        {
+                            foreach (var hotelRoomType in hotel.HotelRoomTypes)
+                            {
+                                if (hotelRoomType.RoomType.RoomTypeId == roomType.RoomTypeId)
+                                {
+                                    hotelRoomType.RoomType.RoomTypeName = roomType.RoomTypeName;
+                                }
+                            }
+                        }
                     }
                     try
                     {

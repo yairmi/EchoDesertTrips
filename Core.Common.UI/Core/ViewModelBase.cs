@@ -7,7 +7,6 @@ using EchoDesertTrips.Client.Entities;
 using static Core.Common.Core.Const;
 using EchoDesertTrips.Common;
 using Microsoft.Practices.Prism.PubSubEvents;
-using Core.Common.UI.PubSubEvent;
 
 namespace Core.Common.UI.Core
 {

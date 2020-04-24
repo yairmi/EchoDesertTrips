@@ -88,7 +88,7 @@ namespace EchoDesertTrips.Desktop.Views
             foreach (var reservation in reservationArray)
             {
                 var reservationForDataReport = new ReservationGeneralData1ForReport();
-                reservationForDataReport.FirstCustomerInReservation = reservation.Customers[0].FullName;
+                reservationForDataReport.FirstCustomerInReservation = reservation.Customers[0] == null ? string.Empty : reservation.Customers[0].LastName +  " " + reservation.Customers[0].FirstName;
                 reservationForDataReport.Pax = reservation.ActualNumberOfCustomers;
                 string resultStartDays, resultHotels, resultsRoomTypes;
                 GetHotelsData(reservation, out resultStartDays, out resultHotels, out resultsRoomTypes);

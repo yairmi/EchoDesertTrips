@@ -247,26 +247,6 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private string _fullName;
-
-        public string FullName
-        {
-            get
-            {
-                _fullName = $"{LastName} {FirstName}";
-                return _fullName;
-            }
-
-            set
-            {
-                if (_fullName != value)
-                {
-                    _fullName = value;
-                    OnPropertyChanged(() => FullName, true);
-                }
-            }
-        }
-
         public bool bInEdit { get; set; }
 
         class CustomerValidator : AbstractValidator<Customer>

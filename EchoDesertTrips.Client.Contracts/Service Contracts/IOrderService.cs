@@ -30,23 +30,15 @@ namespace EchoDesertTrips.Client.Contracts
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
-        Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
+        ReservationDTO[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
-        Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo);
+        Task<ReservationDTO[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
         Reservation[] GetReservationsByGroupId(int GroupId);
-
-        //[OperationContract]
-        //[FaultContract(typeof(NotFoundException))]
-        //Reservation[] GetCustomersByReservationGroupId(int GroupId);
-
-        //[OperationContract]
-        //[FaultContract(typeof(NotFoundException))]
-        //Task<Reservation[]> GetReservationsCustomersByReservationGroupIdAsynchronous(int GroupId);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]

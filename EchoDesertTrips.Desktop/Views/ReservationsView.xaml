@@ -146,15 +146,15 @@
                             <DataGridTextColumn Header="PAX Name" Width="120">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding StringFormat="{}{0} {1}">
-                                        <Binding Path="Customers[0].LastName"/>
-                                        <Binding Path="Customers[0].FirstName"/>
+                                        <Binding Path="LastName"/>
+                                        <Binding Path="FirstName"/>
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                             </DataGridTextColumn>
                                     <DataGridTextColumn Header="Pickup Time" Binding="{Binding PickUpTime, StringFormat='dd/MM/yyyy HH:mm'}" Width="100"/>
-                            <DataGridTextColumn Header="Pickup Address" Binding="{Binding Tours[0].PickupAddress}" Width="100"/>
-                            <DataGridTextColumn Header="Phone" Binding="{Binding Customers[0].Phone1}" Width="100"/>
-                            <DataGridTextColumn Header="Hotel" Binding="{Binding Tours[0].TourHotels[0].Hotel.HotelName}" Width="120"/>
+                                    <DataGridTextColumn Header="Pickup Address" Binding="{Binding Tours[0].PickupAddress}" Width="100"/>
+                            <DataGridTextColumn Header="Phone" Binding="{Binding Phone1}" Width="100"/>
+                            <DataGridTextColumn Header="Hotel" Binding="{Binding HotelName}" Width="120"/>
                             <DataGridTextColumn Header="Agency" Width="100">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding StringFormat="{}{0}: {1} {2}">
@@ -269,18 +269,6 @@
                                         <Setter Property="BorderThickness" Value="1,0,1,0"/>
                                     </Style>
                                 </DataGrid.ColumnHeaderStyle>
-                                <!--<i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="BeginningEdit">
-                                        --><!--Occurs before a row or cell enters edit mode--><!--
-                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.BeginningEditCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                                    </i:EventTrigger>
-                                    <i:EventTrigger EventName="RowEditEnding">
-                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.RowEditEndingCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                                    </i:EventTrigger>
-                                    <i:EventTrigger EventName="LostFocus">
-                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.LostFocusCommand, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>-->
                                 <DataGrid.Columns>
                                     <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
@@ -297,7 +285,7 @@
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn Header="Reservation ID" Width="100" Binding="{Binding ReservationId}" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Jordan ID" Width="100" Binding="{Binding Group.GroupId}" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="PAX" Width="70" Binding="{Binding Customers.Count}" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="PAX" Width="70" Binding="{Binding ActualNumberOfCustomers}" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Car" Width="100" Binding="{Binding Car, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="Guide/Driver" Width="100" Binding="{Binding Guide, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                                     <DataGridTextColumn Header="End In" Width="100" Binding="{Binding EndIn, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>

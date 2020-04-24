@@ -46,13 +46,13 @@ namespace EchoDesertTrips.Data
             modelBuilder.Ignore<IIdentifiableEntity>();
             modelBuilder.Entity<Agency>().HasKey<int>(e => e.AgencyId).Ignore(e => e.EntityId);
             modelBuilder.Entity<Agent>().HasKey<int>(e => e.AgentId).Ignore(e => e.EntityId).Ignore(e => e.FullName);
-            modelBuilder.Entity<Customer>().HasKey<int>(e => e.CustomerId).Ignore(e => e.EntityId).Ignore(e => e.FullName);
+            modelBuilder.Entity<Customer>().HasKey<int>(e => e.CustomerId).Ignore(e => e.EntityId);//.Ignore(e => e.FullName);
             modelBuilder.Entity<Hotel>().HasKey<int>(e => e.HotelId).Ignore(e => e.EntityId);
             modelBuilder.Entity<Operator>().HasKey<int>(e => e.OperatorId).Ignore(e => e.EntityId);
             modelBuilder.Entity<Reservation>().HasKey<int>(e => e.ReservationId)
                 .Ignore(e => e.EntityId)
                 .Property(f => f.RowVersion).IsConcurrencyToken();
-            modelBuilder.Entity<Tour>().HasKey<int>(e => e.TourId).Ignore(e => e.EntityId);
+            modelBuilder.Entity<Tour>().HasKey<int>(e => e.TourId).Ignore(e => e.EntityId).HasIndex(p => new { p.StartDate, p.EndDate });
             modelBuilder.Entity<TourType>().HasKey<int>(e => e.TourTypeId).Ignore(e => e.EntityId);
             modelBuilder.Entity<Optional>().HasKey<int>(e => e.OptionalId).Ignore(e => e.EntityId);
             modelBuilder.Entity<RoomType>().HasKey<int>(e => e.RoomTypeId).Ignore(e => e.EntityId);

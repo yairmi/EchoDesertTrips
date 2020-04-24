@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Core.Common.Core;
-using Core.Common.Utils;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -13,14 +11,14 @@ namespace EchoDesertTrips.Client.Entities
     {
         public Tour()
         {
-            _tourOptionals = new ObservableCollection<TourOptional>();
-            _tourHotels = new ObservableCollection<TourHotel>();
-            _subTours = new ObservableCollection<SubTour>();
+            TourOptionals = new ObservableCollection<TourOptional>();
+            TourHotels = new ObservableCollection<TourHotel>();
+            SubTours = new ObservableCollection<SubTour>();
             _tourType = new TourType();
             _startDate = DateTime.Today;
             _endDate = (_tourType == null ||_tourType.Days == 0) ? _endDate : StartDate.AddDays(_tourType.Days - 1);
-            bInEdit = false;
             _pickupAddress = string.Empty;
+            bInEdit = false;
         }
 
         private int _tourId;
@@ -94,7 +92,7 @@ namespace EchoDesertTrips.Client.Entities
                 if (_startDate != value)
                 {
                     _startDate = value;
-                    EndDate = _tourType.Days == 0 ? EndDate : StartDate.AddDays(_tourType.Days - 1);
+                    //EndDate = _tourType.Days == 0 ? EndDate : StartDate.AddDays(_tourType.Days - 1);
                     OnPropertyChanged(() => StartDate, true);
                 }
             }
@@ -138,53 +136,11 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private ObservableCollection<TourOptional> _tourOptionals;
+        public ObservableCollection<TourOptional> TourOptionals { get; set; }
 
-        public ObservableCollection<TourOptional> TourOptionals
-        {
-            get
-            {
-                return _tourOptionals;
-            }
+        public ObservableCollection<TourHotel> TourHotels { get; set; }
 
-            set
-            {
-                _tourOptionals = value;
-                OnPropertyChanged(() => TourOptionals, false);
-            }
-        }
-
-        private ObservableCollection<TourHotel> _tourHotels;
-
-        public ObservableCollection<TourHotel> TourHotels
-        {
-            get
-            {
-                return _tourHotels;
-            }
-            set
-            {
-                _tourHotels = value;
-                OnPropertyChanged(() => TourHotels, true);
-            }
-        }
-
-
-        private ObservableCollection<SubTour> _subTours;
-
-        public ObservableCollection<SubTour> SubTours
-        {
-            get
-            {
-                return _subTours;
-            }
-            set
-            {
-                _subTours = value;
-                OnPropertyChanged(() => SubTours);
-
-            }
-        }
+        public ObservableCollection<SubTour> SubTours { get; set; }
 
         private bool _private;
 

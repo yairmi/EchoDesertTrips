@@ -72,7 +72,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void AgencyUpdated(AgencyEventArgs e)
         {
-            Inventories.Update(e.Agency);
+            Inventories.Update<Agency>(e.Agency, Inventories.Agencies);
 
             if (e.bSendUpdateToClients)
             {

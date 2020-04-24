@@ -87,7 +87,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OptionalUpdated(OptionalEventArgs e)
         {
-            Inventories.Update(e.Optional);
+            Inventories.Update<Optional>(e.Optional, Inventories.Optionals);
         }
 
         public override string ViewTitle => "Optionals";

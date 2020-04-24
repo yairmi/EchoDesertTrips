@@ -12,13 +12,13 @@ namespace EchoDesertTrips.Business.Contracts
     {
         public BroadcastMessage()
         {
-            ReservationsResult = new List<Reservation>();
+            ReservationsResult = new List<ReservationDTO>();
             Inventories = new InventoryData();
         }
         [DataMember]
         public eMsgTypes MessageType { get; set; }
         [DataMember]
-        public List<Reservation> ReservationsResult { get; set; }
+        public List<ReservationDTO> ReservationsResult { get; set; }
         [DataMember]
         public List<int> ReservationsIdsToDelete { get; set; }
         [DataMember]

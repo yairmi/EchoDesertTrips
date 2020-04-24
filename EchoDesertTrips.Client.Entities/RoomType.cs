@@ -1,10 +1,5 @@
 ﻿using Core.Common.Core;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -31,6 +26,19 @@ namespace EchoDesertTrips.Client.Entities
                     _roomTypeName = value;
                     OnPropertyChanged(() => RoomTypeName, true);
                 }
+            }
+        }
+
+        public override int EntityId
+        {
+            get
+            {
+                return RoomTypeId;
+            }
+
+            set
+            {
+                RoomTypeId = value;
             }
         }
 

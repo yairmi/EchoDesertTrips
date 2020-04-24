@@ -43,7 +43,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool IsReservationDirty()
         {
-            var bDirty = SomethingDeleted || (Reservation.IsAnythingDirty() && Reservation.Tours.Count > 0 && (!ViewMode));
+            var bDirty = (Reservation.IsAnythingDirty() && Reservation.Tours.Count > 0 && (!ViewMode));
             if (bDirty != _lastDertinessValue)
             {
                 log.Debug("EditOrderViewModel dirty = " + bDirty);
@@ -67,7 +67,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.OperatorId = CurrentOperator.Operator.OperatorId;
                 ReservationHelper.CreateExternalId(Reservation);
                 Reservation.ActualNumberOfCustomers = Reservation.Customers.Count;
+                Reservation.TotalPrice = ReservationHelper.CalculateReservationTotalPrice(Reservation);
                 Reservation.Lock = false;
+
                 int exceptionPosition = 0;
 
                 if (Reservation.ReservationId == 0) //New Reservation
@@ -92,6 +94,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         var reservation = reservationClient.UpdateReservation(Reservation); //Add or Update but in this case its Update
                         if (reservation.RowVersionConflict)
                         {
+                            log.Debug("Cannot save reservation. reservation.RowVersionConflict is true");
                             var operatorName = reservation.Operator != null ? reservation.Operator.OperatorName : string.Empty;
                             var message = string.Format("Reservation was saved by {0}.\n\nPress \"OK\" to override the changes made by {0}.\nPress \"Cancel\" to cancel your changes.", operatorName);
                             var result = _messageDialogService.ShowOkCancelDialog(message, "Info");
@@ -103,9 +106,12 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         }
                         exceptionPosition = 4;
                         _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, false, false));
-                        //ReservationUpdated?.Invoke(this, new ReservationEventArgs(reservation, false, false));
                     }, "OnSaveCommand", exceptionPosition);
                 }
+            }
+            else
+            {
+                log.Error(string.Format("Cannot save reservation. reservation ID {0} is not valid.", Reservation.ReservationId));
             }
         }
 
@@ -133,27 +139,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
         protected override void OnViewLoaded()
         {
             _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
-            _eventAggregator.GetEvent<CustomerDeletedEvent>().Subscribe(CustomerDeleted);
-            _eventAggregator.GetEvent<PropertyRemovedFromTourEvent>().Subscribe(PropertyRemovedFromTour);
-            SomethingDeleted = false;
         }
 
         private void OnViewUnloaded(object obj)
         {
             _eventAggregator.GetEvent<HotelUpdatedEvent>().Unsubscribe(HotelUpdated);
-            _eventAggregator.GetEvent<CustomerDeletedEvent>().Unsubscribe(CustomerDeleted);
-            _eventAggregator.GetEvent<PropertyRemovedFromTourEvent>().Unsubscribe(PropertyRemovedFromTour);
-        }
-
-        private void CustomerDeleted(object obj)
-        {
-            SomethingDeleted = true;
-        }
-
-
-        private void PropertyRemovedFromTour(object obj)
-        {
-            SomethingDeleted = true;
         }
 
         private void ReservationEditSelectedFinished(EditReservationEventArgs e)
@@ -166,7 +156,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation = e.Reservation;
 
             SelectedTabIndex = e.IsContinual == false ? 0 : 2;
-            e.Reservation = Reservation;
+            //e.Reservation = Reservation;
             CleanAll();
             _eventAggregator.GetEvent<ReservationEditedEvent>().Publish(e);
         }
@@ -188,8 +178,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
         }
-
-        public bool SomethingDeleted;
 
         private int _selectedTabIndex;
         public int SelectedTabIndex

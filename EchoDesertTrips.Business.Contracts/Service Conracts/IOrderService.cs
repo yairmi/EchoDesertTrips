@@ -30,11 +30,11 @@ namespace EchoDesertTrips.Business.Contracts
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
-        Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
+        ReservationDTO[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
-        Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo);
+        Task<ReservationDTO[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
@@ -54,7 +54,7 @@ namespace EchoDesertTrips.Business.Contracts
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]
-        Task<Reservation[]> GetReservationsByIdsAsynchronous(List<int> idList);
+        Task<ReservationDTO[]> GetReservationsByIdsAsynchronous(List<int> idList);
 
         [OperationContract]
         [FaultContract(typeof(NotFoundException))]

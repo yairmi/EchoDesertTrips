@@ -1,14 +1,11 @@
 ﻿using EchoDesertTrips.Business.Common;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EchoDesertTrips.Business.Entities;
 using Core.Common.Contracts;
 using EchoDesertTrips.Data.Contracts.Repository_Interfaces;
 using Core.Common.Exceptions;
+using Core.Common.Core;
 
 namespace EchoDesertTrips.Business.Business_Engines
 {
@@ -26,56 +23,64 @@ namespace EchoDesertTrips.Business.Business_Engines
 
         public Agency GetAgencyById(int id)
         {
-            var agencyRepository = _DataRepositoryFactory.GetDataRepository<IAgencyRepository>();
-            var agency = agencyRepository.Get(id);
-            if (agency == null)
-                throw new NotFoundException(string.Format("Agency was not found"));
-            return agency;
+            return ExecuteGetEntityById(() =>
+            {
+                var agencyRepository = _DataRepositoryFactory.GetDataRepository<IAgencyRepository>();
+                return agencyRepository.Get(id);
+            }, id);
         }
 
         public Hotel GetHotelById(int id)
         {
-            var hotelRepository = _DataRepositoryFactory.GetDataRepository<IHotelRepository>();
-            var hotel = hotelRepository.Get(id);
-            if (hotel == null)
-                throw new NotFoundException(string.Format("Hotel was not found"));
-            return hotel;
+            return ExecuteGetEntityById(() =>
+            {
+                var hotelRepository = _DataRepositoryFactory.GetDataRepository<IHotelRepository>();
+                return hotelRepository.Get(id);
+            }, id);
         }
 
         public Operator GetOperatorById(int id)
         {
-            var operatorRepository = _DataRepositoryFactory.GetDataRepository<IOperatorRepository>();
-            var _operator = operatorRepository.Get(id);
-            if (_operator == null)
-                throw new NotFoundException(string.Format("Operator was not found"));
-            return _operator;
+            return ExecuteGetEntityById(() =>
+            {
+                var operatorRepository = _DataRepositoryFactory.GetDataRepository<IOperatorRepository>();
+                return operatorRepository.Get(id);
+            }, id);
         }
 
         public Optional GetOptionalById(int id)
         {
-            var optionalRepository = _DataRepositoryFactory.GetDataRepository<IOptionalRepository>();
-            var optional = optionalRepository.Get(id);
-            if (optional == null)
-                throw new NotFoundException(string.Format("Optional was not found"));
-            return optional;
+            return ExecuteGetEntityById(() =>
+            {
+                var optionalRepository = _DataRepositoryFactory.GetDataRepository<IOptionalRepository>();
+                return optionalRepository.Get(id);
+            }, id);
         }
 
         public RoomType GetRoomTypeById(int id)
         {
-            var roomTypeRepository = _DataRepositoryFactory.GetDataRepository<IRoomTypeRepository>();
-            var roomType = roomTypeRepository.Get(id);
-            if (roomType == null)
-                throw new NotFoundException(string.Format("RoomType was not found"));
-            return roomType;
+            return ExecuteGetEntityById(() =>
+            {
+                var roomTypeRepository = _DataRepositoryFactory.GetDataRepository<IRoomTypeRepository>();
+                return roomTypeRepository.Get(id);
+            }, id);
         }
 
         public TourType GetTourTypeById(int id)
         {
-            var tourTypeRepository = _DataRepositoryFactory.GetDataRepository<ITourTypeRepository>();
-            var tourType = tourTypeRepository.Get(id);
-            if (tourType == null)
-                throw new NotFoundException(string.Format("TourType was not found"));
-            return tourType;
+            return ExecuteGetEntityById(() =>
+            {
+                var tourTypeRepository = _DataRepositoryFactory.GetDataRepository<ITourTypeRepository>();
+                return tourTypeRepository.Get(id);
+            }, id);
+        }
+
+        private T ExecuteGetEntityById<T>(Func<T> CodeToExecute, int id) where T: EntityBase
+        {
+            T entity = CodeToExecute();
+            if (entity == null)
+                throw new NotFoundException(string.Format("{0} was not found for id: {1}", typeof(T), id));
+            return entity;
         }
     }
 }

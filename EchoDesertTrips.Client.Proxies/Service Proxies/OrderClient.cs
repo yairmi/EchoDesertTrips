@@ -5,7 +5,6 @@ using Core.Common.ServiceModel;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace EchoDesertTrips.Client.Proxies.Service_Proxies
 {
@@ -33,12 +32,12 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
             return Channel.UpdateReservation(reservation);
         }
 
-        public Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo)
+        public ReservationDTO[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo)
         {
             return Channel.GetReservationsForDayRange(DayFrom, DayTo);
         }
 
-        public Task<Reservation[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
+        public Task<ReservationDTO[]> GetReservationsForDayRangeAsynchronous(DateTime DayFrom, DateTime DayTo)
         {
             return Channel.GetReservationsForDayRangeAsynchronous(DayFrom, DayTo);
         }

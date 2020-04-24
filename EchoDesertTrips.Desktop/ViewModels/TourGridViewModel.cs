@@ -225,10 +225,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             Tours.OrderBy(tour => tour.StartDate);
             OnPropertyChanged(() => TotalPrice);
-            if (e.RemovedItems > 0)
-            {
-                _eventAggregator.GetEvent<PropertyRemovedFromTourEvent>().Publish(null);
-            }
         }
 
         private void TourCancelled(TourEventArgs e)

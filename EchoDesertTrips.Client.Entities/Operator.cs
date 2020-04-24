@@ -97,6 +97,19 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
+        public override int EntityId
+        {
+            get
+            {
+                return OperatorId;
+            }
+
+            set
+            {
+                OperatorId = value;
+            }
+        }
+
         class OperatorValidator : AbstractValidator<Operator>
         {
             public OperatorValidator()

@@ -17,8 +17,8 @@ namespace EchoDesertTrips.Business.Entities
         public string FirstName { get; set; }
         [DataMember]
         public string LastName { get; set; }
-        [DataMember]
-        public string FullName { get; set; }
+        //[DataMember]
+        //public string FullName { get; set; }
         [DataMember]
         public string Phone1 { get; set; }
         [DataMember]

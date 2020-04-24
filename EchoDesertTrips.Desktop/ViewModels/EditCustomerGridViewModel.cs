@@ -100,8 +100,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 Customer = new Customer();
-                Customer.CleanAll();
             }
+            Customer.CleanAll();
         }
 
         private void OnClearCommand(object obj)
@@ -137,8 +137,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             ControllEnabled = CustomersLeft > 0;
-            //if (ControllEnabled)
-                CreateCustomer();
+            CreateCustomer();
         }
 
         public void CustomerDeleted(Object obj)

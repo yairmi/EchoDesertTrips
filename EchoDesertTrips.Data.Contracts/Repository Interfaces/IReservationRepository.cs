@@ -8,10 +8,10 @@ namespace EchoDesertTrips.Data.Contracts.Repository_Interfaces
     public interface IReservationRepository : IDataRepository<Reservation>
     {
         Reservation[] GetReservationByEndDate(DateTime date);
-        Reservation[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo, int customersAmount);
+        ReservationDTO[] GetReservationsForDayRange(DateTime DayFrom, DateTime DayTo);
         Reservation[] GetReservationsByGroupId(int GroupId);
         Reservation[] GetReservationsCustomersByReservationGroupId(int GroupId);
-        Reservation[] GetReservationsByIds(List<int> idList, int customersAmount);
+        ReservationDTO[] GetReservationsByIds(List<int> idList);
         Customer[] GetCustomersByReservationGroupId(int GroupID);
         void RemoveReservation(int reservationId);
         Reservation UpdateReservation(Reservation reservation);

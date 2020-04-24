@@ -174,38 +174,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private HotelRoomTypeWithDaysRanges _hotelRoomTypeWithDaysRanges;
-        public HotelRoomTypeWithDaysRanges hotelRoomTypeWithDaysRanges
-        {
-            get
-            {
-                return _hotelRoomTypeWithDaysRanges;
-            }
-            set
-            {
-                _hotelRoomTypeWithDaysRanges = value;
-                OnPropertyChanged(() => hotelRoomTypeWithDaysRanges, true);
-            }
-        }
-
-        //public event EventHandler<HotelEventArgs> HotelUpdated;
-        //public event EventHandler<HotelEventArgs> HotelCancelled;
+        public HotelRoomTypeWithDaysRanges hotelRoomTypeWithDaysRanges { get; set; }
 
         public class HotelRoomTypeWithDaysRanges : ObjectBase
         {
-            private RangeObservableCollection<HotelRoomTypeWithDaysRange> _hotelRoomTypeWithDaysRanges;
-            public RangeObservableCollection<HotelRoomTypeWithDaysRange> hotelRoomTypeWithDaysRanges
-            {
-                get
-                {
-                    return _hotelRoomTypeWithDaysRanges;
-                }
-                set
-                {
-                    _hotelRoomTypeWithDaysRanges = value;
-                    OnPropertyChanged(() => hotelRoomTypeWithDaysRanges, true);
-                }
-            }
+            public RangeObservableCollection<HotelRoomTypeWithDaysRange> hotelRoomTypeWithDaysRanges { get; set; }
         }
 
         public class HotelRoomTypeWithDaysRange : ObjectBase

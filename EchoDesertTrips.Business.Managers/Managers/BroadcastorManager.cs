@@ -140,7 +140,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
             });
         }
 
-        private List<Reservation> GetUpdatedReservationsByIds(List<ReservationMessage> reservationMessages)
+        private List<ReservationDTO> GetUpdatedReservationsByIds(List<ReservationMessage> reservationMessages)
         {
             return ExecuteFaultHandledOperation(() =>
             {
@@ -151,8 +151,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
                         idList.Add(reservationMessage.ReservationId);
                 }
                 IReservationEngine reservationEngine = _BusinessEngineFactory.GetBusinessEngine<IReservationEngine>();
-                var reservations = reservationEngine.GetReservationsByIds(idList, 1);
-                //reservationEngine.PrepareReservationsForTransmition(reservations);
+                var reservations = reservationEngine.GetReservationsByIds(idList);
                 return reservations.ToList();
             });
         }

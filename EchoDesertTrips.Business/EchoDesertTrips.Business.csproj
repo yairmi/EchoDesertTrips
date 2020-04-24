@@ -81,6 +81,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -105,6 +106,10 @@
       <Project>{7A8A79DA-AE67-47A9-86BF-586D86EA7093}</Project>
       <Name>EchoDesertTrips.Business.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Business.Contracts\EchoDesertTrips.Business.Contracts.csproj">
+      <Project>{918C91CF-4713-4620-B9C0-8EEC95E5A9B6}</Project>
+      <Name>EchoDesertTrips.Business.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EchoDesertTrips.Business.Entities\EchoDesertTrips.Business.Entities.csproj">
       <Project>{5A7FB8AE-C1D7-412A-8882-E9E952A9256F}</Project>
       <Name>EchoDesertTrips.Business.Entities</Name>
@@ -122,9 +127,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -152,12 +152,18 @@
                 HeadersVisibility="All"
                 RowHeaderWidth="25"
                 FontSize="12"
-                ItemsSource="{Binding TourHotelRoomTypes, Mode=TwoWay}"
+                ItemsSource="{Binding TourHotelRoomTypesGUI, Mode=TwoWay}"
                 AutoGenerateColumns="False"
                 HorizontalAlignment="Left"
                 CellStyle="{StaticResource DataGridBorder}"
                 Margin="3"
                 Height="{Binding Converter={StaticResource maxHeightConverter}, ConverterParameter='530'}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="RowEditEnding">
+                        <i:InvokeCommandAction Command="{Binding DataContext.RoomTypesRowEditEndingCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                               CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <DataGrid.Resources>
                     <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
                         <Setter Property="Padding" Value="-2"/>
@@ -208,7 +214,7 @@
             <DataGrid x:Name="dgOptionals" 
                     Grid.Row="0"  Grid.Column="1" 
                     FontSize="12"
-                    ItemsSource="{Binding Tour.TourOptionals, Mode=TwoWay}"
+                    ItemsSource="{Binding TourOptionalsGUI, Mode=TwoWay}"
                     AutoGenerateColumns="False" 
                     HorizontalAlignment="Left"
                     CellStyle="{StaticResource DataGridBorder}"
@@ -219,8 +225,17 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Viewbox Height="14">
-                                        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </Viewbox>
+                                    <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Command="{Binding DataContext.OptionalCheckedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding DataContext.OptionalCheckedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}"/>
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding DataContext.OptionalUncheckedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
+                                </Viewbox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

@@ -2,8 +2,6 @@
 using Core.Common.Core;
 using FluentValidation;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Xml.Serialization;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -11,8 +9,8 @@ namespace EchoDesertTrips.Client.Entities
     {
         public Reservation()
         {
-            _customers = new ObservableCollection<Customer>(); 
-            _tours = new ObservableCollection<Tour>();
+            Customers = new ObservableCollection<Customer>(); 
+            Tours = new ObservableCollection<Tour>();
             _group = new Group();
             Agency = null;
             Agent = null;
@@ -76,37 +74,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private ObservableCollection<Customer> _customers;
+        public ObservableCollection<Customer> Customers { get; set; }
 
-        public ObservableCollection<Customer> Customers
-        {
-            get
-            {
-                return _customers;
-            }
-
-            set
-            {
-                _customers = value;
-                OnPropertyChanged(() => Customers, false);
-            }
-        }
-
-        private ObservableCollection<Tour> _tours;
-
-        public ObservableCollection<Tour> Tours
-        {
-            get
-            {
-                return _tours;
-            }
-
-            set
-            {
-                _tours = value;
-                OnPropertyChanged(() => Tours, false);
-            }
-        }
+        public ObservableCollection<Tour> Tours { get; set; }
 
         private Agency _agency;
 
@@ -197,6 +167,23 @@ namespace EchoDesertTrips.Client.Entities
                 {
                     _advancePayment = value;
                     OnPropertyChanged(() => AdvancePayment, true);
+                }
+            }
+        }
+
+        private double _totalPrice;
+        public double TotalPrice
+        {
+            get
+            {
+                return _totalPrice;
+            }
+            set
+            {
+                if (_totalPrice != value)
+                {
+                    _totalPrice = value;
+                    OnPropertyChanged(() => TotalPrice, true);
                 }
             }
         }

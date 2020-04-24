@@ -29,8 +29,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
-            RowEditEndingCommand = new DelegateCommand<Customer>(OnRowEditEndingCommand);
-            RowSomeEventCommand = new DelegateCommand<Customer>(OnRowSomeEventCommand);
+            //RowEditEndingCommand = new DelegateCommand<Customer>(OnRowEditEndingCommand);
             DeleteCustomerCommand = new DelegateCommand<Customer>(OnDeleteCustomerCommand);
             EditCustomerCommand = new DelegateCommand<Customer>(OnEditCustomerCommand);
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
@@ -52,29 +51,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (result == MessageDialogResult.CANCEL)
                 return;
             Customers.Remove(customer);
-            _eventAggregator.GetEvent<CustomerDeletedEvent>().Publish(null);
+            Reservation.PropertyDeleted = true;
         }
 
-        //Remove CustomerWrapper
-        public DelegateCommand<Customer> RowSomeEventCommand { get; set; }
-
-        private void OnRowSomeEventCommand(Customer customerWrraper)
-        {
-            if (customerWrraper.IsDirty)
-            {
-                if (customerWrraper.IsValid)
-                {
-                }
-            }
-        }
-        //Remove CustomerWrapper
         private Customer _lastUpdatedCustomer;
 
         private void OnEditCustomerCommand(Customer customer)
         {
             customer.bInEdit = true;
-            _eventAggregator.GetEvent<CustomerEditedEvent>().Publish(customer);
             CurrentCustomerViewModel = _editCustomerGridViewModel;
+            _eventAggregator.GetEvent<CustomerEditedEvent>().Publish(customer);
         }
 
         public DelegateCommand<Customer> EditCustomerCommand { get; }
@@ -94,43 +80,43 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public DelegateCommand<Customer> RowEditEndingCommand { get; set; }
+        //public DelegateCommand<Customer> RowEditEndingCommand { get; set; }
 
-        private void OnRowEditEndingCommand(Customer customer)
-        {
-            if (customer.IsDirty)
-            {
-                _lastUpdatedCustomer = customer;
-                ValidateModel();
-                if (customer.IsValid)
-                {
-                }
-            }
-        }
+        //private void OnRowEditEndingCommand(Customer customer)
+        //{
+        //    if (customer.IsDirty)
+        //    {
+        //        _lastUpdatedCustomer = customer;
+        //        ValidateModel();
+        //        if (customer.IsValid)
+        //        {
+        //        }
+        //    }
+        //}
 
-        private ObservableCollection<Customer> _customers;
+        //private ObservableCollection<Customer> _customers;
 
-        public ObservableCollection<Customer> Customers
-        {
-            get { return _customers; }
-            private set
-            {
-                _customers = value;
-                OnPropertyChanged(() => Customers, false);
-            }
-        }
+        public ObservableCollection<Customer> Customers { get; set; }
+        //{
+        //    get { return _customers; }
+        //    private set
+        //    {
+        //        _customers = value;
+        //        OnPropertyChanged(() => Customers, false);
+        //    }
+        //}
 
         //Provide ViewModelBase model or what properties inside 
         //The ViewModel. ValidateModel will preform a check on all registered models/properties
-        protected override void AddModels(List<ObjectBase> models)
-        {
-            models.Add(_lastUpdatedCustomer);
-        }
+        //protected override void AddModels(List<ObjectBase> models)
+        //{
+        //    models.Add(_lastUpdatedCustomer);
+        //}
 
-        public void ValidateCurrentModel()
-        {
-            ValidateModel();
-        }
+        //public void ValidateCurrentModel()
+        //{
+        //    ValidateModel();
+        //}
 
         protected override void OnViewLoaded()
         {

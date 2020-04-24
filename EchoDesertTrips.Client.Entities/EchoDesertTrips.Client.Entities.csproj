@@ -102,6 +102,7 @@
     <Compile Include="OperatorCustomer.cs" />
     <Compile Include="Optional.cs" />
     <Compile Include="DescriptionsDataForReport.cs" />
+    <Compile Include="ReservationDTO.cs" />
     <Compile Include="ReservationGeneralData1ForReport.cs" />
     <Compile Include="Reservation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

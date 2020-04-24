@@ -86,6 +86,14 @@
       <Project>{B279BD06-45E6-4785-B4D9-EEF8A392CF32}</Project>
       <Name>Core.Common.Contracts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.csproj">
+      <Project>{C4635DF6-CC42-434F-ABF9-A23DCBBC9DEB}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EchoDesertTrips.Business.Contracts\EchoDesertTrips.Business.Contracts.csproj">
+      <Project>{918C91CF-4713-4620-B9C0-8EEC95E5A9B6}</Project>
+      <Name>EchoDesertTrips.Business.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EchoDesertTrips.Business.Entities\EchoDesertTrips.Business.Entities.csproj">
       <Project>{5A7FB8AE-C1D7-412A-8882-E9E952A9256F}</Project>
       <Name>EchoDesertTrips.Business.Entities</Name>

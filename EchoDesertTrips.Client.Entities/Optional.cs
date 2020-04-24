@@ -1,10 +1,5 @@
 ﻿using Core.Common.Core;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -71,23 +66,18 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        //private bool _visible;
+        public override int EntityId
+        {
+            get
+            {
+                return OptionalId;
+            }
 
-        //public bool Visible
-        //{
-        //    get
-        //    {
-        //        return _visible;
-        //    }
-        //    set
-        //    {
-        //        if (_visible != value)
-        //        {
-        //            _visible = value;
-        //            OnPropertyChanged(() => Visible, true);
-        //        }
-        //    }
-        //}
+            set
+            {
+                OptionalId = value;
+            }
+        }
 
         class OptionalValidator : AbstractValidator<Optional>
         {

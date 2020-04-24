@@ -72,7 +72,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void TourTypeUpdated(TourTypeEventArgs e)
         {
-            Inventories.Update(e.TourType);
+            Inventories.Update<TourType>(e.TourType, Inventories.TourTypes);
             if (e.bSendUpdateToClients)
             {
                 try

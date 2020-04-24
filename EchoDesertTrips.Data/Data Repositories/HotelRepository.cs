@@ -1,6 +1,4 @@
-﻿using EchoDesertTrips.Business.Contracts;
-using EchoDesertTrips.Business.Entities;
-using EchoDesertTrips.Data.Contracts.DTOs;
+﻿using EchoDesertTrips.Business.Entities;
 using EchoDesertTrips.Data.Contracts.Repository_Interfaces;
 using System;
 using System.Collections.Generic;
