@@ -142,6 +142,19 @@ namespace EchoDesertTrips.Client.Entities
 
         public ObservableCollection<SubTour> SubTours { get; set; }
 
+        private string _tourTypePrice;
+        public string TourTypePrice
+        {
+            get
+            {
+                return _tourTypePrice;
+            }
+            set
+            {
+                _tourTypePrice = value;
+            }
+        }
+
         private bool _private;
 
         public bool Private

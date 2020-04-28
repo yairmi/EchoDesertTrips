@@ -213,6 +213,10 @@
     <Compile Include="Migrations\202004051734492_fix_customer_migration_problem.Designer.cs">
       <DependentUpon>202004051734492_fix_customer_migration_problem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004280919067_addTableIndexAndTourTypePricesProperty.cs" />
+    <Compile Include="Migrations\202004280919067_addTableIndexAndTourTypePricesProperty.Designer.cs">
+      <DependentUpon>202004280919067_addTableIndexAndTourTypePricesProperty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -299,6 +303,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004051734492_fix_customer_migration_problem.resx">
       <DependentUpon>202004051734492_fix_customer_migration_problem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004280919067_addTableIndexAndTourTypePricesProperty.resx">
+      <DependentUpon>202004280919067_addTableIndexAndTourTypePricesProperty.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

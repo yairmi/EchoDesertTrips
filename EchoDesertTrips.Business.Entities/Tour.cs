@@ -27,6 +27,8 @@ namespace EchoDesertTrips.Business.Entities
         virtual public List<TourHotel> TourHotels { get; set; }
         [DataMember]
         virtual public List<SubTour> SubTours { get; set; }
+        [DataMember]
+        public string TourTypePrice { get; set; }
         public int EntityId
         {
             get

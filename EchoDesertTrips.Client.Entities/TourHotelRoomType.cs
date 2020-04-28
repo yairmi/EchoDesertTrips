@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Common.Core;
 using FluentValidation;
-using System.Windows;
 
 namespace EchoDesertTrips.Client.Entities
 {
@@ -44,6 +43,19 @@ namespace EchoDesertTrips.Client.Entities
             {
                 _persons = value;
                 OnPropertyChanged(() => Persons, true);
+            }
+        }
+
+        private float _pricePerPerson;
+        public float PricePerPerson
+        {
+            get
+            {
+                return _pricePerPerson;
+            }
+            set
+            {
+                _pricePerPerson = value;
             }
         }
 

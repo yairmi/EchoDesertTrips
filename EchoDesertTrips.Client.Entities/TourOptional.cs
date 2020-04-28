@@ -24,33 +24,31 @@ namespace EchoDesertTrips.Client.Entities
 
         public Optional Optional { get; set; }
 
-        private float _originalPricePerPerson;
+        private float _PricePerPerson;
 
-        public float OriginalPricePerPerson
+        public float PricePerPerson
         {
             get
             {
-                return _originalPricePerPerson;
+                return _PricePerPerson;
             }
             set
             {
-                _originalPricePerPerson = value;
-                OnPropertyChanged(() => OriginalPricePerPerson, true);
+                _PricePerPerson = value;
             }
         }
 
-        private float _originalPriceInclusive;
+        private float _priceInclusiveValue;
 
-        public float OriginalPriceInclusive
+        public float PriceInclusiveValue
         {
             get
             {
-                return _originalPriceInclusive;
+                return _priceInclusiveValue;
             }
             set
             {
-                _originalPriceInclusive = value;
-                OnPropertyChanged(() => OriginalPriceInclusive, true);
+                _priceInclusiveValue = value;
             }
         }
 

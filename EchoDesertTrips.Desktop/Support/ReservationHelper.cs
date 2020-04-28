@@ -28,11 +28,25 @@ namespace EchoDesertTrips.Desktop.Support
                     infantPrices.Clear();
                     TimeSpan dt2 = tour.EndDate.Subtract(tour.StartDate);
 
+                    string[] separators1 = { ":" };
+
+                    string[] tourTypePrices = SimpleSplitter.Split(tour.TourTypePrice, separators1);
+                    string AdultPrices = "";
+                    string ChildPrices = "";
+                    string InfantPrices = "";
+
+                    if (tourTypePrices.Count() > 0)
+                        AdultPrices = tourTypePrices[0];
+                    if (tourTypePrices.Count() > 1)
+                        ChildPrices = tourTypePrices[1];
+                    if (tourTypePrices.Count() > 2)
+                        InfantPrices = tourTypePrices[2];
+
                     string[] separators = { ";" };
                     string[] pairs;
-                    if (tour.TourType.AdultPrices != null)
+                    if (AdultPrices != string.Empty)
                     {
-                        pairs = SimpleSplitter.Split(tour.TourType.AdultPrices, separators);
+                        pairs = SimpleSplitter.Split(AdultPrices, separators);
                         foreach (var pair in pairs)
                         {
                             var prices = new Prices();
@@ -40,9 +54,9 @@ namespace EchoDesertTrips.Desktop.Support
                             adultPrices.Add(prices.Persons, prices.Price);
                         }
                     }
-                    if (tour.TourType.ChildPrices != null)
+                    if (ChildPrices != string.Empty)
                     {
-                        pairs = SimpleSplitter.Split(tour.TourType.ChildPrices, separators);
+                        pairs = SimpleSplitter.Split(ChildPrices, separators);
                         foreach (var pair in pairs)
                         {
                             var prices = new Prices();
@@ -50,9 +64,9 @@ namespace EchoDesertTrips.Desktop.Support
                             childPrices.Add(prices.Persons, prices.Price);
                         }
                     }
-                    if (tour.TourType.InfantPrices != null)
+                    if (InfantPrices != string.Empty)
                     {
-                        pairs = SimpleSplitter.Split(tour.TourType.InfantPrices, separators);
+                        pairs = SimpleSplitter.Split(InfantPrices, separators);
                         foreach (var pair in pairs)
                         {
                             var prices = new Prices();
@@ -96,8 +110,8 @@ namespace EchoDesertTrips.Desktop.Support
                     {
                         //totalPrice += tourOptional.PriceInclusive == true? tourOptional.Optional.PriceInclusive:
                         //    tourOptional.Optional.PricePerPerson * reservation.ActualNumberOfCustomers;
-                        totalPrice += tourOptional.PriceInclusive == true ? tourOptional.OriginalPriceInclusive :
-                            tourOptional.OriginalPricePerPerson * reservation.ActualNumberOfCustomers;
+                        totalPrice += tourOptional.PriceInclusive == true ? tourOptional.PriceInclusiveValue :
+                            tourOptional.PricePerPerson * reservation.ActualNumberOfCustomers;
                     }
                     tour.TourHotels.ToList().ForEach((tourHotel) =>
                     {

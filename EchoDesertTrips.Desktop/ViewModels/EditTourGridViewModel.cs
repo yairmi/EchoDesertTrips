@@ -37,6 +37,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             OptionalCheckedCommand = new DelegateCommand<object>(OnOptionalCheckedCommand);
             OptionalUncheckedCommand = new DelegateCommand<object>(OnOptionalUncheckedCommand);
             RoomTypesRowEditEndingCommand = new DelegateCommand<object>(OnRoomTypesRowEditEndingCommand);
+            TourTypeSelectionChangedCommand = new DelegateCommand<object>(OnTourTypeSelectionChangedCommand);
             TourHotelRoomTypesGUI = new ObservableCollection<TourHotelRoomType>();
 
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
@@ -50,6 +51,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<object> OptionalCheckedCommand { get; private set; }
         public DelegateCommand<object> OptionalUncheckedCommand { get; private set; }
         public DelegateCommand<object> RoomTypesRowEditEndingCommand { get; private set; }
+        public DelegateCommand<object> TourTypeSelectionChangedCommand { get; private set; }
 
         /*private void OnEditTourHotelCommand(object tourHotel)
         {
@@ -133,13 +135,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 if (tourOptional.PriceInclusive == true)
                 {
-                    tourOptional.OriginalPriceInclusive = tourOptional.OriginalPriceInclusive == 0 ?
-                        tourOptional.Optional.PriceInclusive : tourOptional.OriginalPriceInclusive;
+                    tourOptional.PriceInclusiveValue = tourOptional.PriceInclusiveValue == 0 ?
+                        tourOptional.Optional.PriceInclusive : tourOptional.PriceInclusiveValue;
                 } 
                 else
                 {
-                    tourOptional.OriginalPricePerPerson = tourOptional.OriginalPricePerPerson == 0 ?
-                           tourOptional.Optional.PricePerPerson : tourOptional.OriginalPricePerPerson;
+                    tourOptional.PricePerPerson = tourOptional.PricePerPerson == 0 ?
+                           tourOptional.Optional.PricePerPerson : tourOptional.PricePerPerson;
                 }
 
                 Tour.TourOptionals.Add(tourOptional);
@@ -170,6 +172,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         Tour.PropertyDeleted = true;//080420 - It safe to do that on tour since the operator cannot delete a tour
                     }
                 }
+            }
+        }
+
+        private void OnTourTypeSelectionChangedCommand(object obj)
+        {
+            int? selectedId = obj as int?;
+            if (Tour == null || selectedId <= 0)
+                return;
+            var tourType = Inventories.TourTypes.FirstOrDefault(t => t.TourTypeId == selectedId);
+            if (tourType != null)
+            {
+                Tour.TourTypePrice = string.Format("{0}:{1}:{2}", tourType.InfantPrices, tourType.ChildPrices, tourType.AdultPrices);
             }
         }
 
