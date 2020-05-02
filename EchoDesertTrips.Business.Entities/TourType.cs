@@ -1,6 +1,8 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace EchoDesertTrips.Business.Entities
@@ -11,14 +13,23 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int TourTypeId { get; set; }
         [DataMember]
+        [Required]
+        [MaxLength(100)]
         public string TourTypeName { get; set; }
         [DataMember]
+        [Column(TypeName = "VARCHAR")]
+        [StringLength(300)]
         public string AdultPrices { get; set; }
         [DataMember]
+        [Column(TypeName = "VARCHAR")]
+        [StringLength(300)]
         public string ChildPrices { get; set; }
         [DataMember]
+        [Column(TypeName = "VARCHAR")]
+        [StringLength(300)]
         public string InfantPrices { get; set; }
         [DataMember]
+        [MaxLength(300)]
         public string Destinations { get; set; }
         [DataMember]
         public bool Private { get; set; }

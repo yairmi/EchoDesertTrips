@@ -185,9 +185,10 @@ namespace EchoDesertTrips.Client.Entities
         {
             public TourTypeValidator()
             {
-                RuleFor(obj => obj.TourTypeName).NotEmpty();
-                //RuleFor(obj => obj.TourDestinations.Count).NotEqual(0);
-                //RuleFor(obj => obj.TourDestination.TourDestinationId).NotEqual(0);
+                RuleFor(obj => obj.TourTypeName).NotEmpty().MaximumLength(100);
+                RuleFor(obj => obj.AdultPrices).MaximumLength(300);
+                RuleFor(obj => obj.ChildPrices).MaximumLength(300);
+                RuleFor(obj => obj.InfantPrices).MaximumLength(300);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace EchoDesertTrips.Business.Entities
@@ -11,10 +12,15 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int OperatorId { get; set; }
         [DataMember]
+        [Required]
+        [MaxLength(50)]
         public string OperatorName { get; set; }
         [DataMember]
+        [Required]
+        [MaxLength(50)]
         public string Password { get; set; }
         [DataMember]
+        [MaxLength(100)]
         public string OperatorFullName { get; set; }
         [DataMember]
         public bool Admin { get; set; }

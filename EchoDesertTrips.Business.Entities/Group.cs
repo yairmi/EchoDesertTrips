@@ -1,6 +1,7 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace EchoDesertTrips.Business.Entities
@@ -10,6 +11,8 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int GroupId { get; set; }
         [DataMember]
+        [Required]
+        [MaxLength(50)]
         public string ExternalId { get; set; }
         [DataMember]
         public bool Updated { get; set; }

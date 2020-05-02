@@ -114,8 +114,8 @@ namespace EchoDesertTrips.Client.Entities
         {
             public OperatorValidator()
             {
-                RuleFor(obj => obj.OperatorName).NotEmpty();
-                RuleFor(obj => obj.Password).NotEmpty();
+                RuleFor(obj => obj.OperatorName).NotEmpty().MaximumLength(50);
+                RuleFor(obj => obj.Password).NotEmpty().MaximumLength(50);
             }
         }
 

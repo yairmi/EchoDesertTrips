@@ -46,7 +46,7 @@ namespace EchoDesertTrips.Client.Entities
         {
             public RoomTypeValidator()
             {
-                RuleFor(obj => obj.RoomTypeName).NotEmpty();
+                RuleFor(obj => obj.RoomTypeName).NotEmpty().MaximumLength(50);
             }
         }
 

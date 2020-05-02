@@ -253,9 +253,9 @@ namespace EchoDesertTrips.Client.Entities
         {
             public CustomerValidator()
             {
-                RuleFor(obj => obj.FirstName).NotEmpty().MaximumLength(20);
-                RuleFor(obj => obj.LastName).NotEmpty().MaximumLength(20);
-                RuleFor(obj => obj.PassportNumber).NotEmpty().MaximumLength(50);
+                RuleFor(obj => obj.FirstName).NotEmpty().MaximumLength(50);
+                RuleFor(obj => obj.LastName).NotEmpty().MaximumLength(50);
+                RuleFor(obj => obj.PassportNumber).NotEmpty().MaximumLength(30);
                 RuleFor(obj => obj.IssueData).LessThanOrEqualTo(DateTime.Now).NotEmpty();
                 RuleFor(obj => obj.ExpireyDate).GreaterThanOrEqualTo(o => o.IssueData).NotEmpty();
                 RuleFor(obj => obj.DateOfBirdth).LessThanOrEqualTo(DateTime.Now);

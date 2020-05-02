@@ -125,9 +125,10 @@ namespace EchoDesertTrips.Client.Entities
         {
             public AgentValidator()
             {
-                RuleFor(obj => obj.FirstName).NotEmpty();
-                RuleFor(obj => obj.LastName).NotEmpty();
-                RuleFor(obj => obj.Phone1).NotEmpty();
+                RuleFor(obj => obj.FirstName).NotEmpty().MaximumLength(50);
+                RuleFor(obj => obj.LastName).NotEmpty().MaximumLength(50);
+                RuleFor(obj => obj.Phone1).NotEmpty().MaximumLength(30);
+                RuleFor(obj => obj.Phone2).MaximumLength(30);
             }
         }
 

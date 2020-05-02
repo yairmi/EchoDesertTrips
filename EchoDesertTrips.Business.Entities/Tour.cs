@@ -2,6 +2,8 @@
 using Core.Common.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace EchoDesertTrips.Business.Entities
@@ -20,6 +22,8 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public DateTime EndDate { get; set; }
         [DataMember]
+        [Required]
+        [MaxLength(100)]
         public string PickupAddress { get; set; }
         [DataMember]
         virtual public List<TourOptional> TourOptionals { get; set; }
@@ -28,6 +32,8 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         virtual public List<SubTour> SubTours { get; set; }
         [DataMember]
+        [Column(TypeName = "VARCHAR")]
+        [StringLength(20)]
         public string TourTypePrice { get; set; }
         public int EntityId
         {

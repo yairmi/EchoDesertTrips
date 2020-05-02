@@ -83,7 +83,7 @@ namespace EchoDesertTrips.Client.Entities
         {
             public OptionalValidator()
             {
-                RuleFor(obj => obj.OptionalDescription).NotEmpty();
+                RuleFor(obj => obj.OptionalDescription).NotEmpty().MaximumLength(50);
             }
         }
 

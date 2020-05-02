@@ -90,6 +90,9 @@
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction Command="{Binding TourTypeSelectionChangedCommand}" CommandParameter="{Binding ElementName=cbTourType, Path=SelectedValue}"/>
                     </i:EventTrigger>
+                    <!--<i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction Command="{Binding TourTypeGotFocusCommand}" CommandParameter="{Binding ElementName=cbTourType, Path=SelectedValue}"/>
+                    </i:EventTrigger>-->                    
                 </i:Interaction.Triggers>
                 </ComboBox>
                 <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="150" Text="{Binding Tour.PickupAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
@@ -129,7 +132,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                             <DataGridTemplateColumn.CellEditingTemplate>
                                 <DataTemplate>
-                                    <ComboBox x:Name="cbHotel" SelectedItem="{Binding Hotel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <ComboBox x:Name="cbHotel" SelectedItem="{Binding Hotel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     SelectedValue="{Binding HotelId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
                                     ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}"
                                     SelectedValuePath="HotelId"

@@ -177,7 +177,7 @@ namespace EchoDesertTrips.Client.Entities
             public TourValidator()
             {
                 RuleFor(obj => obj.TourType.TourTypeName).NotEmpty();
-                RuleFor(obj => obj.PickupAddress).NotEmpty();
+                RuleFor(obj => obj.PickupAddress).NotEmpty().MaximumLength(100);
                 RuleFor(obj => obj.StartDate).NotEqual(default(DateTime));
                 RuleFor(obj => obj.EndDate).GreaterThanOrEqualTo(p => p.StartDate);
             }

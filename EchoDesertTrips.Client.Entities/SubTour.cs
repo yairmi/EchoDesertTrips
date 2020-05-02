@@ -1,4 +1,5 @@
 ﻿using Core.Common.Core;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,19 @@ namespace EchoDesertTrips.Client.Entities
                     OnPropertyChanged(() => DestinationName);
                 }
             }
+        }
+
+        class SubTourValidator : AbstractValidator<SubTour>
+        {
+            public SubTourValidator()
+            {
+                RuleFor(obj => obj.DestinationName).NotEmpty().MaximumLength(100);
+            }
+        }
+
+        protected override IValidator GetValidator()
+        {
+            return new SubTourValidator();
         }
     }
 }

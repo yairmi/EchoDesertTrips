@@ -76,7 +76,8 @@ namespace EchoDesertTrips.Client.Entities
         {
             public HotelValidator()
             {
-                RuleFor(obj => obj.HotelName).NotEmpty();
+                RuleFor(obj => obj.HotelName).NotEmpty().MaximumLength(50);
+                RuleFor(obj => obj.HotelAddress).MaximumLength(100);
                 RuleFor(obj => obj.HotelRoomTypes.Capacity).NotEqual(0);
             }
         }

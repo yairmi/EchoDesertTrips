@@ -404,8 +404,11 @@ namespace EchoDesertTrips.Client.Entities
                 //RuleFor(obj => obj.NumberOfCustomers > 0);
                 RuleFor(obj => obj.ReservationId > 0);
                 RuleFor(obj => obj.AdvancePayment >= 0);
-                RuleFor(obj => obj.Comments).MaximumLength(100);
-                RuleFor(obj => obj.Messages).MaximumLength(100);
+                RuleFor(obj => obj.Comments).MaximumLength(500);
+                RuleFor(obj => obj.Messages).MaximumLength(500);
+                RuleFor(obj => obj.Car).MaximumLength(100);
+                RuleFor(obj => obj.EndIn).MaximumLength(100);
+                RuleFor(obj => obj.Guide).MaximumLength(100);
             }
         }
 

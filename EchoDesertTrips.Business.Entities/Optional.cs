@@ -1,5 +1,6 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace EchoDesertTrips.Business.Entities
@@ -11,6 +12,8 @@ namespace EchoDesertTrips.Business.Entities
         public int OptionalId { get; set; }
 
         [DataMember]
+        [Required]
+        [MaxLength(50)]
         public string OptionalDescription { get; set; }
 
         [DataMember]

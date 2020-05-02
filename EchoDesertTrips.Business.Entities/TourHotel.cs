@@ -2,6 +2,7 @@
 using Core.Common.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -15,8 +16,10 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int TourHotelId { get; set; }
         [DataMember]
+        [Required]
         virtual public Hotel Hotel { get; set; }
         [DataMember]
+        [Required]
         public int? HotelId { get; set; }
         [DataMember]
         virtual public List<TourHotelRoomType> TourHotelRoomTypes { get; set; }

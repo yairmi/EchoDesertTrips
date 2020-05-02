@@ -36,8 +36,10 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public DateTime PickUpTime { get; set; }
         [DataMember]
+        [MaxLength(500)]
         public string Comments { get; set; }
         [DataMember]
+        [MaxLength(500)]
         public string Messages { get; set; }
         [DataMember]
         virtual public Group Group { get; set; }
@@ -54,10 +56,13 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int Infants { get; set; }
         [DataMember]
+        [MaxLength(100)]
         public string Car { get; set; }
         [DataMember]
+        [MaxLength(100)]
         public string Guide { get; set; }
         [DataMember]
+        [MaxLength(100)]
         public string EndIn { get; set; }
         [DataMember]
         [Timestamp]

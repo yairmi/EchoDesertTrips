@@ -38,6 +38,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             OptionalUncheckedCommand = new DelegateCommand<object>(OnOptionalUncheckedCommand);
             RoomTypesRowEditEndingCommand = new DelegateCommand<object>(OnRoomTypesRowEditEndingCommand);
             TourTypeSelectionChangedCommand = new DelegateCommand<object>(OnTourTypeSelectionChangedCommand);
+            TourTypeGotFocusCommand = new DelegateCommand<object>(OnTourTypeGotFocusCommand);
             TourHotelRoomTypesGUI = new ObservableCollection<TourHotelRoomType>();
 
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
@@ -52,7 +53,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<object> OptionalUncheckedCommand { get; private set; }
         public DelegateCommand<object> RoomTypesRowEditEndingCommand { get; private set; }
         public DelegateCommand<object> TourTypeSelectionChangedCommand { get; private set; }
-
+        public DelegateCommand<object> TourTypeGotFocusCommand { get; private set; }
         /*private void OnEditTourHotelCommand(object tourHotel)
         {
             if (tourHotel is TourHotel)
@@ -114,7 +115,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(newTour/*, bIsTourDirty*/, false));
                 }
-                CreateTour();
+                CtrlEnabled = false;
+                //CreateTour();
             }
         }
 
@@ -187,6 +189,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
+        private void OnTourTypeGotFocusCommand(object obj)
+        {
+            if (Tour == null)
+                CreateTour();
+            CtrlEnabled = true;
+        }
+
         private void SetHotelEndDayForEachTourHotel()
         {
             Tour.TourHotels.OrderBy(t => t.HotelStartDay);
@@ -208,8 +217,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (result == MessageDialogResult.CANCEL)
                     return;
             }
-
-            CreateTour();
+            CtrlEnabled = false;
+            //CreateTour();
         }
 
         private bool _lastDertinessValue = false;
@@ -254,6 +263,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
+            CtrlEnabled = false;
             _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
             _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Subscribe(RoomTypeUpdated);
             _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
@@ -289,6 +299,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void TourEdited(Tour tour)
         {
+            CtrlEnabled = true;
             CreateTour(tour);
         }
 
@@ -313,6 +324,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 _tour = value;
                 OnPropertyChanged(() => Tour);
+            }
+        }
+
+        private bool _ctrlEnabled;
+        public bool CtrlEnabled
+        {
+            get
+            {
+                return _ctrlEnabled;
+            }
+            set
+            {
+                _ctrlEnabled = value;
+                OnPropertyChanged(() => CtrlEnabled);
             }
         }
 
