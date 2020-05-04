@@ -14,19 +14,19 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int ReservationId { get; set; }
         [DataMember]
-        virtual public Operator Operator { get; set; }
+        public Operator Operator { get; set; }
         [DataMember]
         public int? OperatorId { get; set; }
         [DataMember]
-        virtual public List<Customer> Customers { get; set; }
+        public List<Customer> Customers { get; set; }
         [DataMember]
-        virtual public List<Tour> Tours { get; set; }
+        public List<Tour> Tours { get; set; }
         [DataMember]
-        virtual public Agency Agency { get; set; }
+        public Agency Agency { get; set; }
         [DataMember]
         public int? AgencyId { get; set; }
         [DataMember]
-        virtual public Agent Agent { get; set; }
+        public Agent Agent { get; set; }
         [DataMember]
         public int? AgentId { get; set; }
         [DataMember]
@@ -42,7 +42,7 @@ namespace EchoDesertTrips.Business.Entities
         [MaxLength(500)]
         public string Messages { get; set; }
         [DataMember]
-        virtual public Group Group { get; set; }
+        public Group Group { get; set; }
         [DataMember]
         public int GroupID { get; set; }
         [DataMember]

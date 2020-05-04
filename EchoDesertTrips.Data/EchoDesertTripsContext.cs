@@ -12,7 +12,7 @@ namespace EchoDesertTrips.Data
             : base("EchoDesertTrips")
         {
             Database.SetInitializer<EchoDesertTripsContext>(null);
-            //Configuration.LazyLoadingEnabled = false;
+            Configuration.LazyLoadingEnabled = false;
             Configuration.ProxyCreationEnabled = false;
         }
 

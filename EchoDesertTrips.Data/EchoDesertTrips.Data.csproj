@@ -221,6 +221,10 @@
     <Compile Include="Migrations\202004301622070_add_Data_Anotations_for_DB_Entities.Designer.cs">
       <DependentUpon>202004301622070_add_Data_Anotations_for_DB_Entities.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005040701412_RemoveLazyLoading.cs" />
+    <Compile Include="Migrations\202005040701412_RemoveLazyLoading.Designer.cs">
+      <DependentUpon>202005040701412_RemoveLazyLoading.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -313,6 +317,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004301622070_add_Data_Anotations_for_DB_Entities.resx">
       <DependentUpon>202004301622070_add_Data_Anotations_for_DB_Entities.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005040701412_RemoveLazyLoading.resx">
+      <DependentUpon>202005040701412_RemoveLazyLoading.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

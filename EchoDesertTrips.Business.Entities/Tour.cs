@@ -26,11 +26,11 @@ namespace EchoDesertTrips.Business.Entities
         [MaxLength(100)]
         public string PickupAddress { get; set; }
         [DataMember]
-        virtual public List<TourOptional> TourOptionals { get; set; }
+        public List<TourOptional> TourOptionals { get; set; }
         [DataMember]
-        virtual public List<TourHotel> TourHotels { get; set; }
+        public List<TourHotel> TourHotels { get; set; }
         [DataMember]
-        virtual public List<SubTour> SubTours { get; set; }
+        public List<SubTour> SubTours { get; set; }
         [DataMember]
         [Column(TypeName = "VARCHAR")]
         [StringLength(20)]

@@ -22,7 +22,7 @@ namespace EchoDesertTrips.Business.Entities
         [Required]
         public int? HotelId { get; set; }
         [DataMember]
-        virtual public List<TourHotelRoomType> TourHotelRoomTypes { get; set; }
+        public List<TourHotelRoomType> TourHotelRoomTypes { get; set; }
         [DataMember]
         public DateTime HotelStartDay { get; set; }
         [DataMember]
