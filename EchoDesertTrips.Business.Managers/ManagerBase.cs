@@ -1,6 +1,7 @@
 ﻿using Core.Common.Exceptions;
 using System;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.ServiceModel;
 
 namespace EchoDesertTrips.Business.Managers
@@ -31,6 +32,20 @@ namespace EchoDesertTrips.Business.Managers
                 log.Error("DbUpdateConcurrencyException: " + ex.Message);
                 var updateEx = new UpdateConcurrencyException(ex.Message, ex);
                 throw new FaultException<UpdateConcurrencyException>(updateEx, updateEx.Message);
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
             }
             catch (Exception ex)
             {

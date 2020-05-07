@@ -568,13 +568,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private ReservationDTO ConvertToReservationDTO(Reservation reservation)
         {
+            var customersExist = reservation.Customers != null && reservation.Customers.Count() > 0;
+            var toursExist = reservation.Tours != null && reservation.Tours.Count() > 0;
             return new ReservationDTO()
             {
                 ReservationId = reservation.ReservationId,
-                FirstName = reservation.Customers[0] == null ? string.Empty : reservation.Customers[0].FirstName,
-                LastName = reservation.Customers[0] == null ? string.Empty : reservation.Customers[0].LastName,
-                Phone1 = reservation.Customers[0] == null ? string.Empty : reservation.Customers[0].Phone1,
-                HotelName = reservation.Tours[0] == null ? string.Empty : reservation.Tours[0].TourHotels[0] == null ? "" : reservation.Tours[0].TourHotels[0].Hotel.HotelName,
+                FirstName = customersExist ? reservation.Customers[0].FirstName : string.Empty,
+                LastName = customersExist ? reservation.Customers[0].LastName : string.Empty,
+                Phone1 = customersExist  ? reservation.Customers[0].Phone1 : string.Empty,
+                HotelName = toursExist ? (reservation.Tours[0].TourHotels[0] == null ? string.Empty : reservation.Tours[0].TourHotels[0].Hotel.HotelName) : string.Empty,
                 AgencyName = reservation.Agency == null ? string.Empty : reservation.Agency.AgencyName,
                 AdvancePayment = reservation.AdvancePayment,
                 TotalPrice = reservation.TotalPrice,
@@ -584,6 +586,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Group = reservation.Group,
                 GroupID = reservation.GroupID,
                 ActualNumberOfCustomers = reservation.ActualNumberOfCustomers,
+                FirstTourTypeName = toursExist ? reservation.Tours[0].TourType.TourTypeName : string.Empty,
+                Private = toursExist ? reservation.Tours[0].TourType.Private : false,
                 Tours = reservation.Tours.ToList()
             };
         }

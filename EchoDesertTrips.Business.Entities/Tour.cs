@@ -33,7 +33,7 @@ namespace EchoDesertTrips.Business.Entities
         public List<SubTour> SubTours { get; set; }
         [DataMember]
         [Column(TypeName = "VARCHAR")]
-        [StringLength(20)]
+        [StringLength(900)]
         public string TourTypePrice { get; set; }
         public int EntityId
         {

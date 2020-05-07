@@ -225,6 +225,14 @@
     <Compile Include="Migrations\202005040701412_RemoveLazyLoading.Designer.cs">
       <DependentUpon>202005040701412_RemoveLazyLoading.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005061219368_removeRequiredFromTourHotel.cs" />
+    <Compile Include="Migrations\202005061219368_removeRequiredFromTourHotel.Designer.cs">
+      <DependentUpon>202005061219368_removeRequiredFromTourHotel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005061358007_TourTypePriceMaxKength900.cs" />
+    <Compile Include="Migrations\202005061358007_TourTypePriceMaxKength900.Designer.cs">
+      <DependentUpon>202005061358007_TourTypePriceMaxKength900.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -320,6 +328,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005040701412_RemoveLazyLoading.resx">
       <DependentUpon>202005040701412_RemoveLazyLoading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005061219368_removeRequiredFromTourHotel.resx">
+      <DependentUpon>202005061219368_removeRequiredFromTourHotel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005061358007_TourTypePriceMaxKength900.resx">
+      <DependentUpon>202005061358007_TourTypePriceMaxKength900.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

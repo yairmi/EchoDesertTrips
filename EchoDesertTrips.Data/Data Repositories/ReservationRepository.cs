@@ -115,6 +115,8 @@ namespace EchoDesertTrips.Data.Data_Repositories
                         Group = reservation.Group,
                         GroupID = reservation.GroupID,
                         ActualNumberOfCustomers = reservation.ActualNumberOfCustomers,
+                        FirstTourTypeName = reservation.Tours.Count() == 0 ? string.Empty : reservation.Tours.FirstOrDefault().TourType.TourTypeName,
+                        Private = reservation.Tours.Count() == 0 ? false : reservation.Tours.FirstOrDefault().TourType.Private,
                         Car = reservation.Car,
                         Guide = reservation.Guide,
                         EndIn = reservation.EndIn,
