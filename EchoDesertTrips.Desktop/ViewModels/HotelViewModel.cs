@@ -87,7 +87,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Notify Server Error: " + ex.Message);
+                    log.Error("Failed notify server after hotel was updated", ex);
                 }
                 CurrentHotelViewModel = null;
             }

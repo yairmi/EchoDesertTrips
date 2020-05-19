@@ -11,8 +11,8 @@ namespace Core.Common.UI.CustomEventArgs
             bIsNew = isNew;
             bSendUpdateToClients = sendUpdateToClients;
         }
-        public TourType TourType { get; set; }
-        public bool bIsNew { get; set; }
-        public bool bSendUpdateToClients { get; set; }
+        public TourType TourType { get; private set; }
+        public bool bIsNew { get; private set; }
+        public bool bSendUpdateToClients { get; private set; }
     }
 }

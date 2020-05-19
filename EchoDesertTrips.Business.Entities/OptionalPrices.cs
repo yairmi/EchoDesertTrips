@@ -11,10 +11,10 @@ namespace EchoDesertTrips.Business.Entities
         public int OptionalPricesId { get; set; }
 
         [DataMember]
-        public float PricePerPerson { get; set; }
+        public decimal PricePerPerson { get; set; }
 
         [DataMember]
-        public float PriceInclusive { get; set; }
+        public decimal PriceInclusive { get; set; }
 
         public int EntityId
         {

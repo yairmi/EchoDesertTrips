@@ -24,9 +24,9 @@ namespace EchoDesertTrips.Client.Entities
 
         public Optional Optional { get; set; }
 
-        private float _PricePerPerson;
+        private decimal _PricePerPerson;
 
-        public float PricePerPerson
+        public decimal PricePerPerson
         {
             get
             {
@@ -38,9 +38,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private float _priceInclusiveValue;
+        private decimal _priceInclusiveValue;
 
-        public float PriceInclusiveValue
+        public decimal PriceInclusiveValue
         {
             get
             {

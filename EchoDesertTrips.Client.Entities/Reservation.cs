@@ -152,9 +152,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private double _advancePayment;
+        private decimal _advancePayment;
 
-        public double AdvancePayment
+        public decimal AdvancePayment
         {
             get
             {
@@ -163,7 +163,7 @@ namespace EchoDesertTrips.Client.Entities
 
             set
             {
-                if (Math.Abs(_advancePayment - value) > 0.0001)
+                if (_advancePayment - value > 0)
                 {
                     _advancePayment = value;
                     OnPropertyChanged(() => AdvancePayment, true);
@@ -171,8 +171,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private double _totalPrice;
-        public double TotalPrice
+        private decimal _totalPrice;
+        public decimal TotalPrice
         {
             get
             {

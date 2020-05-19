@@ -15,7 +15,7 @@ namespace EchoDesertTrips.Desktop.Support
         {
             string[] prices = SimpleSplitter.Split(pair);
             Persons = Int32.Parse(prices[0]);
-            Price = Double.Parse(prices[1]);
+            Price = decimal.Parse(prices[1]);
         }
 
         private int _persons;
@@ -33,9 +33,9 @@ namespace EchoDesertTrips.Desktop.Support
             }
         }
 
-        private double _price;
+        private decimal _price;
 
-        public double Price
+        public decimal Price
         {
             get
             {

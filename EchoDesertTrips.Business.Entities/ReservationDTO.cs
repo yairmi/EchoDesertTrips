@@ -25,9 +25,9 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public string AgencyName { get; set; }
         [DataMember]
-        public double AdvancePayment { get; set; }
+        public decimal AdvancePayment { get; set; }
         [DataMember]
-        public double TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         [DataMember]
         public DateTime PickUpTime { get; set; }
         //[DataMember]

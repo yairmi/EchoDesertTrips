@@ -14,7 +14,7 @@ namespace EchoDesertTrips.Business.DbEntities
         public int HotelId { get; set; }
         public int RoomTypeId { get; set; }
         public RoomType RoomType { get; set; }
-        public float PricePerPerson { get; set; }
+        public decimal PricePerPerson { get; set; }
         public bool Visible { get; set; }
     }
 }

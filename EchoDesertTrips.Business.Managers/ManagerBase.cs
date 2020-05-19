@@ -24,12 +24,12 @@ namespace EchoDesertTrips.Business.Managers
             }
             catch (FaultException ex)
             {
-                log.Error("FaultException: " + ex.Message);
+                log.Error(string.Empty);
                 throw ex;
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                log.Error("DbUpdateConcurrencyException: " + ex.Message);
+                log.Error(string.Empty);
                 var updateEx = new UpdateConcurrencyException(ex.Message, ex);
                 throw new FaultException<UpdateConcurrencyException>(updateEx, updateEx.Message);
             }
@@ -49,7 +49,7 @@ namespace EchoDesertTrips.Business.Managers
             }
             catch (Exception ex)
             {
-                log.Error("Exception: " + ex.Message);
+                log.Error(string.Empty);
                 throw new FaultException(ex.Message);
             }
         }
@@ -62,12 +62,12 @@ namespace EchoDesertTrips.Business.Managers
             }
             catch (FaultException ex)
             {
-                log.Error("FaultException: " + ex.Message);
+                log.Error(string.Empty);
                 throw ex;
             }
             catch (Exception ex)
             {
-                log.Error("Exception: " + ex.Message);
+                log.Error(string.Empty);
                 throw new FaultException(ex.Message);
             }
         }

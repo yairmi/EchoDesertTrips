@@ -16,9 +16,9 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         virtual public Optional Optional { get; set; }
         [DataMember]
-        public float PricePerPerson { get; set; }
+        public decimal PricePerPerson { get; set; }
         [DataMember]
-        public float PriceInclusiveValue { get; set; }
+        public decimal PriceInclusiveValue { get; set; }
         public int EntityId { get; set; }
     }
 }

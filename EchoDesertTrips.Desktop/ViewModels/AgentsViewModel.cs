@@ -83,7 +83,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    log.Error("Notify Server Error: " + ex.Message);
+                    log.Error("Failed to notify server", ex);
                 }
                 CurrentAgentsViewModel = null;
             }

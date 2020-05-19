@@ -96,8 +96,14 @@
                 </i:Interaction.Triggers>
                 </ComboBox>
                 <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="3" Width="150" Text="{Binding Tour.PickupAddress, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, ValidatesOnExceptions=True}" />
-                <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpStartDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.StartDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
-                <DatePicker Grid.Row="3" Grid.Column="1" x:Name="dpEndDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}" />
+                <DatePicker Grid.Row="2" Grid.Column="1" x:Name="dpStartDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.StartDate, Mode=TwoWay}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectedDateChanged">
+                            <i:InvokeCommandAction Command="{Binding StartDaySelectedDateChangedCommand}" CommandParameter="{Binding ElementName=dpStartDay, Path=SelectedDate}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </DatePicker>
+            <DatePicker Grid.Row="3" Grid.Column="1" x:Name="dpEndDay" HorizontalAlignment="Left" Margin="3" Width="150" SelectedDate="{Binding Tour.EndDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=true, ValidatesOnExceptions=true}" />
             <!--<StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal">-->
             <DataGrid x:Name="dgTourHotels"
                 Grid.Row="4" Grid.Column="0"

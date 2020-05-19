@@ -196,8 +196,8 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
                 if (reservations == null)
                 {
-                    log.Error("No reservation found for GroupId: " + GroupId);
-                    NotFoundException ex = new NotFoundException(string.Format("No reservation found for GroupId '{0}'", GroupId));
+                    log.Error($"No reservation found for GroupId: {GroupId}");
+                    NotFoundException ex = new NotFoundException($"No reservation found for GroupId '{GroupId}'");
 
                     throw new FaultException<NotFoundException>(ex, ex.Message);
                 }

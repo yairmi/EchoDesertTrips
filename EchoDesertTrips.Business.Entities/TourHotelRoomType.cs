@@ -18,7 +18,7 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public int Persons { get; set; }
         [DataMember]
-        public float PricePerPerson { get; set; } 
+        public decimal PricePerPerson { get; set; } 
         public int EntityId
         {
             get

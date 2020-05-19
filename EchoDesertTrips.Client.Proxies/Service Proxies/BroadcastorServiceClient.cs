@@ -19,14 +19,14 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
             Channel.NotifyServer(eventData);
         }
 
-        public void RegisterClient(string clientName)
+        public bool RegisterClient(string clientName)
         {
-            Channel.RegisterClient(clientName);
+            return Channel.RegisterClient(clientName);
         }
 
-        public void UnRegisterClient(string clientName)
+        public bool UnRegisterClient(string clientName)
         {
-            Channel.UnRegisterClient(clientName);
+            return Channel.UnRegisterClient(clientName);
         }
     }
 }

@@ -26,6 +26,8 @@ namespace Core.Common.UI.Core
             }
         }
 
+        public bool Registered { get; set; }
+
         public BroadcastorServiceClient client;
 
         public void NotifyServer(string message, eMsgTypes msgType)
@@ -38,7 +40,7 @@ namespace Core.Common.UI.Core
             });
         }
 
-        public void RegisterClient(EventHandler<BroadcastMessage> HandleBroadcast)
+        public bool RegisterClient(EventHandler<BroadcastMessage> HandleBroadcast)
         {
             if (client != null)
             {
@@ -53,39 +55,34 @@ namespace Core.Common.UI.Core
                 new System.ServiceModel.InstanceContext(cb);
             client = new BroadcastorServiceClient(context);
 
-            var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
-
-            client.RegisterClient(operatorNameId);
+            var operatorNameId = $"{ CurrentOperator.Operator.OperatorName } - {CurrentOperator.Operator.OperatorId}";
+            Registered = client.RegisterClient(operatorNameId);
+            return Registered;
         }
 
-        public void UnRegisterClient()
+        public bool UnRegisterClient()
         {
             if (CurrentOperator.Operator == null)
-                return;
-            log.Debug("UnRegisterClient Client Started: " + CurrentOperator.Operator.OperatorName);
+                return true;
+            bool bSucceeded = false;
             var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
-            try
+
+            if (client == null)
             {
-                if (client == null)
-                {
-                    CreateClient();
-                    log.Debug("UnRegisterClient. Client was NULL. After Client Creation");
-                }
-                else
-                if (client != null && client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
-                {
-                    client.Abort();
-                    client = null;
-                    CreateClient();
-                    log.Debug("UnRegisterClient. Client was NOT NULL. After Client Creation");
-                }
-                client.UnRegisterClient(operatorNameId);
-                log.Debug("UnRegisterClient. After UnRegister Client");
+                CreateClient();
+                log.Debug("Client was NULL. After Client Creation");
             }
-            catch (Exception ex)
+            else
+            if (client != null && client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
             {
-                log.Error("UnRegisterClient Exception: " + ex.Message);
+                client.Abort();
+                client = null;
+                CreateClient();
+                log.Debug("Client was NOT NULL. After Client Creation");
             }
+            bSucceeded = client.UnRegisterClient(operatorNameId);
+
+            return bSucceeded;
         }
 
         private void CreateClient()

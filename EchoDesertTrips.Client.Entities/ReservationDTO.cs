@@ -126,8 +126,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private double _advancePayment;
-        public double AdvancePayment
+        private decimal _advancePayment;
+        public decimal AdvancePayment
         {
             get
             {
@@ -143,8 +143,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private double _totalPrice;
-        public double TotalPrice
+        private decimal _totalPrice;
+        public decimal TotalPrice
         {
             get
             {

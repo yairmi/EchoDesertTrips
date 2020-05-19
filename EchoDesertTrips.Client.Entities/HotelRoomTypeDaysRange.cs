@@ -51,8 +51,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private float _pricePerPerson;
-        public float PricePerPerson
+        private decimal _pricePerPerson;
+        public decimal PricePerPerson
         {
             get
             {

@@ -10,7 +10,7 @@ namespace Core.Common.UI.CustomEventArgs
             RoomType = roomType;
             bIsNew = isNew;
         }
-        public RoomType RoomType { get; set; }
-        public bool bIsNew { get; set; }
+        public RoomType RoomType { get; private set; }
+        public bool bIsNew { get; private set; }
     }
 }

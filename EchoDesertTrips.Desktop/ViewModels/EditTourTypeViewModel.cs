@@ -207,7 +207,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 int i = 0;
                 foreach(var description in TourType.TourTypeDescriptions)
                 {
-                    description.DayNumber = String.Format("Day {0}", i + 1);
+                    description.DayNumber = $"Day {i}";
                     i++;
                 }
             }
@@ -217,7 +217,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 for (int i = currentCount+1; i <= _days; i++)
                 {
-                    TourType.TourTypeDescriptions.Add(new TourTypeDescription() { DayNumber=String.Format("Day {0}", i)});
+                    TourType.TourTypeDescriptions.Add(new TourTypeDescription() { DayNumber=$"Day {i}" });
                 }
             }
             else

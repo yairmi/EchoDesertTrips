@@ -10,7 +10,7 @@ namespace Core.Common.UI.CustomEventArgs
             Operator = oper;
             bIsNew = isNew;
         }
-        public Operator Operator { get; set; }
-        public bool bIsNew { get; set; }
+        public Operator Operator { get; private set; }
+        public bool bIsNew { get; private set; }
     }
 }

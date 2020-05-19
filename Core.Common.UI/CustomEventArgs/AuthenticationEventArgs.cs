@@ -9,6 +9,6 @@ namespace Core.Common.UI.CustomEventArgs
         {
             Operator = op;
         }
-        public Operator Operator { get; set; }
+        public Operator Operator { get; private set; }
     }
 }

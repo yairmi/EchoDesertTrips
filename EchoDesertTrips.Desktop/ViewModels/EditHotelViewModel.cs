@@ -235,8 +235,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
             }
 
-            private float _pricePerPerson;
-            public float PricePerPerson
+            private decimal _pricePerPerson;
+            public decimal PricePerPerson
             {
                 get
                 {

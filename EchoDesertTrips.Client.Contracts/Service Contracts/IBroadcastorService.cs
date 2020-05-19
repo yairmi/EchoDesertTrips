@@ -12,10 +12,10 @@ namespace EchoDesertTrips.Client.Contracts
     public interface IBroadcastorService
     {
         [OperationContract]
-        void RegisterClient(string clientName);
+        bool RegisterClient(string clientName);
 
-        [OperationContract(IsOneWay = true)]
-        void UnRegisterClient(string clientName);
+        [OperationContract]
+        bool UnRegisterClient(string clientName);
 
         [OperationContract(IsOneWay = true)]
         void NotifyServer(EventDataType eventData);

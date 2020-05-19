@@ -83,7 +83,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                         }
                                         else
                                         {
-                                            log.Error("Fail to update Day Range.");
+                                            log.Error("ERROR! Fail to update Day Range.");
                                         }
                                     }
                                 }

@@ -56,15 +56,15 @@ namespace Core.Common.UI.Core
 
         protected virtual void OnViewLoaded() { }
 
-        protected void WithClient<T>(T proxy, Action<T> codeToExecute, string methodName = "", int position = 0)
+        protected void WithClient<T>(T proxy, Action<T> codeToExecute)
         {
             try
             {
                 codeToExecute.Invoke(proxy);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                log.Error(string.Format("Method Name {0} failed in postion {1}. Exception: {2}", methodName, position, e.Message));
+                log.Error(string.Empty, ex);
             }
             finally
             {

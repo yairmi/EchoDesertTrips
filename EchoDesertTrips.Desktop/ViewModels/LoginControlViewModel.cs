@@ -43,11 +43,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 var oper = operatorClient.GetOperator(op.OperatorName, op.Password);
                 if (oper != null)
                 {
+                    log.Info($"Loggin Successfully. Operator Name = {oper.OperatorName}, Operator ID = {oper.OperatorId}");
+                    CurrentOperator.Operator = oper;
+                    
                     _eventAggregator.GetEvent<AuthenticatedEvent>().Publish(new AuthenticationEventArgs(oper));
+
                 }
                 else
                     AuthenticationFailed = true;
-            }, "OnLoginCommand");
+            });
         }
 
         protected override void OnViewLoaded()

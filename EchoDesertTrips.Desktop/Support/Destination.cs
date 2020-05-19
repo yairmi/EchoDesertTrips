@@ -11,7 +11,7 @@ namespace EchoDesertTrips.Desktop.Support
     {
         public string Serialize()
         {
-            return String.Format("{0};", DestinationName);
+            return $"{DestinationName};";
         }
 
         public void Deserialize(string destinationName)

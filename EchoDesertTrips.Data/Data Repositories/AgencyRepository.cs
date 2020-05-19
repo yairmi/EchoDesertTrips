@@ -1,5 +1,6 @@
 ﻿using EchoDesertTrips.Business.Entities;
 using EchoDesertTrips.Data.Contracts.Repository_Interfaces;
+using static Core.Common.Core.Const;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                             }
                             else
                             {
-                                log.Error("Fail to update agent.AgentId: " + agent.AgentId);
+                                log.Error($"Fail to update agent.AgentId: {agent.AgentId}");
                             }
                         }
                     }

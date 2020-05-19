@@ -5,14 +5,13 @@ namespace Core.Common.UI.CustomEventArgs
 {
     public class CustomerEventArgs : EventArgs
     {
-        //Remove CustomerWrapper
         public CustomerEventArgs(Customer customer, bool isNew)
         {
             Customer = customer;
             IsNew = isNew;
         }
-        //Remove CustomerWrapper
-        public Customer Customer { get; set; }
-        public bool IsNew { get; set; }
+
+        public Customer Customer { get; private set; }
+        public bool IsNew { get; private set; }
     }
 }

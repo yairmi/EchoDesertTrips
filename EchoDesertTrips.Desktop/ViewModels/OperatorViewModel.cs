@@ -63,7 +63,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     }
                     catch(Exception ex)
                     {
-                        log.Error("Notify Server Error: " + ex.Message);
+                        log.Error("Failed to Notify Server for saving operator", ex);
                     }
                 });
             }

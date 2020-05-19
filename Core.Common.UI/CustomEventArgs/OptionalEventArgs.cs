@@ -10,7 +10,7 @@ namespace Core.Common.UI.CustomEventArgs
             Optional = optional;
             bIsNew = isNew;
         }
-        public Optional Optional { get; set; }
-        public bool bIsNew { get; set; }
+        public Optional Optional { get; private set; }
+        public bool bIsNew { get; private set; }
     }
 }

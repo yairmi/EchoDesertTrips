@@ -12,7 +12,7 @@ namespace EchoDesertTrips.Desktop.Support
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return System.Convert.ToDouble(value) * System.Convert.ToDouble(parameter);
+            return System.Convert.ToDecimal(value) * System.Convert.ToDecimal(parameter);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -46,9 +46,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private float _pricePerChild;
+        private decimal _pricePerChild;
 
-        public float PricePerChild
+        public decimal PricePerChild
         {
             get
             {
@@ -64,9 +64,9 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private float _pricePerAdult;
+        private decimal _pricePerAdult;
 
-        public float PricePerAdult
+        public decimal PricePerAdult
         {
             get
             {

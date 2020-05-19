@@ -228,7 +228,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                 }
                                 else
                                 {
-                                    log.Error("Fail to locate tour.TourId: " + tour.TourId);
+                                    log.Error($"ERROR! Fail to locate tour.TourId: {tour.TourId}");
                                 }
                             }
 
@@ -308,7 +308,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                                         }
                                                         else
                                                         {
-                                                            log.Error("Fail to locate tourHotelRoomType.TourHotelRoomTypeId: " + tourHotelRoomType.TourHotelRoomTypeId);
+                                                            log.Error($"ERROR! Fail to locate tourHotelRoomType.TourHotelRoomTypeId: {tourHotelRoomType.TourHotelRoomTypeId}");
                                                         }
                                                     }
                                                 });
@@ -316,7 +316,7 @@ namespace EchoDesertTrips.Data.Data_Repositories
                                         }
                                         else
                                         {
-                                            log.Error("Fail to locate tourHotel.TourHotelId: " + tourHotel.TourHotelId);
+                                            log.Error($"Fail to locate tourHotel.TourHotelId: {tourHotel.TourHotelId}");
                                         }
                                     }
                                 });
@@ -402,9 +402,9 @@ namespace EchoDesertTrips.Data.Data_Repositories
 
                     entityContext.SaveChanges();
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (DbUpdateConcurrencyException)
                 {
-                    log.Error("Update Reservation failed. Save was done during edit. Exception: " + ex.Message);
+                    log.Error("ERROR! Update Reservation failed. Save was done during edit. ");
                     bRowVersionConflict = true;
                 }
                 var reservationDB = Get(reservation.ReservationId);

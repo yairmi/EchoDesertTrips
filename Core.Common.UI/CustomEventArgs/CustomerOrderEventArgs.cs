@@ -16,8 +16,8 @@ namespace Core.Common.UI.CustomEventArgs
             IsNew = isNew;
         }
 
-        public Customer Customer { get; set; }
-        public Reservation Reservation { get; set; }
-        public bool IsNew { get; set; }
+        public Customer Customer { get; private set; }
+        public Reservation Reservation { get; private set; }
+        public bool IsNew { get; private set; }
     }
 }

@@ -40,7 +40,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         ~MainViewModel()
         {
-            Client.UnRegisterClient();
+            try
+            {
+                Client.UnRegisterClient();
+            }
+            catch(Exception ex)
+            {
+                log.Error("Failed to UnRegisterClient", ex);
+            }
         }
 
         [Import]
@@ -69,30 +76,65 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnLogOutCommand(object obj)
         {
-            Client.UnRegisterClient();
+            try
+            {
+                bool bSucceeded = Client.UnRegisterClient();
+            }
+            catch(Exception ex)
+            {
+                log.Error("Failed to UnRegisterClient", ex);
+            }
+
+            log.Info($"UnRegisterClient Succeeded for Operator = {CurrentOperator.Operator.OperatorName}"); ;
+
             CurrentOperator.Operator = null;
             CurrentViewModel = _loginControlViewModel;
         }
 
         private void Authenticated(AuthenticationEventArgs e)
         {
-            log.Info("Loggin Successfully. Operator Name: = " + e.Operator.OperatorName + ". Operator ID: =" + e.Operator.OperatorId);
-            CurrentOperator.Operator = e.Operator;
-            CurrentViewModel = _mainTabViewModel;
-
-            log.Debug("LoginControlViewModel_Authenticated: Start Register Client");
+            log.Debug("Start");
+            bool bSucceeded = false;
+            
             try
             {
-                Client.RegisterClient(HandleBroadcast);
+                bSucceeded = Client.RegisterClient(HandleBroadcast);
             }
             catch (Exception ex)
             {
-                log.Error("Exception in Register Clients: " + ex.Message);
+                log.Error("Failed to register client", ex);
             }
+
+            if (bSucceeded == false)
+            {
+                log.Error("Client registration Failed. Working in ReadOnly mode");
+                OperatorForegroundColor = System.Windows.Media.Brushes.DarkRed;
+            }
+            else
+            {
+                log.Info($"RegisterClient succeeded for Operator = {CurrentOperator.Operator.OperatorName}");
+                OperatorForegroundColor = System.Windows.Media.Brushes.Black;
+            }
+
+            CurrentViewModel = _mainTabViewModel;
 
             LoadInventoryAsync();
 
-            log.Debug("OnViewLoaded: Client Registration finished");
+            log.Debug("Finished");
+        }
+
+        private System.Windows.Media.Brush _operatorForegroundColor;
+        public System.Windows.Media.Brush OperatorForegroundColor
+        {
+            get
+            {
+                return _operatorForegroundColor;
+            }
+            set
+            {
+                _operatorForegroundColor = value;
+                OnPropertyChanged(()=> OperatorForegroundColor);
+            }
         }
 
         private void ReservationEditSelected(EditReservationEventArgs e)
@@ -113,7 +155,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public void HandleBroadcast(object sender, BroadcastMessage Message)
         {
-            log.Debug("HandleBroadcast");
+            log.Debug("Start");
             if (Message.MessageType == eMsgTypes.E_RESERVATION)
             {
                 foreach (var reservation in Message.ReservationsResult)
@@ -131,39 +173,39 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 if (inventories.Hotels != null)
                 {
-                    log.Debug("UpdateInventory: Hotel Updated - " + inventories.Hotels[0].HotelName);
+                    log.Debug($"Hotel Updated - {inventories.Hotels[0].HotelName}");
                     Inventories.Update<Hotel>(inventories.Hotels[0], Inventories.Hotels);
                 }
                 else if (inventories.Operators != null)
                 {
-                    log.Debug("UpdateInventory: Operators - " + inventories.Operators[0].OperatorFullName);
+                    log.Debug($"Operator Updated - {inventories.Operators[0].OperatorFullName}");
                     Inventories.Update<Operator>(inventories.Operators[0], Inventories.Operators);
                 }
                 else if (inventories.Optionals != null)
                 {
-                    log.Debug("UpdateInventory: Optionals - " + inventories.Optionals[0].OptionalDescription);
+                    log.Debug($"Optional Updated - {inventories.Optionals[0].OptionalDescription}");
                     Inventories.Update<Optional>(inventories.Optionals[0], Inventories.Optionals);
                     _eventAggregator.GetEvent<OptionalUpdatedEvent>().Publish(new OptionalEventArgs(inventories.Optionals[0], false));
                 }
                 else if (inventories.RoomTypes != null)
                 {
-                    log.Debug("UpdateInventory: RoomTypes - " + inventories.RoomTypes[0].RoomTypeName);
+                    log.Debug($"RoomType Updated - {inventories.RoomTypes[0].RoomTypeName}");
                     Inventories.Update<RoomType>(inventories.RoomTypes[0], Inventories.RoomTypes);
                 }
                 else if (inventories.TourTypes != null)
                 {
-                    log.Debug("UpdateInventory: TourTypes - " + inventories.TourTypes[0].TourTypeName);
+                    log.Debug($"TourType Updated - {inventories.TourTypes[0].TourTypeName}");
                     Inventories.Update<TourType>(inventories.TourTypes[0], Inventories.TourTypes);
                 }
                 else if (inventories.Agencies != null)
                 {
-                    log.Debug("UpdateInventory: Hotel Updated - " + inventories.Agencies[0].AgencyName);
+                    log.Debug($"Agency Updated - {inventories.Agencies[0].AgencyName}");
                     Inventories.Update<Agency>(inventories.Agencies[0], Inventories.Agencies);
                 }
             }
             catch(Exception ex)
             {
-                log.Error("Error! failed to update inventory: " + ex.Message);
+                log.Error("Failed to update inventory", ex);
             }
         }
 
@@ -197,7 +239,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                             }
                             catch(Exception ex)
                             {
-                                log.Error("LoadInventoryAsync Exception:" + ex.Message);
+                                log.Error("Failed to LoadInventoryAsync", ex);
                             }
                         }, null);
                     }

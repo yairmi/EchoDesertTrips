@@ -233,6 +233,14 @@
     <Compile Include="Migrations\202005061358007_TourTypePriceMaxKength900.Designer.cs">
       <DependentUpon>202005061358007_TourTypePriceMaxKength900.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005071504338_tourtypeprice_to_requried.cs" />
+    <Compile Include="Migrations\202005071504338_tourtypeprice_to_requried.Designer.cs">
+      <DependentUpon>202005071504338_tourtypeprice_to_requried.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005130844493_doubletodecimal.cs" />
+    <Compile Include="Migrations\202005130844493_doubletodecimal.Designer.cs">
+      <DependentUpon>202005130844493_doubletodecimal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -334,6 +342,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005061358007_TourTypePriceMaxKength900.resx">
       <DependentUpon>202005061358007_TourTypePriceMaxKength900.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005071504338_tourtypeprice_to_requried.resx">
+      <DependentUpon>202005071504338_tourtypeprice_to_requried.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005130844493_doubletodecimal.resx">
+      <DependentUpon>202005130844493_doubletodecimal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -27,7 +27,7 @@ namespace EchoDesertTrips.Business.Business_Engines
 
                 var reservations = reservationRepository.GetReservationsByIds(idList);
                 if (reservations == null)
-                    throw new NotFoundException(string.Format("No Reservation was found"));
+                    throw new NotFoundException("No Reservation was found");
                 return reservations;
         }
     }

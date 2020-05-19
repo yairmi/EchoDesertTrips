@@ -79,7 +79,7 @@ namespace EchoDesertTrips.Business.Business_Engines
         {
             T entity = CodeToExecute();
             if (entity == null)
-                throw new NotFoundException(string.Format("{0} was not found for id: {1}", typeof(T), id));
+                throw new NotFoundException($"{typeof(T)} was not found for id: {id}");
             return entity;
         }
     }

@@ -29,10 +29,11 @@ namespace EchoDesertTrips.Business.Managers.Managers
         [Import]
         public IBusinessEngineFactory _BusinessEngineFactory;
 
-        public void RegisterClient(string clientName)
+        public bool RegisterClient(string clientName)
         {
-            ExecuteFaultHandledOperation(() =>
+            return ExecuteFaultHandledOperation(() =>
             {
+                bool bSucceeded = false;
                 if (!string.IsNullOrEmpty(clientName))
                 {
                     var callback =
@@ -43,20 +44,24 @@ namespace EchoDesertTrips.Business.Managers.Managers
                         if (clients.Keys.Contains(clientName))
                             clients.Remove(clientName);
                         clients.Add(clientName, callback);
+                        bSucceeded = true;
                     }
                 }
+                return bSucceeded;
             });
         }
 
-        public void UnRegisterClient(string clientName)
+        public bool UnRegisterClient(string clientName)
         {
-            ExecuteFaultHandledOperation(() =>
+            return ExecuteFaultHandledOperation(() =>
             {
+                bool bSucceeded = false;
                 lock (locker)
                 {
                     if (clients.Keys.Contains(clientName))
-                        clients.Remove(clientName);
+                        bSucceeded = clients.Remove(clientName);
                 }
+                return bSucceeded;
             });
         }
 

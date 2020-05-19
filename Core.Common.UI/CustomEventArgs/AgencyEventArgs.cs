@@ -11,8 +11,8 @@ namespace Core.Common.UI.CustomEventArgs
             bIsNew = IsNew;
             bSendUpdateToClients = sendUpdateToClients;
         }
-        public Agency Agency { get; set; }
-        public bool bIsNew { get; set; }
-        public bool bSendUpdateToClients { get; set; }
+        public Agency Agency { get; private set; }
+        public bool bIsNew { get; private set; }
+        public bool bSendUpdateToClients { get; private set; }
     }
 }

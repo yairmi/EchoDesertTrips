@@ -18,7 +18,7 @@ namespace EchoDesertTrips.Business.DbEntities
         public int? AgencyId { get; set; }
         public Agent Agent { get; set; }
         public int? AgentId { get; set; }
-        public double AdvancePayment { get; set; }
+        public decimal AdvancePayment { get; set; }
         public DateTime PickUpTime { get; set; }
         public string Comments { get; set; }
         public string Messages { get; set; }

@@ -66,7 +66,7 @@ namespace EchoDesertTrips.Business.Managers.Managers
 
                 if (customer == null)
                 {
-                    NotFoundException ex = new NotFoundException(string.Format("Trip ID: {0} was not foudn", CustomerId));
+                    NotFoundException ex = new NotFoundException($"CustomerId: {CustomerId} was not foudn");
                     //Wrap this in something called SOAP vault, which will get transmitted through
                     //The SOAP message, and then the client will know how to handle that later.
                     //WCF allows as to do this with something called a FaultException of T.

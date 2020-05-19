@@ -2,6 +2,7 @@
 using Core.Common.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -32,6 +33,8 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public List<SubTour> SubTours { get; set; }
         [DataMember]
+        [Required]
+        [DefaultValue("")]
         [Column(TypeName = "VARCHAR")]
         [StringLength(900)]
         public string TourTypePrice { get; set; }

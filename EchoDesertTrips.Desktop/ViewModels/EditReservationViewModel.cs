@@ -3,7 +3,7 @@ using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Desktop.Support;
-using System;
+using static Core.Common.Core.Const;
 using System.Windows;
 using System.ComponentModel.Composition;
 using Core.Common.UI.PubSubEvent;
@@ -46,7 +46,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             var bDirty = (Reservation.IsAnythingDirty() && Reservation.Tours.Count > 0 && (!ViewMode));
             if (bDirty != _lastDertinessValue)
             {
-                log.Debug("EditOrderViewModel dirty = " + bDirty);
+                log.Debug($"Dirty = {bDirty}");
                 _lastDertinessValue = bDirty;
             }
             return bDirty;
@@ -70,33 +70,28 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 Reservation.TotalPrice = ReservationHelper.CalculateReservationTotalPrice(Reservation);
                 Reservation.Lock = false;
 
-                int exceptionPosition = 0;
-
                 if (Reservation.ReservationId == 0) //New Reservation
                 {
                     WithClient<IOrderService>(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
                     {
-                        exceptionPosition = 1;
                         var reservation = reservationClient.UpdateReservation(Reservation); //Update or Add
-                        exceptionPosition = 2;
                         if (reservation != null)
                         {
                             _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, true, false));
                         }
-                    }, "OnSaveCommand", exceptionPosition);
+                    });
                 }
                 else if (IsReservationDirty())
                 {
                     WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
                     {
-                        exceptionPosition = 3;
                         var reservationLocal = Reservation;
                         var reservation = reservationClient.UpdateReservation(Reservation); //Add or Update but in this case its Update
                         if (reservation.RowVersionConflict)
                         {
-                            log.Debug("Cannot save reservation. reservation.RowVersionConflict is true");
+                            log.Error("Cannot save reservation. reservation.RowVersionConflict is true");
                             var operatorName = reservation.Operator != null ? reservation.Operator.OperatorName : string.Empty;
-                            var message = string.Format("Reservation was saved by {0}.\n\nPress \"OK\" to override the changes made by {0}.\nPress \"Cancel\" to cancel your changes.", operatorName);
+                            var message = $"Reservation was saved by {operatorName}.\n\nPress \"OK\" to override the changes made by {0}.\nPress \"Cancel\" to cancel your changes.";
                             var result = _messageDialogService.ShowOkCancelDialog(message, "Info");
                             if (result == MessageDialogResult.OK)//Client Win
                             {
@@ -104,14 +99,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 reservation = reservationClient.UpdateReservation(reservationLocal);
                             }
                         }
-                        exceptionPosition = 4;
                         _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, false, false));
-                    }, "OnSaveCommand", exceptionPosition);
+                    });
                 }
             }
             else
             {
-                log.Error(string.Format("Cannot save reservation. reservation ID {0} is not valid.", Reservation.ReservationId));
+                log.Error($"Cannot save reservation. reservation ID = {Reservation.ReservationId} is not valid.");
             }
         }
 
@@ -120,7 +114,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
                 reservationClient.UnLock(ReservationID);
-            }, "UnLock");
+            });
         }
 
         private void OnExitWithoutSavingCommand(object obj)
@@ -150,13 +144,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (e.Reservation == null)
             {
-                e.Reservation = Reservation = new Reservation();
+                Reservation = new Reservation();
+                var tmpEditReservationEventArgs = new EditReservationEventArgs(e.Reservation, e.ViewMode, e.IsContinual);
+                e = new EditReservationEventArgs(Reservation, tmpEditReservationEventArgs.ViewMode, tmpEditReservationEventArgs.IsContinual);
             }
             else
                 Reservation = e.Reservation;
 
             SelectedTabIndex = e.IsContinual == false ? 0 : 2;
-            //e.Reservation = Reservation;
             CleanAll();
             _eventAggregator.GetEvent<ReservationEditedEvent>().Publish(e);
         }

@@ -1,5 +1,6 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
+using static Core.Common.Core.Const;
 using Core.Common.UI.Core;
 using Core.Common.UI.CustomEventArgs;
 using Core.Common.UI.PubSubEvent;
@@ -24,7 +25,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public EditCustomerGridViewModel(IServiceFactory serviceFactory,
             IMessageDialogService messageDialogService)
         {
-            log.Debug("EditCustomerGridViewModel ctor start");
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
@@ -32,7 +32,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
             _eventAggregator.GetEvent<CustomerEditedEvent>().Subscribe(CustomerEdited);
             _eventAggregator.GetEvent<CustomerDeletedEvent>().Subscribe(CustomerDeleted);
-            log.Debug("EditCustomerGridViewModel ctor end");
         }
 
         public DelegateCommand<object> SaveCommand { get; }
@@ -122,7 +121,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (bDirty != _lastDertinessValue)
             {
 
-                log.Debug("EditCustomerGridViewModel dirty = " + bDirty);
+                log.Debug($"Dirty = {bDirty}");
                 _lastDertinessValue = bDirty;
             }
             return bDirty;

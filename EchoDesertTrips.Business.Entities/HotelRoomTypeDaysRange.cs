@@ -17,7 +17,7 @@ namespace EchoDesertTrips.Business.Entities
         [DataMember]
         public DateTime EndDaysRange { get; set; }
         [DataMember]
-        public float PricePerPerson { get; set; }
+        public decimal PricePerPerson { get; set; }
         public int EntityId
         {
             get

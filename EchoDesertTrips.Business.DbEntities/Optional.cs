@@ -10,8 +10,8 @@ namespace EchoDesertTrips.Business.DbEntities
     {
         public int OptionalId { get; set; }
         public string OptionalDescription { get; set; }
-        public float PricePerPerson { get; set; }
-        public float PriceInclusive { get; set; }
+        public decimal PricePerPerson { get; set; }
+        public decimal PriceInclusive { get; set; }
         public bool Visible { get; set; }
     }
 }

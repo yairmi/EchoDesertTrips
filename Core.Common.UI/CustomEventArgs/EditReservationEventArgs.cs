@@ -11,8 +11,8 @@ namespace Core.Common.UI.CustomEventArgs
             ViewMode = viewMode;
             IsContinual = isContinual;
         }
-        public Reservation Reservation { get; set; }
-        public bool ViewMode { get; set; }
-        public bool IsContinual { get; set; }
+        public Reservation Reservation { get; private set; }
+        public bool ViewMode { get; private set; }
+        public bool IsContinual { get; private set; }
     }
 }

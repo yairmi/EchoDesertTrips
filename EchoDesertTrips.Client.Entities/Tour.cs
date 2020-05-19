@@ -16,7 +16,7 @@ namespace EchoDesertTrips.Client.Entities
             SubTours = new ObservableCollection<SubTour>();
             _tourType = new TourType();
             _startDate = DateTime.Today;
-            _endDate = (_tourType == null ||_tourType.Days == 0) ? _endDate : StartDate.AddDays(_tourType.Days - 1);
+            _endDate = DateTime.Today;
             _pickupAddress = string.Empty;
             bInEdit = false;
         }

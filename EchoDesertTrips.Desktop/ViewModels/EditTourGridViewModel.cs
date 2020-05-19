@@ -4,6 +4,7 @@ using Core.Common.UI.Core;
 using Core.Common.UI.CustomEventArgs;
 using Core.Common.UI.PubSubEvent;
 using Core.Common.Utils;
+using static Core.Common.Core.Const;
 using EchoDesertTrips.Client.Entities;
 using System;
 using System.Collections.Generic;
@@ -38,8 +39,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
             OptionalUncheckedCommand = new DelegateCommand<object>(OnOptionalUncheckedCommand);
             RoomTypesRowEditEndingCommand = new DelegateCommand<object>(OnRoomTypesRowEditEndingCommand);
             TourTypeSelectionChangedCommand = new DelegateCommand<object>(OnTourTypeSelectionChangedCommand);
+            StartDaySelectedDateChangedCommand = new DelegateCommand<object>(OnStartDaySelectedDateChangedCommand);
             TourHotelRoomTypesGUI = new ObservableCollection<TourHotelRoomType>();
-
+            
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
             _eventAggregator.GetEvent<TourEditedEvent>().Subscribe(TourEdited);
         }
@@ -52,6 +54,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public DelegateCommand<object> OptionalUncheckedCommand { get; private set; }
         public DelegateCommand<object> RoomTypesRowEditEndingCommand { get; private set; }
         public DelegateCommand<object> TourTypeSelectionChangedCommand { get; private set; }
+        public DelegateCommand<object> StartDaySelectedDateChangedCommand { get; private set; }
         /*private void OnEditTourHotelCommand(object tourHotel)
         {
             if (tourHotel is TourHotel)
@@ -107,11 +110,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 var newTour = TourHelper.CloneTour(Tour);
                 if (Tour.TourId == 0)
                 {
-                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(newTour/*, bIsTourDirty*/, newTour.bInEdit == false));//TODO: set to 1 only if item was removed
+                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(newTour, newTour.bInEdit == false));//TODO: set to 1 only if item was removed
                 }
                 else
                 {
-                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(newTour/*, bIsTourDirty*/, false));
+                    _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(newTour, false));
                 }
                 CreateTour();
             }
@@ -142,7 +145,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     tourOptional.PricePerPerson = tourOptional.PricePerPerson == 0 ?
                            tourOptional.Optional.PricePerPerson : tourOptional.PricePerPerson;
                 }
-
+                tourOptional.TourId = Tour.TourId;
                 Tour.TourOptionals.Add(tourOptional);
             }
         }
@@ -159,7 +162,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     {
                         _currentTourHotel.TourHotelRoomTypes.Add(tourHotelRoomType);
                     }
-                    else log.Debug("Cannot add roomType because Capacity and Persons are empty");
+                    else log.Error("Cannot add roomType because Capacity and Persons are empty");
                 }
                 else
                 {
@@ -182,7 +185,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             var tourType = Inventories.TourTypes.FirstOrDefault(t => t.TourTypeId == selectedId);
             if (tourType != null)
             {
-                Tour.TourTypePrice = string.Format("{0}:{1}:{2}", tourType.InfantPrices, tourType.ChildPrices, tourType.AdultPrices);
+                Tour.TourTypePrice = $"{tourType.InfantPrices}:{tourType.ChildPrices}:{tourType.AdultPrices}";
+                Tour.EndDate = Tour.StartDate.AddDays(tourType.Days - 1);
+            }
+        }
+
+        private void OnStartDaySelectedDateChangedCommand(object obj)
+        {
+            if (Tour != null)
+            {
+                Tour.EndDate = Tour.StartDate.AddDays(Tour.TourType.Days - 1);
             }
         }
 
@@ -218,7 +230,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (bDirty != _lastDertinessValue)
             {
 
-                log.Debug("EditTourGridViewModel dirty = " + bDirty);
+                log.Debug($"Dirty = {bDirty}");
                 _lastDertinessValue = bDirty;
             }
             return bDirty;
@@ -357,7 +369,19 @@ namespace EchoDesertTrips.Desktop.ViewModels
             return bInRange;
         }
 
-        public ObservableCollection<TourOptional> TourOptionalsGUI { get; set; }
+        private ObservableCollection<TourOptional> _tourOptionalsGUI;
+        public ObservableCollection<TourOptional> TourOptionalsGUI
+        {
+            get
+            {
+                return _tourOptionalsGUI;
+            }
+            set
+            {
+                _tourOptionalsGUI = value;
+                OnPropertyChanged(() => TourOptionalsGUI);
+            }
+        }
 
         public void InitTourOptionals()
         {
@@ -412,7 +436,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             catch(Exception ex)
             {
-                log.Error("Exception in OptionalUpdated: " + ex.Message);
+                log.Error("Failed to update tour optional", ex);
             }
         }
 
@@ -450,7 +474,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             catch(Exception ex)
             {
-                log.Error("Exception in RoomTypeUpdated: " + ex.Message);
+                log.Error("Failed to update tour room type", ex);
             }
         }
 
@@ -458,7 +482,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             try
             {
-                log.Info("EditTourGridViewModel::HotelUpdated called");
+                log.Debug("Start");
                 if (Tour == null)
                     return;
                 foreach (var tourHotel in Tour.TourHotels)
@@ -485,7 +509,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                log.Error("Exception in HotelUpdated: " + ex.Message);
+                log.Error("Hotel updated failed", ex);
             }
         }
     }

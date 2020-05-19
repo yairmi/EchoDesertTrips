@@ -1,9 +1,8 @@
-﻿using Core.Common.Extensions;
-using Core.Common.Utils;
+﻿using Core.Common.Utils;
+using static Core.Common.Core.Const;
 using EchoDesertTrips.Client.Entities;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -11,123 +10,104 @@ namespace EchoDesertTrips.Desktop.Support
 {
     public class ReservationHelper
     {
-        public static double CalculateReservationTotalPrice(Reservation reservation)
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static decimal CalculateReservationTotalPrice(Reservation reservation)
         {
-            double totalPrice = 0;
-
-            if (reservation.Tours != null)
+            try
             {
-                var adultPrices = new Dictionary<int, double>();
-                var childPrices = new Dictionary<int, double>();
-                var infantPrices = new Dictionary<int, double>();
+                decimal totalPrice = 0;
 
-                foreach (var tour in reservation.Tours)
+                if (reservation.Tours != null)
                 {
-                    adultPrices.Clear();
-                    childPrices.Clear();
-                    infantPrices.Clear();
-                    TimeSpan dt2 = tour.EndDate.Subtract(tour.StartDate);
+                    var adultPrices = new Dictionary<int, decimal>();
+                    var childPrices = new Dictionary<int, decimal>();
+                    var infantPrices = new Dictionary<int, decimal>();
 
-                    string[] separators1 = { ":" };
-
-                    string[] tourTypePrices = SimpleSplitter.Split(tour.TourTypePrice, separators1);
-                    string AdultPrices = "";
-                    string ChildPrices = "";
-                    string InfantPrices = "";
-
-                    if (tourTypePrices.Count() > 0)
-                        AdultPrices = tourTypePrices[0];
-                    if (tourTypePrices.Count() > 1)
-                        ChildPrices = tourTypePrices[1];
-                    if (tourTypePrices.Count() > 2)
-                        InfantPrices = tourTypePrices[2];
-
-                    string[] separators = { ";" };
-                    string[] pairs;
-                    if (AdultPrices != string.Empty)
+                    foreach (var tour in reservation.Tours)
                     {
-                        pairs = SimpleSplitter.Split(AdultPrices, separators);
-                        foreach (var pair in pairs)
+                        if (tour.TourTypePrice != null && tour.TourTypePrice != string.Empty)
                         {
-                            var prices = new Prices();
-                            prices.Deserialize(pair);
-                            adultPrices.Add(prices.Persons, prices.Price);
+                            adultPrices.Clear();
+                            childPrices.Clear();
+                            infantPrices.Clear();
+                            TimeSpan dt2 = tour.EndDate.Subtract(tour.StartDate);
+
+                            string[] separators1 = { ":" };
+
+                            string[] tourTypePrices = SimpleSplitter.Split(tour.TourTypePrice, separators1);
+                            string AdultPrices = "";
+                            string ChildPrices = "";
+                            string InfantPrices = "";
+
+                            if (tourTypePrices.Count() > 0)
+                                AdultPrices = tourTypePrices[0];
+                            if (tourTypePrices.Count() > 1)
+                                ChildPrices = tourTypePrices[1];
+                            if (tourTypePrices.Count() > 2)
+                                InfantPrices = tourTypePrices[2];
+
+                            AddPersonTypePrices(AdultPrices, adultPrices, reservation, ref totalPrice);
+                            AddPersonTypePrices(ChildPrices, childPrices, reservation, ref totalPrice);
+                            AddPersonTypePrices(InfantPrices, infantPrices, reservation, ref totalPrice);
                         }
-                    }
-                    if (ChildPrices != string.Empty)
-                    {
-                        pairs = SimpleSplitter.Split(ChildPrices, separators);
-                        foreach (var pair in pairs)
+                        else
                         {
-                            var prices = new Prices();
-                            prices.Deserialize(pair);
-                            childPrices.Add(prices.Persons, prices.Price);
+                            //TODO. log message
                         }
-                    }
-                    if (InfantPrices != string.Empty)
-                    {
-                        pairs = SimpleSplitter.Split(InfantPrices, separators);
-                        foreach (var pair in pairs)
+
+                        foreach (var tourOptional in tour.TourOptionals)
                         {
-                            var prices = new Prices();
-                            prices.Deserialize(pair);
-                            infantPrices.Add(prices.Persons, prices.Price);
+                            totalPrice += tourOptional.PriceInclusive == true ? tourOptional.PriceInclusiveValue :
+                                tourOptional.PricePerPerson * reservation.ActualNumberOfCustomers;
                         }
-                    }
-
-                    double value = 0;
-                    if (adultPrices.TryGetValue(reservation.Adults, out value))
-                    {
-                        totalPrice += value * reservation.Adults;
-                    }
-                    else
-                    {
-                        if (adultPrices.Count > 0)
-                            totalPrice += adultPrices[adultPrices.Keys.Max()] * reservation.Adults;
-                    }
-
-                    if (childPrices.TryGetValue(reservation.Childs, out value))
-                    {
-                        totalPrice += value * reservation.Childs;
-                    }
-                    else
-                    {
-                        if (childPrices.Count > 0)
-                            totalPrice += childPrices[childPrices.Keys.Max()] * reservation.Childs;
-                    }
-
-                    if (infantPrices.TryGetValue(reservation.Infants, out value))
-                    {
-                        totalPrice += value * reservation.Infants;
-                    }
-                    else
-                    {
-                        if (infantPrices.Count > 0)
-                            totalPrice += infantPrices[infantPrices.Keys.Max()] * reservation.Infants;
-                    }
-
-                    foreach (var tourOptional in tour.TourOptionals)
-                    {
-                        //totalPrice += tourOptional.PriceInclusive == true? tourOptional.Optional.PriceInclusive:
-                        //    tourOptional.Optional.PricePerPerson * reservation.ActualNumberOfCustomers;
-                        totalPrice += tourOptional.PriceInclusive == true ? tourOptional.PriceInclusiveValue :
-                            tourOptional.PricePerPerson * reservation.ActualNumberOfCustomers;
-                    }
-                    tour.TourHotels.ToList().ForEach((tourHotel) =>
-                    {
-                        tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
+                        tour.TourHotels.ToList().ForEach((tourHotel) =>
                         {
-
-                            foreach (var daysRange in tourHotelRoomType.HotelRoomType.HotelRoomTypeDaysRanges)
+                            tourHotel.TourHotelRoomTypes.ToList().ForEach((tourHotelRoomType) =>
                             {
-                                int days = GetDaysInRange(tourHotel, daysRange);
-                                totalPrice += tourHotelRoomType.Persons * daysRange.PricePerPerson * days;
-                            }
+
+                                foreach (var daysRange in tourHotelRoomType.HotelRoomType.HotelRoomTypeDaysRanges)
+                                {
+                                    int days = GetDaysInRange(tourHotel, daysRange);
+                                    totalPrice += tourHotelRoomType.Persons * daysRange.PricePerPerson * days;
+                                }
+                            });
                         });
-                    });
+                    }
+                }
+                return totalPrice;
+            }
+            catch (Exception ex)
+            {
+                log.Error($"Failed to calculate reservation total price. ReservationId = {reservation.ReservationId} ", ex);
+            }
+            return 0;
+        }
+
+        private static void AddPersonTypePrices(string PersonTypePrices, Dictionary<int, decimal> PersonTypePricesDictionay, Reservation reservation, ref decimal totalPrice)
+        {
+            string[] separators = { ";" };
+            string[] pairs;
+            if (PersonTypePrices != string.Empty)
+            {
+                pairs = SimpleSplitter.Split(PersonTypePrices, separators);
+                foreach (var pair in pairs)
+                {
+                    var prices = new Prices();
+                    prices.Deserialize(pair);
+                    PersonTypePricesDictionay.Add(prices.Persons, prices.Price);
                 }
             }
-            return totalPrice;
+
+            decimal value = 0;
+            if (PersonTypePricesDictionay.TryGetValue(reservation.Adults, out value))
+            {
+                totalPrice += value * reservation.Adults;
+            }
+            else
+            {
+                if (PersonTypePricesDictionay.Count > 0)
+                    totalPrice += PersonTypePricesDictionay[PersonTypePricesDictionay.Keys.Max()] * reservation.Adults;
+            }
         }
 
         private static int GetDaysInRange(TourHotel tourHotel, HotelRoomTypeDaysRange hotelRoomTypeDaysRange)
@@ -146,19 +126,6 @@ namespace EchoDesertTrips.Desktop.Support
 
         public static int GetCustomerLeft(Reservation reservation)
         {
-            /*var customersInHotels = 0;
-            reservation.Tours?.ToList().ForEach((tour) =>
-            {
-                tour.TourHotels?.ToList().ForEach((tourHotel) =>
-                {
-                    tourHotel.TourHotelRoomTypes?.ToList().ForEach((hotelRoomType) =>
-                    {
-                        customersInHotels += (hotelRoomType.Persons);
-                    });
-                });
-            });
-
-            return Math.Max(reservation.Adults + reservation.Childs + reservation.Infants, customersInHotels) - reservation.Customers.Count;*/
             return (reservation.Adults + reservation.Childs + reservation.Infants) - reservation.Customers.Count;
         }
 
@@ -179,28 +146,5 @@ namespace EchoDesertTrips.Desktop.Support
             }
 
         }
-
-        public static void RemoveUnselectedHotels(Reservation reservation)
-        {
-            reservation.Tours.ToList().ForEach((tour) =>
-            {
-                tour.TourHotels.ToList().ForEach((tourHotel) =>
-                {
-                    tourHotel.TourHotelRoomTypes.RemoveItems(t => t.Persons == 0 && t.Capacity == 0);
-                });
-
-                tour.TourHotels.RemoveItems(t => !t.TourHotelRoomTypes.Any());
-            });
-
-            
-        }
-
-        //public static void RemoveUnselectedOptionals(Reservation reservation)
-        //{
-        //    reservation.Tours.ToList().ForEach((tour) =>
-        //    {
-        //        tour.TourOptionals.RemoveItems(t => t.Selected == false);
-        //    });
-        //}
     }
 }

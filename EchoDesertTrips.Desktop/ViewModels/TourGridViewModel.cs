@@ -90,20 +90,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
+        public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes { get; set; }
 
-        public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes
-        {
-            get
-            {
-                return _tourHotelRoomTypes;
-            }
-            set
-            {
-                _tourHotelRoomTypes = value;
-                OnPropertyChanged(() => TourHotelRoomTypes);
-            }
-        }
+        //private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
+
+        //public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes
+        //{
+        //    get
+        //    {
+        //        return _tourHotelRoomTypes;
+        //    }
+        //    set
+        //    {
+        //        _tourHotelRoomTypes = value;
+        //        OnPropertyChanged(() => TourHotelRoomTypes);
+        //    }
+        //}
 
         public int Adults
         {
@@ -179,7 +181,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        public double TotalPrice
+        public decimal TotalPrice
         {
             get
             {

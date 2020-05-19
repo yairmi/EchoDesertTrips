@@ -96,32 +96,25 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void ReservationUpdatedAndNotify(ReservationEventArgs e)
         {
             var reservationDTO = ConvertToReservationDTO(e.Reservation);
-            int exceptionPosition = 0;
             try
             {
                 if (!e.IsNew)
                 {
-                    exceptionPosition = 1;
                     //This is done in order to update the Grid. Remember that in EditTripViewModel the updated trip
                     //Is a temporary object and it is not part of the Grid collection trips.
                     var reservation = _reservations.FirstOrDefault(item => item.ReservationId == e.Reservation.ReservationId);
-                    exceptionPosition = 2;
                     if (reservation != null)
                     {
                         var index = _reservations.IndexOf(_reservations.FirstOrDefault( r => r.ReservationId == reservationDTO.ReservationId));
                         _reservations[index] = reservationDTO;
-                        exceptionPosition = 3;
                         _continualReservations[index] = reservationDTO;
-                        exceptionPosition = 4;
                     }
                 }
                 else
                 {
                     if (IsDayInRange(reservationDTO.Tours[0].StartDate))
                     {
-                        exceptionPosition = 5;
                         _reservations.Add(reservationDTO);
-                        exceptionPosition = 6;
                         _continualReservations.Add(reservationDTO);
                     }
                     else
@@ -130,14 +123,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 if (!e.IsDbWon)
                 {
-                    exceptionPosition = 7;
                     Client.NotifyServer(SerializeReservationMessage(e.Reservation.ReservationId, eOperation.E_UPDATED),
                         eMsgTypes.E_RESERVATION);
                 }
             }
             catch (Exception ex)
             {
-                log.Error("CurrentReservationViewModel_ReservationUpdated failed. Position: " + exceptionPosition + ". error: " + ex.Message);
+                log.Error("Failed in CurrentReservationViewModel_ReservationUpdated", ex);
             }
 
             _eventAggregator.GetEvent<ReservationUpdatedFinishedEvent>().Publish(null);
@@ -251,7 +243,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 catch(Exception ex)
                 {
-                    log.Error(string.Format("Exception in ShowCustomers. exception: {0}", ex.Message));
+                    log.Error("Failed to show customers", ex);
                 }
                 }
                 var disposableClient = reservationClient as IDisposable;
@@ -283,16 +275,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
                 reservation = reservationClient.DeleteReservation(obj.ReservationId);
-            }, "DeleteReservation");
+            });
             if (reservation != null && reservation.Lock == true)
             {
                 Operator Operator = null;
                 WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
                 {
                     Operator = operatorClient.GetOperatorByID(reservation.LockedById);
-                }, "GetOperatorByID");
+                });
                 var operatorName = Operator != null ? Operator.OperatorName : string.Empty;
-                var message = string.Format("Cannot delete reservation. The record is held by {0}.", operatorName);
+                var message = $"Cannot delete reservation. The record is held by {operatorName}.";
                 _messageDialogService.ShowInfoDialog(message, "Info");
              }
              else
@@ -306,16 +298,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 catch(Exception ex)
                 {
-                    log.Error("Notify Server Error: " + ex.Message);
+                    log.Error("Failed to notify server after a reservation was deleted", ex);
                 }
             }
         }
 
         private void OnAddReservationCommand(object arg)
         {
-            log.Debug("ReservationViewModel:OnAddCommand start");
+            log.Debug("Start");
             _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Publish(new EditReservationEventArgs(null, false, false));
-            log.Debug("ReservationViewModel:OnAddCommand end");
+            log.Debug("End");
         }
 
         private bool _bIsContinual = false;
@@ -328,7 +320,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnEditReservationCommand(ReservationDTO reservation)
         {
-            log.Debug(string.Format("ReservationViewModel:OnEditReservationCommand start. ReservationID={0}", reservation.ReservationId));
+            log.Debug($"Start. ReservationId={reservation.ReservationId}");
             Reservation dbReservation = null;
             WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
             {
@@ -348,14 +340,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     Operator = operatorClient.GetOperatorByID(dbReservation.LockedById);
                 });
                 var OperatorName = Operator == null ? string.Empty : Operator.OperatorName;
-                string message = string.Format("Reservation is locked by {0}.\n\n   Press \"OK\" To view the Reservation or\n   Press \"Cancel\" to cancel Edit.", OperatorName);
+                string message = $"Reservation is locked by {OperatorName}.\n\n   Press \"OK\" To view the Reservation or\n   Press \"Cancel\" to cancel Edit.";
                 var result = _messageDialogService.ShowOkCancelDialog(message, "Info");
                 if (result == MessageDialogResult.CANCEL)
                     return;
+                
                 bViewMode = true;
             }
+            else
+            {
+                bViewMode = !Client.Registered;
+            }
+
             _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Publish(new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
-            log.Debug("ReservationViewModel:OnEditReservationCommand end");
+            log.Debug("End");
         }
 
         public override string ViewTitle => "Reservations";
@@ -405,10 +403,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public async void LoadReservationsForDayRangeAsync2()
         {
-            log.Debug("LoadReservationsForDayRangeAsync2 start");
-
             if (!IsInDayRange(_selectedDate))     
             {
+                log.Debug("LoadReservationsForDayRangeAsync2 Start");
                 IsEnabled = false;
                 LoadingVisible = true;
                 _lastSelectedDate = _selectedDate;
@@ -425,17 +422,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                             {
                                 uiContext.Send((x) =>
                                 {
-                                    int exceptionPosition = 0;
                                     try
                                     {
                                         if (reservations.Result != null)
                                         {
                                             _reservations.Clear();
                                             _reservations.AddRange(reservations.Result);
-                                            exceptionPosition = 1;
                                             _continualReservations.Clear();
                                             _continualReservations.AddRange(_reservations);
-                                            exceptionPosition = 2;
                                         }
                                         else
                                         {
@@ -444,7 +438,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                     }
                                     catch(Exception ex)
                                     {
-                                        log.Error(string.Format("LoadReservationsForDayRangeAsync2 exception. ExceptionPosition = {0}. Exception = {1}", exceptionPosition, ex.Message));
+                                        log.Error("Failed to display reservations", ex);
                                     }
                                 }, null);
                             }
@@ -452,9 +446,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     }
                     catch(Exception ex)
                     {
-                        log.Error(string.Format("Exception in LoadReservationsForDayRangeAsync2. exception: {0}", ex.Message));
+                        log.Error("Failed to load reservations", ex);
                     }
                 }
+
                 log.Debug("LoadReservationsForDayRangeAsync2 execution End");
                 var disposableClient = orderClient as IDisposable;
                 disposableClient?.Dispose();
@@ -473,7 +468,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            log.Debug("ReservationViewModel OnViewLoaded Start");
+            log.Debug("Start");
             
             if (ReservationsView == null)
             {
@@ -491,22 +486,19 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void FilterByDate()
         {
-            int exceptionPosition = 0;
             try
             {
                 ReservationsView.Filter = null;
                 ReservationsView.Filter += x =>
                     ((ReservationDTO)x).Tours[0].StartDate == _selectedDate;
-                exceptionPosition = 1;
                 ContinualReservationsView.Filter = null;
-                exceptionPosition = 2;
                 ContinualReservationsView.Filter += x =>
                 ((ReservationDTO)x).Tours.ToList().Exists(tour => _selectedDate > tour.StartDate &&
                 _selectedDate <= tour.EndDate);
             }
             catch (Exception ex)
             {
-                log.Error("Exception in filter by day. Position: " + exceptionPosition + ". Error" + ex.Message);
+                log.Error("Failed to filter dates", ex);
             }
         }
 
@@ -620,7 +612,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var reservation = (ReservationDTO)value;
-            return string.Format("{0}/{1}", reservation.TotalPrice, reservation.TotalPrice - reservation.AdvancePayment);
+            return $"{reservation.TotalPrice}/{reservation.TotalPrice - reservation.AdvancePayment}";
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -666,8 +658,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             var reservation = ((ReservationDTO)(value));
             if (reservation != null)
-                return string.Format("{0}, {1}, Jordan Reservation ID: {2}", reservation.FirstTourTypeName,
-                    reservation.Private ? "Private" : "Regular", reservation.GroupID);
+            {
+                string reservationType = reservation.Private ? "Private" : "Regular";
+                return $"{reservation.FirstTourTypeName}, {reservationType}, Jordan Reservation ID: {reservation.GroupID}";
+            }
             return string.Empty;
         }
 
@@ -683,7 +677,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var reservation = ((ReservationDTO)(value));
-            return reservation != null ? string.Format("{0}", reservation.FirstTourTypeName) : string.Empty;
+            return reservation != null ? reservation.FirstTourTypeName : string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
