@@ -116,5 +116,10 @@ namespace EchoDesertTrips.Client.Proxies.Service_Proxies
         {
             return Channel.GetTourTypeById(id);
         }
+
+        public Agency GetAgencyById(int id)
+        {
+            return Channel.GetAgencyById(id);
+        }
     }
 }

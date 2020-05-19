@@ -42,14 +42,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
             WithClient(_serviceFactory.CreateClient<IInventoryService>(), hotelClient =>
             {
                 dbHotel = hotelClient.GetHotelById(hotel.HotelId);
+                if (dbHotel == null)
+                {
+                    _messageDialogService.ShowInfoDialog("Could not load Hotel,\nHotel was not found.", "Info");
+                    return;
+                }
+                CurrentHotelViewModel =
+                    new EditHotelViewModel(_serviceFactory, _messageDialogService, dbHotel);
             });
-            if (dbHotel == null)
-            {
-                _messageDialogService.ShowInfoDialog("Could not load Hotel,\nHotel was not found.", "Info");
-                return;
-            }
-            CurrentHotelViewModel =
-                new EditHotelViewModel(_serviceFactory, _messageDialogService, dbHotel);
         }
 
         public DelegateCommand<Hotel> EditHotelCommand { get; private set; }

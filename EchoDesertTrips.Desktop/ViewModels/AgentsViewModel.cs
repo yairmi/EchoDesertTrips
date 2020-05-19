@@ -4,10 +4,10 @@ using System.Windows.Data;
 using Core.Common.Contracts;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Entities;
-using System.Linq;
 using static Core.Common.Core.Const;
 using Core.Common.UI.PubSubEvent;
 using Core.Common.UI.CustomEventArgs;
+using EchoDesertTrips.Client.Contracts;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -38,7 +38,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnEditAgencyCommand(Agency agency)
         {
-            CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService, agency);
+            Agency dbAgency = null;
+            WithClient(_serviceFactory.CreateClient<IInventoryService>(), agencyClient =>
+            {
+                dbAgency = agencyClient.GetAgencyById(agency.AgencyId);
+                if (dbAgency == null)
+                {
+                    _messageDialogService.ShowInfoDialog("Could not load Agency,\nTourType was not found.", "Info");
+                    return;
+                }
+                CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService, agency);
+            });
+
         }
 
         public DelegateCommand<Agency> EditAgencyCommand { get; private set; }

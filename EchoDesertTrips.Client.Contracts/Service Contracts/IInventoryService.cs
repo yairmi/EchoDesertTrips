@@ -91,5 +91,8 @@ namespace EchoDesertTrips.Client.Contracts
 
         [OperationContract]
         TourType GetTourTypeById(int id);
+
+        [OperationContract]
+        Agency GetAgencyById(int id);
     }
 }

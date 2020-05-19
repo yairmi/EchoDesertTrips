@@ -46,13 +46,10 @@
                 <RowDefinition Height="40" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <!--<RowDefinition Height="Auto" />-->
         </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <!--<ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>-->
+                <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
             <control:ValidationHeader Grid.Row="0" DataContext="{Binding}" />
         <Grid Grid.Row="1" Grid.Column="0">
@@ -63,11 +60,10 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                <!--<RowDefinition Height="140" />-->
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Margin="3" Text="Tour Type:" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Margin="3" Text="Pickup Address:" />

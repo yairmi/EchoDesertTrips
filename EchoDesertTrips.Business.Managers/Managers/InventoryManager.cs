@@ -398,5 +398,15 @@ namespace EchoDesertTrips.Business.Managers.Managers
                 return inventoryEngine.GetTourTypeById(id);
             });
         }
+
+        public Agency GetAgencyById(int id)
+        {
+            return ExecuteFaultHandledOperation(() =>
+            {
+                IInventoryEngine inventoryEngine = _BusinessEngineFactory.GetBusinessEngine<IInventoryEngine>();
+
+                return inventoryEngine.GetAgencyById(id);
+            });
+        }
     }
 }

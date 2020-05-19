@@ -34,7 +34,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <!--<Button x:Name="btnAddNewCustomer" Grid.Row="0" HorizontalAlignment="Left" Content="Add New" Margin="10,0,0,0" Command="{Binding AddCustomerCommand}" />-->
             <Border x:Name="borderEditCustomerControl" Grid.Row="0"  
@@ -97,7 +97,7 @@
                         <DataGridCheckBoxColumn x:Name="hasVisaColumn" Width="80" IsReadOnly="True" Header="Has Visa" Binding="{Binding HasVisa}"/>
                         <DataGridTextColumn x:Name="nationalityColumn" Width="100" IsReadOnly="True" Header="Nationality" Binding="{Binding Nationality, Mode=TwoWay}"/>
                         <DataGridTextColumn x:Name="phone1Column" Width="75" IsReadOnly="True" Header="Phone 1" Binding="{Binding Phone1, Mode=TwoWay}"/>
-                        <DataGridTextColumn x:Name="phone2Column" Width="75" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
+                        <DataGridTextColumn x:Name="phone2Column" Width="*" IsReadOnly="True" Header="Phone 2" Binding="{Binding Phone2, Mode=TwoWay}"/>
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

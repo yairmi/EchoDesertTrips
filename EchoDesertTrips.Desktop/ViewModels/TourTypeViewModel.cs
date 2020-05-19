@@ -41,13 +41,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             WithClient(_serviceFactory.CreateClient<IInventoryService>(), tourTypeClient =>
             {
                 dbTourType = tourTypeClient.GetTourTypeById(tourType.TourTypeId);
+                if (dbTourType == null)
+                {
+                    _messageDialogService.ShowInfoDialog("Could not load TourType,\nTourType was not found.", "Info");
+                    return;
+                }
+                CurrentTourTypeViewModel = new EditTourTypeViewModel(_serviceFactory, _messageDialogService, dbTourType);
             });
-            if (dbTourType == null)
-            {
-                _messageDialogService.ShowInfoDialog("Could not load TourType,\nTourType was not found.", "Info");
-                return;
-            }
-            CurrentTourTypeViewModel = new EditTourTypeViewModel(_serviceFactory, _messageDialogService, dbTourType);
         }
 
         public DelegateCommand<TourType> EditTourTypeCommand { get; private set; }
