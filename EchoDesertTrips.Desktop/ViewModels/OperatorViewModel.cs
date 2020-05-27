@@ -32,11 +32,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void DeleteCommand(Operator obj)
         {
-            WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
+            try
             {
-                operatorClient.DeleteOperator(obj);
-                Inventories.Operators.Remove(obj);
-            });
+                WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
+                {
+                    operatorClient.DeleteOperator(obj);
+                    Inventories.Operators.Remove(obj);
+                });
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
+            }
+
+            
         }
 
         public DelegateCommand<Operator> SaveOperatorCommand { get; set; }
@@ -46,26 +55,35 @@ namespace EchoDesertTrips.Desktop.ViewModels
             ValidateModel();
             if (op.IsValid)
             {
-                WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
+                try
                 {
-                    bool bIsNew = op.OperatorId == 0;
-                    var savedOperator = operatorClient.UpdateOperator(op);
-                    if (bIsNew)
-                        Inventories.Operators[Inventories.Operators.Count - 1].OperatorId = savedOperator.OperatorId;
-                    else
+                    WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
                     {
-                        CurrentOperator.UpdateOperator(savedOperator);
-                    }
-                    try
-                    {
-                        Client.NotifyServer(
-                            SerializeInventoryMessage(eInventoryTypes.E_OPERATOR, eOperation.E_UPDATED, savedOperator.OperatorId), eMsgTypes.E_INVENTORY);
-                    }
-                    catch(Exception ex)
-                    {
-                        log.Error("Failed to Notify Server for saving operator", ex);
-                    }
-                });
+                        bool bIsNew = op.OperatorId == 0;
+                        var savedOperator = operatorClient.UpdateOperator(op);
+
+                        if (bIsNew)
+                            Inventories.Operators[Inventories.Operators.Count - 1].OperatorId = savedOperator.OperatorId;
+                        else
+                        {
+                            CurrentOperator.UpdateOperator(savedOperator);
+                        }
+
+                        try
+                        {
+                            Client.NotifyServer(
+                                SerializeInventoryMessage(eInventoryTypes.E_OPERATOR, eOperation.E_UPDATED, savedOperator.OperatorId), eMsgTypes.E_INVENTORY);
+                        }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
+                    });
+                }
+                catch(Exception ex)
+                {
+                    log.Error(string.Empty, ex);
+                }
             }
         }
 

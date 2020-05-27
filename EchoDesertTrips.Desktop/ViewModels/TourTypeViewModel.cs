@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Linq;
 using Core.Common.Contracts;
 using Core.Common.UI.Core;
 using EchoDesertTrips.Client.Entities;
@@ -38,16 +37,23 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnEditTourTypeCommand(TourType tourType)
         {
             TourType dbTourType = null;
-            WithClient(_serviceFactory.CreateClient<IInventoryService>(), tourTypeClient =>
+            try
             {
-                dbTourType = tourTypeClient.GetTourTypeById(tourType.TourTypeId);
-                if (dbTourType == null)
+                WithClient(_serviceFactory.CreateClient<IInventoryService>(), tourTypeClient =>
                 {
-                    _messageDialogService.ShowInfoDialog("Could not load TourType,\nTourType was not found.", "Info");
-                    return;
-                }
-                CurrentTourTypeViewModel = new EditTourTypeViewModel(_serviceFactory, _messageDialogService, dbTourType);
-            });
+                    dbTourType = tourTypeClient.GetTourTypeById(tourType.TourTypeId);
+                    if (dbTourType == null)
+                    {
+                        _messageDialogService.ShowInfoDialog("Could not load TourType,\nTourType was not found.", "Info");
+                        return;
+                    }
+                    CurrentTourTypeViewModel = new EditTourTypeViewModel(_serviceFactory, _messageDialogService, dbTourType);
+                });
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
+            }
         }
 
         public DelegateCommand<TourType> EditTourTypeCommand { get; private set; }

@@ -1,17 +1,14 @@
 ﻿using Core.Common.Contracts;
 using Core.Common.Core;
 using Core.Common.UI.Core;
-using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
 using System.Windows.Data;
 using static Core.Common.Core.Const;
-using Core.Common.UI.CustomEventArgs;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -44,11 +41,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnDeleteRoomTypeCommand(RoomType obj)
         {
-            WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+            try
             {
-                inventoryClient.DeleteRoomType(obj);
-                Inventories.RoomTypes.Remove(obj);
-            });
+                WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                {
+                    inventoryClient.DeleteRoomType(obj);
+                    Inventories.RoomTypes.Remove(obj);
+                });
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
+            }
         }
 
         public DelegateCommand<RoomType> SaveRoomTypeCommand { get; set; }
@@ -59,37 +63,45 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             LastUpdatedRoomType = roomType;
             ValidateModel();
+
             if (roomType.IsValid)
             {
-                WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                try
                 {
-                    bool bIsNew = roomType.RoomTypeId == 0;
-                    var savedRoomType = inventoryClient.UpdateRoomType(roomType);
-                    if (bIsNew)
-                        Inventories.RoomTypes[Inventories.RoomTypes.Count - 1].RoomTypeId = savedRoomType.RoomTypeId;
-                    else
+                    WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                     {
-                        foreach (var hotel in Inventories.Hotels)
+                        bool bIsNew = roomType.RoomTypeId == 0;
+                        var savedRoomType = inventoryClient.UpdateRoomType(roomType);
+                        if (bIsNew)
+                            Inventories.RoomTypes[Inventories.RoomTypes.Count - 1].RoomTypeId = savedRoomType.RoomTypeId;
+                        else
                         {
-                            foreach (var hotelRoomType in hotel.HotelRoomTypes)
+                            foreach (var hotel in Inventories.Hotels)
                             {
-                                if (hotelRoomType.RoomType.RoomTypeId == roomType.RoomTypeId)
+                                foreach (var hotelRoomType in hotel.HotelRoomTypes)
                                 {
-                                    hotelRoomType.RoomType.RoomTypeName = roomType.RoomTypeName;
+                                    if (hotelRoomType.RoomType.RoomTypeId == roomType.RoomTypeId)
+                                    {
+                                        hotelRoomType.RoomType.RoomTypeName = roomType.RoomTypeName;
+                                    }
                                 }
                             }
                         }
-                    }
-                    try
-                    {
-                        Client.NotifyServer(
-                            SerializeInventoryMessage(eInventoryTypes.E_ROOM_TYPE, eOperation.E_UPDATED, savedRoomType.RoomTypeId), eMsgTypes.E_INVENTORY);
-                    }
-                    catch(Exception ex)
-                    {
-                        log.Error("Failed notify server after room type was updated", ex);
-                    }
-                });
+                        try
+                        {
+                            Client.NotifyServer(
+                                SerializeInventoryMessage(eInventoryTypes.E_ROOM_TYPE, eOperation.E_UPDATED, savedRoomType.RoomTypeId), eMsgTypes.E_INVENTORY);
+                        }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
+                    });
+                }
+                catch(Exception ex)
+                {
+                    log.Error(string.Empty, ex);
+                }
             }
         }
 

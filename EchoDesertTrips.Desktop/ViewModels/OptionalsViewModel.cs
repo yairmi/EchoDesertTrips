@@ -34,11 +34,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnDeleteCommand(Optional obj)
         {
-            WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+            try
             {
-                inventoryClient.DeleteOptional(obj);
-                Inventories.Optionals.Remove(obj);
-            });
+                WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                {
+                    inventoryClient.DeleteOptional(obj);
+                    Inventories.Optionals.Remove(obj);
+                });
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
+            }
         }
 
         public DelegateCommand<Optional> SaveOptionalCommand { get; set; }
@@ -49,26 +56,34 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             LastUpdatedOptional = optional;
             ValidateModel();
+
             if (optional.IsValid)
             {
-                WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                try
                 {
-                    bool bIsNew = optional.OptionalId == 0;
-                    var savedOptional = inventoryClient.UpdateOptional(optional);
-                    if (bIsNew)
-                        Inventories.Optionals[Inventories.Optionals.Count - 1].OptionalId = savedOptional.OptionalId;
-                    try
+                    WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                     {
-                        Client.NotifyServer(
-                            SerializeInventoryMessage(eInventoryTypes.E_OPTIONAL, eOperation.E_UPDATED, savedOptional.OptionalId), eMsgTypes.E_INVENTORY);
-                    }
-                    catch(Exception ex)
-                    {
-                        log.Error("Failed to notify server after optional was updated", ex);
-                    }
-                });
+                        bool bIsNew = optional.OptionalId == 0;
+                        var savedOptional = inventoryClient.UpdateOptional(optional);
 
-                
+                        if (bIsNew)
+                            Inventories.Optionals[Inventories.Optionals.Count - 1].OptionalId = savedOptional.OptionalId;
+
+                        try
+                        {
+                            Client.NotifyServer(
+                                SerializeInventoryMessage(eInventoryTypes.E_OPTIONAL, eOperation.E_UPDATED, savedOptional.OptionalId), eMsgTypes.E_INVENTORY);
+                        }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
+                    });
+                }
+                catch(Exception ex)
+                {
+                    log.Error(string.Empty, ex);
+                }
             }
         }
 

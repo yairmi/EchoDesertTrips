@@ -272,34 +272,49 @@ namespace EchoDesertTrips.Desktop.ViewModels
             if (result == MessageDialogResult.CANCEL)
                 return;
             Reservation reservation = null;
-            WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
+            try
             {
-                reservation = reservationClient.DeleteReservation(obj.ReservationId);
-            });
-            if (reservation != null && reservation.Lock == true)
-            {
-                Operator Operator = null;
-                WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
+                WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
                 {
-                    Operator = operatorClient.GetOperatorByID(reservation.LockedById);
+                    reservation = reservationClient.DeleteReservation(obj.ReservationId);
                 });
-                var operatorName = Operator != null ? Operator.OperatorName : string.Empty;
-                var message = $"Cannot delete reservation. The record is held by {operatorName}.";
-                _messageDialogService.ShowInfoDialog(message, "Info");
-             }
-             else
-             {
-                _reservations.Remove(obj);
-                _continualReservations.Remove(obj);
-                try
+
+                if (reservation != null && reservation.Lock == true)
                 {
-                    Client.NotifyServer(
-                        SerializeReservationMessage(obj.ReservationId, eOperation.E_DELETED), eMsgTypes.E_RESERVATION);
+                    Operator Operator = null;
+                    try
+                    {
+                        WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
+                        {
+                            Operator = operatorClient.GetOperatorByID(reservation.LockedById);
+                        });
+                    }
+                    catch(Exception ex)
+                    {
+                        log.Error(string.Empty, ex);
+                    }
+                    var operatorName = Operator != null ? Operator.OperatorName : string.Empty;
+                    var message = $"Cannot delete reservation. The record is held by {operatorName}.";
+                    _messageDialogService.ShowInfoDialog(message, "Info");
                 }
-                catch(Exception ex)
+                else
                 {
-                    log.Error("Failed to notify server after a reservation was deleted", ex);
+                    _reservations.Remove(obj);
+                    _continualReservations.Remove(obj);
+                    try
+                    {
+                        Client.NotifyServer(
+                            SerializeReservationMessage(obj.ReservationId, eOperation.E_DELETED), eMsgTypes.E_RESERVATION);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Failed to notify server after a reservation was deleted", ex);
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
             }
         }
 
@@ -322,38 +337,54 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             log.Debug($"Start. ReservationId={reservation.ReservationId}");
             Reservation dbReservation = null;
-            WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
-            {
-                dbReservation = reservationClient.EditReservation(reservation.ReservationId, CurrentOperator.Operator);
-            });
-            if (dbReservation == null)
-            {
-                _messageDialogService.ShowInfoDialog("Could not load reservation,\nmaybe it was deleted in the meantime by another user.", "Info");
-                return;
-            }
             bool bViewMode = false;
-            if (dbReservation.Lock)
-            {
-                Operator Operator = null;
-                WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
-                {
-                    Operator = operatorClient.GetOperatorByID(dbReservation.LockedById);
-                });
-                var OperatorName = Operator == null ? string.Empty : Operator.OperatorName;
-                string message = $"Reservation is locked by {OperatorName}.\n\n   Press \"OK\" To view the Reservation or\n   Press \"Cancel\" to cancel Edit.";
-                var result = _messageDialogService.ShowOkCancelDialog(message, "Info");
-                if (result == MessageDialogResult.CANCEL)
-                    return;
-                
-                bViewMode = true;
-            }
-            else
-            {
-                bViewMode = !Client.Registered;
-            }
 
-            _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Publish(new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
-            log.Debug("End");
+            try
+            {
+                WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
+                {
+                    dbReservation = reservationClient.EditReservation(reservation.ReservationId, CurrentOperator.Operator);
+                });
+                if (dbReservation == null)
+                {
+                    _messageDialogService.ShowInfoDialog("Could not load reservation,\nmaybe it was deleted in the meantime by another user.", "Info");
+                    return;
+                }
+                
+                if (dbReservation.Lock)
+                {
+                    Operator Operator = null;
+                    try
+                    {
+                        WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
+                        {
+                            Operator = operatorClient.GetOperatorByID(dbReservation.LockedById);
+                        });
+                        var OperatorName = Operator == null ? string.Empty : Operator.OperatorName;
+                        string message = $"Reservation is locked by {OperatorName}.\n\n   Press \"OK\" To view the Reservation or\n   Press \"Cancel\" to cancel Edit.";
+                        var result = _messageDialogService.ShowOkCancelDialog(message, "Info");
+                        if (result == MessageDialogResult.CANCEL)
+                            return;
+
+                        bViewMode = true;
+                    }
+                    catch(Exception)
+                    {
+                        throw;
+                    }
+                }
+                else
+                {
+                    bViewMode = !Client.Registered;
+                }
+
+                _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Publish(new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
+                log.Debug("End");
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
+            }
         }
 
         public override string ViewTitle => "Reservations";

@@ -39,17 +39,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnEditHotelCommand(Hotel hotel)
         {
             Hotel dbHotel = null;
-            WithClient(_serviceFactory.CreateClient<IInventoryService>(), hotelClient =>
+            try
             {
-                dbHotel = hotelClient.GetHotelById(hotel.HotelId);
-                if (dbHotel == null)
+                WithClient(_serviceFactory.CreateClient<IInventoryService>(), hotelClient =>
                 {
-                    _messageDialogService.ShowInfoDialog("Could not load Hotel,\nHotel was not found.", "Info");
-                    return;
-                }
-                CurrentHotelViewModel =
-                    new EditHotelViewModel(_serviceFactory, _messageDialogService, dbHotel);
-            });
+                    dbHotel = hotelClient.GetHotelById(hotel.HotelId);
+
+                    if (dbHotel == null)
+                    {
+                        _messageDialogService.ShowInfoDialog("Could not load Hotel,\nHotel was not found.", "Info");
+                        return;
+                    }
+
+                    CurrentHotelViewModel =
+                        new EditHotelViewModel(_serviceFactory, _messageDialogService, dbHotel);
+                });
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
+            }
         }
 
         public DelegateCommand<Hotel> EditHotelCommand { get; private set; }

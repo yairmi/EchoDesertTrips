@@ -47,41 +47,50 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (TourType.IsValid)
             {
-                WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                TourType.Destinations = string.Empty;
+                byte days = 0;
+                foreach (var destination in Destinations)
                 {
-                    bool bIsNew = TourType.TourTypeId == 0;
+                    if (days >= TourType.Days)
+                        break;
+                    TourType.Destinations += destination.Serialize();
+                    days++;
+                }
 
-                    TourType.Destinations = string.Empty;
-                    byte days = 0;
-                    foreach (var destination in Destinations)
+                TourType.AdultPrices = string.Empty;
+                foreach (var adultPrice in AdultPrices)
+                {
+                    TourType.AdultPrices += adultPrice.Serialize();
+                }
+
+                TourType.ChildPrices = string.Empty;
+                foreach (var childPrice in ChildPrices)
+                {
+                    TourType.ChildPrices += childPrice.Serialize();
+                }
+
+                TourType.InfantPrices = string.Empty;
+                foreach (var infantPrice in InfantPrices)
+                {
+                    TourType.InfantPrices += infantPrice.Serialize();
+                }
+
+                TourType savedTourType = null;
+                bool bIsNew = TourType.TourTypeId == 0;
+
+                try
+                {
+                    WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                     {
-                        if (days >= TourType.Days)
-                            break;
-                        TourType.Destinations += destination.Serialize();
-                        days++;
-                    }
 
-                    TourType.AdultPrices = string.Empty;
-                    foreach (var adultPrice in AdultPrices)
-                    {
-                        TourType.AdultPrices += adultPrice.Serialize();
-                    }
-
-                    TourType.ChildPrices = string.Empty;
-                    foreach (var childPrice in ChildPrices)
-                    {
-                        TourType.ChildPrices += childPrice.Serialize();
-                    }
-
-                    TourType.InfantPrices = string.Empty;
-                    foreach (var infantPrice in InfantPrices)
-                    {
-                        TourType.InfantPrices += infantPrice.Serialize();
-                    }
-
-                    var savedTourType = inventoryClient.UpdateTourType(TourType);
-                    _eventAggregator.GetEvent<TourTypeUpdatedEvent>().Publish(new TourTypeEventArgs(savedTourType, bIsNew));
-                });
+                        savedTourType = inventoryClient.UpdateTourType(TourType);
+                        _eventAggregator.GetEvent<TourTypeUpdatedEvent>().Publish(new TourTypeEventArgs(savedTourType, bIsNew));
+                    });
+                }
+                catch(Exception ex)
+                {
+                    log.Error(string.Empty, ex);
+                }
             }
         }
 

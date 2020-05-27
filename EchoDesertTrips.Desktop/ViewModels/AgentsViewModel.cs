@@ -39,17 +39,25 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private void OnEditAgencyCommand(Agency agency)
         {
             Agency dbAgency = null;
-            WithClient(_serviceFactory.CreateClient<IInventoryService>(), agencyClient =>
+            try
             {
-                dbAgency = agencyClient.GetAgencyById(agency.AgencyId);
-                if (dbAgency == null)
+                WithClient(_serviceFactory.CreateClient<IInventoryService>(), agencyClient =>
                 {
-                    _messageDialogService.ShowInfoDialog("Could not load Agency,\nTourType was not found.", "Info");
-                    return;
-                }
-                CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService, agency);
-            });
+                    dbAgency = agencyClient.GetAgencyById(agency.AgencyId);
 
+                    if (dbAgency == null)
+                    {
+                        _messageDialogService.ShowInfoDialog("Could not load Agency,\nTourType was not found.", "Info");
+                        return;
+                    }
+
+                    CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService, agency);
+                });
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
+            }
         }
 
         public DelegateCommand<Agency> EditAgencyCommand { get; private set; }

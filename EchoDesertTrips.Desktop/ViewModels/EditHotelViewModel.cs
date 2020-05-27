@@ -93,16 +93,29 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (Hotel.IsValid)
             {
-                WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                Hotel savedHotel = null;
+                bool bIsNew = Hotel.HotelId == 0;
+
+                try
                 {
-                    bool bIsNew = Hotel.HotelId == 0;
-                    Hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
+                    WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                     {
-                        hotelRoomType.HotelId = Hotel.HotelId;
+                        Hotel.HotelRoomTypes.ForEach((hotelRoomType) =>
+                        {
+                            hotelRoomType.HotelId = Hotel.HotelId;
+                        });
+                        savedHotel = inventoryClient.UpdateHotel(Hotel);//Update DB
                     });
-                    var savedHotel = inventoryClient.UpdateHotel(Hotel);//Update DB
+                }
+                catch(Exception ex)
+                {
+                    log.Error(string.Empty, ex);
+                }
+
+                if (savedHotel != null)
+                {
                     _eventAggregator.GetEvent<HotelUpdatedEvent>().Publish(new HotelEventArgs(savedHotel, bIsNew));
-                });
+                }
             }
         }
 

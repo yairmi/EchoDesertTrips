@@ -62,9 +62,9 @@ namespace Core.Common.UI.Core
             {
                 codeToExecute.Invoke(proxy);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                log.Error(string.Empty, ex);
+                throw;
             }
             finally
             {

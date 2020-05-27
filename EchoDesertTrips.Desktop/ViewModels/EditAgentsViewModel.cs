@@ -6,6 +6,7 @@ using Core.Common.UI.CustomEventArgs;
 using Core.Common.UI.PubSubEvent;
 using EchoDesertTrips.Client.Contracts;
 using EchoDesertTrips.Client.Entities;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -45,12 +46,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (Agency.IsValid)
             {
-                WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                Agency savedAgency = null;
+                bool bIsNew = Agency.AgencyId == 0;
+
+                try
                 {
-                    bool bIsNew = Agency.AgencyId == 0;
-                    var savedAgency = inventoryClient.UpdateAgency(Agency);
+                    WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
+                    {
+                        
+                        savedAgency = inventoryClient.UpdateAgency(Agency);
+                    });
+                }
+                catch(Exception ex)
+                {
+                    log.Error(string.Empty, ex);
+                }
+
+                if (savedAgency != null)
+                {
                     _eventAggregator.GetEvent<AgencyUpdatedEvent>().Publish(new AgencyEventArgs(savedAgency, bIsNew));
-                });
+                }
             }
         }
 
