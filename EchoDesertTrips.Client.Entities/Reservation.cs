@@ -7,19 +7,6 @@ namespace EchoDesertTrips.Client.Entities
 {
     public class Reservation : ObjectBase
     {
-        public Reservation()
-        {
-            Customers = new ObservableCollection<Customer>(); 
-            Tours = new ObservableCollection<Tour>();
-            _group = new Group();
-            Agency = null;
-            Agent = null;
-            Operator = null;
-
-            _pickupTime = DateTime.Today;
-            _creationTime = DateTime.Today;
-        }
-
         private int _reservationId;
 
         public int ReservationId
@@ -39,7 +26,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private Operator _operator;
+        private Operator _operator = null;
 
         public Operator Operator
         {
@@ -74,11 +61,35 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public ObservableCollection<Customer> Customers { get; set; }
+        private ObservableCollection<Customer> _customers = new ObservableCollection<Customer>();
 
-        public ObservableCollection<Tour> Tours { get; set; }
+        public ObservableCollection<Customer> Customers
+        {
+            get
+            {
+                return _customers;
+            }
+            set
+            {
+                _customers = value;
+            }
+        }
 
-        private Agency _agency;
+        private ObservableCollection<Tour> _tours = new ObservableCollection<Tour>();
+
+        public ObservableCollection<Tour> Tours
+        {
+            get
+            {
+                return _tours;
+            }
+            set
+            {
+                _tours = value;
+            }
+        }
+
+        private Agency _agency = null;
 
         public Agency Agency
         {
@@ -115,7 +126,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private Agent _agent;
+        private Agent _agent = null;
 
         public Agent Agent
         {
@@ -188,7 +199,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private DateTime _pickupTime;
+        private DateTime _pickupTime = DateTime.Today;
 
         public DateTime PickUpTime
         {
@@ -234,7 +245,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private Group _group;
+        private Group _group = new Group();
 
         public Group Group
         {
@@ -265,7 +276,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private DateTime _creationTime;
+        private DateTime _creationTime = DateTime.Today;
 
         public DateTime CreationTime
         {

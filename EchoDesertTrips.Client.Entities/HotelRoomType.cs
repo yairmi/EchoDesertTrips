@@ -6,9 +6,6 @@ namespace EchoDesertTrips.Client.Entities
 {
     public class HotelRoomType : ObjectBase
     {
-        public HotelRoomType()
-        {
-        }
         private int _hotelRoomTypeId;
 
         public int HotelRoomTypeId

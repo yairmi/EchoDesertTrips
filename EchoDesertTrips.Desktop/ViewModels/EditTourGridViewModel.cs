@@ -116,7 +116,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     _eventAggregator.GetEvent<TourUpdatedEvent>().Publish(new TourEventArgs(newTour, false));
                 }
-                CreateTour();
+                ClearTour();
             }
         }
 
@@ -219,7 +219,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (result == MessageDialogResult.CANCEL)
                     return;
             }
-            CreateTour();
+            ClearTour();
         }
 
         private bool _lastDertinessValue = false;
@@ -267,7 +267,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
             _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Subscribe(RoomTypeUpdated);
             _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
-            CreateTour();//This creates an empty tour. which result in displaying empty fields
+            InitTourControls();
         }
 
         private void OnViewUnloaded(object obj)
@@ -277,29 +277,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _eventAggregator.GetEvent<HotelUpdatedEvent>().Unsubscribe(HotelUpdated);
         }
 
-        private void CreateTour(Tour tour = null)
+        private void InitTourControls()
         {
-            if (tour != null)
-            {
-                Tour = TourHelper.CloneTour(tour);
-            }
-            else
-            {
-                Tour = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                Tour = new Tour();
-            }
-
             _currentTourHotel = Tour.TourHotels.Count > 0 ? Tour.TourHotels[0] : null;
             UpdateTourHotelRoomTypesGUI(_currentTourHotel);
             InitTourOptionals();
+        }
+
+        private void ClearTour()
+        {
+            PropertySupport.ResetProperties<Tour>(Tour);
+            OnPropertyChanged(() => Tour);
+            InitTourControls();
             Tour.CleanAll();
         }
 
         private void TourEdited(Tour tour)
         {
-            CreateTour(tour);
+            Tour = TourHelper.CloneTour(tour);
+            InitTourControls();
+            Tour.CleanAll();
         }
 
         private void ReservationEdited(EditReservationEventArgs e)
@@ -313,6 +310,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private Tour _tour;
 
+        [Import]
         public Tour Tour
         {
             get
@@ -448,7 +446,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             set
             {
-                if (Tour!= null && Tour.TourType != value)
+                if (value != null && Tour!= null && Tour.TourType != value)
                 {
                     Tour.TourType = value;
                     Tour.SubTours.Clear();
@@ -482,9 +480,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             try
             {
-                log.Debug("Start");
                 if (Tour == null)
                     return;
+                log.Debug("Start");
                 foreach (var tourHotel in Tour.TourHotels)
                 {
                     foreach (var hotelRoomType in e.Hotel.HotelRoomTypes)

@@ -6,12 +6,6 @@ namespace EchoDesertTrips.Client.Entities
 {
     public class TourHotel : ObjectBase
     {
-        public TourHotel()
-        {
-            TourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
-            HotelStartDay = DateTime.Today;
-        }
-
         private int _tourHotelId;
 
         public int TourHotelId
@@ -66,9 +60,21 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes { get; set; }
+        private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes = new ObservableCollection<TourHotelRoomType>();
 
-        private DateTime _hotelStartDay;
+        public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes
+        {
+            get
+            {
+                return _tourHotelRoomTypes;
+            }
+            set
+            {
+                _tourHotelRoomTypes = value;
+            }
+        }
+
+        private DateTime _hotelStartDay = DateTime.Today;
 
         public DateTime HotelStartDay
         {

@@ -4,6 +4,7 @@ using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,22 +13,10 @@ namespace EchoDesertTrips.Client.Entities
 {
     public class TourType : ObjectBase
     {
-        public TourType()
-        {
-            _tourTypeName = string.Empty;
-            _destinations = string.Empty;
-            _adultPrices = string.Empty;
-            _childPrices = string.Empty;
-            _infantPrices = string.Empty;
-
-            TourTypeDescriptions = new ObservableCollection<TourTypeDescription>();
-            _incramentExternalId = true;
-        }
-
         public int TourTypeId { get; set; }
 
         private string _tourTypeName;
-
+        [DefaultValue("")]
         public string TourTypeName
         {
             get
@@ -46,7 +35,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private string _destinations;
-
+        [DefaultValue("")]
         public string Destinations
         {
             get
@@ -64,7 +53,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private string _adultPrices;
-
+        [DefaultValue("")]
         public string AdultPrices
         {
             get
@@ -82,7 +71,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private string _childPrices;
-
+        [DefaultValue("")]
         public string ChildPrices
         {
             get
@@ -100,7 +89,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private string _infantPrices;
-
+        [DefaultValue("")]
         public string InfantPrices
         {
             get
@@ -151,10 +140,22 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public ObservableCollection<TourTypeDescription> TourTypeDescriptions { get; set; }
+        public ObservableCollection<TourTypeDescription> _tourTypeDescriptions = new ObservableCollection<TourTypeDescription>();
+
+        public ObservableCollection<TourTypeDescription> TourTypeDescriptions
+        {
+            get
+            {
+                return _tourTypeDescriptions;
+            }
+            set
+            {
+                _tourTypeDescriptions = value;
+            }
+        }
 
         private bool _incramentExternalId;
-
+        [DefaultValue(true)]
         public bool IncramentExternalId
         {
             get

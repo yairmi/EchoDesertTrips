@@ -23,7 +23,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageDialogService;
-            Agency = agency != null ? AgencyHelper.CloneAgency(agency) : new Agency();
+            Agency = agency;
             CleanAll();
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             CancelCommand = new DelegateCommand<object>(OnCancelCommand);

@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.ComponentModel.Composition;
 using Core.Common.UI.PubSubEvent;
 using Core.Common.UI.CustomEventArgs;
+using System;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -37,21 +38,27 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnLoginCommand(Operator op)
         {
-
-            WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
+            try
             {
-                var oper = operatorClient.GetOperator(op.OperatorName, op.Password);
-                if (oper != null)
+                WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
                 {
-                    log.Info($"Loggin Successfully. Operator Name = {oper.OperatorName}, Operator ID = {oper.OperatorId}");
-                    CurrentOperator.Operator = oper;
-                    
-                    _eventAggregator.GetEvent<AuthenticatedEvent>().Publish(new AuthenticationEventArgs(oper));
+                    var oper = operatorClient.GetOperator(op.OperatorName, op.Password);
+                    if (oper != null)
+                    {
+                        log.Info($"Loggin Successfully. Operator Name = {oper.OperatorName}, Operator ID = {oper.OperatorId}");
+                        CurrentOperator.Operator = oper;
 
-                }
-                else
-                    AuthenticationFailed = true;
-            });
+                        _eventAggregator.GetEvent<AuthenticatedEvent>().Publish(new AuthenticationEventArgs(oper));
+
+                    }
+                    else
+                        AuthenticationFailed = true;
+                });
+            }
+            catch(Exception ex)
+            {
+                log.Error(string.Empty, ex);
+            }
         }
 
         protected override void OnViewLoaded()

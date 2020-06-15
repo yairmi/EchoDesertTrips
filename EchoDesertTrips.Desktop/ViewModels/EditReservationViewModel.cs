@@ -8,6 +8,7 @@ using System.Windows;
 using System.ComponentModel.Composition;
 using Core.Common.UI.PubSubEvent;
 using Core.Common.UI.CustomEventArgs;
+using System;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -72,35 +73,49 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
                 if (Reservation.ReservationId == 0) //New Reservation
                 {
-                    WithClient<IOrderService>(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
+                    try
                     {
-                        var reservation = reservationClient.UpdateReservation(Reservation); //Update or Add
-                        if (reservation != null)
+                        WithClient<IOrderService>(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
                         {
-                            _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, true, false));
-                        }
-                    });
+                            var reservation = reservationClient.UpdateReservation(Reservation); //Update or Add
+                            if (reservation != null)
+                            {
+                                _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, true, false));
+                            }
+                        });
+                    }
+                    catch(Exception ex)
+                    {
+                        log.Error(string.Empty, ex);
+                    }
                 }
                 else if (IsReservationDirty())
                 {
-                    WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
+                    try
                     {
-                        var reservationLocal = Reservation;
-                        var reservation = reservationClient.UpdateReservation(Reservation); //Add or Update but in this case its Update
-                        if (reservation.RowVersionConflict)
+                        WithClient(_serviceFactory.CreateClient<IOrderService>(), reservationClient =>
                         {
-                            log.Error("Cannot save reservation. reservation.RowVersionConflict is true");
-                            var operatorName = reservation.Operator != null ? reservation.Operator.OperatorName : string.Empty;
-                            var message = $"Reservation was saved by {operatorName}.\n\nPress \"OK\" to override the changes made by {0}.\nPress \"Cancel\" to cancel your changes.";
-                            var result = _messageDialogService.ShowOkCancelDialog(message, "Info");
-                            if (result == MessageDialogResult.OK)//Client Win
+                            var reservationLocal = Reservation;
+                            var reservation = reservationClient.UpdateReservation(Reservation); //Add or Update but in this case its Update
+                            if (reservation.RowVersionConflict)
                             {
-                                reservationLocal.RowVersion = reservation.RowVersion;
-                                reservation = reservationClient.UpdateReservation(reservationLocal);
+                                log.Error("Cannot save reservation. reservation.RowVersionConflict is true");
+                                var operatorName = reservation.Operator != null ? reservation.Operator.OperatorName : string.Empty;
+                                var message = $"Reservation was saved by {operatorName}.\n\nPress \"OK\" to override the changes made by {0}.\nPress \"Cancel\" to cancel your changes.";
+                                var result = _messageDialogService.ShowOkCancelDialog(message, "Info");
+                                if (result == MessageDialogResult.OK)//Client Win
+                                {
+                                    reservationLocal.RowVersion = reservation.RowVersion;
+                                    reservation = reservationClient.UpdateReservation(reservationLocal);
+                                }
                             }
-                        }
-                        _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, false, false));
-                    });
+                            _eventAggregator.GetEvent<ReservationUpdatedAndNotifyClientsEvent>().Publish(new ReservationEventArgs(reservation, false, false));
+                        });
+                    }
+                    catch(Exception ex)
+                    {
+                        log.Error(string.Empty, ex);
+                    }
                 }
             }
             else

@@ -1,4 +1,5 @@
-﻿using EchoDesertTrips.Client.Proxies.Service_Proxies;
+﻿using EchoDesertTrips.Client.Entities;
+using EchoDesertTrips.Client.Proxies.Service_Proxies;
 using EchoDesertTrips.Data;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
@@ -18,6 +19,7 @@ namespace EchoDesertTrips.Client.Bootstrapper
             AggregateCatalog catalog = new AggregateCatalog();
 
             catalog.Catalogs.Add(new AssemblyCatalog(typeof(InventoryClient).Assembly));
+            catalog.Catalogs.Add(new AssemblyCatalog(typeof(Reservation).Assembly));
 
             if (catalogParts != null)
             {

@@ -2,25 +2,16 @@
 using Core.Common.Core;
 using FluentValidation;
 using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 
 namespace EchoDesertTrips.Client.Entities
 {
+    [Export]
     public class Customer : ObjectBase
     {
-        public Customer()
-        {
-            DateOfBirdth = DateTime.Today;
-            IssueData = DateTime.Today;
-            ExpireyDate = DateTime.Today;
-            bInEdit = false;
-
-            _firstName = string.Empty;
-            _lastName = string.Empty;
-            _passportNumber = string.Empty;
-        }
-
         private int _customerId;
-
+        [DefaultValue(0)]
         public int CustomerId
         {
             get
@@ -39,7 +30,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private string _identityId;
-
+        [DefaultValue("")]
         public string IdentityId
         {
             get
@@ -57,8 +48,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private string _firstName;
-
+        private string _firstName = string.Empty;
+        [DefaultValue("")]
         public string FirstName
         {
             get
@@ -76,8 +67,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private string _lastName;
-
+        private string _lastName = string.Empty;
+        [DefaultValue("")]
         public string LastName
         {
             get
@@ -96,7 +87,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private string _phone1;
-
+        [DefaultValue("")]
         public string Phone1
         {
             get
@@ -115,7 +106,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private string _phone2;
-
+        [DefaultValue("")]
         public string Phone2
         {
             get
@@ -139,7 +130,9 @@ namespace EchoDesertTrips.Client.Entities
         {
             get
             {
-                return _dateOfBirdth;
+                if (_dateOfBirdth != default(DateTime))
+                    return _dateOfBirdth;
+                return DateTime.Today;
             }
 
             set
@@ -152,8 +145,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private string _passportNumber;
-
+        private string _passportNumber = string.Empty;
+        [DefaultValue("")]
         public string PassportNumber
         {
             get
@@ -177,7 +170,9 @@ namespace EchoDesertTrips.Client.Entities
         {
             get
             {
-                return _issueData;
+                if (_issueData != default(DateTime))
+                    return _issueData;
+                return DateTime.Today;
             }
 
             set
@@ -196,7 +191,9 @@ namespace EchoDesertTrips.Client.Entities
         {
             get
             {
-                return _expireyDate;
+                if (_expireyDate != default(DateTime))
+                    return _expireyDate;
+                return DateTime.Today;
             }
 
             set
@@ -210,7 +207,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private string _nationality;
-
+        [DefaultValue("")]
         public string Nationality
         {
             get
@@ -229,7 +226,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private bool _hasVisa;
-
+        [DefaultValue(false)]
         public bool HasVisa
         {
             get
@@ -247,7 +244,19 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public bool bInEdit { get; set; }
+        private bool _bInEdit = false;
+        [DefaultValue(false)]
+        public bool bInEdit
+        {
+            get
+            {
+                return _bInEdit;
+            }
+            set
+            {
+                _bInEdit = value;
+            }
+        }
 
         class CustomerValidator : AbstractValidator<Customer>
         {

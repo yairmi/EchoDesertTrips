@@ -2,27 +2,17 @@
 using Core.Common.Core;
 using FluentValidation;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 
 namespace EchoDesertTrips.Client.Entities
 {
+    [Export]
     public class Tour : ObjectBase
     {
-        public Tour()
-        {
-            TourOptionals = new ObservableCollection<TourOptional>();
-            TourHotels = new ObservableCollection<TourHotel>();
-            SubTours = new ObservableCollection<SubTour>();
-            _tourType = new TourType();
-            _startDate = DateTime.Today;
-            _endDate = DateTime.Today;
-            _pickupAddress = string.Empty;
-            bInEdit = false;
-        }
-
         private int _tourId;
-
+        [DefaultValue(0)]
         public int TourId
         {
             get
@@ -40,8 +30,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private TourType _tourType;
-
+        private TourType _tourType = new TourType();
+        [DefaultValue(typeof(ObjectBase))]
         public TourType TourType
         {
             get
@@ -60,7 +50,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private int _tourTypeId;
-
+        [DefaultValue(0)]
         public int TourTypeId
         {
             get
@@ -78,7 +68,7 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private DateTime _startDate;
+        private DateTime _startDate = DateTime.Today;
 
         public DateTime StartDate
         {
@@ -92,13 +82,12 @@ namespace EchoDesertTrips.Client.Entities
                 if (_startDate != value)
                 {
                     _startDate = value;
-                    //EndDate = _tourType.Days == 0 ? EndDate : StartDate.AddDays(_tourType.Days - 1);
                     OnPropertyChanged(() => StartDate, true);
                 }
             }
         }
 
-        private DateTime _endDate;
+        private DateTime _endDate = DateTime.Today;
 
         public DateTime EndDate
         {
@@ -117,8 +106,8 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        private string _pickupAddress;
-
+        private string _pickupAddress = string.Empty;
+        [DefaultValue("")]
         public string PickupAddress
         {
             get
@@ -136,13 +125,50 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public ObservableCollection<TourOptional> TourOptionals { get; set; }
+        private ObservableCollection<TourOptional> _tourOptionals = new ObservableCollection<TourOptional>();
+        [DefaultValue(typeof(ObjectBase))]
+        public ObservableCollection<TourOptional> TourOptionals
+        {
+            get
+            {
+                return _tourOptionals; 
+            }
+            set
+            {
+                _tourOptionals = value;
+            }
+        }
 
-        public ObservableCollection<TourHotel> TourHotels { get; set; }
+        private ObservableCollection<TourHotel> _tourHotels = new ObservableCollection<TourHotel>();
+        [DefaultValue(typeof(ObjectBase))]
+        public ObservableCollection<TourHotel> TourHotels
+        {
+            get
+            {
+                return _tourHotels;
+            }
+            set
+            {
+                _tourHotels = value;
+            }
+        }
 
-        public ObservableCollection<SubTour> SubTours { get; set; }
+        private ObservableCollection<SubTour> _subTours = new ObservableCollection<SubTour>();
+        [DefaultValue(typeof(ObjectBase))]
+        public ObservableCollection<SubTour> SubTours
+        {
+            get
+            {
+                return _subTours;
+            }
+            set
+            {
+                _subTours = value;
+            }
+        }
 
         private string _tourTypePrice;
+        [DefaultValue("")]
         public string TourTypePrice
         {
             get
@@ -156,7 +182,7 @@ namespace EchoDesertTrips.Client.Entities
         }
 
         private bool _private;
-
+        [DefaultValue(false)]
         public bool Private
         {
             get
@@ -170,7 +196,13 @@ namespace EchoDesertTrips.Client.Entities
             }
         }
 
-        public bool bInEdit { get; set; }
+        private bool _bInEdit;
+        [DefaultValue(false)]
+        public bool bInEdit
+        {
+            get { return _bInEdit; }
+            set { _bInEdit = value; }
+        }
 
         class TourValidator : AbstractValidator<Tour>
         {

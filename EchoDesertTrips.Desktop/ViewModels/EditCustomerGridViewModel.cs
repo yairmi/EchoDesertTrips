@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
+using Core.Common.Utils;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -56,20 +57,18 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             if (Customer.IsValid)
             {
+                var newCustomer = CustomerHelper.CloneCustomer(Customer);
                 if (Customer.CustomerId == 0)
                 {
-                    _eventAggregator.GetEvent<CustomerUpdatedEvent>().Publish(new CustomerEventArgs(Customer, Customer.bInEdit == false));
+                    _eventAggregator.GetEvent<CustomerUpdatedEvent>().Publish(new CustomerEventArgs(newCustomer, Customer.bInEdit == false));
                 }
                 else
                 {
-                    _eventAggregator.GetEvent<CustomerUpdatedEvent>().Publish(new CustomerEventArgs(Customer, false));
+                    _eventAggregator.GetEvent<CustomerUpdatedEvent>().Publish(new CustomerEventArgs(newCustomer, false));
                 }
 
                 CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
-                if (CustomersLeft > 0)
-                    CreateCustomer();
-                else
-                    ControllEnabled = false;
+                ControllEnabled = CustomersLeft > 0;
             }
             //CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             if (CustomersLeft <= 0)
@@ -84,23 +83,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     Reservation.Infants = Reservation.Customers.Count() - Reservation.Adults - Reservation.Childs;
                 }
             }
-        }
 
-        public void CreateCustomer(Customer customer = null)
-        {
-            if (customer != null)
-            {
-                Customer = CustomerHelper.CloneCustomer(customer);
-                ControllEnabled = true;
-            }
-            else
-            {
-                Customer = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                Customer = new Customer();
-            }
-            Customer.CleanAll();
+            ClearCustomer();
         }
 
         private void OnClearCommand(object obj)
@@ -111,7 +95,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 if (result == MessageDialogResult.CANCEL)
                     return;
             }
-            CreateCustomer();
+            ClearCustomer();
+        }
+
+        private void ClearCustomer()
+        {
+            PropertySupport.ResetProperties<Customer>(Customer);
+            OnPropertyChanged(() => Customer);
+            Customer.CleanAll();
         }
 
         private bool _lastDertinessValue = false;
@@ -136,14 +127,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             ControllEnabled = CustomersLeft > 0;
-            CreateCustomer();
+            Customer.CleanAll();
         }
 
         public void CustomerDeleted(Object obj)
         {
             CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
             ControllEnabled = true;
-            CreateCustomer();
+            Customer.CleanAll();
         }
 
         private void ReservationEdited(EditReservationEventArgs e)
@@ -154,11 +145,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void CustomerEdited(Customer customer)
         {
-            CreateCustomer(customer);
+            Customer = CustomerHelper.CloneCustomer(customer);
+            ControllEnabled = true;
+            Customer.CleanAll();
         }
 
         private Customer _customer;
-
+        [Import]
         public Customer Customer
         {
             get

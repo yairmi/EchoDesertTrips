@@ -26,14 +26,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _messageDialogService = messageDialogService;
             EditAgencyCommand = new DelegateCommand<Agency>(OnEditAgencyCommand);
             AddAgencyCommand = new DelegateCommand<object>(OnAddAgencyCommand);
-            ExpandedCommand = new DelegateCommand<object>(OnExpandedCommand);
             _eventAggregator.GetEvent<AgencyUpdatedEvent>().Subscribe(AgencyUpdated);
             _eventAggregator.GetEvent<AgencyCancelledEvent>().Subscribe(AgencyCancelled);
         }
 
         private void OnAddAgencyCommand(object obj)
         {
-            CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService,null);
+            CurrentAgentsViewModel = new EditAgentsViewModel(_serviceFactory, _messageDialogService,new Agency());
         }
 
         private void OnEditAgencyCommand(Agency agency)
@@ -76,15 +75,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     OnPropertyChanged(() => CurrentAgentsViewModel, false);
                 }
             }
-        }
-
-        public DelegateCommand<Hotel> EditHotelCommand { get; private set; }
-        public DelegateCommand<object> AddHotelCommand { get; private set; }
-
-        public DelegateCommand<object> ExpandedCommand { get; private set; }
-
-        private void OnExpandedCommand(object value)
-        {
         }
 
         public override string ViewTitle => "Agencies & Agents";
