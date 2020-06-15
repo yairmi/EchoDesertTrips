@@ -29,7 +29,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             _serviceFactory = serviceFactory;
             _messageDialogService = messageBoxDialogService;
-            //RowEditEndingCommand = new DelegateCommand<Customer>(OnRowEditEndingCommand);
             DeleteCustomerCommand = new DelegateCommand<Customer>(OnDeleteCustomerCommand);
             EditCustomerCommand = new DelegateCommand<Customer>(OnEditCustomerCommand);
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
@@ -53,8 +52,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             Customers.Remove(customer);
             Reservation.PropertyDeleted = true;
         }
-
-        private Customer _lastUpdatedCustomer;
 
         private void OnEditCustomerCommand(Customer customer)
         {
@@ -80,22 +77,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
         }
 
-        //public DelegateCommand<Customer> RowEditEndingCommand { get; set; }
-
-        //private void OnRowEditEndingCommand(Customer customer)
-        //{
-        //    if (customer.IsDirty)
-        //    {
-        //        _lastUpdatedCustomer = customer;
-        //        ValidateModel();
-        //        if (customer.IsValid)
-        //        {
-        //        }
-        //    }
-        //}
-
-        //private ObservableCollection<Customer> _customers;
-
         public ObservableCollection<Customer> Customers { get; set; }
         //{
         //    get { return _customers; }
@@ -104,18 +85,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         //        _customers = value;
         //        OnPropertyChanged(() => Customers, false);
         //    }
-        //}
-
-        //Provide ViewModelBase model or what properties inside 
-        //The ViewModel. ValidateModel will preform a check on all registered models/properties
-        //protected override void AddModels(List<ObjectBase> models)
-        //{
-        //    models.Add(_lastUpdatedCustomer);
-        //}
-
-        //public void ValidateCurrentModel()
-        //{
-        //    ValidateModel();
         //}
 
         protected override void OnViewLoaded()
