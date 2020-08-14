@@ -82,15 +82,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                     {
-
                         savedTourType = inventoryClient.UpdateTourType(TourType);
-                        _eventAggregator.GetEvent<TourTypeUpdatedEvent>().Publish(new TourTypeEventArgs(savedTourType, bIsNew));
                     });
                 }
                 catch(Exception ex)
                 {
-                    log.Error(string.Empty, ex);
+                    log.Error($"Failed to Save/Update Agent.\n{ex.StackTrace}");
+                    _messageDialogService.ShowInfoDialog("Failed to save Tour Type", "Error!");
                 }
+
+                _eventAggregator.GetEvent<TourTypeUpdatedEvent>().Publish(new TourTypeEventArgs(savedTourType, bIsNew));
             }
         }
 

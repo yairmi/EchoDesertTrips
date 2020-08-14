@@ -12,6 +12,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using Core.Common.Utils;
+using EchoDesertTrips.Client.Contracts;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -30,11 +31,13 @@ namespace EchoDesertTrips.Desktop.ViewModels
             _messageDialogService = messageDialogService;
             SaveCommand = new DelegateCommand<object>(OnSaveCommand, OnSaveCommandCanExecute);
             ClearCommand = new DelegateCommand<object>(OnClearCommand, OnClearCommandCanExecute);
+            Unloaded = new DelegateCommand<object>(OnViewUnloaded);
             _eventAggregator.GetEvent<ReservationEditedEvent>().Subscribe(ReservationEdited);
             _eventAggregator.GetEvent<CustomerEditedEvent>().Subscribe(CustomerEdited);
             _eventAggregator.GetEvent<CustomerDeletedEvent>().Subscribe(CustomerDeleted);
         }
 
+        public DelegateCommand<object> Unloaded { get; private set; }
         public DelegateCommand<object> SaveCommand { get; }
         public DelegateCommand<object> ClearCommand { get; }
 
@@ -108,14 +111,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
         private bool _lastDertinessValue = false;
         private bool IsCustomerDirty()
         {
-            var bDirty = Customer != null ? Customer.IsAnythingDirty() && (!ViewMode) : false;
-            if (bDirty != _lastDertinessValue)
+            return IsDirtyCheck(() =>
             {
+                var bDirty = Customer != null ? Customer.IsAnythingDirty() && (!ViewMode) : false;
+                if (bDirty != _lastDertinessValue)
+                {
 
-                log.Debug($"Dirty = {bDirty}");
-                _lastDertinessValue = bDirty;
-            }
-            return bDirty;
+                    log.Debug($"Dirty = {bDirty}");
+                    _lastDertinessValue = bDirty;
+                }
+                return bDirty;
+            });
         }
 
         protected override void AddModels(List<ObjectBase> models)
@@ -125,9 +131,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
-            ControllEnabled = CustomersLeft > 0;
-            Customer.CleanAll();
+            ViewModelLoaded(() =>
+            {
+                CustomersLeft = ReservationHelper.GetCustomerLeft(Reservation);
+                ControllEnabled = CustomersLeft > 0;
+                Customer.CleanAll();
+            });
+        }
+        protected void OnViewUnloaded(object obj)
+        {
+            ViewModelUnLoaded(() => { });
         }
 
         public void CustomerDeleted(Object obj)

@@ -55,7 +55,7 @@ namespace Core.Common.UI.Core
                 new System.ServiceModel.InstanceContext(cb);
             client = new BroadcastorServiceClient(context);
 
-            var operatorNameId = $"{ CurrentOperator.Operator.OperatorName } - {CurrentOperator.Operator.OperatorId}";
+            var operatorNameId = $"{CurrentOperator.Operator.OperatorName}-{CurrentOperator.Operator.OperatorId}";
             Registered = client.RegisterClient(operatorNameId);
             return Registered;
         }
@@ -64,22 +64,23 @@ namespace Core.Common.UI.Core
         {
             if (CurrentOperator.Operator == null)
                 return true;
+
             bool bSucceeded = false;
-            var operatorNameId = CurrentOperator.Operator.OperatorName + "-" + CurrentOperator.Operator.OperatorId;
+            var operatorNameId = $"{CurrentOperator.Operator.OperatorName}-{CurrentOperator.Operator.OperatorId}";
 
             if (client == null)
             {
                 CreateClient();
                 log.Debug("Client was NULL. After Client Creation");
             }
-            else
-            if (client != null && client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
+            else if (client != null && client.InnerDuplexChannel.State == System.ServiceModel.CommunicationState.Faulted)
             {
                 client.Abort();
                 client = null;
                 CreateClient();
                 log.Debug("Client was NOT NULL. After Client Creation");
             }
+
             bSucceeded = client.UnRegisterClient(operatorNameId);
 
             return bSucceeded;

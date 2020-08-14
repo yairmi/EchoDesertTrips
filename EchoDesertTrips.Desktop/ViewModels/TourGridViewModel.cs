@@ -11,6 +11,7 @@ using System;
 using System.Globalization;
 using Core.Common.UI.PubSubEvent;
 using Core.Common.UI.CustomEventArgs;
+using EchoDesertTrips.Client.Contracts;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -91,21 +92,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
         }
 
         public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes { get; set; }
-
-        //private ObservableCollection<TourHotelRoomType> _tourHotelRoomTypes;
-
-        //public ObservableCollection<TourHotelRoomType> TourHotelRoomTypes
-        //{
-        //    get
-        //    {
-        //        return _tourHotelRoomTypes;
-        //    }
-        //    set
-        //    {
-        //        _tourHotelRoomTypes = value;
-        //        OnPropertyChanged(() => TourHotelRoomTypes);
-        //    }
-        //}
 
         public int Adults
         {

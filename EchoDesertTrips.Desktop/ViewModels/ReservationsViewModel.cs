@@ -218,33 +218,34 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 CustomersGroupViewModel = new CustomersGroupViewModel();
                 var reservationClient = _serviceFactory.CreateClient<IOrderService>();
                 {
-                try
-                {
-
-                    int groupID = reservation1.GroupID;
-                    var uiContext = SynchronizationContext.Current;
-
-                    var customers = await Task.Factory.StartNew(() =>
+                    try
                     {
-                        CustomersGroupViewModel.LoadingVisible = true;
-                        return reservationClient.GetCustomersByReservationGroupIdAsynchronous(groupID);
-                    });
-                    await customers.ContinueWith((Task<Customer[]> e) =>
-                    {
-                        if (e.IsCompleted)
+
+                        int groupID = reservation1.GroupID;
+                        var uiContext = SynchronizationContext.Current;
+
+                        var customers = await Task.Factory.StartNew(() =>
                         {
-                            uiContext.Send((x) =>
+                            CustomersGroupViewModel.LoadingVisible = true;
+                            return reservationClient.GetCustomersByReservationGroupIdAsynchronous(groupID);
+                        });
+                        await customers.ContinueWith((Task<Customer[]> e) =>
+                        {
+                            if (e.IsCompleted)
                             {
-                                CustomersGroupViewModel.CustomersForGroup.AddRange(customers.Result);
-                                CustomersGroupViewModel.LoadingVisible = false;
-                            }, null);
-                        }
-                    });
-                }
-                catch(Exception ex)
-                {
-                    log.Error("Failed to show customers", ex);
-                }
+                                uiContext.Send((x) =>
+                                {
+                                    CustomersGroupViewModel.CustomersForGroup.AddRange(customers.Result);
+                                    CustomersGroupViewModel.LoadingVisible = false;
+                                }, null);
+                            }
+                        });
+                    }
+                    catch(Exception ex)
+                    {
+                        log.Error("Failed to show customers", ex);
+                        _messageDialogService.ShowInfoDialog("Failed to show customers", "Error!");
+                    }
                 }
                 var disposableClient = reservationClient as IDisposable;
                 disposableClient?.Dispose();
@@ -287,15 +288,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
                         WithClient(_serviceFactory.CreateClient<IOperatorService>(), operatorClient =>
                         {
                             Operator = operatorClient.GetOperatorByID(reservation.LockedById);
+                            var operatorName = Operator != null ? Operator.OperatorName : string.Empty;
+                            var message = $"Cannot delete reservation. The record is held by {operatorName}.";
+                            _messageDialogService.ShowInfoDialog(message, "Info");
                         });
                     }
                     catch(Exception ex)
                     {
                         log.Error(string.Empty, ex);
+                        _messageDialogService.ShowInfoDialog("Cannot delete reservation.\nReservation is held by someone else.", "Error!");
                     }
-                    var operatorName = Operator != null ? Operator.OperatorName : string.Empty;
-                    var message = $"Cannot delete reservation. The record is held by {operatorName}.";
-                    _messageDialogService.ShowInfoDialog(message, "Info");
+
                 }
                 else
                 {
@@ -320,22 +323,28 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void OnAddReservationCommand(object arg)
         {
-            log.Debug("Start");
             _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Publish(new EditReservationEventArgs(null, false, false));
-            log.Debug("End");
         }
 
         private bool _bIsContinual = false;
         private void OnEditContinualReservationCommand(ReservationDTO reservation)
         {
             _bIsContinual = true;
-            OnEditReservationCommand(reservation);
+            try
+            {
+                OnEditReservationCommand(reservation);
+            }
+            catch(Exception ex)
+            {
+                PrintInnerExceptions(ex, (exception) => { log.Error(exception.InnerException); });
+                _messageDialogService.ShowInfoDialog("Failed to load reservation", "Error!");
+            }
             _bIsContinual = false;
         }
 
         private void OnEditReservationCommand(ReservationDTO reservation)
         {
-            log.Debug($"Start. ReservationId={reservation.ReservationId}");
+            log.Debug($"Edit Reservation Start. ReservationId={reservation.ReservationId}");
             Reservation dbReservation = null;
             bool bViewMode = false;
 
@@ -368,9 +377,9 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
                         bViewMode = true;
                     }
-                    catch(Exception)
+                    catch(Exception ex)
                     {
-                        throw;
+                        throw new Exception("Failed to load operator for Edit reservation", ex);
                     }
                 }
                 else
@@ -379,11 +388,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
 
                 _eventAggregator.GetEvent<ReservationEditSelectedEvent>().Publish(new EditReservationEventArgs(dbReservation, bViewMode, _bIsContinual));
-                log.Debug("End");
+                log.Debug($"Edit Reservation End. ReservationId={reservation.ReservationId}");
             }
             catch(Exception ex)
             {
-                log.Error(string.Empty, ex);
+                throw new Exception("Failed to Edit reservation", ex);
             }
         }
 
@@ -422,7 +431,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 _selectedDate = value;
                 FilterByDate();
-                LoadReservationsForDayRangeAsync2();
+                try
+                {
+                    LoadReservationsForDayRangeAsync2();
+                }
+                catch (Exception ex)
+                {
+                    PrintInnerExceptions(ex, (exception) => { log.Error(exception.StackTrace); });
+                    _messageDialogService.ShowInfoDialog("Failed to load reservations", "Error!");
+                }
                 OnPropertyChanged(() => SelectedDate, false);
             }
         }
@@ -436,13 +453,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
         {
             if (!IsInDayRange(_selectedDate))     
             {
-                log.Debug("LoadReservationsForDayRangeAsync2 Start");
                 IsEnabled = false;
                 LoadingVisible = true;
                 _lastSelectedDate = _selectedDate;
-                var orderClient = _serviceFactory.CreateClient<IOrderService>();
+                IOrderService orderClient = null;
+
+                try
                 {
-                    try
+                    orderClient = _serviceFactory.CreateClient<IOrderService>();
                     {
                         var uiContext = SynchronizationContext.Current;
                         var task = Task.Factory.StartNew(() => orderClient.GetReservationsForDayRangeAsynchronous(_selectedDate.AddDays(_daysRange * (-1)), _selectedDate.AddDays(_daysRange)));
@@ -467,25 +485,26 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                             log.Error("LoadReservationsForDayRangeAsync2 returns null");
                                         }
                                     }
-                                    catch(Exception ex)
+                                    catch (Exception ex)
                                     {
-                                        log.Error("Failed to display reservations", ex);
+                                        throw new Exception("Failed to display reservations", ex);
                                     }
                                 }, null);
                             }
                         });
                     }
-                    catch(Exception ex)
-                    {
-                        log.Error("Failed to load reservations", ex);
-                    }
                 }
-
-                log.Debug("LoadReservationsForDayRangeAsync2 execution End");
-                var disposableClient = orderClient as IDisposable;
-                disposableClient?.Dispose();
-                IsEnabled = true;
-                LoadingVisible = false;
+                catch (Exception ex)
+                {
+                     throw new Exception("Failed to load Reservation", ex);
+                }
+                finally
+                {
+                    var disposableClient = orderClient as IDisposable;
+                    disposableClient?.Dispose();
+                    IsEnabled = true;
+                    LoadingVisible = false;
+                }
             }
         }
 
@@ -512,7 +531,15 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 ContinualReservationsView.GroupDescriptions.Add(new PropertyGroupDescription(".",new  GroupContinualReservationsConverter()));
             }
             FilterByDate();
-            LoadReservationsForDayRangeAsync2();
+            try
+            {
+                LoadReservationsForDayRangeAsync2();
+            }
+            catch(Exception ex)
+            {
+                PrintInnerExceptions(ex, (exception) => { log.Error(exception.InnerException); });
+                _messageDialogService.ShowInfoDialog("Failed to load reservations", "Error!");
+            }
         }
 
         private void FilterByDate()

@@ -15,6 +15,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using EchoDesertTrips.Client.Contracts;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {
@@ -226,14 +227,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private bool IsTourDirty()
         {
-            var bDirty = Tour != null ? Tour.IsAnythingDirty() && (!ViewMode) : false;
-            if (bDirty != _lastDertinessValue)
+            return IsDirtyCheck(() =>
             {
+                var bDirty = Tour != null ? Tour.IsAnythingDirty() && (!ViewMode) : false;
+                if (bDirty != _lastDertinessValue)
+                {
 
-                log.Debug($"Dirty = {bDirty}");
-                _lastDertinessValue = bDirty;
-            }
-            return bDirty;
+                    log.Debug($"Dirty = {bDirty}");
+                    _lastDertinessValue = bDirty;
+                }
+                return bDirty;
+            });
         }
 
         private bool IsTourValid()
@@ -264,18 +268,24 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         protected override void OnViewLoaded()
         {
-            _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
-            _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Subscribe(RoomTypeUpdated);
-            _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
-            InitTourControls();
+            ViewModelLoaded(() =>
+            {
+                _eventAggregator.GetEvent<OptionalUpdatedEvent>().Subscribe(OptionalUpdated);
+                _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Subscribe(RoomTypeUpdated);
+                _eventAggregator.GetEvent<HotelUpdatedEvent>().Subscribe(HotelUpdated);
+                InitTourControls();
+            });
         }
 
         private void OnViewUnloaded(object obj)
         {
-            _eventAggregator.GetEvent<OptionalUpdatedEvent>().Unsubscribe(OptionalUpdated);
-            _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Unsubscribe(RoomTypeUpdated);
-            _eventAggregator.GetEvent<HotelUpdatedEvent>().Unsubscribe(HotelUpdated);
-            ClearTour();
+            ViewModelUnLoaded(() =>
+            {
+                _eventAggregator.GetEvent<OptionalUpdatedEvent>().Unsubscribe(OptionalUpdated);
+                _eventAggregator.GetEvent<RoomTypeUpdatedEvent>().Unsubscribe(RoomTypeUpdated);
+                _eventAggregator.GetEvent<HotelUpdatedEvent>().Unsubscribe(HotelUpdated);
+                ClearTour();
+            });
         }
 
         private void InitTourControls()
@@ -491,7 +501,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
             {
                 if (Tour == null)
                     return;
-                log.Debug("Start");
                 foreach (var tourHotel in Tour.TourHotels)
                 {
                     foreach (var hotelRoomType in e.Hotel.HotelRoomTypes)

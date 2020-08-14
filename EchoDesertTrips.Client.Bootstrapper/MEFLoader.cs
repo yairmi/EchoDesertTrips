@@ -1,6 +1,6 @@
-﻿using EchoDesertTrips.Client.Entities;
+﻿using EchoDesertTrips.Client.Contracts;
+using EchoDesertTrips.Client.Entities;
 using EchoDesertTrips.Client.Proxies.Service_Proxies;
-using EchoDesertTrips.Data;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;

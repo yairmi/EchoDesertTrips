@@ -20,9 +20,10 @@ namespace EchoDesertTrips.Desktop.ViewModels
     public class OptionalsViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
-
+        private readonly IMessageDialogService _messageBoxDialogService;
         [ImportingConstructor]
-        public OptionalsViewModel(IServiceFactory serviceFactory)
+        public OptionalsViewModel(IServiceFactory serviceFactory,
+            IMessageDialogService messageBoxDialogService)
         {
             _serviceFactory = serviceFactory;
             DeleteOptionalCommand = new DelegateCommand<Optional>(OnDeleteCommand);
@@ -32,19 +33,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public DelegateCommand<Optional> DeleteOptionalCommand { get; set; }
 
-        private void OnDeleteCommand(Optional obj)
+        private void OnDeleteCommand(Optional optional)
         {
             try
             {
                 WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                 {
-                    inventoryClient.DeleteOptional(obj);
-                    Inventories.Optionals.Remove(obj);
+                    inventoryClient.DeleteOptional(optional);
+                    Inventories.Optionals.Remove(optional);
                 });
             }
             catch(Exception ex)
             {
-                log.Error(string.Empty, ex);
+                log.Error(ex.StackTrace);
+                _messageBoxDialogService.ShowInfoDialog("Failed to delete optional", "Error!");
             }
         }
 
@@ -74,15 +76,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                             Client.NotifyServer(
                                 SerializeInventoryMessage(eInventoryTypes.E_OPTIONAL, eOperation.E_UPDATED, savedOptional.OptionalId), eMsgTypes.E_INVENTORY);
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
-                            throw;
+                            log.Error($"Failed to NotifyServer for Optional Update.\n{ex.StackTrace}");
                         }
                     });
                 }
                 catch(Exception ex)
                 {
-                    log.Error(string.Empty, ex);
+                    log.Error($"Failed to Save/Update Optional.\n{ex.StackTrace}");
+                    _messageBoxDialogService.ShowInfoDialog("Failed to Save/Update Optional", "Error!");
                 }
             }
         }

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:EchoDesertTrips.Desktop.Views"
              xmlns:core="clr-namespace:Core.Common.UI.Core;assembly=Core.Common.UI"
              xmlns:control="clr-namespace:Core.Common.UI.Controls;assembly=Core.Common.UI"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="300">
     <UserControl.Resources>
@@ -28,7 +29,12 @@
         </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-        <Grid>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Unloaded">
+            <i:InvokeCommandAction Command="{Binding Path=DataContext.Unloaded, RelativeSource={RelativeSource AncestorType=core:UserControlViewBase}}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition Height="Auto" />

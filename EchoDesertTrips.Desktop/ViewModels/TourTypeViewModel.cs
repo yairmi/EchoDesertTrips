@@ -44,15 +44,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     dbTourType = tourTypeClient.GetTourTypeById(tourType.TourTypeId);
                     if (dbTourType == null)
                     {
-                        _messageDialogService.ShowInfoDialog("Could not load TourType,\nTourType was not found.", "Info");
-                        return;
+                        throw new Exception();
                     }
+
                     CurrentTourTypeViewModel = new EditTourTypeViewModel(_serviceFactory, _messageDialogService, dbTourType);
                 });
             }
             catch(Exception ex)
             {
-                log.Error(string.Empty, ex);
+                log.Error(ex.StackTrace);
+                _messageDialogService.ShowInfoDialog("Failed to load Tour Type", "Error!");
             }
         }
 
@@ -78,21 +79,29 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void TourTypeUpdated(TourTypeEventArgs e)
         {
-            Inventories.Update<TourType>(e.TourType, Inventories.TourTypes);
+            if (e.TourType != null)
+            {
+                Inventories.Update<TourType>(e.TourType, Inventories.TourTypes);
+                if (e.bSendUpdateToClients)
+                {
+                    try
+                    {
+                        Client.NotifyServer(
+                            SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, eOperation.E_UPDATED, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Failed to notify server for TourType update.\n{ex.StackTrace}");
+                    }
+                }
+            }
+
             if (e.bSendUpdateToClients)
             {
-                try
-                {
-                    Client.NotifyServer(
-                        SerializeInventoryMessage(eInventoryTypes.E_TOUR_TYPE, eOperation.E_UPDATED, e.TourType.TourTypeId), eMsgTypes.E_INVENTORY);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Failed notify server after tour type was updated", ex);
-                }
                 CurrentTourTypeViewModel = null;
             }
-            
+
+
         }
 
         private void TourTypeCancelled(TourTypeEventArgs obj)

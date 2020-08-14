@@ -13,6 +13,7 @@ using System.Linq;
 using System.ComponentModel.Composition;
 using Core.Common.UI.CustomEventArgs;
 using Core.Common.UI.PubSubEvent;
+using EchoDesertTrips.Client.Contracts;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {

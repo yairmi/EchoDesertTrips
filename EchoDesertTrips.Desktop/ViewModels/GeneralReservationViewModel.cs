@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using Core.Common.UI.CustomEventArgs;
 using System;
+using EchoDesertTrips.Client.Contracts;
 
 namespace EchoDesertTrips.Desktop.ViewModels
 {

@@ -81,6 +81,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EchoDesertTrips.Client.Contracts\EchoDesertTrips.Client.Contracts.csproj">
+      <Project>{BE74B75E-50B4-4B67-AEAF-CE184A2088EA}</Project>
+      <Name>EchoDesertTrips.Client.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EchoDesertTrips.Client.Entities\EchoDesertTrips.Client.Entities.csproj">
       <Project>{a098e49c-3a39-40fb-86a1-68891b9cce4c}</Project>
       <Name>EchoDesertTrips.Client.Entities</Name>

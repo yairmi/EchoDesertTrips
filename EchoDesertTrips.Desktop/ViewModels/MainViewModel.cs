@@ -18,7 +18,7 @@ namespace EchoDesertTrips.Desktop.ViewModels
     {
         private readonly IServiceFactory _serviceFactory;
         private readonly IMessageDialogService _messageBoxDialogService;
-        
+
         [ImportingConstructor]
         public MainViewModel(IServiceFactory serviceFactory, 
             IMessageDialogService messageBoxDialogService)
@@ -79,16 +79,16 @@ namespace EchoDesertTrips.Desktop.ViewModels
             try
             {
                 bool bSucceeded = Client.UnRegisterClient();
+                log.Info($"UnRegisterClient Succeeded for Operator = {CurrentOperator.Operator.OperatorName}"); ;
+
+                CurrentOperator.Operator = null;
+                CurrentViewModel = _loginControlViewModel;
             }
             catch(Exception ex)
             {
-                log.Error("Failed to UnRegisterClient", ex);
+                log.Error(ex.StackTrace);
+                _messageBoxDialogService.ShowInfoDialog("Failed to Logout User", "Error!");
             }
-
-            log.Info($"UnRegisterClient Succeeded for Operator = {CurrentOperator.Operator.OperatorName}"); ;
-
-            CurrentOperator.Operator = null;
-            CurrentViewModel = _loginControlViewModel;
         }
 
         private void Authenticated(AuthenticationEventArgs e)
@@ -99,26 +99,35 @@ namespace EchoDesertTrips.Desktop.ViewModels
             try
             {
                 bSucceeded = Client.RegisterClient(HandleBroadcast);
+                if (bSucceeded == false)
+                {
+                    OperatorForegroundColor = System.Windows.Media.Brushes.DarkRed;
+                    throw new Exception();
+                }
+                else
+                {
+                    log.Info($"Client registration succeeded for Operator = {CurrentOperator.Operator.OperatorName}");
+                    OperatorForegroundColor = System.Windows.Media.Brushes.Black;
+                }
             }
             catch (Exception ex)
             {
-                log.Error("Failed to register client", ex);
+                log.Error(ex.StackTrace);
+                _messageBoxDialogService.ShowInfoDialog("Failed To Register client.\nWorking in ReadOnly mode", "Error!");
             }
-
-            if (bSucceeded == false)
+            finally
             {
-                log.Error("Client registration Failed. Working in ReadOnly mode");
-                OperatorForegroundColor = System.Windows.Media.Brushes.DarkRed;
-            }
-            else
-            {
-                log.Info($"RegisterClient succeeded for Operator = {CurrentOperator.Operator.OperatorName}");
-                OperatorForegroundColor = System.Windows.Media.Brushes.Black;
-            }
+                try
+                {
+                    LoadInventoryAsync();
+                }
+                catch(Exception ex)
+                {
+                    log.Error(ex.StackTrace);
+                }
 
-            CurrentViewModel = _mainTabViewModel;
-
-            LoadInventoryAsync();
+                CurrentViewModel = _mainTabViewModel;
+            }
 
             log.Debug("Finished");
         }
@@ -211,18 +220,19 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private async void LoadInventoryAsync()
         {
-            var inventoryClient = _serviceFactory.CreateClient<IInventoryService>();
+            IInventoryService inventoryClient = null;
+            try
             {
-                var uiContext = SynchronizationContext.Current;
-                var task = Task.Factory.StartNew(() => inventoryClient.GetInventoryDataAsynchronous());
-                var inventoryData = await task;
-                await inventoryData.ContinueWith(e =>
+                inventoryClient = _serviceFactory.CreateClient<IInventoryService>();
                 {
-                    if (e.IsCompleted)
+                    var uiContext = SynchronizationContext.Current;
+                    var task = Task.Factory.StartNew(() => inventoryClient.GetInventoryDataAsynchronous());
+                    var inventoryData = await task;
+                    await inventoryData.ContinueWith(e =>
                     {
-                        uiContext.Send((x) =>
+                        if (e.IsCompleted)
                         {
-                            try
+                            uiContext.Send((x) =>
                             {
                                 log.Debug("Inventories Loading");
                                 Inventories.TourTypes.Clear();
@@ -236,18 +246,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 Inventories.Agencies.AddRange(inventoryData.Result.Agencies);
                                 Inventories.Operators.AddRange(inventoryData.Result.Operators);
                                 Inventories.RoomTypes.AddRange(inventoryData.Result.RoomTypes);
-                            }
-                            catch(Exception ex)
-                            {
-                                log.Error("Failed to LoadInventoryAsync", ex);
-                            }
-                        }, null);
-                    }
-                });
+                            }, null);
+                        }
+                    });
+                }
             }
-
-            var disposableClient = inventoryClient as IDisposable;
-            disposableClient?.Dispose();
+            catch(Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                var disposableClient = inventoryClient as IDisposable;
+                disposableClient?.Dispose();
+            }
         }
     }
 }

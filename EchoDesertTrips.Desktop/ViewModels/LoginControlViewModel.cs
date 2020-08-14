@@ -57,7 +57,8 @@ namespace EchoDesertTrips.Desktop.ViewModels
             }
             catch(Exception ex)
             {
-                log.Error(string.Empty, ex);
+                log.Error(ex.StackTrace);
+                AuthenticationFailed = true;
             }
         }
 

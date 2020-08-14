@@ -70,7 +70,6 @@ namespace EchoDesertTrips.Desktop.ViewModels
                     Hotel.HotelRoomTypes.Add(hotelRoomType);
                 }
             }
-            //}
         }
 
         public DelegateCommand<object> SaveCommand { get; private set; }
@@ -109,13 +108,11 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 }
                 catch(Exception ex)
                 {
-                    log.Error(string.Empty, ex);
+                    log.Error($"Failed to Save/Update Hotel.\n{ex.StackTrace}");
+                    _messageDialogService.ShowInfoDialog("Failed to Save/Update Hotel", "Error!");
                 }
 
-                if (savedHotel != null)
-                {
-                    _eventAggregator.GetEvent<HotelUpdatedEvent>().Publish(new HotelEventArgs(savedHotel, bIsNew));
-                }
+                _eventAggregator.GetEvent<HotelUpdatedEvent>().Publish(new HotelEventArgs(savedHotel, bIsNew));
             }
         }
 

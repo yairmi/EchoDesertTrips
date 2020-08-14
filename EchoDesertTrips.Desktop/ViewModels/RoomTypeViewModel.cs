@@ -17,11 +17,14 @@ namespace EchoDesertTrips.Desktop.ViewModels
     public class RoomTypeViewModel : ViewModelBase
     {
         private readonly IServiceFactory _serviceFactory;
+        private readonly IMessageDialogService _messageBoxDialogService;
 
         [ImportingConstructor]
-        public RoomTypeViewModel(IServiceFactory serviceFactory)
+        public RoomTypeViewModel(IServiceFactory serviceFactory,
+            IMessageDialogService messageBoxDialogService)
         {
             _serviceFactory = serviceFactory;
+            _messageBoxDialogService = messageBoxDialogService;
             DeleteRoomTypeCommand = new DelegateCommand<RoomType>(OnDeleteRoomTypeCommand);
             SaveRoomTypeCommand = new DelegateCommand<RoomType>(OnSaveCommand);
             RowEditEndingCommand = new DelegateCommand<RoomType>(OnRowEditEndingCommand);
@@ -39,19 +42,20 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         public DelegateCommand<RoomType> DeleteRoomTypeCommand { get; set; }
 
-        private void OnDeleteRoomTypeCommand(RoomType obj)
+        private void OnDeleteRoomTypeCommand(RoomType roomType)
         {
             try
             {
                 WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                 {
-                    inventoryClient.DeleteRoomType(obj);
-                    Inventories.RoomTypes.Remove(obj);
+                    inventoryClient.DeleteRoomType(roomType);
+                    Inventories.RoomTypes.Remove(roomType);
                 });
             }
             catch(Exception ex)
             {
-                log.Error(string.Empty, ex);
+                log.Error(ex.StackTrace);
+                _messageBoxDialogService.ShowInfoDialog("Failed to delete room type", "Error!");
             }
         }
 
@@ -87,20 +91,22 @@ namespace EchoDesertTrips.Desktop.ViewModels
                                 }
                             }
                         }
+
                         try
                         {
                             Client.NotifyServer(
                                 SerializeInventoryMessage(eInventoryTypes.E_ROOM_TYPE, eOperation.E_UPDATED, savedRoomType.RoomTypeId), eMsgTypes.E_INVENTORY);
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
-                            throw;
+                            log.Error($"Failed to NotifyServer for Room Type Update.\n{ex.StackTrace}");
                         }
                     });
                 }
                 catch(Exception ex)
                 {
-                    log.Error(string.Empty, ex);
+                    log.Error($"Failed to Save/Update RoomType.\n{ex.StackTrace}");
+                    _messageBoxDialogService.ShowInfoDialog("Failed to Save/Update Room Type", "Error!");
                 }
             }
         }

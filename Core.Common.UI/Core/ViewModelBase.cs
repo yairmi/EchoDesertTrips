@@ -21,6 +21,27 @@ namespace Core.Common.UI.Core
             }
         }
 
+        protected bool bIsViewModelLoaded = false;
+
+        protected bool IsDirtyCheck(Func<bool> isDirty)
+        {
+            if (bIsViewModelLoaded)
+                return isDirty();
+            return false;
+        }
+
+        protected void ViewModelLoaded(Action initViewModel)
+        {
+            bIsViewModelLoaded = true;
+            initViewModel();
+        }
+
+        protected void ViewModelUnLoaded(Action releaseViewModel)
+        {
+            bIsViewModelLoaded = false;
+            releaseViewModel();
+        }
+
         static protected IEventAggregator _eventAggregator;
 
         public InventoriesSingle Inventories
@@ -185,6 +206,16 @@ namespace Core.Common.UI.Core
             reservationsMessage.ReservationsIds.Add(new ReservationMessage(EntityId, operation));
             Serializer ser = new Serializer();
             return ser.Serialize(reservationsMessage);
+        }
+
+        protected void PrintInnerExceptions(Exception ex, Action<Exception> print)
+        {
+            var inner = ex.InnerException;
+            while (inner != null)
+            {
+                print(inner);
+                inner = inner.InnerException;
+            }
         }
 
         protected static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

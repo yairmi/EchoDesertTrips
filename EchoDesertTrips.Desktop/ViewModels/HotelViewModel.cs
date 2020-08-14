@@ -86,18 +86,25 @@ namespace EchoDesertTrips.Desktop.ViewModels
 
         private void HotelUpdated(HotelEventArgs e)
         {
-            Inventories.Update<Hotel>(e.Hotel, Inventories.Hotels);
+            if (e.Hotel != null)
+            {
+                Inventories.Update<Hotel>(e.Hotel, Inventories.Hotels);
+                if (e.bSendUpdateToClients)
+                {
+                    try
+                    {
+                        Client.NotifyServer(
+                            SerializeInventoryMessage(eInventoryTypes.E_HOTEL, eOperation.E_UPDATED, e.Hotel.HotelId), eMsgTypes.E_INVENTORY);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error($"Failed to notify server for Hotel update.\n{ex.StackTrace}");
+                    }
+                }
+            }
+
             if (e.bSendUpdateToClients)
             {
-                try
-                {
-                    Client.NotifyServer(
-                        SerializeInventoryMessage(eInventoryTypes.E_HOTEL, eOperation.E_UPDATED, e.Hotel.HotelId), eMsgTypes.E_INVENTORY);
-                }
-                catch (Exception ex)
-                {
-                    log.Error("Failed notify server after hotel was updated", ex);
-                }
                 CurrentHotelViewModel = null;
             }
         }

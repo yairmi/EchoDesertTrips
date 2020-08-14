@@ -53,19 +53,17 @@ namespace EchoDesertTrips.Desktop.ViewModels
                 {
                     WithClient(_serviceFactory.CreateClient<IInventoryService>(), inventoryClient =>
                     {
-                        
+
                         savedAgency = inventoryClient.UpdateAgency(Agency);
                     });
                 }
                 catch(Exception ex)
                 {
-                    log.Error(string.Empty, ex);
+                    log.Error($"Failed to Save/Update Agent.\n{ex.StackTrace}");
+                    _messageDialogService.ShowInfoDialog("Failed to Save/Update Agent", "Error!");
                 }
 
-                if (savedAgency != null)
-                {
-                    _eventAggregator.GetEvent<AgencyUpdatedEvent>().Publish(new AgencyEventArgs(savedAgency, bIsNew));
-                }
+                _eventAggregator.GetEvent<AgencyUpdatedEvent>().Publish(new AgencyEventArgs(savedAgency, bIsNew));
             }
         }
 
